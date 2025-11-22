@@ -1,5 +1,7 @@
 export const REACT_APP_API_URL = `${process.env.REACT_APP_API_URL}`;
 
+export const FIGMA_FILE_ID = 'figd_YiT_FVpuWjf8VZaHKNWhEmzn6DXl-yDCO7ZUwdU0';
+
 export const availableOptions = ['propertyBarter', 'propertyRent'];
 
 const thisYear = new Date().getFullYear();

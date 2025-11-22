@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
@@ -17,6 +16,41 @@ import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
 import { REACT_APP_API_URL } from '../config';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import EmailIcon from '@mui/icons-material/Email';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import CloseIcon from '@mui/icons-material/Close';
+import PhoneIcon from '@mui/icons-material/Phone';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+
+// Custom KakaoTalk Icon
+const KakaoTalkIcon = ({ className }: { className?: string }) => (
+	<svg
+		className={className}
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="currentColor"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path d="M12 3C6.477 3 2 6.477 2 12c0 2.237.86 4.28 2.27 5.81L2 22l4.5-2.18c1.17.35 2.4.54 3.68.54h.64c5.523 0 10-3.477 10-7.78 0-4.303-4.477-7.78-10-7.78zm0 1.56c4.695 0 8.5 2.832 8.5 6.22 0 3.388-3.805 6.22-8.5 6.22a11.62 11.62 0 0 1-3.12-.42l-.35-.1-.3.15-2.9 1.4.55-2.64-.12-.25A8.19 8.19 0 0 1 3.5 12c0-3.388 3.805-6.22 8.5-6.22z" />
+	</svg>
+);
+
+// Custom TikTok Icon
+const TikTokIcon = ({ className }: { className?: string }) => (
+	<svg
+		className={className}
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="currentColor"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+	</svg>
+);
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -32,6 +66,7 @@ const Top = () => {
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
 	const logoutOpen = Boolean(logoutAnchor);
+	const [topBarVisible, setTopBarVisible] = useState(true);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -139,6 +174,10 @@ const Top = () => {
 		window.addEventListener('scroll', changeNavbarColor);
 	}
 
+	const closeTopBar = () => {
+		setTopBarVisible(false);
+	};
+
 	if (device == 'mobile') {
 		return (
 			<Stack className={'top'}>
@@ -161,124 +200,93 @@ const Top = () => {
 		);
 	} else {
 		return (
-			<Stack className={'navbar'}>
+			<Stack className={'navbar kadhavu-navbar'}>
+				{/* Top Bar */}
+				{topBarVisible && (
+					<Stack className={'top-bar'}>
+						<Stack className={'container'}>
+							<Box component={'div'} className={'top-bar-left'}>
+								<Box component={'div'} className={'top-bar-item'}>
+									<LocationOnIcon className={'top-bar-icon'} />
+									<span>250 Main Street, 2nd Floor</span>
+								</Box>
+								<Box component={'div'} className={'top-bar-item'}>
+									<EmailIcon className={'top-bar-icon'} />
+									<span>example@gmail.com</span>
+								</Box>
+							</Box>
+							<Box component={'div'} className={'top-bar-right'}>
+								<Box component={'div'} className={'top-bar-item'}>
+									<AccessTimeIcon className={'top-bar-icon'} />
+									<span>Hours: Mon-Fri: 8.00 am - 9.00</span>
+								</Box>
+								<Box component={'div'} className={'social-icons'}>
+									<YouTubeIcon className={'social-icon'} />
+									<KakaoTalkIcon className={'social-icon'} />
+									<TikTokIcon className={'social-icon'} />
+								</Box>
+								<CloseIcon className={'close-icon'} onClick={closeTopBar} />
+							</Box>
+						</Stack>
+					</Stack>
+				)}
+
+				{/* Main Navigation */}
 				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
 					<Stack className={'container'}>
+						<Box component={'div'} className={'nav-menu'}>
+							<Link href={'/'}>
+								<span className={'nav-link'}>HOME</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/property'}>
+								<span className={'nav-link'}>PAGES</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/agent'}>
+								<span className={'nav-link'}>SERVICES</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/community?articleCategory=FREE'}>
+								<span className={'nav-link'}>PORTFOLIO</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/cs'}>
+								<span className={'nav-link'}>BLOG</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/cs'}>
+								<span className={'nav-link'}>CONTACT US</span>
+							</Link>
+						</Box>
+
 						<Box component={'div'} className={'logo-box'}>
 							<Link href={'/'}>
-								<img src="/img/logo/logoWhite.svg" alt="" />
-							</Link>
-						</Box>
-						<Box component={'div'} className={'router-box'}>
-							<Link href={'/'}>
-								<div>{t('Home')}</div>
-							</Link>
-							<Link href={'/property'}>
-								<div>{t('Properties')}</div>
-							</Link>
-							<Link href={'/agent'}>
-								<div> {t('Agents')} </div>
-							</Link>
-							<Link href={'/community?articleCategory=FREE'}>
-								<div> {t('Community')} </div>
-							</Link>
-							{user?._id && (
-								<Link href={'/mypage'}>
-									<div> {t('My Page')} </div>
-								</Link>
-							)}
-							<Link href={'/cs'}>
-								<div> {t('CS')} </div>
-							</Link>
-						</Box>
-						<Box component={'div'} className={'user-box'}>
-							{user?._id ? (
-								<>
-									<div className={'login-user'} onClick={(event: any) => setLogoutAnchor(event.currentTarget)}>
-										<img
-											src={
-												user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'
-											}
-											alt=""
-										/>
-									</div>
-
-									<Menu
-										id="basic-menu"
-										anchorEl={logoutAnchor}
-										open={logoutOpen}
-										onClose={() => {
-											setLogoutAnchor(null);
-										}}
-										sx={{ mt: '5px' }}
-									>
-										<MenuItem onClick={() => logOut()}>
-											<Logout fontSize="small" style={{ color: 'blue', marginRight: '10px' }} />
-											Logout
-										</MenuItem>
-									</Menu>
-								</>
-							) : (
-								<Link href={'/account/join'}>
-									<div className={'join-box'}>
-										<AccountCircleOutlinedIcon />
-										<span>
-											{t('Login')} / {t('Register')}
-										</span>
-									</div>
-								</Link>
-							)}
-
-							<div className={'lan-box'}>
-								{user?._id && <NotificationsOutlinedIcon className={'notification-icon'} />}
-								<Button
-									disableRipple
-									className="btn-lang"
-									onClick={langClick}
-									endIcon={<CaretDown size={14} color="#616161" weight="fill" />}
-								>
-									<Box component={'div'} className={'flag'}>
-										{lang !== null ? (
-											<img src={`/img/flag/lang${lang}.png`} alt={'usaFlag'} />
-										) : (
-											<img src={`/img/flag/langen.png`} alt={'usaFlag'} />
-										)}
+								<Box component={'div'} className={'kadhavu-logo'}>
+									<Box component={'div'} className={'logo-icon'}>
+										{/* Logo icon - uy shakli */}
+										<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M20 5L5 15V35H15V25H25V35H35V15L20 5Z"
+												fill="#8B4513"
+												stroke="#8B4513"
+												strokeWidth="2"
+											/>
+										</svg>
 									</Box>
-								</Button>
+									<span className={'logo-text'}>KADH AVU</span>
+								</Box>
+							</Link>
+						</Box>
 
-								<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose} sx={{ position: 'absolute' }}>
-									<MenuItem disableRipple onClick={langChoice} id="en">
-										<img
-											className="img-flag"
-											src={'/img/flag/langen.png'}
-											onClick={langChoice}
-											id="en"
-											alt={'usaFlag'}
-										/>
-										{t('English')}
-									</MenuItem>
-									<MenuItem disableRipple onClick={langChoice} id="kr">
-										<img
-											className="img-flag"
-											src={'/img/flag/langkr.png'}
-											onClick={langChoice}
-											id="uz"
-											alt={'koreanFlag'}
-										/>
-										{t('Korean')}
-									</MenuItem>
-									<MenuItem disableRipple onClick={langChoice} id="ru">
-										<img
-											className="img-flag"
-											src={'/img/flag/langru.png'}
-											onClick={langChoice}
-											id="ru"
-											alt={'russiaFlag'}
-										/>
-										{t('Russian')}
-									</MenuItem>
-								</StyledMenu>
-							</div>
+						<Box component={'div'} className={'nav-right'}>
+							<Box component={'div'} className={'phone-box'}>
+								<PhoneIcon className={'phone-icon'} />
+								<span>Call (591) 170-123-023</span>
+							</Box>
+							<Button className={'get-in-touch-btn'}>
+								GET IN TOUCH →
+							</Button>
 						</Box>
 					</Stack>
 				</Stack>
