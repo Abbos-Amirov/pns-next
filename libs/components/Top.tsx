@@ -14,7 +14,7 @@ import Link from 'next/link';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import { Logout } from '@mui/icons-material';
+import { HeightSharp, Logout } from '@mui/icons-material';
 import { REACT_APP_API_URL } from '../config';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
@@ -206,19 +206,26 @@ const Top = () => {
 					<Stack className={'top-bar'}>
 						<Stack className={'container'}>
 							<Box component={'div'} className={'top-bar-left'}>
-								<Box component={'div'} className={'top-bar-item'}>
+								<Box 
+									component={'a'} 
+									href="https://map.kakao.com/link/search/청남도 천안시 동남구 풍세면 풍세산단5로 61"
+									target="_blank"
+									rel="noopener noreferrer"
+									className={'top-bar-item'}
+									sx={{ textDecoration: 'none', cursor: 'pointer' }}
+								>
 									<LocationOnIcon className={'top-bar-icon'} />
-									<span>250 Main Street, 2nd Floor</span>
+									<span>청남도 천안시 동남구 풍세면 풍세산단5로 61</span>
 								</Box>
 								<Box component={'div'} className={'top-bar-item'}>
 									<EmailIcon className={'top-bar-icon'} />
-									<span>example@gmail.com</span>
+									<span>abbosamirov571@gmail.com</span>
 								</Box>
 							</Box>
 							<Box component={'div'} className={'top-bar-right'}>
 								<Box component={'div'} className={'top-bar-item'}>
 									<AccessTimeIcon className={'top-bar-icon'} />
-									<span>Hours: Mon-Fri: 8.00 am - 9.00</span>
+									<span>Hours: Mon-Fri: 8.00 am - 19.30</span>
 								</Box>
 								<Box component={'div'} className={'social-icons'}>
 									<YouTubeIcon className={'social-icon'} />
@@ -280,9 +287,14 @@ const Top = () => {
 						</Box>
 
 						<Box component={'div'} className={'nav-right'}>
-							<Box component={'div'} className={'phone-box'}>
+							<Box 
+								component={'a'} 
+								href="tel:01082005998"
+								className={'phone-box'}
+								sx={{ textDecoration: 'none', cursor: 'pointer' }}
+							>
 								<PhoneIcon className={'phone-icon'} />
-								<span>Call (591) 170-123-023</span>
+								<span>Call +82 010 8200 5998</span>
 							</Box>
 							<Button className={'get-in-touch-btn'}>
 								GET IN TOUCH →
