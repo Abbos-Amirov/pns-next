@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../libs/hooks/useDeviceDetect';
 import withLayoutMain from '../libs/components/layout/LayoutHome';
 import CommunityBoards from '../libs/components/homepage/CommunityBoards';
+import Brand from '../libs/components/homepage/Brand';
 import PopularProducts from '../libs/components/homepage/PopularProducts';
 import TopAgents from '../libs/components/homepage/TopAgents';
 import Events from '../libs/components/homepage/Events';
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
 	if (device === 'mobile') {
 		return (
 			<Stack className={'home-page'}>
+				<Brand />
 				<PopularProducts />
 				<TrendProperties />
 				<Advertisement />
@@ -33,6 +35,7 @@ const Home: NextPage = () => {
 	} else {
 		return (
 			<Stack className={'home-page'}>
+				<Brand />
 				<PopularProducts />
 				<TrendProperties />
 				<Advertisement />

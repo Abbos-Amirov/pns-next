@@ -36,39 +36,21 @@ const PopularProducts = (props: PopularProductsProps) => {
 			id: 4,
 			title: 'Modern Windows',
 			description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
-			image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlLnhDAf14ejkWr0nZtbyK5j81jd_RklkJPw&s',
+			image: 'https://www.ssmglass.com/wp-content/uploads/2021/04/UPVC-WINDOWDOOR-SYSTEM-01.jpg',
+		},
+		{
+			id: 4,
+			title: 'Door',
+			description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
+			image: 'https://i.pinimg.com/1200x/8b/37/4c/8b374c8a69933ab0dcdc257b05c69abf.jpg',
 		},
 	];
 
-	// Mock data for company logos
-	const companies = [
-		{ name: 'WINDOWS&DOOR', logo: '/img/companies/windows-door.svg' },
-		{ name: 'CASH BUYER NETWORK', logo: '/img/companies/cash-buyer.svg' },
-		{ name: 'OPEN DOOR', logo: '/img/companies/open-door.svg' },
-		{ name: 'BUILDHOUSE', logo: '/img/companies/buildhouse.svg' },
-		{ name: 'COMPANY', logo: '/img/companies/company.svg' },
-		{ name: 'WINDOW', logo: '/img/companies/window.svg' },
-	];
 
 	if (device === 'mobile') {
 		return (
 			<Stack className={'popular-products'}>
 				<Stack className={'container'}>
-					{/* Trusted Companies Section */}
-					<Stack className={'trusted-section'}>
-						<span className={'trusted-text'}>Trusted by 500+ companies</span>
-						<Stack className={'companies-logos'}>
-							{companies.map((company, index) => (
-								<Box key={index} component={'div'} className={'company-logo'}>
-									{company.name}
-								</Box>
-							))}
-						</Stack>
-					</Stack>
-
-					{/* Window Collections Button */}
-					<Button className={'window-collections-btn'}>WINDOW COLLECTIONS</Button>
-
 					{/* Main Heading */}
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
@@ -102,21 +84,6 @@ const PopularProducts = (props: PopularProductsProps) => {
 		return (
 			<Stack className={'popular-products'}>
 				<Stack className={'container'}>
-					{/* Trusted Companies Section */}
-					<Stack className={'trusted-section'}>
-						<span className={'trusted-text'}>Trusted by 500+ companies</span>
-						<Stack className={'companies-logos'}>
-							{companies.map((company, index) => (
-								<Box key={index} component={'div'} className={'company-logo'}>
-									{company.name}
-								</Box>
-							))}
-						</Stack>
-					</Stack>
-
-					{/* Window Collections Button */}
-					<Button className={'window-collections-btn'}>WINDOW COLLECTIONS</Button>
-
 					{/* Main Heading */}
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
