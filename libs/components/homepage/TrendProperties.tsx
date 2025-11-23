@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Box, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper';
+import { Autoplay, Navigation } from 'swiper';
 
 interface TrendPropertiesProps {
 	initialInput?: any;
@@ -39,6 +39,15 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 			image: '/img/banner/cities/INCHEON.webp',
 		},
 	];
+
+	const products = [
+		{ id: 1, image: 'https://artfasad.com/wp-content/uploads/2024/07/front-door-with-window-design-4-1.jpg', name: 'Glass Window', },
+		{ id: 2, image: 'https://artfasad.com/wp-content/uploads/2024/07/front-door-with-window-design-3-1.jpg', name: 'Steel Window', },
+		{ id: 3, image: 'https://www.homestars.com/images/sp/original/3eeacf04-80d7-41af-a87c-03d7db1a75f5.jpg', name: 'Digital Doors', },
+		{ id: 4, image: 'https://vinyllight.ca/assets/cache_image/assets/template/img/blog/best-front-doors-with-side-window-4_730xx410_586.jpg', name: 'GOOD DOOR ', },
+		{ id: 5, image: 'https://builderssupplyco.com/wp-content/uploads/2019/11/service_windows-doors.jpg', name: 'Digital Doors', },
+	   ];
+	   
 
 	if (device === 'mobile') {
 		return (
@@ -160,20 +169,43 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 								<span className={'text-accent'}>Window & Door</span>
 								<span className={'text-white'}> Holds A Story</span>
 							</Box>
-							<p className={'description'}>
-								Lorem ipsum dolor sit amet, consectetur adipisc your vision, goals, and audience.helps us.
-							</p>
+							
 							<Button className={'learn-more-btn'}>
 								LEARN MORE →
 							</Button>
 						</Stack>
-						<Box className={'right-image-placeholder'}>
-							<Box className={'window-panel'}>
-								<Box className={'panel-stripe'}></Box>
-								<Box className={'panel-stripe'}></Box>
-								<Box className={'panel-stripe'}></Box>
-							</Box>
-						</Box>
+						<Box className={'window-swiper-wrapper'}>
+      <Swiper
+        className={'window-swiper'}
+        slidesPerView={3}
+        spaceBetween={30}
+        centeredSlides={true}
+        grabCursor={true}
+        modules={[Navigation]}
+        navigation={{
+          nextEl: '.next-btn',
+          prevEl: '.prev-btn',
+        }}
+        loop={true}
+      >
+        {products.map((p) => (
+          <SwiperSlide key={p.id}>
+            <Box className={'window-card'} style={{ backgroundImage: `url(${p.image})` }}>
+              <Box className={'window-overlay'}>
+                <h3>{p.name}</h3>
+              </Box>
+            </Box>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {/* ARROWS */}
+      <Box className={'arrow-box'}>
+        <button className={'prev-btn'}>←</button>
+        <button className={'next-btn'}>→</button>
+      </Box>
+    </Box>
+
 					</Box>
 					<Stack className={'statistics'}>
 						<Box className={'stat-item'}>

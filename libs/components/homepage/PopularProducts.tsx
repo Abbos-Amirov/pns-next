@@ -97,7 +97,7 @@ const PopularProducts = (props: PopularProductsProps) => {
 					{/* Main Heading */}
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
-							Unique Design <span className={'highlight'}>Windows</span>
+							Unique Design <span className={'highlight'}>Windows & Door</span>
 						</h2>
 					</Stack>
 
