@@ -9,7 +9,7 @@ export default function Document() {
 				<link rel="alternate icon" href="/img/logo/favicon.svg" />
 
 				{/* SEO */}
-				<meta name="keyword" content={'nestar, nestar.uz, devex mern, mern nestjs fullstack'} />
+				<meta name="keyword" content={'pns-dev, pns-dev.uz, devex mern, mern nestjs fullstack'} />
 				<meta
 					name={'description'}
 					content={

@@ -1,59 +1,113 @@
-import React, { useState } from 'react';
-import { Stack, Box } from '@mui/material';
+import React from 'react';
+import { Stack, Box, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import WestIcon from '@mui/icons-material/West';
-import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
-import { Property } from '../../types/property/property';
-import { PropertiesInquiry } from '../../types/property/property.input';
-import TrendPropertyCard from './TrendPropertyCard';
+import { Autoplay } from 'swiper';
 
 interface TrendPropertiesProps {
-	initialInput: PropertiesInquiry;
+	initialInput?: any;
 }
 
 const TrendProperties = (props: TrendPropertiesProps) => {
-	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const [trendProperties, setTrendProperties] = useState<Property[]>([]);
 
-	/** APOLLO REQUESTS **/
-	/** HANDLERS **/
-
-	if (trendProperties) console.log('trendProperties:', trendProperties);
-	if (!trendProperties) return null;
+	// Cities data - eng ko'p xizmatdan foydalangan shaharlar
+	const cities = [
+		{
+			id: 1,
+			name: 'SEOUL',
+			image: '/img/banner/cities/SEOUL.webp',
+		},
+		{
+			id: 2,
+			name: 'BUSAN',
+			image: '/img/banner/cities/BUSAN.webp',
+		},
+		{
+			id: 3,
+			name: 'INCHEON',
+			image: '/img/banner/cities/INCHEON.webp',
+		},
+		{
+			id: 3,
+			name: 'ULSAN',
+			image: '/img/banner/cities/INCHEON.webp',
+		},
+		{
+			id: 3,
+			name: 'CHONAN',
+			image: '/img/banner/cities/INCHEON.webp',
+		},
+	];
 
 	if (device === 'mobile') {
 		return (
 			<Stack className={'trend-properties'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<span>Trend Properties</span>
+					<Box className={'logo-badge'}>
+						<Box className={'logo-circle'}>
+							<svg width="50" height="100" viewBox="0 0 100 100" fill="none" xmlns="">
+								<circle cx="50" cy="50" r="48" fill="none" stroke="#D4A574" strokeWidth="2"/>
+								<text x="50" y="38" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">OUR BEST</text>
+								<text x="50" y="52" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">WINDOW</text>
+								<path d="M 50 50 L 62 38 L 50 26 L 38 38 Z" fill="#D4A574"/>
+							</svg>
+						</Box>
+					</Box>
+					<Stack className={'main-content'}>
+						<Box className={'trusted-badge'}>
+							<span>TRUSTED EXPERIENCE</span>
+						</Box>
+						<Box className={'headline'}>
+							<span className={'text-white'}>Every </span>
+							<span className={'text-accent'}>Window & Door</span>
+							<span className={'text-white'}> Holds A Story</span>
+						</Box>
+						<p className={'description'}>
+							Lorem ipsum dolor sit amet, consectetur adipisc your vision, goals, and audience.helps us.
+						</p>
+						<Button className={'learn-more-btn'}>
+							LEARN MORE →
+						</Button>
 					</Stack>
-					<Stack className={'card-box'}>
-						{trendProperties.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
-							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								centeredSlides={true}
-								spaceBetween={15}
-								modules={[Autoplay]}
-							>
-								{trendProperties.map((property: Property) => {
-									return (
-										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						)}
+					<Box className={'cities-swiper-container'}>
+						<Swiper
+							className={'cities-swiper'}
+							slidesPerView={1}
+							spaceBetween={0}
+							modules={[Autoplay]}
+							autoplay={{
+								delay: 3000,
+								disableOnInteraction: false,
+							}}
+							loop={true}
+						>
+							{cities.map((city) => (
+								<SwiperSlide key={city.id}>
+									<Box className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
+										<Box className={'city-overlay'}>
+											<span className={'city-name'}>{city.name}</span>
+										</Box>
+									</Box>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</Box>
+					<Stack className={'statistics'}>
+						<Box className={'stat-item'}>
+							<span className={'stat-number'}>15+</span>
+							<span className={'stat-label'}>Years Of Experience</span>
+						</Box>
+						<Box className={'stat-item'}>
+							<span className={'stat-number stat-highlight'}>20k+</span>
+							<span className={'stat-label'}>Project completed</span>
+						</Box>
+						<Box className={'stat-item'}>
+							<span className={'stat-number'}>32k+</span>
+							<span className={'stat-label'}>Client satisfaction</span>
+						</Box>
 					</Stack>
+					<Box className={'background-text'}>windows and Door</Box>
 				</Stack>
 			</Stack>
 		);
@@ -61,48 +115,83 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		return (
 			<Stack className={'trend-properties'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<Box component={'div'} className={'left'}>
-							<span>Trend Properties</span>
-							<p>Trend is based on likes</p>
+					<Box className={'logo-badge'}>
+						<Box className={'logo-circle'}>
+							<svg width="100" height="100" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="80" cy="80" r="78" fill="none" stroke="#D4A574" strokeWidth="2.5"/>
+								<text x="80" y="50" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">OUR BEST</text>
+								<text x="80" y="68" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">WINDOW</text>
+								<path d="M 80 80 L 95 65 L 80 50 L 65 65 Z" fill="#D4A574"/>
+							</svg>
 						</Box>
-						<Box component={'div'} className={'right'}>
-							<div className={'pagination-box'}>
-								<WestIcon className={'swiper-trend-prev'} />
-								<div className={'swiper-trend-pagination'}></div>
-								<EastIcon className={'swiper-trend-next'} />
-							</div>
-						</Box>
-					</Stack>
-					<Stack className={'card-box'}>
-						{trendProperties.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
+					</Box>
+					<Box className={'content-wrapper'}>
+						<Box className={'left-image-section'}>
 							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								spaceBetween={15}
-								modules={[Autoplay, Navigation, Pagination]}
-								navigation={{
-									nextEl: '.swiper-trend-next',
-									prevEl: '.swiper-trend-prev',
+								className={'cities-swiper'}
+								slidesPerView={1}
+								spaceBetween={0}
+								modules={[Autoplay]}
+								autoplay={{
+									delay: 3000,
+									disableOnInteraction: false,
 								}}
-								pagination={{
-									el: '.swiper-trend-pagination',
-								}}
+								loop={true}
+								direction="vertical"
 							>
-								{trendProperties.map((property: Property) => {
-									return (
-										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} />
-										</SwiperSlide>
-									);
-								})}
+								{cities.map((city) => (
+									<SwiperSlide key={city.id}>
+										<Box className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
+											<Box className={'city-overlay'}>
+												<span className={'city-name'}>{city.name}</span>
+												<p className={'city-description'}>Top Cities That Trust Our Doors & Windows</p>
+											</Box>
+										</Box>
+									</SwiperSlide>
+								))}
 							</Swiper>
-						)}
+						</Box>
+						<Stack className={'main-content'}>
+							<Box className={'trusted-badge'}>
+								<span>TRUSTED EXPERIENCE</span>
+							</Box>
+							<Box className={'headline'}>
+								<span className={'text-white'}>Every </span>
+								<span className={'text-accent'}>Window & Door</span>
+								<span className={'text-white'}> Holds A Story</span>
+							</Box>
+							<p className={'description'}>
+								Lorem ipsum dolor sit amet, consectetur adipisc your vision, goals, and audience.helps us.
+							</p>
+							<Button className={'learn-more-btn'}>
+								LEARN MORE →
+							</Button>
+						</Stack>
+						<Box className={'right-image-placeholder'}>
+							<Box className={'window-panel'}>
+								<Box className={'panel-stripe'}></Box>
+								<Box className={'panel-stripe'}></Box>
+								<Box className={'panel-stripe'}></Box>
+							</Box>
+						</Box>
+					</Box>
+					<Stack className={'statistics'}>
+						<Box className={'stat-item'}>
+							<span className={'stat-number'}>20+</span>
+							<span className={'stat-label'}>Years Of Experience</span>
+						</Box>
+						<Box className={'stat-divider'}></Box>
+						<Box className={'stat-item'}>
+							<span className={'stat-number stat-highlight'}>500k+</span>
+							<span className={'stat-label'}>Project completed</span>
+						</Box>
+						<Box className={'stat-divider'}></Box>
+						<Box className={'stat-item'}>
+							<span className={'stat-number'}>800k+</span>
+							<span className={'stat-label'}>Client satisfaction</span>
+						</Box>
 					</Stack>
+					<Box className={'background-text'}>windows and Door</Box>
 				</Stack>
 			</Stack>
 		);
@@ -110,13 +199,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 };
 
 TrendProperties.defaultProps = {
-	initialInput: {
-		page: 1,
-		limit: 8,
-		sort: 'propertyLikes',
-		direction: 'DESC',
-		search: {},
-	},
+	initialInput: {},
 };
 
 export default TrendProperties;
