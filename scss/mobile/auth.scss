@@ -1,0 +1,338 @@
+#mobile-wrap {
+	.auth-modal {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9999;
+
+		.auth-modal-content {
+			position: relative;
+			width: 90%;
+			max-width: 500px;
+			display: flex;
+			flex-direction: column;
+			background: #ffffff;
+			border-radius: 20px;
+			overflow: hidden;
+			box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.3);
+			outline: none;
+			max-height: 90vh;
+			margin: 20px;
+		}
+
+		.close-button {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			z-index: 10;
+			background: rgba(255, 255, 255, 0.9);
+			&:hover {
+				background: rgba(255, 255, 255, 1);
+			}
+		}
+
+		.main-content {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.left-section {
+			width: 100%;
+			padding: 40px 30px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			background: #ffffff;
+
+			.form-container {
+				width: 100%;
+				position: relative;
+			}
+
+			.form-header {
+				margin-bottom: 30px;
+
+				h1 {
+					font-family: $font;
+					font-size: 28px;
+					font-style: normal;
+					font-weight: 700;
+					line-height: 1.2;
+					color: #181a20;
+					margin: 0;
+				}
+			}
+
+			.input-wrap {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				margin-bottom: 24px;
+
+				.input-box {
+					position: relative;
+					width: 100%;
+
+					input {
+						width: 100%;
+						padding: 14px 16px;
+						border-radius: 12px;
+						border: 1px solid #e0e0e0;
+						background: #f8f9fa;
+						font-family: $font;
+						font-size: 16px;
+						font-style: normal;
+						font-weight: 400;
+						line-height: normal;
+						color: #181a20;
+						transition: all 0.3s;
+						box-sizing: border-box;
+
+						&:focus {
+							outline: none;
+							border-color: #8b4513;
+							background: #ffffff;
+							box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+						}
+
+						&::placeholder {
+							color: #9ca3af;
+						}
+					}
+
+					.password-toggle {
+						position: absolute;
+						right: 12px;
+						top: 50%;
+						transform: translateY(-50%);
+						color: #6b7280;
+						padding: 4px;
+						cursor: pointer;
+
+						&:hover {
+							color: #181a20;
+						}
+					}
+				}
+			}
+
+			.submit-btn {
+				width: 100%;
+				padding: 16px 24px;
+				border-radius: 12px;
+				border: none;
+				background: #8b4513;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 16px;
+				font-style: normal;
+				font-weight: 600;
+				line-height: normal;
+				text-transform: none;
+				cursor: pointer;
+				transition: all 0.3s;
+				margin-bottom: 20px;
+
+				&:hover:not(:disabled) {
+					background: #6b3410;
+					transform: translateY(-2px);
+					box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.3);
+				}
+
+				&:disabled {
+					opacity: 0.5;
+					cursor: not-allowed;
+				}
+			}
+
+			.login-link,
+			.signup-link {
+				text-align: center;
+
+				p {
+					font-family: $font;
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: normal;
+					color: #6b7280;
+					margin: 0;
+
+					span {
+						color: #8b4513;
+						font-weight: 600;
+						cursor: pointer;
+						text-decoration: underline;
+						margin-left: 4px;
+
+						&:hover {
+							color: #6b3410;
+						}
+					}
+				}
+			}
+		}
+
+		.right-section {
+			display: none; // Mobile da o'ng tomon ko'rsatilmaydi
+		}
+	}
+
+	.auth-page {
+		position: relative;
+		width: 100%;
+		min-height: 100vh;
+		background: #f8f9fa;
+		padding: 40px 20px;
+
+		.container {
+			width: 100%;
+			max-width: 500px;
+			margin: 0 auto;
+		}
+
+		.auth-form {
+			width: 100%;
+			background: #ffffff;
+			border-radius: 20px;
+			padding: 40px 30px;
+			box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+		}
+
+		.form-header {
+			margin-bottom: 30px;
+			text-align: center;
+
+			h1 {
+				font-family: $font;
+				font-size: 28px;
+				font-style: normal;
+				font-weight: 700;
+				line-height: 1.2;
+				color: #181a20;
+				margin: 0 0 8px 0;
+			}
+
+			p {
+				font-family: $font;
+				font-size: 14px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: normal;
+				color: #6b7280;
+				margin: 0;
+			}
+		}
+
+		.input-wrap {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			margin-bottom: 24px;
+
+			.input-box {
+				position: relative;
+				width: 100%;
+
+				input {
+					width: 100%;
+					padding: 14px 16px;
+					border-radius: 12px;
+					border: 1px solid #e0e0e0;
+					background: #f8f9fa;
+					font-family: $font;
+					font-size: 16px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: normal;
+					color: #181a20;
+					transition: all 0.3s;
+					box-sizing: border-box;
+
+					&:focus {
+						outline: none;
+						border-color: #8b4513;
+						background: #ffffff;
+						box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+					}
+
+					&::placeholder {
+						color: #9ca3af;
+					}
+				}
+
+				.password-toggle {
+					position: absolute;
+					right: 12px;
+					top: 50%;
+					transform: translateY(-50%);
+					color: #6b7280;
+					padding: 4px;
+					cursor: pointer;
+
+					&:hover {
+						color: #181a20;
+					}
+				}
+			}
+		}
+
+		.submit-btn {
+			width: 100%;
+			padding: 16px 24px;
+			border-radius: 12px;
+			border: none;
+			background: #8b4513;
+			color: #ffffff;
+			font-family: $font;
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 600;
+			line-height: normal;
+			text-transform: none;
+			cursor: pointer;
+			transition: all 0.3s;
+			margin-bottom: 20px;
+
+			&:hover:not(:disabled) {
+				background: #6b3410;
+				transform: translateY(-2px);
+				box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.3);
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
+
+		.login-link,
+		.signup-link {
+			text-align: center;
+
+			p {
+				font-family: $font;
+				font-size: 14px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: normal;
+				color: #6b7280;
+				margin: 0;
+
+				span {
+					color: #8b4513;
+					font-weight: 600;
+					cursor: pointer;
+					text-decoration: underline;
+					margin-left: 4px;
+
+					&:hover {
+						color: #6b3410;
+					}
+				}
+			}
+		}
+	}
+}
+

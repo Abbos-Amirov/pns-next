@@ -1,136 +1,197 @@
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import { Stack, Box } from '@mui/material';
 import moment from 'moment';
+import Link from 'next/link';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
 
 const Footer = () => {
 	const device = useDeviceDetect();
+	const currentYear = moment().year();
+	const mapAddress = '청남도 천안시 동남구 풍세면 풍세산단5로 61';
+	const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}&output=embed`;
 
 	if (device == 'mobile') {
 		return (
 			<Stack className={'footer-container'}>
-				<Stack className={'main'}>
-					<Stack className={'left'}>
-						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
-							<p>+82 10 4867 2909</p>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
-							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
-							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
-							</div>
-						</Box>
+				<Box className={'watermark-text'}>PNS DEV</Box>
+				<Box className={'footer-content-box'}>
+					<Box className={'blue-line'}></Box>
+					<Stack className={'main-content'}>
+						<Stack className={'left-section'}>
+							<Box className={'logo-section'}>
+								<Box className={'logo-wrapper'}>
+									<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
+								</Box>
+								<h2 className={'brand-name'}>PNS DEV</h2>
+								<p className={'description'}>
+									We are a window studio offering high-quality window and door solutions for businesses and homes.
+								</p>
+							</Box>
+							<Stack className={'navigation-columns'}>
+								<Box className={'nav-column'}>
+									<Link href={'/about'}>
+										<span>About</span>
+									</Link>
+									<Link href={'/community'}>
+										<span>Journal</span>
+									</Link>
+									<Link href={'/cs'}>
+										<span>FAQ</span>
+									</Link>
+									<Link href={'/cs'}>
+										<span>Get In Touch</span>
+									</Link>
+									<span>Careers</span>
+								</Box>
+								<Box className={'nav-column'}>
+									<span>Pricing</span>
+									<span>How It Works?</span>
+									<span>Our Services</span>
+								</Box>
+								<Box className={'nav-column'}>
+									<Link href={'/property'}>
+										<span>Windows</span>
+									</Link>
+									<Link href={'/property'}>
+										<span>Doors</span>
+									</Link>
+									<span>Our Projects</span>
+									<Link href={'/cs'}>
+										<span>Terms & Conditions</span>
+									</Link>
+									<span>Support Center</span>
+								</Box>
+							</Stack>
+						</Stack>
+						<Stack className={'right-section'}>
+							<Box className={'contact-info'}>
+								<Box className={'contact-item'}>
+									<PhoneIcon className={'contact-icon'} />
+									<a href="tel:+8201082005998">+82 010 8200 5998</a>
+								</Box>
+								<Box className={'contact-item'}>
+									<EmailIcon className={'contact-icon'} />
+									<a href="mailto:abbosamirov571@gmail.com">abbosamirov571@gmail.com</a>
+								</Box>
+							</Box>
+							<Box className={'map-placeholder'}>
+								<iframe
+									src={mapUrl}
+									width="100%"
+									height="100%"
+									style={{ border: 0, borderRadius: '12px' }}
+									allowFullScreen
+									loading="lazy"
+									referrerPolicy="no-referrer-when-downgrade"
+									title="PNS DEV Location"
+								></iframe>
+							</Box>
+							<Box className={'social-icons'}>
+								<FacebookOutlinedIcon className={'social-icon'} />
+								<InstagramIcon className={'social-icon'} />
+								<TwitterIcon className={'social-icon'} />
+							</Box>
+						</Stack>
 					</Stack>
-					<Stack className={'right'}>
-						<Box component={'div'} className={'bottom'}>
-							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
-							</div>
-							<div>
-								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
-							</div>
-							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
-							</div>
-						</Box>
-					</Stack>
-				</Stack>
-				<Stack className={'second'}>
-					<span>© Nestar - All rights reserved. Nestar {moment().year()}</span>
-				</Stack>
+					<Box className={'copyright'}>
+						<span>©{currentYear} PNS DEV. All Rights Reserved.</span>
+					</Box>
+				</Box>
+				<Box className={'background-text'}>Touch</Box>
 			</Stack>
 		);
 	} else {
 		return (
 			<Stack className={'footer-container'}>
-				<Stack className={'main'}>
-					<Stack className={'left'}>
-						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
-							<p>+82 10 4867 2909</p>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
-							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
-							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
-							</div>
-						</Box>
+				<Box className={'watermark-text'}>PNS DEV</Box>
+				<Box className={'footer-content-box'}>
+					<Box className={'blue-line'}></Box>
+					<Stack className={'main-content'}>
+						<Stack className={'left-section'}>
+							<Box className={'logo-section'}>
+								<Box className={'logo-wrapper'}>
+									<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
+								</Box>
+								<h2 className={'brand-name'}>PNS DEV</h2>
+								<p className={'description'}>
+									We are a window studio offering high-quality window and door solutions for businesses and homes.
+								</p>
+							</Box>
+							<Stack className={'navigation-columns'}>
+								<Box className={'nav-column'}>
+									<Link href={'/about'}>
+										<span>About</span>
+									</Link>
+									<Link href={'/community'}>
+										<span>Journal</span>
+									</Link>
+									<Link href={'/cs'}>
+										<span>FAQ</span>
+									</Link>
+									<Link href={'/cs'}>
+										<span>Get In Touch</span>
+									</Link>
+									<span>Careers</span>
+								</Box>
+								<Box className={'nav-column'}>
+									<span>Pricing</span>
+									<span>How It Works?</span>
+									<span>Our Services</span>
+								</Box>
+								<Box className={'nav-column'}>
+									<Link href={'/property'}>
+										<span>Windows</span>
+									</Link>
+									<Link href={'/property'}>
+										<span>Doors</span>
+									</Link>
+									<span>Our Projects</span>
+									<Link href={'/cs'}>
+										<span>Terms & Conditions</span>
+									</Link>
+									<span>Support Center</span>
+								</Box>
+							</Stack>
+						</Stack>
+						<Stack className={'right-section'}>
+							<Box className={'contact-info'}>
+								<Box className={'contact-item'}>
+									<PhoneIcon className={'contact-icon'} />
+									<a href="tel:+8201082005998">+82 010 8200 5998</a>
+								</Box>
+								<Box className={'contact-item'}>
+									<EmailIcon className={'contact-icon'} />
+									<a href="mailto:abbosamirov571@gmail.com">abbosamirov571@gmail.com</a>
+								</Box>
+							</Box>
+							<Box className={'map-placeholder'}>
+								<iframe
+									src={mapUrl}
+									width="100%"
+									height="100%"
+									style={{ border: 0, borderRadius: '12px' }}
+									allowFullScreen
+									loading="lazy"
+									referrerPolicy="no-referrer-when-downgrade"
+									title="PNS DEV Location"
+								></iframe>
+							</Box>
+							<Box className={'social-icons'}>
+								<FacebookOutlinedIcon className={'social-icon'} />
+								<InstagramIcon className={'social-icon'} />
+								<TwitterIcon className={'social-icon'} />
+							</Box>
+						</Stack>
 					</Stack>
-					<Stack className={'right'}>
-						<Box component={'div'} className={'top'}>
-							<strong>keep yourself up to date</strong>
-							<div>
-								<input type="text" placeholder={'Your Email'} />
-								<span>Subscribe</span>
-							</div>
-						</Box>
-						<Box component={'div'} className={'bottom'}>
-							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
-							</div>
-							<div>
-								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
-							</div>
-							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
-							</div>
-						</Box>
-					</Stack>
-				</Stack>
-				<Stack className={'second'}>
-					<span>© Nestar - All rights reserved. Nestar {moment().year()}</span>
-					<span>Privacy · Terms · Sitemap</span>
-				</Stack>
+					<Box className={'copyright'}>
+						<span>©{currentYear} PNS DEV. All Rights Reserved.</span>
+					</Box>
+				</Box>
+				<Box className={'background-text'}>Door</Box>
 			</Stack>
 		);
 	}

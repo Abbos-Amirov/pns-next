@@ -247,11 +247,11 @@ const Top = () => {
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/property'}>
-								<span className={'nav-link'}>MEASURER</span>
+								<span className={'nav-link'}>PRODUCTS</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/agent'}>
-								<span className={'nav-link'}>SERVICES</span>
+								<span className={'nav-link'}>MEASURER</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/community?articleCategory=FREE'}>
@@ -270,16 +270,9 @@ const Top = () => {
 								<Box component={'div'} className={'kadhavu-logo'}>
 									<Box component={'div'} className={'logo-icon'}>
 										{/* Logo icon - uy shakli */}
-										<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M20 5L5 15V35H15V25H25V35H35V15L20 5Z"
-												fill="#8B4513"
-												stroke="#8B4513"
-												strokeWidth="2"
-											/>
-										</svg>
+										<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
 									</Box>
-									<span className={'logo-text'}>KADH AVU</span>
+									<span className={'logo-text'}>PNS DEV</span>
 								</Box>
 							</Link>
 						</Box>
