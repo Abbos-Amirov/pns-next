@@ -247,7 +247,7 @@ const Top = () => {
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/property'}>
-								<span className={'nav-link'}>PAGES</span>
+								<span className={'nav-link'}>MEASURER</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/agent'}>
@@ -255,12 +255,10 @@ const Top = () => {
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/community?articleCategory=FREE'}>
-								<span className={'nav-link'}>PORTFOLIO</span>
+								<span className={'nav-link'}>DOOR INSTALLER</span>
 							</Link>
-							<span className={'nav-separator'}>/</span>
-							<Link href={'/cs'}>
-								<span className={'nav-link'}>BLOG</span>
-							</Link>
+							
+							
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/cs'}>
 								<span className={'nav-link'}>CONTACT US</span>
@@ -296,9 +294,14 @@ const Top = () => {
 								<PhoneIcon className={'phone-icon'} />
 								<span>Call +82 010 8200 5998</span>
 							</Box>
-							<Button className={'get-in-touch-btn'}>
-								GET IN TOUCH →
-							</Button>
+							<Box component={'div'} className={'auth-buttons'}>
+								<Button className={'login-btn'}>
+									LOGIN
+								</Button>
+								<Button className={'signup-btn'}>
+									SIGN UP
+								</Button>
+							</Box>
 						</Box>
 					</Stack>
 				</Stack>
