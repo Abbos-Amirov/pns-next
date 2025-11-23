@@ -11,7 +11,7 @@ interface PopularProductsProps {}
 const PopularProducts = (props: PopularProductsProps) => {
 	const device = useDeviceDetect();
 
-	// Mock data for products
+	// Mock data for products - only 3 products
 	const products = [
 		{
 			id: 1,
@@ -33,17 +33,19 @@ const PopularProducts = (props: PopularProductsProps) => {
 			image: 'https://windowanddoorspecialties.com/wp-content/uploads/elementor/thumbs/front-door-3-ogmk7oo6gucg5tke7k1s3eouzxmky573loid49j4n4.jpg',
 		},
 		{
-			id: 4,
-			title: 'Modern Windows',
-			description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
-			image: 'https://www.ssmglass.com/wp-content/uploads/2021/04/UPVC-WINDOWDOOR-SYSTEM-01.jpg',
-		},
-		{
-			id: 4,
-			title: 'Door',
-			description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
-			image: 'https://i.pinimg.com/1200x/8b/37/4c/8b374c8a69933ab0dcdc257b05c69abf.jpg',
-		},
+            id: 4,
+            title: 'Modern Windows',
+            description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
+            image: 'https://www.ssmglass.com/wp-content/uploads/2021/04/UPVC-WINDOWDOOR-SYSTEM-01.jpg',
+        },
+        {
+            id: 5,
+            title: 'Door',
+            description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
+            image: 'https://i.pinimg.com/1200x/8b/37/4c/8b374c8a69933ab0dcdc257b05c69abf.jpg',
+        },
+
+		
 	];
 
 
@@ -103,15 +105,17 @@ const PopularProducts = (props: PopularProductsProps) => {
 								nextEl: '.swiper-products-next',
 								prevEl: '.swiper-products-prev',
 							}}
+							loop={products.length > 3}
+							centeredSlides={false}
 						>
-							{products.map((product) => (
+							{products.map((product, index) => (
 								<SwiperSlide key={product.id}>
-									<Box component={'div'} className={`product-card ${product.featured ? 'featured' : ''}`}>
+									<Box component={'div'} className={`product-card ${index === 1 ? 'featured' : ''}`}>
 										<Box component={'div'} className={'card-image'} style={{ backgroundImage: `url(${product.image})` }}></Box>
 										<Box component={'div'} className={'card-content'}>
 											<h3 className={'card-title'}>{product.title}</h3>
 											<p className={'card-description'}>{product.description}</p>
-											{product.featured && (
+											{index === 1 && (
 												<Button className={'view-more-btn'}>VIEW MORE →</Button>
 											)}
 										</Box>
