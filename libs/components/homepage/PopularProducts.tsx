@@ -3,6 +3,7 @@ import { Stack, Box, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
+import type { Swiper as SwiperType } from 'swiper';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 
@@ -10,6 +11,7 @@ interface PopularProductsProps {}
 
 const PopularProducts = (props: PopularProductsProps) => {
 	const device = useDeviceDetect();
+	const [activeIndex, setActiveIndex] = useState<number>(2); // Dastlabki markazdagi slide (2-chi, 1-based = 2)
 
 	// Mock data for products - only 3 products
 	const products = [
@@ -44,6 +46,12 @@ const PopularProducts = (props: PopularProductsProps) => {
             description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
             image: 'https://i.pinimg.com/1200x/8b/37/4c/8b374c8a69933ab0dcdc257b05c69abf.jpg',
         },
+		{
+			id: 1,
+			title: 'Glass Window',
+			description: 'Creative ipsum dolor sit amet consec creativity and functionality to.',
+			image: 'https://i.pinimg.com/1200x/57/25/0d/57250dac8bcc691e9f4838c382ed45da.jpg',
+		},
 
 		
 	];
@@ -106,22 +114,47 @@ const PopularProducts = (props: PopularProductsProps) => {
 								prevEl: '.swiper-products-prev',
 							}}
 							loop={products.length > 3}
-							centeredSlides={false}
+							centeredSlides={true}
+							onSlideChange={(swiper: SwiperType) => {
+								// Markazdagi slide index'ini aniqlash
+								// slidesPerView=3 bo'lsa, markazdagi slide har doim activeIndex + 1 (chunki 3 ta ko'rinadi, markazdagi 2-chi)
+								// realIndex loop bo'lsa to'g'ri index'ni beradi
+								const realIdx = swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex;
+								// slidesPerView=3 bo'lsa, markazdagi slide har doim activeIndex + 1 (1-based)
+								// activeIndex 0-based, demak markazdagi slide = activeIndex + 1 (1-based)
+								// Lekin biz markazdagi slide'ni aniqlashimiz kerak, demak activeIndex + 1
+								const centerIndex = realIdx + 2;
+								setActiveIndex(centerIndex);
+							}}
+							onInit={(swiper: SwiperType) => {
+								// Dastlabki markazdagi slide
+								const realIdx = swiper.realIndex !== undefined ? swiper.realIndex : swiper.activeIndex;
+								// Dastlabki holatda activeIndex = 0, demak markazdagi slide = 1 (1-based)
+								const centerIndex = realIdx + 2;
+								setActiveIndex(centerIndex);
+							}}
 						>
-							{products.map((product, index) => (
-								<SwiperSlide key={product.id}>
-									<Box component={'div'} className={`product-card ${index === 1 ? 'featured' : ''}`}>
-										<Box component={'div'} className={'card-image'} style={{ backgroundImage: `url(${product.image})` }}></Box>
-										<Box component={'div'} className={'card-content'}>
-											<h3 className={'card-title'}>{product.title}</h3>
-											<p className={'card-description'}>{product.description}</p>
-											{index === 1 && (
-												<Button className={'view-more-btn'}>VIEW MORE →</Button>
-											)}
+							{products.map((product, index) => {
+								// Markazdagi slide'ni aniqlash (1-based index)
+								const productIndex = index + 2;
+								// activeIndex null bo'lsa, dastlabki holatda markazdagi slide'ni aniqlash
+								// activeIndex 1-based, productIndex ham 1-based
+								const isCenter = activeIndex !== null && activeIndex === productIndex;
+								return (
+									<SwiperSlide key={product.id}>
+										<Box component={'div'} className={`product-card ${isCenter ? 'featured' : ''}`}>
+											<Box component={'div'} className={'card-image'} style={{ backgroundImage: `url(${product.image})` }}></Box>
+											<Box component={'div'} className={'card-content'}>
+												<h3 className={'card-title'}>{product.title}</h3>
+												<p className={'card-description'}>{product.description}</p>
+												{isCenter && (
+													<Button className={'view-more-btn'}>VIEW MORE →</Button>
+												)}
+											</Box>
 										</Box>
-									</Box>
-								</SwiperSlide>
-							))}
+									</SwiperSlide>
+								);
+							})}
 						</Swiper>
 						<EastIcon className={'nav-arrow nav-next swiper-products-next'} />
 					</Stack>
