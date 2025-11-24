@@ -851,6 +851,31 @@
 				position: relative;
 				flex-direction: column;
 				align-items: center;
+
+				.info-box{
+					
+
+					.left{
+						margin-left: 18rem;
+						margin-top: -7rem;
+						.main-heading {
+							color: #181a20;
+							font-family: $font;
+							font-size: 58px;
+							font-style: normal;
+							font-weight: 500;
+							line-height: 150%;
+							letter-spacing: -0.96px;
+							text-align: center;
+							margin: 0;
+	
+							.highlight {
+								color: #8b4513;
+								font-size: 48px;
+							}
+						}
+					}
+				}
 				.wrapper {
 					width: 100%;
 					margin-top: 83px;
