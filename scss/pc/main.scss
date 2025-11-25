@@ -488,8 +488,6 @@ body::-webkit-scrollbar {
 							font-weight: 400;
 							line-height: 26px;
 						}
-						svg {
-						}
 					}
 				}
 				.search-box-other {
@@ -676,19 +674,260 @@ body::-webkit-scrollbar {
 		}
 	}
 
+	// Dark Theme Navigation for LayoutBasic
+	.navbar-dark {
+		position: relative;
+		width: 100%;
+		background-color: #0a0a0a;
+		padding: 20px 0;
+		z-index: 100;
+		.container {
+			width: 1300px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			
+			.logo-left {
+				.kadhavu-logo-dark {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					gap: 12px;
+					cursor: pointer;
+					.logo-icon-dark {
+						width: 40px;
+						height: 40px;
+					}
+					.logo-text-dark {
+						color: #ffffff;
+						font-family: $font;
+						font-size: 20px;
+						font-style: normal;
+						font-weight: 700;
+						line-height: normal;
+						letter-spacing: 2px;
+						text-transform: uppercase;
+					}
+				}
+			}
+
+			.nav-menu-dark {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 8px;
+				.nav-link-dark {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 500;
+					line-height: normal;
+					text-transform: uppercase;
+					cursor: pointer;
+					text-decoration: none;
+					transition: color 0.3s;
+					&:hover {
+						color: #dcaf69;
+					}
+				}
+				.nav-separator-dark {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 14px;
+					font-weight: 500;
+					margin: 0 4px;
+				}
+			}
+
+			.nav-right-dark {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 12px;
+				.call-us-btn {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					gap: 8px;
+					padding: 10px 16px;
+					background-color: rgba(255, 255, 255, 0.01);
+					border-radius: 50px;
+					text-decoration: none;
+					cursor: pointer;
+					transition: all 0.3s;
+					.call-icon {
+						color: #ffffff;
+						font-size: 18px;
+					}
+					span {
+						color: #ffffff;
+						font-family: $font;
+						font-size: 13px;
+						font-style: normal;
+						font-weight: 500;
+						line-height: normal;
+					}
+					.phone-number {
+						margin-left: 4px;
+					}
+					&:hover {
+						background-color: rgba(255, 255, 255, 0.2);
+					}
+				}
+				.action-btn-dark {
+					width: 44px;
+					height: 44px;
+					border-radius: 50%;
+					background-color: rgba(255, 255, 255, 0.1);
+					color: #ffffff;
+					padding: 0;
+					transition: all 0.3s;
+					&:hover {
+						background-color: rgba(255, 255, 255, 0.2);
+					}
+					svg {
+						font-size: 20px;
+					}
+				}
+			}
+		}
+	}
+
 	.header-basic {
 		position: relative;
 		width: 100%;
-		height: 557px;
+		min-height: 700px;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		background: black;
+		align-items: center;
+		background-color: #0a0a0a;
+		background-image: 
+			url('https://www.eurolinesteelwindows.com/wp-content/uploads/2023/09/Euroline-Steel-Windows-Doors-Steel-Window-and-Door-Manufacturer-Yorba-Linda-Tips-for-Maintaining-Your-Steel-Windows-and-Doors.jpg'),
+			repeating-linear-gradient(
+				90deg,
+				transparent,
+				transparent 2px,
+				rgba(255, 255, 255, 0.03) 2px,
+				rgba(255, 255, 255, 0.03) 4px
+			);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(10, 10, 10, 0.24);
+			z-index: 1;
+		}
 		&.auth {
-			height: 300px;
+			min-height: 400px;
 		}
 		.container {
-			margin-top: 175px;
+			width: 1300px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: center;
+			padding: 100px 0;
+			position: relative;
+			z-index: 2;
+			
+			.trusted-badge {
+				padding: 8px 20px;
+				border: 1px solid #ffffff;
+				border-radius: 4px;
+				margin-bottom: 30px;
+				display: inline-block;
+				p {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 12px;
+					font-style: normal;
+					font-weight: 600;
+					line-height: normal;
+					letter-spacing: 2px;
+					text-transform: uppercase;
+					margin: 0;
+				}
+			}
+
+			.hero-headline {
+				margin-bottom: -3rem;
+				.headline-text {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 72px;
+					font-style: normal;
+					font-weight: 700;
+					line-height: 1.2;
+					letter-spacing: -1px;
+				}
+				.headline-accent {
+					color: #dcaf69;
+					font-family: $font;
+					font-size: 72px;
+					font-style: normal;
+					font-weight: 700;
+					line-height: 1.2;
+					letter-spacing: -1px;
+				}
+			}
+
+			.hero-description {
+				color: rgba(255, 255, 255, 0.7);
+				font-family: $font;
+				font-size: 18px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 1.6;
+				max-width: 600px;
+				margin-bottom: 50px;
+			}
+
+			.next-project-btn {
+				position: absolute;
+				bottom: -5rem;
+				right: 0;
+				width: 180px;
+				height: 180px;
+				border-radius: 50%;
+				background-color: rgba(255, 255, 255, 0.1);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s;
+				padding: 0;
+				
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.15);
+					transform: scale(1.05);
+				}
+				.next-project-text {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 16px;
+					font-style: normal;
+					font-weight: 600;
+					line-height: 1.2;
+					letter-spacing: 2px;
+					text-transform: uppercase;
+					margin: 0;
+				}
+			}
+
+			// Legacy styles for backward compatibility
 			strong {
 				color: #fff;
 				font-family: $font;

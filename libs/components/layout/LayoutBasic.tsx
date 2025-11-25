@@ -4,12 +4,17 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
-import { Stack } from '@mui/material';
+import { Stack, Box, Typography, IconButton, Button } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -119,21 +124,91 @@ const withLayoutBasic = (Component: any) => {
 						<meta name={'title'} content={`Nestar`} />
 					</Head>
 					<Stack id="pc-wrap">
-						<Stack id={'top'}>
-							<Top />
+						{/* Dark Theme Navigation */}
+						<Stack className={'navbar-dark'}>
+							<Stack className={'container'}>
+								{/* Logo - Left */}
+								<Box component={'div'} className={'logo-left'}>
+									<Link href={'/'}>
+										<Box component={'div'} className={'kadhavu-logo-dark'}>
+											<img src="/img/logo/favicon.svg" alt="KADHAVU Logo" className={'logo-icon-dark'} />
+											<span className={'logo-text-dark'}>KADHAVU</span>
+										</Box>
+									</Link>
+								</Box>
+
+								{/* Navigation Links - Center */}
+								<Box component={'div'} className={'nav-menu-dark'}>
+									<Link href={'/'}>
+										<span className={'nav-link-dark'}>HOME</span>
+									</Link>
+									<span className={'nav-separator-dark'}>/</span>
+									<Link href={'/property'}>
+										<span className={'nav-link-dark'}>PRODUCTS</span>
+									</Link>
+									<span className={'nav-separator-dark'}>/</span>
+									<Link href={'/agent'}>
+										<span className={'nav-link-dark'}>MEASURER</span>
+									</Link>
+									<span className={'nav-separator-dark'}>/</span>
+									<Link href={'/community'}>
+										<span className={'nav-link-dark'}>DOOR INSTALLER</span>
+									</Link>
+									<span className={'nav-separator-dark'}>/</span>
+								
+									
+									<Link href={'/cs'}>
+										<span className={'nav-link-dark'}>CONTACT US</span>
+									</Link>
+								</Box>
+
+								{/* Right Actions */}
+								<Box component={'div'} className={'nav-right-dark'}>
+									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
+										<PhoneIcon className={'call-icon'} />
+										<span>Call Us</span>
+										<span className={'phone-number'}>(+91) 170-123-023</span>
+									</Box>
+									<IconButton className={'action-btn-dark'}>
+										<SearchIcon />
+									</IconButton>
+									<IconButton className={'action-btn-dark'}>
+										<MenuIcon />
+									</IconButton>
+								</Box>
+							</Stack>
 						</Stack>
 
-						<Stack
-							className={`header-basic ${authHeader && 'auth'}`}
-							style={{
-								backgroundImage: `url(${memoizedValues.bgImage})`,
-								backgroundSize: 'cover',
-								boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
-							}}
-						>
+						{/* Hero Section */}
+						<Stack className={`header-basic ${authHeader && 'auth'}`}>
 							<Stack className={'container'}>
-								<strong>{t(memoizedValues.title)}</strong>
-								<span>{t(memoizedValues.desc)}</span>
+								{/* TRUSTED COMPANY Badge */}
+								<Box component={'div'} className={'trusted-badge'}>
+									<Typography>TRUSTED COMPANY</Typography>
+								</Box>
+
+								{/* Headline */}
+								<Box component={'div'} className={'hero-headline'}>
+									<Typography component={'span'} className={'headline-text'}>
+										Design{' '}
+									</Typography>
+									<Typography component={'span'} className={'headline-accent'}>
+										Your{' '}
+									</Typography>
+									<br/>
+									<Typography component={'span'} className={'headline-text'}>
+										Inspired Doors
+									</Typography>
+								</Box>
+
+								{/* Description */}
+								
+
+								{/* NEXT PROJECT Button */}
+								<Button className={'next-project-btn'}>
+									<Typography className={'next-project-text'}>NEXT</Typography>
+									<Typography className={'next-project-text'}>PROJECT</Typography>
+								</Button>
 							</Stack>
 						</Stack>
 
