@@ -169,6 +169,72 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		} as Property,
+		{
+			_id: '7',
+			propertyTitle: 'Modern Steel Window',
+			propertyType: PropertyType.APARTMENT,
+			propertyLocation: PropertyLocation.BUSAN,
+			propertyAddress: '111 Coastal Drive',
+			propertyPrice: 390,
+			propertySquare: 32,
+			propertyBeds: 3,
+			propertyRooms: 4,
+			propertyViews: 175,
+			propertyLikes: 52,
+			propertyRank: 4,
+			propertyImages: ['/img/property/window1.jpg'],
+			propertyDesc: 'Modern steel window with energy efficient design',
+			propertyBarter: true,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member7',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '8',
+			propertyTitle: 'Classic Wooden Door',
+			propertyType: PropertyType.VILLA,
+			propertyLocation: PropertyLocation.INCHEON,
+			propertyAddress: '222 Heritage Street',
+			propertyPrice: 480,
+			propertySquare: 22,
+			propertyBeds: 2,
+			propertyRooms: 3,
+			propertyViews: 210,
+			propertyLikes: 65,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window2.jpg'],
+			propertyDesc: 'Classic wooden door with traditional craftsmanship',
+			propertyBarter: false,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member8',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '9',
+			propertyTitle: 'Smart Glass Window',
+			propertyType: PropertyType.HOUSE,
+			propertyLocation: PropertyLocation.DAEGU,
+			propertyAddress: '333 Innovation Road',
+			propertyPrice: 520,
+			propertySquare: 38,
+			propertyBeds: 4,
+			propertyRooms: 5,
+			propertyViews: 280,
+			propertyLikes: 85,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window3.jpg'],
+			propertyDesc: 'Smart glass window with automated features',
+			propertyBarter: true,
+			propertyRent: false,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member9',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
 	];
 
 	/** APOLLO REQUESTS **/
@@ -327,16 +393,18 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 						</Stack>
 						<Stack className="main-config" mb={'76px'}>
 							<Stack className={`list-config ${viewMode === 'list' ? 'list-view' : 'grid-view'}`}>
-								{properties?.length === 0 ? (
-									<div className={'no-data'}>
-										<img src="/img/icons/icoAlert.svg" alt="" />
-										<p>No Properties found!</p>
-									</div>
-								) : (
-									properties.map((property: Property) => {
+							{properties?.length === 0 ? (
+								<div className={'no-data'}>
+									<img src="/img/icons/icoAlert.svg" alt="" />
+									<p>No Properties found!</p>
+								</div>
+							) : (
+								properties
+									.slice((currentPage - 1) * searchFilter.limit, currentPage * searchFilter.limit)
+									.map((property: Property) => {
 										return <PropertyCard property={property} key={property?._id} />;
 									})
-								)}
+							)}
 							</Stack>
 							<Stack className="pagination-config">
 								{properties.length !== 0 && (

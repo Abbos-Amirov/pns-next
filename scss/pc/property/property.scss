@@ -264,6 +264,75 @@
 									}
 								}
 							}
+							.search-content {
+								width: 100%;
+								background: #fff;
+								border-radius: 0;
+								padding: 16px 20px;
+								.search-input {
+									width: 100%;
+									.MuiOutlinedInput-root {
+										border-radius: 8px;
+										background: #fff;
+										fieldset {
+											border-color: #ddd;
+										}
+										&:hover fieldset {
+											border-color: #8B4513;
+										}
+										&.Mui-focused fieldset {
+											border-color: #8B4513;
+										}
+									}
+									.MuiInputBase-input {
+										color: #181a20;
+										font-family: $font;
+										font-size: 14px;
+										padding: 12px 14px;
+									}
+								}
+							}
+
+							.price-range-content {
+								width: 100%;
+								background: #fff;
+								border-radius: 0;
+								padding: 16px 20px;
+								.price-inputs {
+									display: flex;
+									flex-direction: row;
+									gap: 12px;
+									.price-input {
+										flex: 1;
+										.MuiOutlinedInput-root {
+											border-radius: 8px;
+											background: #fff;
+											fieldset {
+												border-color: #ddd;
+											}
+											&:hover fieldset {
+												border-color: #8B4513;
+											}
+											&.Mui-focused fieldset {
+												border-color: #8B4513;
+											}
+										}
+										.MuiInputBase-input {
+											color: #181a20;
+											font-family: $font;
+											font-size: 14px;
+											padding: 12px 14px;
+										}
+										.MuiInputAdornment-root {
+											color: #8B4513;
+											font-family: $font;
+											font-size: 14px;
+											font-weight: 500;
+										}
+									}
+								}
+							}
+
 							.availability-content {
 								width: 100%;
 								background: #fff;

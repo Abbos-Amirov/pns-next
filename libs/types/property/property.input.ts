@@ -29,6 +29,7 @@ interface PISearch {
 	periodsRange?: PeriodsRange;
 	squaresRange?: Range;
 	text?: string;
+	availability?: string;
 }
 
 export interface PropertiesInquiry {

@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
-import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 'react';
+import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { PropertyType } from '../../enums/property.enum';
 import { PropertiesInquiry } from '../../types/property/property.input';
 import { useRouter } from 'next/router';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface FilterType {
 	searchFilter: PropertiesInquiry;
@@ -20,6 +21,11 @@ const Filter = (props: FilterType) => {
 	const [propertyType] = useState<PropertyType[]>(Object.values(PropertyType));
 	const [availabilityFilter, setAvailabilityFilter] = useState<string>('all');
 	const [hotDealsIndex, setHotDealsIndex] = useState<number>(0);
+	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text || '');
+	const [minPrice, setMinPrice] = useState<string>(searchFilter?.search?.pricesRange?.start?.toString() || '');
+	const [maxPrice, setMaxPrice] = useState<string>(searchFilter?.search?.pricesRange?.end?.toString() || '');
+	const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const priceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	/** HANDLERS **/
 	const propertyTypeSelectHandler = useCallback(
@@ -94,9 +100,136 @@ const Filter = (props: FilterType) => {
 				{ scroll: false },
 			);
 			setAvailabilityFilter('all');
+			setSearchText('');
+			setMinPrice('');
+			setMaxPrice('');
 		} catch (err: any) {
 			console.log('ERROR, refreshHandler:', err);
 		}
+	};
+
+	const searchHandler = useCallback(
+		async (text: string) => {
+			try {
+				await router.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: { ...searchFilter.search, text },
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: { ...searchFilter.search, text },
+					})}`,
+					{ scroll: false },
+				);
+			} catch (err: any) {
+				console.log('ERROR, searchHandler:', err);
+			}
+		},
+		[searchFilter, router],
+	);
+
+	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setSearchText(value);
+		
+		// Clear previous timeout
+		if (searchTimeoutRef.current) {
+			clearTimeout(searchTimeoutRef.current);
+		}
+		
+		// Set new timeout for debounce
+		searchTimeoutRef.current = setTimeout(() => {
+			searchHandler(value);
+		}, 500);
+	};
+
+	// Update state when searchFilter changes
+	useEffect(() => {
+		if (searchFilter?.search?.text !== undefined) {
+			setSearchText(searchFilter.search.text || '');
+		}
+		if (searchFilter?.search?.pricesRange) {
+			const start = searchFilter.search.pricesRange.start;
+			const end = searchFilter.search.pricesRange.end;
+			setMinPrice(start !== undefined && start !== 0 ? start.toString() : '');
+			setMaxPrice(end !== undefined && end !== 2000000 ? end.toString() : '');
+		}
+		if ((searchFilter?.search as any)?.availability) {
+			setAvailabilityFilter((searchFilter.search as any).availability);
+		}
+	}, [searchFilter]);
+
+	// Cleanup timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (searchTimeoutRef.current) {
+				clearTimeout(searchTimeoutRef.current);
+			}
+			if (priceTimeoutRef.current) {
+				clearTimeout(priceTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	const priceRangeHandler = useCallback(
+		async (min: string, max: string) => {
+			try {
+				const minNum = min === '' ? 0 : parseInt(min) || 0;
+				const maxNum = max === '' ? 2000000 : parseInt(max) || 2000000;
+				
+				await router.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+							pricesRange: { start: minNum, end: maxNum },
+						},
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+							pricesRange: { start: minNum, end: maxNum },
+						},
+					})}`,
+					{ scroll: false },
+				);
+			} catch (err: any) {
+				console.log('ERROR, priceRangeHandler:', err);
+			}
+		},
+		[searchFilter, router],
+	);
+
+	const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setMinPrice(value);
+		
+		// Clear previous timeout
+		if (priceTimeoutRef.current) {
+			clearTimeout(priceTimeoutRef.current);
+		}
+		
+		// Set new timeout for debounce
+		priceTimeoutRef.current = setTimeout(() => {
+			priceRangeHandler(value, maxPrice);
+		}, 500);
+	};
+
+	const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setMaxPrice(value);
+		
+		// Clear previous timeout
+		if (priceTimeoutRef.current) {
+			clearTimeout(priceTimeoutRef.current);
+		}
+		
+		// Set new timeout for debounce
+		priceTimeoutRef.current = setTimeout(() => {
+			priceRangeHandler(minPrice, value);
+		}, 500);
 	};
 
 	// Mock hot deals data - bu keyinchalik backenddan keladi
@@ -137,6 +270,72 @@ const Filter = (props: FilterType) => {
 	} else {
 		return (
 			<Stack className={'filter-main'}>
+
+<Stack className={'filter-section'} mb={'30px'}>
+
+	{/* Search Section */}
+					<Box component={'div'} className={'section-header'}>
+						<Typography style={{color: "#ffffff"}}>Search</Typography>
+					</Box>
+					<Stack className={'search-content'}>
+						<TextField
+							fullWidth
+							placeholder="Search products..."
+							value={searchText}
+							onChange={handleSearchChange}
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position="start">
+										<SearchIcon style={{ color: '#8B4513' }} />
+									</InputAdornment>
+								),
+							}}
+							className={'search-input'}
+						/>
+					</Stack>
+
+
+
+					{/* Price Range Section */}
+				</Stack>
+
+				<Stack className={'filter-section'} mb={'30px'}>
+					<Box component={'div'} className={'section-header'}>
+						<Typography style={{color: "#ffffff"}}>Price Range</Typography>
+					</Box>
+					<Stack className={'price-range-content'}>
+						<Stack className={'price-inputs'} direction={'row'} gap={'12px'}>
+							<TextField
+								type="number"
+								placeholder="Min Price"
+								value={minPrice}
+								onChange={handleMinPriceChange}
+								InputProps={{
+									startAdornment: <InputAdornment position="start">$</InputAdornment>,
+								}}
+								className={'price-input'}
+								inputProps={{
+									min: 0,
+									step: 1,
+								}}
+							/>
+							<TextField
+								type="number"
+								placeholder="Max Price"
+								value={maxPrice}
+								onChange={handleMaxPriceChange}
+								InputProps={{
+									startAdornment: <InputAdornment position="start">$</InputAdornment>,
+								}}
+								className={'price-input'}
+								inputProps={{
+									min: 0,
+									step: 1,
+								}}
+							/>
+						</Stack>
+					</Stack>
+				</Stack>
 				{/* Category Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
@@ -210,6 +409,11 @@ const Filter = (props: FilterType) => {
 					</Stack>
 					)}
 				</Stack>
+
+				{/* Search Section */}
+				
+				{/* Price Range Section */}
+				
 
 				{/* Availability Filter */}
 				<Stack className={'filter-section'}>
