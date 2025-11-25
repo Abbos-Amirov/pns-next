@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import SearchIcon from '@mui/icons-material/Search';
 import { Property } from '../../types/property/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
@@ -23,15 +24,56 @@ const PropertyCard = (props: PropertyCardType) => {
 	const { property, likePropertyHandler, myFavorites, recentlyVisited } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = property?.propertyImages[0]
-		? `${REACT_APP_API_URL}/${property?.propertyImages[0]}`
-		: '/img/banner/header1.svg';
+	const [isHovered, setIsHovered] = useState(false);
+
+	// Hard coded images array for fallback
+	const defaultImages = [
+		'/img/property/window.jpg',
+		'/img/property/window1.jpg',
+		'/img/property/window2.jpg',
+		'/img/property/windows5.jpg',
+		'/img/property/window2.jpg',
+		'/img/property/window4.jpg',
+		'/img/property/window5.jpg',
+		'/img/property/window2.jpg',
+		'/img/property/window1.jpg',
+		'/img/property/window2.jpg',
+	];
+
+	// Get image path - use property image or fallback to hard coded images
+	const getImagePath = (): string => {
+		if (property?.propertyImages && property.propertyImages.length > 0) {
+			const imgPath = property.propertyImages[0];
+			// If image path starts with /img/, use it directly (public folder)
+			if (imgPath.startsWith('/img/')) {
+				return imgPath;
+			}
+			// Otherwise, prepend API URL
+			return `${REACT_APP_API_URL}/${imgPath}`;
+		}
+		// Use property index or random to select from default images
+		const index = property?._id ? parseInt(property._id.slice(-1), 16) % defaultImages.length : 0;
+		return defaultImages[index];
+	};
+
+	const imagePath: string = getImagePath();
+
+	// Sale calculation - check if property has sale (can use propertyRank or other flags)
+	// For now, we'll show sale badge for properties with high rank or specific conditions
+	const isOnSale = property?.propertyRank && property.propertyRank > 4;
+	const salePercent = isOnSale ? 16 : 0; // Default sale percent
+	const displayPrice = property?.propertyPrice || 0;
+
 
 	if (device === 'mobile') {
 		return <div>PROPERTY CARD</div>;
 	} else {
 		return (
-			<Stack className="card-config">
+			<Stack
+				className="card-config"
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+			>
 				<Stack className="top">
 					<Link
 						href={{
@@ -41,15 +83,75 @@ const PropertyCard = (props: PropertyCardType) => {
 					>
 						<img src={imagePath} alt="" />
 					</Link>
-					{property && property?.propertyRank > 0 && (
-						<Box component={'div'} className={'top-badge'}>
+					{/* Sale Badge */}
+					
+					{/* Save Percent Badge */}
+					{isOnSale && salePercent > 0 && (
+						<Box style={{background:  "#8B4513"}} component={'div'} className={'save-badge'}>
+							<Typography >Save {salePercent}%</Typography>
+						</Box>
+					)}
+					{/* Sold Out Badge - check if property is sold/not available */}
+					{property?.propertyStatus === 'SOLD' && (
+						<Box component={'div'} className={'sold-out-badge'}>
+							<Typography>Sold Out</Typography>
+						</Box>
+					)}
+					{/* Hover Action Icons */}
+					{isHovered && (
+						<Box component={'div'} className={'hover-actions'}>
+							<Box component={'div'} className={'view-action'}>
+								<IconButton
+									className={'action-btn'}
+									onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+										e.preventDefault();
+										// View handler - navigate to detail page
+										if (property?._id) {
+											window.location.href = `/property/detail?id=${property._id}`;
+										}
+									}}
+								>
+									<RemoveRedEyeIcon />
+								</IconButton>
+								<Typography className={'view-count'}>{property?.propertyViews || 0}</Typography>
+							</Box>
+							<IconButton
+								className={'action-btn'}
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+									e.preventDefault();
+									if (likePropertyHandler && property?._id) {
+										likePropertyHandler(user, property._id);
+									}
+								}}
+							>
+								{myFavorites ? (
+									<FavoriteIcon />
+								) : property?.meLiked && property?.meLiked[0]?.myFavorite ? (
+									<FavoriteIcon />
+								) : (
+									<FavoriteBorderIcon />
+								)}
+							</IconButton>
+							<IconButton
+								className={'action-btn'}
+								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+									e.preventDefault();
+									// Quick view handler - can navigate to detail page
+									if (property?._id) {
+										window.location.href = `/property/detail?id=${property._id}`;
+									}
+								}}
+							>
+								<SearchIcon />
+							</IconButton>
+						</Box>
+					)}
+					{property && property?.propertyRank > 3 && (
+						<Box  component={'div'} className={'top-badge'}>
 							<img src="/img/icons/electricity.svg" alt="" />
 							<Typography>TOP</Typography>
 						</Box>
 					)}
-					<Box component={'div'} className={'price-box'}>
-						<Typography>${formatterStr(property?.propertyPrice)}</Typography>
-					</Box>
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
@@ -64,56 +166,30 @@ const PropertyCard = (props: PropertyCardType) => {
 							</Link>
 						</Stack>
 						<Stack className="address">
-							<Typography>
-								{property.propertyAddress}, {property.propertyLocation}
+						
+						</Stack>
+					</Stack>
+					<Stack className="price-section">
+						<Stack className="price-row">
+							<Typography className={isOnSale ? 'current-price' : 'price'}>
+								${formatterStr(displayPrice)}
 							</Typography>
+							{isOnSale && (
+								<Typography className="old-price">${formatterStr(property?.propertyPrice)}</Typography>
+							)}
 						</Stack>
 					</Stack>
 					<Stack className="options">
-						<Stack className="option">
-							<img src="/img/icons/bed.svg" alt="" /> <Typography>{property.propertyBeds} bed</Typography>
-						</Stack>
-						<Stack className="option">
-							<img src="/img/icons/room.svg" alt="" /> <Typography>{property.propertyRooms} room</Typography>
-						</Stack>
-						<Stack className="option">
-							<img src="/img/icons/expand.svg" alt="" /> <Typography>{property.propertySquare} m2</Typography>
-						</Stack>
+						
+						
+						
 					</Stack>
 					<Stack className="divider"></Stack>
 					<Stack className="type-buttons">
 						<Stack className="type">
-							<Typography
-								sx={{ fontWeight: 500, fontSize: '13px' }}
-								className={property.propertyRent ? '' : 'disabled-type'}
-							>
-								Rent
-							</Typography>
-							<Typography
-								sx={{ fontWeight: 500, fontSize: '13px' }}
-								className={property.propertyBarter ? '' : 'disabled-type'}
-							>
-								Barter
-							</Typography>
+						
+							
 						</Stack>
-						{!recentlyVisited && (
-							<Stack className="buttons">
-								<IconButton color={'default'}>
-									<RemoveRedEyeIcon />
-								</IconButton>
-								<Typography className="view-cnt">{property?.propertyViews}</Typography>
-								<IconButton color={'default'} onClick={() => likePropertyHandler(user, property?._id)}>
-									{myFavorites ? (
-										<FavoriteIcon color="primary" />
-									) : property?.meLiked && property?.meLiked[0]?.myFavorite ? (
-										<FavoriteIcon color="primary" />
-									) : (
-										<FavoriteBorderIcon />
-									)}
-								</IconButton>
-								<Typography className="view-cnt">{property?.propertyLikes}</Typography>
-							</Stack>
-						)}
 					</Stack>
 				</Stack>
 			</Stack>

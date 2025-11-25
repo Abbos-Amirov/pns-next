@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography, IconButton } from '@mui/material';
 import PropertyCard from '../../libs/components/property/PropertyCard';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -8,8 +8,11 @@ import Filter from '../../libs/components/property/Filter';
 import { useRouter } from 'next/router';
 import { PropertiesInquiry } from '../../libs/types/property/property.input';
 import { Property } from '../../libs/types/property/property';
+import { PropertyType, PropertyLocation, PropertyStatus } from '../../libs/enums/property.enum';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import GridViewIcon from '@mui/icons-material/GridView';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import { Direction } from '../../libs/enums/common.enum';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -29,9 +32,150 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
-	const [filterSortName, setFilterSortName] = useState('New');
+	const [filterSortName, setFilterSortName] = useState('Featured');
+	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+	// Test data for properties (hard coded)
+	const testProperties: Property[] = [
+		{
+			_id: '1',
+			propertyTitle: 'Aluminum Frame Window',
+			propertyType: PropertyType.APARTMENT,
+			propertyLocation: PropertyLocation.SEOUL,
+			propertyAddress: '123 Main Street',
+			propertyPrice: 320,
+			propertySquare: 25,
+			propertyBeds: 2,
+			propertyRooms: 3,
+			propertyViews: 150,
+			propertyLikes: 45,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window.jpg'],
+			propertyDesc: 'Modern aluminum frame window with triple glazing',
+			propertyBarter: false,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member1',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '2',
+			propertyTitle: 'PVC Window System',
+			propertyType: PropertyType.VILLA,
+			propertyLocation: PropertyLocation.BUSAN,
+			propertyAddress: '456 Ocean Road',
+			propertyPrice: 280,
+			propertySquare: 30,
+			propertyBeds: 3,
+			propertyRooms: 4,
+			propertyViews: 200,
+			propertyLikes: 60,
+			propertyRank: 4,
+			propertyImages: ['/img/property/window1.jpg'],
+			propertyDesc: 'Energy efficient PVC window system',
+			propertyBarter: true,
+			propertyRent: false,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member2',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '3',
+			propertyTitle: 'Steel Iron Door',
+			propertyType: PropertyType.HOUSE,
+			propertyLocation: PropertyLocation.INCHEON,
+			propertyAddress: '789 Harbor Avenue',
+			propertyPrice: 450,
+			propertySquare: 20,
+			propertyBeds: 1,
+			propertyRooms: 2,
+			propertyViews: 180,
+			propertyLikes: 55,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window2.jpg'],
+			propertyDesc: 'Durable steel and iron door with security features',
+			propertyBarter: false,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member3',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '4',
+			propertyTitle: 'Wooden Thermowood Window',
+			propertyType: PropertyType.APARTMENT,
+			propertyLocation: PropertyLocation.DAEGU,
+			propertyAddress: '321 Mountain View',
+			propertyPrice: 380,
+			propertySquare: 28,
+			propertyBeds: 2,
+			propertyRooms: 3,
+			propertyViews: 120,
+			propertyLikes: 40,
+			propertyRank: 3,
+			propertyImages: ['/img/property/window3.jpg'],
+			propertyDesc: 'Eco-friendly wooden thermowood window',
+			propertyBarter: true,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member4',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '5',
+			propertyTitle: 'Aluminum Hybrid Window',
+			propertyType: PropertyType.VILLA,
+			propertyLocation: PropertyLocation.GWANGJU,
+			propertyAddress: '654 Tech Park',
+			propertyPrice: 420,
+			propertySquare: 35,
+			propertyBeds: 4,
+			propertyRooms: 5,
+			propertyViews: 250,
+			propertyLikes: 75,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window4.jpg'],
+			propertyDesc: 'Advanced aluminum hybrid window system',
+			propertyBarter: false,
+			propertyRent: false,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member5',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+		{
+			_id: '6',
+			propertyTitle: 'Premium Aluminum Frame',
+			propertyType: PropertyType.HOUSE,
+			propertyLocation: PropertyLocation.SEOUL,
+			propertyAddress: '987 Luxury Lane',
+			propertyPrice: 550,
+			propertySquare: 40,
+			propertyBeds: 5,
+			propertyRooms: 6,
+			propertyViews: 300,
+			propertyLikes: 90,
+			propertyRank: 5,
+			propertyImages: ['/img/property/window.jpg'],
+			propertyDesc: 'Premium aluminum frame with advanced features',
+			propertyBarter: true,
+			propertyRent: true,
+			propertyStatus: PropertyStatus.ACTIVE,
+			memberId: 'member6',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as Property,
+	];
 
 	/** APOLLO REQUESTS **/
+	// TODO: Add Apollo query here when backend is ready
+	// const { data, loading, error } = useQuery(GET_PROPERTIES, {
+	//   variables: { input: searchFilter }
+	// });
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -43,7 +187,17 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
 	}, [router]);
 
-	useEffect(() => {}, [searchFilter]);
+	useEffect(() => {
+		// Set test data for now (remove when backend is connected)
+		setProperties(testProperties);
+		setTotal(testProperties.length);
+
+		// TODO: When backend is ready, uncomment this:
+		// if (data?.getProperties) {
+		//   setProperties(data.getProperties.list);
+		//   setTotal(data.getProperties.metaCounter.total);
+		// }
+	}, [searchFilter]);
 
 	/** HANDLERS **/
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
@@ -70,17 +224,38 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 
 	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
 		switch (e.currentTarget.id) {
-			case 'new':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.ASC });
-				setFilterSortName('New');
+			case 'featured':
+				setSearchFilter({ ...searchFilter, sort: 'propertyRank', direction: Direction.DESC });
+				setFilterSortName('Featured');
 				break;
-			case 'lowest':
+			case 'best_selling':
+				setSearchFilter({ ...searchFilter, sort: 'propertyViews', direction: Direction.DESC });
+				setFilterSortName('Best selling');
+				break;
+			case 'alphabetical_az':
+				setSearchFilter({ ...searchFilter, sort: 'propertyTitle', direction: Direction.ASC });
+				setFilterSortName('Alphabetically, A-Z');
+				break;
+			case 'alphabetical_za':
+				setSearchFilter({ ...searchFilter, sort: 'propertyTitle', direction: Direction.DESC });
+				setFilterSortName('Alphabetically, Z-A');
+				break;
+			case 'price_low_high':
 				setSearchFilter({ ...searchFilter, sort: 'propertyPrice', direction: Direction.ASC });
-				setFilterSortName('Lowest Price');
+				setFilterSortName('Price, low to high');
 				break;
-			case 'highest':
+			case 'price_high_low':
 				setSearchFilter({ ...searchFilter, sort: 'propertyPrice', direction: Direction.DESC });
-				setFilterSortName('Highest Price');
+				setFilterSortName('Price, high to low');
+				break;
+			case 'date_old_new':
+				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.ASC });
+				setFilterSortName('Date, old to new');
+				break;
+			case 'date_new_old':
+				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.DESC });
+				setFilterSortName('Date, new to old');
+				break;
 		}
 		setSortingOpen(false);
 		setAnchorEl(null);
@@ -92,39 +267,58 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		return (
 			<div id="property-list-page" style={{ position: 'relative' }}>
 				<div className="container">
-					<Box component={'div'} className={'right'}>
-						<span>Sort by</span>
-						<div>
-							<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-								{filterSortName}
-							</Button>
-							<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'new'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+					<Box component={'div'} className={'top-controls'}>
+						<Stack className={'view-toggle'}>
+							<span>Category</span>
+							<Stack className={'toggle-buttons'}>
+								<IconButton
+									className={viewMode === 'grid' ? 'active' : ''}
+									onClick={() => setViewMode('grid')}
 								>
-									New
-								</MenuItem>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'lowest'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+									<GridViewIcon />
+								</IconButton>
+								<IconButton
+									className={viewMode === 'list' ? 'active' : ''}
+									onClick={() => setViewMode('list')}
 								>
-									Lowest Price
-								</MenuItem>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'highest'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
-								>
-									Highest Price
-								</MenuItem>
-							</Menu>
-						</div>
+									<ViewListIcon />
+								</IconButton>
+							</Stack>
+						</Stack>
+						<Box component={'div'} className={'sort-controls'}>
+							<span>Sort by</span>
+							<div>
+								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
+									{filterSortName}
+								</Button>
+								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
+									<MenuItem onClick={sortingHandler} id={'featured'} disableRipple>
+										Featured
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'best_selling'} disableRipple>
+										Best selling
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'alphabetical_az'} disableRipple>
+										Alphabetically, A-Z
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'alphabetical_za'} disableRipple>
+										Alphabetically, Z-A
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'price_low_high'} disableRipple>
+										Price, low to high
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'price_high_low'} disableRipple>
+										Price, high to low
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'date_old_new'} disableRipple>
+										Date, old to new
+									</MenuItem>
+									<MenuItem onClick={sortingHandler} id={'date_new_old'} disableRipple>
+										Date, new to old
+									</MenuItem>
+								</Menu>
+							</div>
+						</Box>
 					</Box>
 					<Stack className={'property-page'}>
 						<Stack className={'filter-config'}>
@@ -132,7 +326,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 							<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
 						</Stack>
 						<Stack className="main-config" mb={'76px'}>
-							<Stack className={'list-config'}>
+							<Stack className={`list-config ${viewMode === 'list' ? 'list-view' : 'grid-view'}`}>
 								{properties?.length === 0 ? (
 									<div className={'no-data'}>
 										<img src="/img/icons/icoAlert.svg" alt="" />
