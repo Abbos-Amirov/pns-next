@@ -127,8 +127,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>PNS_DEV</title>
+						<meta name={'title'} content={`PNS_DEV`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -149,8 +149,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>PNS_DEV</title>
+						<meta name={'title'} content={`PNS_DEV`} />
 					</Head>
 					<Stack id="pc-wrap">
 						{/* Dark Theme Navigation */}
@@ -161,7 +161,7 @@ const withLayoutBasic = (Component: any) => {
 									<Link href={'/'}>
 										<Box component={'div'} className={'kadhavu-logo-dark'}>
 											<img src="/img/logo/favicon.svg" alt="KADHAVU Logo" className={'logo-icon-dark'} />
-											<span className={'logo-text-dark'}>KADHAVU</span>
+											<span className={'logo-text-dark'}>PNS DEV</span>
 										</Box>
 									</Link>
 								</Box>

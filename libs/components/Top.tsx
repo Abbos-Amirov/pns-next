@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
-import { Stack, Box } from '@mui/material';
+import { sweetConfirmAlert } from '../sweetAlert';
+import { Stack, Box, IconButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { alpha, styled } from '@mui/material/styles';
@@ -23,6 +24,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import CloseIcon from '@mui/icons-material/Close';
 import PhoneIcon from '@mui/icons-material/Phone';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import LanguageIcon from '@mui/icons-material/Language';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -103,11 +105,11 @@ const Top = () => {
 	};
 
 	const langChoice = useCallback(
-		async (e: any) => {
-			setLang(e.target.id);
-			localStorage.setItem('locale', e.target.id);
+		async (locale: string) => {
+			setLang(locale);
+			localStorage.setItem('locale', locale);
 			setAnchorEl2(null);
-			await router.push(router.asPath, router.asPath, { locale: e.target.id });
+			await router.push(router.asPath, router.asPath, { locale });
 		},
 		[router],
 	);
@@ -178,6 +180,17 @@ const Top = () => {
 		setTopBarVisible(false);
 	};
 
+	const logoutHandler = async () => {
+		try {
+			if (await sweetConfirmAlert('Do you want to logout?')) {
+				logOut();
+				await router.push('/');
+			}
+		} catch (err: any) {
+			console.log('ERROR, logoutHandler:', err.message);
+		}
+	};
+
 	if (device == 'mobile') {
 		return (
 			<Stack className={'top'}>
@@ -232,6 +245,12 @@ const Top = () => {
 									<KakaoTalkIcon className={'social-icon'} />
 									<TikTokIcon className={'social-icon'} />
 								</Box>
+								{user?._id && (
+									<Button className={'logout-btn-top'} onClick={logoutHandler}>
+										<Logout className={'logout-icon'} />
+										<span>Logout</span>
+									</Button>
+								)}
 								<CloseIcon className={'close-icon'} onClick={closeTopBar} />
 							</Box>
 						</Stack>
@@ -291,6 +310,49 @@ const Top = () => {
 								<PhoneIcon className={'phone-icon'} />
 								<span>Call +82 010 8200 5998</span>
 							</Box>
+							{/* Language Switcher */}
+							<IconButton 
+								className={'lang-switcher-btn-home'}
+								onClick={langClick}
+							>
+								<LanguageIcon />
+							</IconButton>
+							<Menu
+								anchorEl={anchorEl2}
+								open={drop}
+								onClose={langClose}
+								anchorOrigin={{
+									vertical: 'bottom',
+									horizontal: 'right',
+								}}
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								className={'lang-menu-home'}
+							>
+								<MenuItem 
+									onClick={() => langChoice('en')} 
+									selected={lang === 'en'}
+									className={'lang-menu-item-home'}
+								>
+									English
+								</MenuItem>
+								<MenuItem 
+									onClick={() => langChoice('ru')} 
+									selected={lang === 'ru'}
+									className={'lang-menu-item-home'}
+								>
+									Русский
+								</MenuItem>
+								<MenuItem 
+									onClick={() => langChoice('kr')} 
+									selected={lang === 'kr'}
+									className={'lang-menu-item-home'}
+								>
+									한국어
+								</MenuItem>
+							</Menu>
 							<Box component={'div'} className={'auth-buttons'}>
 								<Button className={'login-btn'}>
 									LOGIN
