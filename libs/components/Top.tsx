@@ -241,7 +241,7 @@ const Top = () => {
 										EXPERTS
 										<KeyboardArrowDownIcon className={'dropdown-icon'} />
 									</span>
-								</Link>
+							</Link>
 								<Menu
 									anchorEl={measurerAnchor}
 									open={measurerOpen}
@@ -364,7 +364,7 @@ const Top = () => {
 								</Button>
 								<Button className={'signup-btn'}>
 									SIGN UP
-								</Button>
+							</Button>
 							</Box>
 						</Box>
 					</Stack>

@@ -375,12 +375,7 @@ const Filter = (props: FilterType) => {
 							<Stack className={'hot-deal-card'}>
 								<Box component={'div'} className={'hot-deal-image'}>
 									<img src={hotDeals[hotDealsIndex]?.image || '/img/banner/header1.svg'} alt={hotDeals[hotDealsIndex]?.name} />
-									<Box component={'div'} className={'sale-badge-small'}>
-										<Typography>Sale</Typography>
-									</Box>
-									<Box component={'div'} className={'save-badge-small'}>
-										<Typography>Save {hotDeals[hotDealsIndex]?.savePercent}%</Typography>
-									</Box>
+								
 								</Box>
 								<Stack className={'hot-deal-info'}>
 									<Typography className={'hot-deal-name'}>{hotDeals[hotDealsIndex]?.name}</Typography>
@@ -416,7 +411,7 @@ const Filter = (props: FilterType) => {
 				
 
 				{/* Availability Filter */}
-				<Stack className={'filter-section'}>
+				{/* <Stack className={'filter-section'}>
 					<Box component={'div'} className={'section-header'}>
 						<Typography style={{color: "#ffffff"}}>Availability</Typography>
 					</Box>
@@ -431,7 +426,7 @@ const Filter = (props: FilterType) => {
 							<FormControlLabel value="out_of_stock" control={<Radio />} label="Out of stock (1)" />
 						</RadioGroup>
 					</Stack>
-				</Stack>
+				</Stack> */}
 			</Stack>
 		);
 	}

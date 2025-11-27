@@ -25,6 +25,9 @@ const CityCard = (props: CityCardType) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [isHovered, setIsHovered] = useState(false);
+	const [isLiked, setIsLiked] = useState(
+		myFavorites || (city?.meLiked && city?.meLiked[0]?.myFavorite) || false
+	);
 
 	// Hard coded images array for fallback
 	const defaultImages = [
@@ -83,75 +86,11 @@ const CityCard = (props: CityCardType) => {
 					>
 						<img src={imagePath} alt="" />
 					</Link>
-					{/* Sale Badge */}
-					
-					{/* Save Percent Badge */}
-					{isOnSale && salePercent > 0 && (
-						<Box style={{background:  "#8B4513"}} component={'div'} className={'save-badge'}>
-							<Typography >Save {salePercent}%</Typography>
-						</Box>
-					)}
-					{/* Sold Out Badge - check if city is sold/not available */}
-					{city?.propertyStatus === 'SOLD' && (
-						<Box component={'div'} className={'sold-out-badge'}>
-							<Typography>Sold Out</Typography>
-						</Box>
-					)}
-					{/* Hover Action Icons */}
-					{isHovered && (
-						<Box component={'div'} className={'hover-actions'}>
-							<Box component={'div'} className={'view-action'}>
-								<IconButton
-									className={'action-btn'}
-									onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-										e.preventDefault();
-										// View handler - navigate to detail page
-										if (city?._id) {
-											window.location.href = `/city/detail?id=${city._id}`;
-										}
-									}}
-								>
-									<RemoveRedEyeIcon />
-								</IconButton>
-								<Typography className={'view-count'}>{city?.propertyViews || 0}</Typography>
-							</Box>
-							<IconButton
-								className={'action-btn'}
-								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-									e.preventDefault();
-									if (likeCityHandler && city?._id) {
-										likeCityHandler(user, city._id);
-									}
-								}}
-							>
-								{myFavorites ? (
-									<FavoriteIcon />
-								) : city?.meLiked && city?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon />
-								) : (
-									<FavoriteBorderIcon />
-								)}
-							</IconButton>
-							<IconButton
-								className={'action-btn'}
-								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-									e.preventDefault();
-									// Quick view handler - can navigate to detail page
-									if (city?._id) {
-										window.location.href = `/city/detail?id=${city._id}`;
-									}
-								}}
-							>
-								<SearchIcon />
-							</IconButton>
-						</Box>
-					)}
-					{city && city?.propertyRank > 3 && (
-						<Box  component={'div'} className={'top-badge'}>
-							<img src="/img/icons/electricity.svg" alt="" />
-							<Typography>TOP</Typography>
-						</Box>
-					)}
+					{/* Price Badge - Yellow circular badge */}
+					<Box component={'div'} className={'price-badge'}>
+						<Typography component={'span'} className={'price-amount'}>{formatterStr(displayPrice)}</Typography>
+						<Typography component={'span'} className={'price-period'}>WORKS</Typography>
+					</Box>
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
@@ -166,29 +105,31 @@ const CityCard = (props: CityCardType) => {
 							</Link>
 						</Stack>
 						<Stack className="address">
-						
+							<Typography>{city?.propertyLocation || city?.propertyAddress || 'Location'}</Typography>
 						</Stack>
 					</Stack>
-					<Stack className="price-section">
-						<Stack className="price-row">
-							<Typography className={isOnSale ? 'current-price' : 'price'}>
-								${formatterStr(displayPrice)}
-							</Typography>
-							{isOnSale && (
-								<Typography className="old-price">${formatterStr(city?.propertyPrice)}</Typography>
+					<Stack className="specifications">
+						<Stack 
+							className="spec-item like-item"
+							onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+								e.preventDefault();
+								setIsLiked(!isLiked);
+								if (likeCityHandler && city?._id) {
+									likeCityHandler(user, city._id);
+								}
+							}}
+							sx={{ cursor: 'pointer' }}
+						>
+							{isLiked ? (
+								<FavoriteIcon className={'spec-icon liked'} />
+							) : (
+								<FavoriteBorderIcon className={'spec-icon'} />
 							)}
+							<Typography className={'spec-text'}>{city?.propertyLikes || 0}</Typography>
 						</Stack>
-					</Stack>
-					<Stack className="options">
-						
-						
-						
-					</Stack>
-					<Stack className="divider"></Stack>
-					<Stack className="type-buttons">
-						<Stack className="type">
-						
-							
+						<Stack className="spec-item">
+							<RemoveRedEyeIcon className={'spec-icon'} />
+							<Typography className={'spec-text'}>{city?.propertyViews || 0}</Typography>
 						</Stack>
 					</Stack>
 				</Stack>
