@@ -6,25 +6,20 @@ import { sweetConfirmAlert } from '../sweetAlert';
 import { Stack, Box, IconButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import { alpha, styled } from '@mui/material/styles';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import { HeightSharp, Logout } from '@mui/icons-material';
-import { REACT_APP_API_URL } from '../config';
+import { Logout } from '@mui/icons-material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import CloseIcon from '@mui/icons-material/Close';
 import PhoneIcon from '@mui/icons-material/Phone';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import LanguageIcon from '@mui/icons-material/Language';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Menu from '@mui/material/Menu';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -63,11 +58,7 @@ const Top = () => {
 	const [lang, setLang] = useState<string | null>('en');
 	const drop = Boolean(anchorEl2);
 	const [colorChange, setColorChange] = useState(false);
-	const [anchorEl, setAnchorEl] = React.useState<any | HTMLElement>(null);
-	let open = Boolean(anchorEl);
 	const [bgColor, setBgColor] = useState<boolean>(false);
-	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
-	const logoutOpen = Boolean(logoutAnchor);
 	const [topBarVisible, setTopBarVisible] = useState(true);
 
 	/** LIFECYCLES **/
@@ -122,62 +113,16 @@ const Top = () => {
 		}
 	};
 
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
-
-	const handleHover = (event: any) => {
-		if (anchorEl !== event.currentTarget) {
-			setAnchorEl(event.currentTarget);
-		} else {
-			setAnchorEl(null);
-		}
-	};
-
-	const StyledMenu = styled((props: MenuProps) => (
-		<Menu
-			elevation={0}
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'right',
-			}}
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			{...props}
-		/>
-	))(({ theme }) => ({
-		'& .MuiPaper-root': {
-			top: '109px',
-			borderRadius: 6,
-			marginTop: theme.spacing(1),
-			minWidth: 160,
-			color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-			boxShadow:
-				'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-			'& .MuiMenu-list': {
-				padding: '4px 0',
-			},
-			'& .MuiMenuItem-root': {
-				'& .MuiSvgIcon-root': {
-					fontSize: 18,
-					color: theme.palette.text.secondary,
-					marginRight: theme.spacing(1.5),
-				},
-				'&:active': {
-					backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-				},
-			},
-		},
-	}));
-
 	if (typeof window !== 'undefined') {
 		window.addEventListener('scroll', changeNavbarColor);
 	}
 
 	const closeTopBar = () => {
 		setTopBarVisible(false);
+	};
+
+	const showTopBar = () => {
+		setTopBarVisible(true);
 	};
 
 	const logoutHandler = async () => {
@@ -200,9 +145,9 @@ const Top = () => {
 				<Link href={'/property'}>
 					<div>{t('Properties')}</div>
 				</Link>
-			<Link href={'/installer'}>
-				<div> {t('Installers')} </div>
-			</Link>
+				<Link href={'/installer'}>
+					<div> {t('Installers')} </div>
+				</Link>
 				<Link href={'/community?articleCategory=FREE'}>
 					<div> {t('Community')} </div>
 				</Link>
@@ -214,9 +159,15 @@ const Top = () => {
 	} else {
 		return (
 			<Stack className={'navbar kadhavu-navbar'}>
+				{/* Show Top Bar Button - when hidden */}
+				{!topBarVisible && (
+					<Box component={'div'} className={'show-top-bar-btn'} onClick={showTopBar}>
+						<KeyboardArrowDownIcon className={'info-icon'} />
+					</Box>
+				)}
 				{/* Top Bar */}
 				{topBarVisible && (
-					<Stack className={'top-bar'}>
+					<Stack className={`top-bar ${topBarVisible ? 'show' : 'hide'}`}>
 						<Stack className={'container'}>
 							<Box component={'div'} className={'top-bar-left'}>
 								<Box 
@@ -270,9 +221,9 @@ const Top = () => {
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/agent'}>
-                                <span className={'nav-link'}>MEASURER</span>
-								</Link>
-								<span className={'nav-separator'}>/</span>
+								<span className={'nav-link'}>MEASURER</span>
+							</Link>
+							<span className={'nav-separator'}>/</span>
 							<Link href={'/installer'}>
 								<span className={'nav-link'}>INSTALLERS</span>
 							</Link>
@@ -280,8 +231,6 @@ const Top = () => {
 							<Link href={'/community'}>
 								<span className={'nav-link'}>community</span>
 							</Link>
-							
-							
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/cs'}>
 								<span className={'nav-link'}>CONTACT US</span>
@@ -292,7 +241,6 @@ const Top = () => {
 							<Link href={'/'}>
 								<Box component={'div'} className={'kadhavu-logo'}>
 									<Box component={'div'} className={'logo-icon'}>
-										{/* Logo icon - uy shakli */}
 										<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
 									</Box>
 									<span className={'logo-text'}>PNS DEV</span>

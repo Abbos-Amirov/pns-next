@@ -16,6 +16,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import TopBasic from '../TopBasic';
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
@@ -153,6 +154,9 @@ const withLayoutBasic = (Component: any) => {
 						<meta name={'title'} content={`PNS_DEV`} />
 					</Head>
 					<Stack id="pc-wrap">
+
+					<TopBasic/>
+					
 						{/* Dark Theme Navigation */}
 						<Stack className={'navbar-dark'}>
 							<Stack className={'container'}>
