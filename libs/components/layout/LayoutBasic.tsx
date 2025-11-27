@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
-import { Stack, Box, Typography, IconButton, Button } from '@mui/material';
+import { Stack, Box, Typography, IconButton, Button, Menu, MenuItem } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import { useReactiveVar } from '@apollo/client';
@@ -12,9 +12,8 @@ import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LanguageIcon from '@mui/icons-material/Language';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -26,6 +25,9 @@ const withLayoutBasic = (Component: any) => {
 		const device = useDeviceDetect();
 		const [authHeader, setAuthHeader] = useState<boolean>(false);
 		const user = useReactiveVar(userVar);
+		const [lang, setLang] = useState<string | null>('en');
+		const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
+		const langOpen = Boolean(langAnchor);
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -91,6 +93,34 @@ const withLayoutBasic = (Component: any) => {
 			const jwt = getJwtToken();
 			if (jwt) updateUserInfo(jwt);
 		}, []);
+
+		useEffect(() => {
+			if (localStorage.getItem('locale') === null) {
+				localStorage.setItem('locale', 'en');
+				setLang('en');
+			} else {
+				setLang(localStorage.getItem('locale'));
+			}
+		}, [router]);
+
+		/** HANDLERS **/
+		const handleLangClick = (e: React.MouseEvent<HTMLElement>) => {
+			setLangAnchor(e.currentTarget);
+		};
+
+		const handleLangClose = () => {
+			setLangAnchor(null);
+		};
+
+		const handleLangChoice = useCallback(
+			async (locale: string) => {
+				setLang(locale);
+				localStorage.setItem('locale', locale);
+				setLangAnchor(null);
+				await router.push(router.asPath, router.asPath, { locale });
+			},
+			[router],
+		);
 
 		/** HANDLERS **/
 
@@ -171,11 +201,51 @@ const withLayoutBasic = (Component: any) => {
 									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
 										<PhoneIcon className={'call-icon'} />
 										<span>Call Us</span>
-										<span className={'phone-number'}>(+91) 170-123-023</span>
+										<span className={'phone-number'}>(+82) 010-8200-5998</span>
 									</Box>
-									<IconButton className={'action-btn-dark'}>
-										<SearchIcon />
+									{/* Language Switcher */}
+									<IconButton 
+										className={'lang-switcher-btn'}
+										onClick={handleLangClick}
+									>
+										<LanguageIcon />
 									</IconButton>
+									<Menu
+										anchorEl={langAnchor}
+										open={langOpen}
+										onClose={handleLangClose}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'right',
+										}}
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'right',
+										}}
+										className={'lang-menu'}
+									>
+										<MenuItem 
+											onClick={() => handleLangChoice('en')} 
+											selected={lang === 'en'}
+											className={'lang-menu-item'}
+										>
+											English
+										</MenuItem>
+										<MenuItem 
+											onClick={() => handleLangChoice('ru')} 
+											selected={lang === 'ru'}
+											className={'lang-menu-item'}
+										>
+											Русский
+										</MenuItem>
+										<MenuItem 
+											onClick={() => handleLangChoice('kr')} 
+											selected={lang === 'kr'}
+											className={'lang-menu-item'}
+										>
+											한국어
+										</MenuItem>
+									</Menu>
 									<IconButton className={'action-btn-dark'}>
 										<MenuIcon />
 									</IconButton>
