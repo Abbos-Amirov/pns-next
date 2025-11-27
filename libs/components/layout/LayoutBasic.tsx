@@ -197,9 +197,9 @@ const withLayoutBasic = (Component: any) => {
 										onMouseEnter={handleMeasurerClick}
 										onMouseLeave={handleMeasurerClose}
 									>
-										<Link href={'/agent'}>
+										<Link href={'/agent'} style={{ textDecoration: 'none' }}>
 											<span className={'nav-link-dark measurer-link-dark'}>
-												MEASURER
+											EXPERTS
 												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
 											</span>
 										</Link>
@@ -221,15 +221,29 @@ const withLayoutBasic = (Component: any) => {
 											className={'measurer-menu-dark'}
 										>
 											<MenuItem 
-												onClick={handleMeasurerClose}
-												component={Link}
-												href={'/installer'}
+												onClick={() => {
+													handleMeasurerClose();
+													router.push('/agent');
+												}}
+												className={'measurer-menu-item-dark'}
+											>
+												MEASURER
+											</MenuItem>
+											<MenuItem 
+												onClick={() => {
+													handleMeasurerClose();
+													router.push('/installer');
+												}}
 												className={'measurer-menu-item-dark'}
 											>
 												INSTALLERS
 											</MenuItem>
 										</Menu>
 									</Box>
+									<span className={'nav-separator-dark'}>/</span>
+									<Link href={'/city'}>
+										<span className={'nav-link-dark'}>CITY</span>
+									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/community'}>
 										<span className={'nav-link-dark'}>community</span>

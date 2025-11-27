@@ -6,6 +6,7 @@
 
 @import '/scss/pc/property/property';
 @import '/scss/pc/property/detail.scss';
+@import '/scss/pc/city/city';
 
 @import '/scss/pc/agent/agent';
 @import '/scss/pc/agent/detail.scss';
@@ -449,10 +450,15 @@ body::-webkit-scrollbar {
 							.measurer-dropdown {
 								position: relative;
 								display: inline-block;
+								a {
+									text-decoration: none;
+									display: inline-block;
+								}
 								.measurer-link {
 									display: flex;
 									align-items: center;
 									gap: 4px;
+									cursor: pointer;
 									.dropdown-icon {
 										font-size: 16px;
 										transition: transform 0.3s ease;
@@ -1055,10 +1061,15 @@ body::-webkit-scrollbar {
 				.measurer-dropdown-dark {
 					position: relative;
 					display: inline-block;
+					a {
+						text-decoration: none;
+						display: inline-block;
+					}
 					.measurer-link-dark {
 						display: flex;
 						align-items: center;
 						gap: 4px;
+						cursor: pointer;
 						.dropdown-icon-dark {
 							font-size: 16px;
 							color: #ffffff;

@@ -236,9 +236,9 @@ const Top = () => {
 								onMouseEnter={handleMeasurerClick}
 								onMouseLeave={handleMeasurerClose}
 							>
-								<Link href={'/agent'}>
+								<Link href={'/agent'} style={{ textDecoration: 'none' }}>
 									<span className={'nav-link measurer-link'}>
-										MEASURER
+										EXPERTS
 										<KeyboardArrowDownIcon className={'dropdown-icon'} />
 									</span>
 								</Link>
@@ -260,15 +260,30 @@ const Top = () => {
 									className={'measurer-menu'}
 								>
 									<MenuItem 
-										onClick={handleMeasurerClose}
-										component={Link}
-										href={'/installer'}
+										onClick={() => {
+											handleMeasurerClose();
+											router.push('/agent');
+										}}
+										className={'measurer-menu-item'}
+									>
+										MEASURER
+									</MenuItem>
+									<MenuItem 
+										onClick={() => {
+											handleMeasurerClose();
+											router.push('/installer');
+										}}
 										className={'measurer-menu-item'}
 									>
 										INSTALLERS
 									</MenuItem>
 								</Menu>
+								
 							</Box>
+							<span className={'nav-separator'}>/</span>
+							<Link href={'/city'}>
+								<span className={'nav-link'}>CITY</span>
+							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/community'}>
 								<span className={'nav-link'}>community</span>
