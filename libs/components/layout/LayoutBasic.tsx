@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -28,6 +29,8 @@ const withLayoutBasic = (Component: any) => {
 		const [lang, setLang] = useState<string | null>('en');
 		const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
 		const langOpen = Boolean(langAnchor);
+		const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
+		const measurerOpen = Boolean(measurerAnchor);
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -122,6 +125,14 @@ const withLayoutBasic = (Component: any) => {
 			[router],
 		);
 
+		const handleMeasurerClick = (event: React.MouseEvent<HTMLElement>) => {
+			setMeasurerAnchor(event.currentTarget);
+		};
+
+		const handleMeasurerClose = () => {
+			setMeasurerAnchor(null);
+		};
+
 		/** HANDLERS **/
 
 		if (device == 'mobile') {
@@ -180,13 +191,45 @@ const withLayoutBasic = (Component: any) => {
 										<span className={'nav-link-dark'}>PRODUCTS</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
-									<Link href={'/agent'}>
-									<span className={'nav-link-dark'}>MEASURER</span>
-									</Link>
-									<span className={'nav-separator-dark'}>/</span>
-									<Link href={'/installer'}>
-										<span className={'nav-link-dark'}>INSTALLERS</span>
-									</Link>
+									<Box 
+										component={'div'} 
+										className={'measurer-dropdown-dark'}
+										onMouseEnter={handleMeasurerClick}
+										onMouseLeave={handleMeasurerClose}
+									>
+										<Link href={'/agent'}>
+											<span className={'nav-link-dark measurer-link-dark'}>
+												MEASURER
+												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
+											</span>
+										</Link>
+										<Menu
+											anchorEl={measurerAnchor}
+											open={measurerOpen}
+											onClose={handleMeasurerClose}
+											MenuListProps={{
+												onMouseLeave: handleMeasurerClose,
+											}}
+											anchorOrigin={{
+												vertical: 'bottom',
+												horizontal: 'left',
+											}}
+											transformOrigin={{
+												vertical: 'top',
+												horizontal: 'left',
+											}}
+											className={'measurer-menu-dark'}
+										>
+											<MenuItem 
+												onClick={handleMeasurerClose}
+												component={Link}
+												href={'/installer'}
+												className={'measurer-menu-item-dark'}
+											>
+												INSTALLERS
+											</MenuItem>
+										</Menu>
+									</Box>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/community'}>
 										<span className={'nav-link-dark'}>community</span>

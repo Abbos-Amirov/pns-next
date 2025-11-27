@@ -60,6 +60,8 @@ const Top = () => {
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [topBarVisible, setTopBarVisible] = useState(true);
+	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
+	const measurerOpen = Boolean(measurerAnchor);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -134,6 +136,14 @@ const Top = () => {
 		} catch (err: any) {
 			console.log('ERROR, logoutHandler:', err.message);
 		}
+	};
+
+	const handleMeasurerClick = (event: React.MouseEvent<HTMLElement>) => {
+		setMeasurerAnchor(event.currentTarget);
+	};
+
+	const handleMeasurerClose = () => {
+		setMeasurerAnchor(null);
 	};
 
 	if (device == 'mobile') {
@@ -220,13 +230,45 @@ const Top = () => {
 								<span className={'nav-link'}>PRODUCTS</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
-							<Link href={'/agent'}>
-								<span className={'nav-link'}>MEASURER</span>
-							</Link>
-							<span className={'nav-separator'}>/</span>
-							<Link href={'/installer'}>
-								<span className={'nav-link'}>INSTALLERS</span>
-							</Link>
+							<Box 
+								component={'div'} 
+								className={'measurer-dropdown'}
+								onMouseEnter={handleMeasurerClick}
+								onMouseLeave={handleMeasurerClose}
+							>
+								<Link href={'/agent'}>
+									<span className={'nav-link measurer-link'}>
+										MEASURER
+										<KeyboardArrowDownIcon className={'dropdown-icon'} />
+									</span>
+								</Link>
+								<Menu
+									anchorEl={measurerAnchor}
+									open={measurerOpen}
+									onClose={handleMeasurerClose}
+									MenuListProps={{
+										onMouseLeave: handleMeasurerClose,
+									}}
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'left',
+									}}
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'left',
+									}}
+									className={'measurer-menu'}
+								>
+									<MenuItem 
+										onClick={handleMeasurerClose}
+										component={Link}
+										href={'/installer'}
+										className={'measurer-menu-item'}
+									>
+										INSTALLERS
+									</MenuItem>
+								</Menu>
+							</Box>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/community'}>
 								<span className={'nav-link'}>community</span>
