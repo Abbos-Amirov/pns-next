@@ -12,7 +12,6 @@ import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
-import MenuIcon from '@mui/icons-material/Menu';
 import LanguageIcon from '@mui/icons-material/Language';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -200,7 +199,7 @@ const withLayoutBasic = (Component: any) => {
 								<Box component={'div'} className={'nav-right-dark'}>
 									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
 										<PhoneIcon className={'call-icon'} />
-										<span>Call Us</span>
+										
 										<span className={'phone-number'}>(+82) 010-8200-5998</span>
 									</Box>
 									{/* Language Switcher */}
@@ -246,9 +245,15 @@ const withLayoutBasic = (Component: any) => {
 											한국어
 										</MenuItem>
 									</Menu>
-									<IconButton className={'action-btn-dark'}>
-										<MenuIcon />
-									</IconButton>
+									{/* Auth Buttons */}
+									<Box component={'div'} className={'auth-buttons-dark'}>
+										<Button className={'login-btn-dark'}>
+											LOGIN
+										</Button>
+										<Button className={'signup-btn-dark'}>
+											SIGNUP
+										</Button>
+									</Box>
 								</Box>
 							</Stack>
 						</Stack>
