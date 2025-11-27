@@ -187,9 +187,9 @@ const Top = () => {
 				<Link href={'/property'}>
 					<div>{t('Properties')}</div>
 				</Link>
-				<Link href={'/agent'}>
-					<div> {t('Agents')} </div>
-				</Link>
+			<Link href={'/installer'}>
+				<div> {t('Installers')} </div>
+			</Link>
 				<Link href={'/community?articleCategory=FREE'}>
 					<div> {t('Community')} </div>
 				</Link>
@@ -251,11 +251,15 @@ const Top = () => {
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/agent'}>
-								<span className={'nav-link'}>MEASURER</span>
+                                <span className={'nav-link'}>MEASURER</span>
+								</Link>
+								<span className={'nav-separator'}>/</span>
+							<Link href={'/installer'}>
+								<span className={'nav-link'}>INSTALLERS</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
-							<Link href={'/community?articleCategory=FREE'}>
-								<span className={'nav-link'}>DOOR INSTALLER</span>
+							<Link href={'/community'}>
+								<span className={'nav-link'}>community</span>
 							</Link>
 							
 							

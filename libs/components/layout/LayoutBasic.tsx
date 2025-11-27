@@ -148,11 +148,15 @@ const withLayoutBasic = (Component: any) => {
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/agent'}>
-										<span className={'nav-link-dark'}>MEASURER</span>
+									<span className={'nav-link-dark'}>MEASURER</span>
+									</Link>
+									<span className={'nav-separator-dark'}>/</span>
+									<Link href={'/installer'}>
+										<span className={'nav-link-dark'}>INSTALLERS</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/community'}>
-										<span className={'nav-link-dark'}>DOOR INSTALLER</span>
+										<span className={'nav-link-dark'}>community</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 								
