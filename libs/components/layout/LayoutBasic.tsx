@@ -248,9 +248,15 @@ const withLayoutBasic = (Component: any) => {
 									<Link href={'/community'}>
 										<span className={'nav-link-dark'}>community</span>
 									</Link>
+									{user?._id && (
+										<>
+											<span className={'nav-separator-dark'}>/</span>
+											<Link href={'/mypage'}>
+												<span className={'nav-link-dark'}>MYPAGE</span>
+											</Link>
+										</>
+									)}
 									<span className={'nav-separator-dark'}>/</span>
-								
-									
 									<Link href={'/cs'}>
 										<span className={'nav-link-dark'}>CONTACT US</span>
 									</Link>
@@ -306,21 +312,38 @@ const withLayoutBasic = (Component: any) => {
 											한국어
 										</MenuItem>
 									</Menu>
-									{/* Auth Buttons */}
-									<Box component={'div'} className={'auth-buttons-dark'}>
-										<Button 
-											className={'login-btn-dark'}
-											onClick={() => router.push('/account/join?mode=login')}
-										>
-											LOGIN
-										</Button>
-										<Button 
-											className={'signup-btn-dark'}
-											onClick={() => router.push('/account/join?mode=signup')}
-										>
-											SIGNUP
-										</Button>
-									</Box>
+									{/* Auth Buttons or User Profile */}
+									{user?._id ? (
+										<Box component={'div'} className={'user-profile-section-dark'}>
+											<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+												<Box className={'user-avatar-small-dark'}>
+													<img 
+														src={user?.memberImage || '/img/profile/defaultUser.svg'} 
+														alt={user?.memberNick || 'User'} 
+														onError={(e) => {
+															(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
+														}}
+													/>
+												</Box>
+												<Typography className={'user-name-text-dark'}>{user?.memberNick || 'User'}</Typography>
+											</Link>
+										</Box>
+									) : (
+										<Box component={'div'} className={'auth-buttons-dark'}>
+											<Button 
+												className={'login-btn-dark'}
+												onClick={() => router.push('/account/join?mode=login')}
+											>
+												LOGIN
+											</Button>
+											<Button 
+												className={'signup-btn-dark'}
+												onClick={() => router.push('/account/join?mode=signup')}
+											>
+												SIGNUP
+											</Button>
+										</Box>
+									)}
 								</Box>
 							</Stack>
 						</Stack>

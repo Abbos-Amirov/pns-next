@@ -3,7 +3,7 @@ import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
 import { sweetConfirmAlert } from '../sweetAlert';
-import { Stack, Box, IconButton } from '@mui/material';
+import { Stack, Box, IconButton, Typography } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -288,6 +288,14 @@ const Top = () => {
 							<Link href={'/community'}>
 								<span className={'nav-link'}>community</span>
 							</Link>
+							{user?._id && (
+								<>
+									<span className={'nav-separator'}>/</span>
+									<Link href={'/mypage'}>
+										<span className={'nav-link'}>MYPAGE</span>
+									</Link>
+								</>
+							)}
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/cs'}>
 								<span className={'nav-link'}>CONTACT US</span>
@@ -358,20 +366,37 @@ const Top = () => {
 									한국어
 								</MenuItem>
 							</Menu>
-							<Box component={'div'} className={'auth-buttons'}>
-								<Button 
-									className={'login-btn'}
-									onClick={() => router.push('/account/join?mode=login')}
-								>
-									LOGIN
-								</Button>
-								<Button 
-									className={'signup-btn'}
-									onClick={() => router.push('/account/join?mode=signup')}
-								>
-									SIGN UP
-								</Button>
-							</Box>
+							{user?._id ? (
+								<Box component={'div'} className={'user-profile-section'}>
+									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+										<Box className={'user-avatar-small'}>
+											<img 
+												src={user?.memberImage || '/img/profile/defaultUser.svg'} 
+												alt={user?.memberNick || 'User'} 
+												onError={(e) => {
+													(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
+												}}
+											/>
+										</Box>
+										<Typography className={'user-name-text'}>{user?.memberNick || 'User'}</Typography>
+									</Link>
+								</Box>
+							) : (
+								<Box component={'div'} className={'auth-buttons'}>
+									<Button 
+										className={'login-btn'}
+										onClick={() => router.push('/account/join?mode=login')}
+									>
+										LOGIN
+									</Button>
+									<Button 
+										className={'signup-btn'}
+										onClick={() => router.push('/account/join?mode=signup')}
+									>
+										SIGN UP
+									</Button>
+								</Box>
+							)}
 						</Box>
 					</Stack>
 				</Stack>
