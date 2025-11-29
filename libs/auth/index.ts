@@ -23,10 +23,11 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 			updateStorage({ jwtToken });
 			updateUserInfo(jwtToken);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		console.warn('login err', err);
-		logOut();
-		throw new Error('Login Err');
+		// Xato xabari allaqachon sweetMixinErrorAlert orqali ko'rsatilgan
+		// Faqat error ni throw qilamiz
+		throw err;
 	}
 };
 
@@ -49,18 +50,56 @@ const requestJwtToken = async ({
 		console.log('---------- login ----------');
 		const { accessToken } = result?.data?.login;
 
+		if (!accessToken) {
+			throw new Error('No access token received from server');
+		}
+
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
-		switch (err.graphQLErrors[0].message) {
-			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
-				break;
-			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
-				break;
+		console.log('request login token err', err);
+		let errorMessage = 'Login failed. Please try again.';
+		
+		// GraphQL xatolarini tekshirish
+		if (err?.graphQLErrors && Array.isArray(err.graphQLErrors) && err.graphQLErrors.length > 0) {
+			const graphQLError = err.graphQLErrors[0];
+			const errorMsg = graphQLError?.message || graphQLError || 'Unknown error';
+			
+			switch (errorMsg) {
+				case 'Definer: login and password do not match':
+					errorMessage = 'Please check your password again';
+					break;
+				case 'Definer: user has been blocked!':
+					errorMessage = 'User has been blocked!';
+					break;
+				case 'Definer: user not found':
+				case 'Definer: memberNick not found':
+					errorMessage = 'User with this nickname does not exist';
+					break;
+				default:
+					errorMessage = typeof errorMsg === 'string' ? errorMsg : errorMessage;
+			}
+		} else if (err?.networkError) {
+			// Network xatolari
+			const networkErr = err.networkError;
+			if (networkErr?.message) {
+				errorMessage = `Network error: ${networkErr.message}`;
+			} else {
+				errorMessage = 'Network error. Please check your connection and try again.';
+			}
+		} else if (err?.message) {
+			// Umumiy xato xabari
+			errorMessage = err.message;
+		} else if (typeof err === 'string') {
+			// Agar err string bo'lsa
+			errorMessage = err;
+		} else {
+			// Boshqa holatlar
+			errorMessage = 'Login failed. Please try again.';
 		}
-		throw new Error('token error');
+		
+		// Xato xabarini ko'rsatish
+		await sweetMixinErrorAlert(errorMessage);
+		throw new Error(errorMessage);
 	}
 };
 
@@ -72,10 +111,11 @@ export const signUp = async (nick: string, password: string, phone: string, type
 			updateStorage({ jwtToken });
 			updateUserInfo(jwtToken);
 		}
-	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		throw new Error('Login Err');
+	} catch (err: any) {
+		console.warn('signup err', err);
+		// Xato xabari allaqachon sweetMixinErrorAlert orqali ko'rsatilgan
+		// Faqat error ni throw qilamiz
+		throw err;
 	}
 };
 
@@ -101,21 +141,60 @@ const requestSignUpJwtToken = async ({
 			fetchPolicy: 'network-only',
 		});
 
-		console.log('---------- login ----------');
+		console.log('---------- signup ----------');
 		const { accessToken } = result?.data?.signup;
+
+		if (!accessToken) {
+			throw new Error('No access token received from server');
+		}
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
-		switch (err.graphQLErrors[0].message) {
-			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
-				break;
-			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
-				break;
+		console.log('request signup token err', err);
+		let errorMessage = 'Signup failed. Please try again.';
+		
+		// GraphQL xatolarini tekshirish
+		if (err?.graphQLErrors && Array.isArray(err.graphQLErrors) && err.graphQLErrors.length > 0) {
+			const graphQLError = err.graphQLErrors[0];
+			const errorMsg = graphQLError?.message || graphQLError || 'Unknown error';
+			
+			switch (errorMsg) {
+				case 'Definer: login and password do not match':
+					errorMessage = 'Please check your password again';
+					break;
+				case 'Definer: user has been blocked!':
+					errorMessage = 'User has been blocked!';
+					break;
+				case 'Definer: user already exists':
+				case 'Definer: memberNick already exists':
+				case 'Definer: memberPhone already exists':
+					errorMessage = 'User with this nickname or phone already exists';
+					break;
+				default:
+					errorMessage = typeof errorMsg === 'string' ? errorMsg : errorMessage;
+			}
+		} else if (err?.networkError) {
+			// Network xatolari
+			const networkErr = err.networkError;
+			if (networkErr?.message) {
+				errorMessage = `Network error: ${networkErr.message}`;
+			} else {
+				errorMessage = 'Network error. Please check your connection and try again.';
+			}
+		} else if (err?.message) {
+			// Umumiy xato xabari
+			errorMessage = err.message;
+		} else if (typeof err === 'string') {
+			// Agar err string bo'lsa
+			errorMessage = err;
+		} else {
+			// Boshqa holatlar
+			errorMessage = 'Signup failed. Please try again.';
 		}
-		throw new Error('token error');
+		
+		// Xato xabarini ko'rsatish
+		await sweetMixinErrorAlert(errorMessage);
+		throw new Error(errorMessage);
 	}
 };
 

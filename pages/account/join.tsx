@@ -24,6 +24,7 @@ const Join: NextPage = () => {
 	const device = useDeviceDetect();
 	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: 'USER' });
 	const [showPassword, setShowPassword] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	
 	// URL dan mode parametrini olish (login yoki signup)
 	const mode = router.query.mode as string;
@@ -47,7 +48,16 @@ const Join: NextPage = () => {
 		const checked = e.target.checked;
 		if (checked) {
 			const value = e.target.name;
-			handleInput('type', value);
+			// Backend uchun to'g'ri type format
+			let backendType = 'USER';
+			if (value === 'Measurer') {
+				backendType = 'AGENT';
+			} else if (value === 'INSTALLER') {
+				backendType = 'INSTALLER';
+			} else if (value === 'USER') {
+				backendType = 'USER';
+			}
+			handleInput('type', backendType);
 		} else {
 			handleInput('type', 'USER');
 		}
@@ -65,10 +75,15 @@ const Join: NextPage = () => {
 				await sweetMixinErrorAlert('Please fill in all required fields');
 				return;
 			}
+			setIsLoading(true);
 			await logIn(input.nick, input.password);
+			setIsLoading(false);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			setIsLoading(false);
+			// Xato xabari allaqachon libs/auth/index.ts da ko'rsatilgan
+			// Bu yerda faqat console ga yozamiz
+			console.error('Login error:', err);
 		}
 	}, [input, router]);
 
@@ -78,10 +93,16 @@ const Join: NextPage = () => {
 				await sweetMixinErrorAlert('Please fill in all required fields');
 				return;
 			}
+			setIsLoading(true);
 			await signUp(input.nick, input.password, input.phone, input.type);
+			setIsLoading(false);
+			// Muvaffaqiyatli signup bo'lgandan keyin home page ga yo'naltirish
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			setIsLoading(false);
+			// Xato xabari allaqachon libs/auth/index.ts da ko'rsatilgan
+			// Bu yerda faqat console ga yozamiz
+			console.error('Signup error:', err);
 		}
 	}, [input, router]);
 
@@ -229,7 +250,7 @@ const Join: NextPage = () => {
 												<Checkbox
 													name={'Measurer'}
 													onChange={checkUserTypeHandler}
-													checked={input?.type == 'Measurer'}
+													checked={input?.type == 'AGENT'}
 												/>
 											}
 											label="Measurer"
@@ -252,13 +273,14 @@ const Join: NextPage = () => {
 							<Button
 								className={'submit-btn'}
 								disabled={
-									loginView
+									isLoading ||
+									(loginView
 										? input.nick == '' || input.password == ''
-										: input.nick == '' || input.password == '' || input.phone == '' || input.type == ''
+										: input.nick == '' || input.password == '' || input.phone == '' || input.type == '')
 								}
 								onClick={loginView ? doLogin : doSignUp}
 							>
-								{loginView ? 'Log In' : 'Sign Up'}
+								{isLoading ? 'Loading...' : loginView ? 'Log In' : 'Sign Up'}
 							</Button>
 						</Stack>
 
