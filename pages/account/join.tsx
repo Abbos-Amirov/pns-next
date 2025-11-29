@@ -267,15 +267,16 @@ const Join: NextPage = () => {
 							<Box className={'promo-image'}>
 								<Box className={'promo-text-top'}>
 									<Typography className={'promo-title'}>
-										Wander, Explore, Experience. ❤️
+									Professional & Trustworth ❤️
 									</Typography>
 									<Typography className={'promo-subtitle'}>
-										Discover new places, embrace adventures, & create unforgettable travel memories worldwide.
+									Quality You See. Comfort You Feel.
+									Experience durable, stylish, and energy-efficient doors and windows crafted for every home.
 									</Typography>
 								</Box>
 								<Box className={'promo-text-bottom'}>
 									<Typography className={'promo-main'}>
-										Escape the Ordinary, Embrace the Journey!
+									Open your home the smart way.
 									</Typography>
 									<Typography className={'promo-secondary'}>
 										Experience the world your way!
