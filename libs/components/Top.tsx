@@ -359,12 +359,18 @@ const Top = () => {
 								</MenuItem>
 							</Menu>
 							<Box component={'div'} className={'auth-buttons'}>
-								<Button className={'login-btn'}>
+								<Button 
+									className={'login-btn'}
+									onClick={() => router.push('/account/join?mode=login')}
+								>
 									LOGIN
 								</Button>
-								<Button className={'signup-btn'}>
+								<Button 
+									className={'signup-btn'}
+									onClick={() => router.push('/account/join?mode=signup')}
+								>
 									SIGN UP
-							</Button>
+								</Button>
 							</Box>
 						</Box>
 					</Stack>

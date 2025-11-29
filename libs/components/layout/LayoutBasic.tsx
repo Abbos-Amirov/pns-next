@@ -308,10 +308,16 @@ const withLayoutBasic = (Component: any) => {
 									</Menu>
 									{/* Auth Buttons */}
 									<Box component={'div'} className={'auth-buttons-dark'}>
-										<Button className={'login-btn-dark'}>
+										<Button 
+											className={'login-btn-dark'}
+											onClick={() => router.push('/account/join?mode=login')}
+										>
 											LOGIN
 										</Button>
-										<Button className={'signup-btn-dark'}>
+										<Button 
+											className={'signup-btn-dark'}
+											onClick={() => router.push('/account/join?mode=signup')}
+										>
 											SIGNUP
 										</Button>
 									</Box>
