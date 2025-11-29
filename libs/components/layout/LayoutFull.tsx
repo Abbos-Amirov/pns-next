@@ -12,6 +12,7 @@ import { userVar } from '../../../apollo/store';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import TopBasic from '../TopBasic';
 
 const withLayoutFull = (Component: any) => {
 	return (props: any) => {
@@ -36,7 +37,7 @@ const withLayoutFull = (Component: any) => {
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
-							<Top />
+							<TopBasic />
 						</Stack>
 
 						<Stack id={'main'}>

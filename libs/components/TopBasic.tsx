@@ -60,6 +60,8 @@ const TopBasic = () => {
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [topBarVisible, setTopBarVisible] = useState(true);
+	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
+	const measurerOpen = Boolean(measurerAnchor);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -136,6 +138,14 @@ const TopBasic = () => {
 		}
 	};
 
+	const handleMeasurerClick = (event: React.MouseEvent<HTMLElement>) => {
+		setMeasurerAnchor(event.currentTarget);
+	};
+
+	const handleMeasurerClose = () => {
+		setMeasurerAnchor(null);
+	};
+
 	if (device == 'mobile') {
 		return (
 			<Stack className={'top'}>
@@ -208,6 +218,8 @@ const TopBasic = () => {
 					</Stack>
 				)}
 
+				{/* Main Navigation */}
+			
 			</Stack>
 		);
 	}
