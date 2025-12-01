@@ -12,10 +12,14 @@ import {
 	Menu,
 	Fade,
 	MenuItem,
+	Chip,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
+import Moment from 'react-moment';
+
+type Order = 'asc' | 'desc';
 
 interface Data {
 	category: string;
@@ -26,8 +30,6 @@ interface Data {
 	status: string;
 	id?: string;
 }
-
-type Order = 'asc' | 'desc';
 
 interface HeadCell {
 	disablePadding: boolean;
@@ -79,8 +81,6 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-	const { onSelectAllClick } = props;
-
 	return (
 		<TableHead>
 			<TableRow>
@@ -98,25 +98,40 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 	);
 }
 
+interface InquiryArticle {
+	_id: string;
+	category: string;
+	title: string;
+	content?: string;
+	writer?: string;
+	writerName?: string;
+	writerImage?: string;
+	date?: string;
+	qna_case_status?: string;
+	status?: string;
+	createdAt?: string;
+	updatedAt?: string;
+}
+
 interface InquiryPanelListType {
 	dense?: boolean;
-	membersData?: any;
-	searchMembers?: any;
+	inquiryArticles?: InquiryArticle[];
 	anchorEl?: any;
 	handleMenuIconClick?: any;
 	handleMenuIconClose?: any;
-	generateMentorTypeHandle?: any;
+	updateArticleHandler?: any;
+	removeArticleHandler?: any;
 }
 
 export const InquiryList = (props: InquiryPanelListType) => {
 	const {
 		dense,
-		membersData,
-		searchMembers,
+		inquiryArticles = [],
 		anchorEl,
 		handleMenuIconClick,
 		handleMenuIconClose,
-		generateMentorTypeHandle,
+		updateArticleHandler,
+		removeArticleHandler,
 	} = props;
 	const router = useRouter();
 
@@ -124,66 +139,161 @@ export const InquiryList = (props: InquiryPanelListType) => {
 	/** LIFECYCLES **/
 	/** HANDLERS **/
 
+	const getCategoryColor = (category: string) => {
+		const categories: { [key: string]: { bg: string; color: string } } = {
+			product: { bg: 'rgba(22, 70, 193, 0.1)', color: '#1646C1' },
+			payment: { bg: 'rgba(233, 44, 40, 0.1)', color: '#E92C28' },
+			service: { bg: 'rgba(139, 69, 19, 0.1)', color: '#8B4513' },
+			technical: { bg: 'rgba(34, 154, 22, 0.1)', color: '#229a16' },
+			other: { bg: 'rgba(117, 117, 117, 0.1)', color: '#757575' },
+		};
+		return categories[category?.toLowerCase()] || { bg: 'rgba(139, 69, 19, 0.1)', color: '#8B4513' };
+	};
+
+	const getStatusColor = (status: string) => {
+		switch (status?.toUpperCase()) {
+			case 'PENDING':
+				return { bg: 'rgba(255, 152, 0, 0.1)', color: '#FF9800', className: 'status-pending' };
+			case 'RESOLVED':
+				return { bg: 'rgba(34, 154, 22, 0.1)', color: '#229a16', className: 'status-resolved' };
+			case 'ACTIVE':
+				return { bg: 'rgba(22, 70, 193, 0.1)', color: '#1646C1', className: 'status-active' };
+			case 'CLOSED':
+				return { bg: 'rgba(117, 117, 117, 0.1)', color: '#757575', className: 'status-closed' };
+			default:
+				return { bg: 'rgba(139, 69, 19, 0.1)', color: '#8B4513', className: 'status-default' };
+		}
+	};
+
 	return (
 		<Stack>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} className={'inquiry-table'}>
 					{/*@ts-ignore*/}
-					<EnhancedTableHead />
+					<EnhancedTableHead
+						numSelected={0}
+						onSelectAllClick={() => {}}
+						rowCount={inquiryArticles.length}
+						onRequestSort={() => {}}
+						order={'asc'}
+						orderBy={''}
+					/>
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
+						{inquiryArticles.length === 0 && (
+							<TableRow>
+								<TableCell align="center" colSpan={5} className={'inquiry-no-data'}>
+									<Typography variant={'body2'} className={'inquiry-no-data-text'}>
+										No inquiry articles found
+									</Typography>
+								</TableCell>
+							</TableRow>
+						)}
 
-							let status_class_name = '';
+						{inquiryArticles.length !== 0 &&
+							inquiryArticles.map((article: InquiryArticle, index: number) => {
+								const categoryColors = getCategoryColor(article.category);
+								const statusColors = getStatusColor(article.qna_case_status || article.status || '');
+								const writerImage = article.writerImage || '/img/profile/defaultUser.svg';
+								const writerName = article.writer || article.writerName || 'User';
 
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=$'{member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="center">
-										<Button onClick={(e: any) => handleMenuIconClick(e, index)} className={'badge success'}>
-											member.mb_type
-										</Button>
-
-										<Menu
-											className={'menu-modal'}
-											MenuListProps={{
-												'aria-labelledby': 'fade-button',
-											}}
-											anchorEl={anchorEl[index]}
-											open={Boolean(anchorEl[index])}
-											onClose={handleMenuIconClose}
-											TransitionComponent={Fade}
-											sx={{ p: 1 }}
-										>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'mentor', 'originate')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													MENTOR
+								return (
+									<TableRow hover key={article._id || index} className={'inquiry-table-row'}>
+										<TableCell align="left" className={'inquiry-category-cell'}>
+											<Chip
+												label={article.category || 'N/A'}
+												className={`inquiry-category-chip category-${article.category?.toLowerCase() || 'default'}`}
+											/>
+										</TableCell>
+										<TableCell align="left" className={'inquiry-title-cell'}>
+											<Typography variant={'body2'} className={'inquiry-title-text'}>
+												{article.title || 'N/A'}
+											</Typography>
+										</TableCell>
+										<TableCell align="left" className={'inquiry-writer-cell'}>
+											<Stack direction={'row'} alignItems={'center'} spacing={1.5}>
+												<Avatar
+													alt={writerName}
+													src={writerImage}
+													className={'inquiry-writer-avatar'}
+												/>
+												<Typography variant={'body2'} className={'inquiry-writer-name'}>
+													{writerName}
 												</Typography>
-											</MenuItem>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'user', 'remove')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													USER
+											</Stack>
+										</TableCell>
+										<TableCell align="left" className={'inquiry-date-cell'}>
+											{article.createdAt ? (
+												<Moment format="YYYY-MM-DD" className={'inquiry-date-text'}>
+													{article.createdAt}
+												</Moment>
+											) : (
+												<Typography variant={'body2'} className={'inquiry-date-text'}>
+													{article.date || 'N/A'}
 												</Typography>
-											</MenuItem>
-										</Menu>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+											)}
+										</TableCell>
+										<TableCell align="center" className={'inquiry-status-cell'}>
+											<Button
+												onClick={(e: any) => handleMenuIconClick && handleMenuIconClick(e, index)}
+												className={`inquiry-status-badge ${statusColors.className || ''}`}
+											>
+												{article.qna_case_status || article.status || 'N/A'}
+											</Button>
+
+											{handleMenuIconClick && anchorEl && (
+												<Menu
+													className={'menu-modal inquiry-status-menu'}
+													MenuListProps={{
+														'aria-labelledby': 'fade-button',
+													}}
+													anchorEl={anchorEl[index]}
+													open={Boolean(anchorEl[index])}
+													onClose={handleMenuIconClose}
+													TransitionComponent={Fade}
+													sx={{ p: 1 }}
+												>
+													<MenuItem
+														onClick={() => {
+															if (updateArticleHandler) {
+																updateArticleHandler({ _id: article._id, qna_case_status: 'PENDING' });
+															}
+															if (handleMenuIconClose) handleMenuIconClose();
+														}}
+													>
+														<Typography variant={'subtitle1'} component={'span'}>
+															PENDING
+														</Typography>
+													</MenuItem>
+													<MenuItem
+														onClick={() => {
+															if (updateArticleHandler) {
+																updateArticleHandler({ _id: article._id, qna_case_status: 'RESOLVED' });
+															}
+															if (handleMenuIconClose) handleMenuIconClose();
+														}}
+													>
+														<Typography variant={'subtitle1'} component={'span'}>
+															RESOLVED
+														</Typography>
+													</MenuItem>
+													<MenuItem
+														onClick={() => {
+															if (updateArticleHandler) {
+																updateArticleHandler({ _id: article._id, qna_case_status: 'CLOSED' });
+															}
+															if (handleMenuIconClose) handleMenuIconClose();
+														}}
+													>
+														<Typography variant={'subtitle1'} component={'span'}>
+															CLOSED
+														</Typography>
+													</MenuItem>
+												</Menu>
+											)}
+										</TableCell>
+									</TableRow>
+								);
+							})}
 					</TableBody>
 				</Table>
 			</TableContainer>
