@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Stack, MenuItem } from '@mui/material';
-import { List, ListItem } from '@mui/material';
+import { Box, Stack, MenuItem, Card, CardContent, Chip, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
 import { TabContext } from '@mui/lab';
 import TablePagination from '@mui/material/TablePagination';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ArticleIcon from '@mui/icons-material/Article';
 import CommunityArticleList from '../../../libs/components/admin/community/CommunityArticleList';
 import { AllBoardArticlesInquiry } from '../../../libs/types/board-article/board-article.input';
 import { BoardArticle } from '../../../libs/types/board-article/board-article';
 import { BoardArticleCategory, BoardArticleStatus } from '../../../libs/enums/board-article.enum';
-import { sweetConfirmAlert, sweetErrorHandling } from '../../../libs/sweetAlert';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
 import { BoardArticleUpdate } from '../../../libs/types/board-article/board-article.update';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ALL_BOARD_ARTICLES_BY_ADMIN } from '../../../apollo/admin/query';
+import { UPDATE_BOARD_ARTICLE_BY_ADMIN, REMOVE_BOARD_ARTICLE_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<any>([]);
@@ -26,9 +30,25 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
+	const { data: articlesData, refetch: refetchArticles } = useQuery(GET_ALL_BOARD_ARTICLES_BY_ADMIN, {
+		variables: { input: communityInquiry },
+		fetchPolicy: 'network-only',
+	});
+
+	const [updateArticleByAdmin] = useMutation(UPDATE_BOARD_ARTICLE_BY_ADMIN);
+	const [removeArticleByAdmin] = useMutation(REMOVE_BOARD_ARTICLE_BY_ADMIN);
 
 	/** LIFECYCLES **/
-	useEffect(() => {}, [communityInquiry]);
+	useEffect(() => {
+		if (articlesData?.getAllBoardArticlesByAdmin) {
+			setArticles(articlesData.getAllBoardArticlesByAdmin.list);
+			setArticleTotal(articlesData.getAllBoardArticlesByAdmin.metaCounter.total);
+		}
+	}, [articlesData]);
+
+	useEffect(() => {
+		refetchArticles();
+	}, [communityInquiry, refetchArticles]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
@@ -96,9 +116,12 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const updateArticleHandler = async (updateData: BoardArticleUpdate) => {
 		try {
-			console.log('+updateData: ', updateData);
-
+			await updateArticleByAdmin({
+				variables: { input: updateData },
+			});
+			await sweetTopSuccessAlert('Article updated successfully!');
 			menuIconCloseHandler();
+			await refetchArticles();
 		} catch (err: any) {
 			menuIconCloseHandler();
 			sweetErrorHandling(err).then();
@@ -107,53 +130,173 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const removeArticleHandler = async (id: string) => {
 		try {
-			if (await sweetConfirmAlert('are you sure to remove?')) {
-			}
+			await removeArticleByAdmin({
+				variables: { input: id },
+			});
+			await sweetTopSuccessAlert('Article removed successfully!');
+			await refetchArticles();
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
 	};
 
-	console.log('+communityInquiry', communityInquiry);
-	console.log('+articles', articles);
-
 	return (
-		<Box component={'div'} className={'content'}>
-			<Typography variant={'h2'} className={'tit'} sx={{ mb: '24px' }}>
-				Arricle List
-			</Typography>
-			<Box component={'div'} className={'table-wrap'}>
-				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
-					<TabContext value={value}>
-						<Box component={'div'}>
-							<List className={'tab-menu'}>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'ALL')}
-									value="ALL"
-									className={value === 'ALL' ? 'li on' : 'li'}
+		<Box component={'div'} className={'content community-page'}>
+			{/* Header Section */}
+			<Card className={'page-header-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+						<Stack direction={'row'} alignItems={'center'} spacing={2}>
+							<Box
+								sx={{
+									width: 56,
+									height: 56,
+									borderRadius: '12px',
+									backgroundColor: 'rgba(233, 44, 40, 0.1)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									color: '#E92C28',
+								}}
+							>
+								<ArticleIcon sx={{ fontSize: 32 }} />
+							</Box>
+							<Box>
+								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
+									Community Management
+								</Typography>
+								<Typography variant={'body2'} sx={{ color: '#717171' }}>
+									Manage and monitor all community articles
+								</Typography>
+							</Box>
+						</Stack>
+						<Chip
+							label={`Total: ${articleTotal}`}
+							sx={{
+								backgroundColor: 'rgba(233, 44, 40, 0.1)',
+								color: '#E92C28',
+								fontWeight: 600,
+								fontSize: '14px',
+								height: '36px',
+							}}
+						/>
+					</Stack>
+				</CardContent>
+			</Card>
+
+			{/* Filters and Search Section */}
+			<Card className={'filters-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
+						<TabContext value={value}>
+							{/* Status Tabs */}
+							<Box component={'div'} sx={{ mb: 3 }}>
+								<Stack direction={'row'} spacing={1} className={'status-tabs'}>
+									<Button
+										variant={value === 'ALL' ? 'contained' : 'outlined'}
+										onClick={(e:eny) => tabChangeHandler(e, 'ALL')}
+										className={value === 'ALL' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'ALL'
+												? {
+														backgroundColor: '#E92C28',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#c91f1a' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#E92C28', backgroundColor: 'rgba(233, 44, 40, 0.05)' },
+												  }),
+										}}
+									>
+										All
+									</Button>
+									<Button
+										variant={value === 'ACTIVE' ? 'contained' : 'outlined'}
+										onClick={(e:eny) => tabChangeHandler(e, 'ACTIVE')}
+										className={value === 'ACTIVE' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'ACTIVE'
+												? {
+														backgroundColor: '#229a16',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#1a7a11' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#229a16', backgroundColor: 'rgba(34, 154, 22, 0.05)' },
+												  }),
+										}}
+									>
+										Active
+									</Button>
+									<Button
+										variant={value === 'DELETE' ? 'contained' : 'outlined'}
+										onClick={(e) => tabChangeHandler(e, 'DELETE')}
+										className={value === 'DELETE' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'DELETE'
+												? {
+														backgroundColor: '#757575',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#5a5a5a' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#757575', backgroundColor: 'rgba(117, 117, 117, 0.05)' },
+												  }),
+										}}
+									>
+										Deleted
+									</Button>
+								</Stack>
+							</Box>
+
+							<Divider sx={{ mb: 3 }} />
+
+							{/* Filter */}
+							<Stack direction={'row'} spacing={2} className={'search-filter-area'}>
+								<Select
+									value={searchType}
+									sx={{
+										minWidth: '200px',
+										borderRadius: '8px',
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#e0e0e0',
+										},
+										'&:hover .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#E92C28',
+										},
+										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#E92C28',
+										},
+									}}
+									startAdornment={
+										<Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+											<FilterListIcon sx={{ color: '#E92C28', fontSize: 20 }} />
+										</Box>
+									}
 								>
-									All
-								</ListItem>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'ACTIVE')}
-									value="ACTIVE"
-									className={value === 'ACTIVE' ? 'li on' : 'li'}
-								>
-									Active
-								</ListItem>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'DELETE')}
-									value="DELETE"
-									className={value === 'DELETE' ? 'li on' : 'li'}
-								>
-									Delete
-								</ListItem>
-							</List>
-							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
-								<Select sx={{ width: '160px', mr: '20px' }} value={searchType}>
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
-										ALL
+										All Categories
 									</MenuItem>
 									{Object.values(BoardArticleCategory).map((category: string) => (
 										<MenuItem value={category} onClick={() => searchTypeHandler(category)} key={category}>
@@ -162,29 +305,13 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 									))}
 								</Select>
 							</Stack>
-							<Divider />
-						</Box>
-						<CommunityArticleList
-							articles={articles}
-							anchorEl={anchorEl}
-							menuIconClickHandler={menuIconClickHandler}
-							menuIconCloseHandler={menuIconCloseHandler}
-							updateArticleHandler={updateArticleHandler}
-							removeArticleHandler={removeArticleHandler}
-						/>
+						</TabContext>
+					</Box>
+				</CardContent>
+			</Card>
 
-						<TablePagination
-							rowsPerPageOptions={[10, 20, 40, 60]}
-							component="div"
-							count={articleTotal}
-							rowsPerPage={communityInquiry?.limit}
-							page={communityInquiry?.page - 1}
-							onPageChange={changePageHandler}
-							onRowsPerPageChange={changeRowsPerPageHandler}
-						/>
-					</TabContext>
-				</Box>
-			</Box>
+			{/* Table Section */}
+			
 		</Box>
 	);
 };
