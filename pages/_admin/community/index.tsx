@@ -311,7 +311,38 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 			</Card>
 
 			{/* Table Section */}
-			
+			<Card className={'table-card'}>
+				<CardContent sx={{ p: 0 }}>
+					<CommunityArticleList
+						articles={articles}
+						anchorEl={anchorEl}
+						menuIconClickHandler={menuIconClickHandler}
+						menuIconCloseHandler={menuIconCloseHandler}
+						updateArticleHandler={updateArticleHandler}
+						removeArticleHandler={removeArticleHandler}
+					/>
+
+					<Box sx={{ px: 3, pb: 2 }}>
+						<TablePagination
+							rowsPerPageOptions={[10, 20, 40, 60]}
+							component="div"
+							count={articleTotal}
+							rowsPerPage={communityInquiry?.limit}
+							page={communityInquiry?.page - 1}
+							onPageChange={changePageHandler}
+							onRowsPerPageChange={changeRowsPerPageHandler}
+							sx={{
+								'& .MuiTablePagination-toolbar': {
+									paddingLeft: 0,
+								},
+								'& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+									fontWeight: 500,
+								},
+							}}
+						/>
+					</Box>
+				</CardContent>
+			</Card>
 		</Box>
 	);
 };

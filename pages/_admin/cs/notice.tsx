@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Button, InputAdornment, Stack } from '@mui/material';
-import { List, ListItem } from '@mui/material';
+import { Box, Button, InputAdornment, Stack, Card, CardContent, Chip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
@@ -12,114 +12,195 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { NoticeList } from '../../../libs/components/admin/cs/NoticeList';
 
 const AdminNotice: NextPage = (props: any) => {
+	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
+	const [value, setValue] = useState('ALL');
+	const [searchText, setSearchText] = useState('');
+	const [searchCategory, setSearchCategory] = useState('title');
+	const [noticeTotal, setNoticeTotal] = useState(0);
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
 
 	/** APOLLO REQUESTS **/
+	// TODO: Add GraphQL queries when available
+
 	/** LIFECYCLES **/
+	useEffect(() => {
+		// TODO: Fetch Notice articles
+	}, []);
+
 	/** HANDLERS **/
+	const handleTabChange = (newValue: string) => {
+		setValue(newValue);
+		setPage(0);
+	};
+
+	const handleSearch = () => {
+		// TODO: Implement search
+	};
+
+	const handleAddClick = () => {
+		router.push('/_admin/cs/notice_create');
+	};
+
+	const changePageHandler = (event: unknown, newPage: number) => {
+		setPage(newPage);
+	};
+
+	const changeRowsPerPageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	return (
-		// @ts-ignore
-		<Box component={'div'} className={'content'}>
-			<Box component={'div'} className={'title flex_space'}>
-				<Typography variant={'h2'}>Notice Management</Typography>
-				<Button
-					className="btn_add"
-					variant={'contained'}
-					size={'medium'}
-					// onClick={() => router.push(`/_admin/cs/faq_create`)}
-				>
-					<AddRoundedIcon sx={{ mr: '8px' }} />
-					ADD
-				</Button>
-			</Box>
-			<Box component={'div'} className={'table-wrap'}>
-				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
-					<TabContext value={'value'}>
-						<Box component={'div'}>
-							<List className={'tab-menu'}>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'all')}
-									value="all"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									All (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'active')}
-									value="active"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Active (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'blocked')}
-									value="blocked"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Blocked (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'deleted')}
-									value="deleted"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Deleted (0)
-								</ListItem>
-							</List>
-							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
-								<Select sx={{ width: '160px', mr: '20px' }} value={'searchCategory'}>
-									<MenuItem value={'mb_nick'}>mb_nick</MenuItem>
-									<MenuItem value={'mb_id'}>mb_id</MenuItem>
-								</Select>
+		<Box component={'div'} className={'content notice-page'}>
+			{/* Header Section */}
+			<Card className={'page-header-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+						<Stack direction={'row'} alignItems={'center'} spacing={2}>
+							<Box className={'notice-icon-box'}>
+								<NotificationsActiveIcon className={'notice-icon'} />
+							</Box>
+							<Box>
+								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
+									Notice Management
+								</Typography>
+								<Typography variant={'body2'} sx={{ color: '#717171' }}>
+									Manage important notices and announcements
+								</Typography>
+							</Box>
+						</Stack>
+						<Stack direction={'row'} spacing={2} alignItems={'center'}>
+							<Chip label={`Total: ${noticeTotal}`} className={'notice-total-chip'} />
+							<Button
+								variant={'contained'}
+								startIcon={<AddRoundedIcon />}
+								onClick={handleAddClick}
+								className={'notice-add-btn'}
+							>
+								Add Notice
+							</Button>
+						</Stack>
+					</Stack>
+				</CardContent>
+			</Card>
 
+			{/* Filters and Search Section */}
+			<Card className={'filters-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
+						<TabContext value={value}>
+							{/* Status Tabs */}
+							<Box component={'div'} sx={{ mb: 3 }}>
+								<Stack direction={'row'} spacing={1} className={'status-tabs'}>
+									<Button
+										variant={value === 'ALL' ? 'contained' : 'outlined'}
+										onClick={() => handleTabChange('ALL')}
+										className={`tab-btn notice-tab ${value === 'ALL' ? 'active' : ''}`}
+									>
+										All
+									</Button>
+									<Button
+										variant={value === 'ACTIVE' ? 'contained' : 'outlined'}
+										onClick={() => handleTabChange('ACTIVE')}
+										className={`tab-btn notice-tab ${value === 'ACTIVE' ? 'active' : ''}`}
+									>
+										Active
+									</Button>
+									<Button
+										variant={value === 'BLOCKED' ? 'contained' : 'outlined'}
+										onClick={() => handleTabChange('BLOCKED')}
+										className={`tab-btn notice-tab ${value === 'BLOCKED' ? 'active' : ''}`}
+									>
+										Blocked
+									</Button>
+									<Button
+										variant={value === 'DELETED' ? 'contained' : 'outlined'}
+										onClick={() => handleTabChange('DELETED')}
+										className={`tab-btn notice-tab ${value === 'DELETED' ? 'active' : ''}`}
+									>
+										Deleted
+									</Button>
+								</Stack>
+							</Box>
+
+							<Divider sx={{ mb: 3 }} />
+
+							{/* Search and Filter */}
+							<Stack direction={'row'} spacing={2} className={'search-filter-area'}>
+								<Select
+									value={searchCategory}
+									onChange={(e) => setSearchCategory(e.target.value)}
+									className={'notice-filter-select'}
+								>
+									<MenuItem value={'title'}>Title</MenuItem>
+									<MenuItem value={'id'}>Notice ID</MenuItem>
+									<MenuItem value={'writer'}>Writer</MenuItem>
+									<MenuItem value={'category'}>Category</MenuItem>
+								</Select>
 								<OutlinedInput
-									value={'searchInput'}
-									// onChange={(e) => handleInput(e.target.value)}
-									sx={{ width: '100%' }}
-									className={'search'}
-									placeholder="Search user name"
+									value={searchText}
+									onChange={(e) => setSearchText(e.target.value)}
+									className={'search-input notice-search-input'}
+									placeholder="Search notice articles..."
 									onKeyDown={(event) => {
-										// if (event.key == 'Enter') searchTargetHandler().then();
+										if (event.key == 'Enter') handleSearch();
 									}}
+									startAdornment={
+										<InputAdornment position="start">
+											<SearchIcon className={'notice-search-icon'} />
+										</InputAdornment>
+									}
 									endAdornment={
 										<>
-											{true && <CancelRoundedIcon onClick={() => {}} />}
-											<InputAdornment position="end" onClick={() => {}}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
-											</InputAdornment>
+											{searchText && (
+												<InputAdornment position="end">
+													<CancelRoundedIcon
+														className={'notice-cancel-icon'}
+														onClick={() => setSearchText('')}
+													/>
+												</InputAdornment>
+											)}
 										</>
 									}
 								/>
+								<Button variant={'outlined'} onClick={handleSearch} className={'notice-search-btn'}>
+									Search
+								</Button>
 							</Stack>
-							<Divider />
-						</Box>
-						<NoticeList
-							// dense={dense}
-							// membersData={membersData}
-							// searchMembers={searchMembers}
-							anchorEl={anchorEl}
-							// handleMenuIconClick={handleMenuIconClick}
-							// handleMenuIconClose={handleMenuIconClose}
-							// generateMentorTypeHandle={generateMentorTypeHandle}
-						/>
+						</TabContext>
+					</Box>
+				</CardContent>
+			</Card>
 
+			{/* Table Section */}
+			<Card className={'table-card'}>
+				<CardContent sx={{ p: 0 }}>
+					<NoticeList
+						anchorEl={anchorEl}
+						// TODO: Add props when GraphQL is implemented
+					/>
+
+					<Box className={'notice-pagination-box'}>
 						<TablePagination
-							rowsPerPageOptions={[20, 40, 60]}
+							rowsPerPageOptions={[10, 20, 40, 60]}
 							component="div"
-							count={4}
-							rowsPerPage={10}
-							page={1}
-							onPageChange={() => {}}
-							onRowsPerPageChange={() => {}}
+							count={noticeTotal}
+							rowsPerPage={rowsPerPage}
+							page={page}
+							onPageChange={changePageHandler}
+							onRowsPerPageChange={changeRowsPerPageHandler}
+							className={'notice-pagination'}
 						/>
-					</TabContext>
-				</Box>
-			</Box>
+					</Box>
+				</CardContent>
+			</Card>
 		</Box>
 	);
 };
