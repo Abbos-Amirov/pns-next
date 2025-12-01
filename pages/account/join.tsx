@@ -4,8 +4,13 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, Stack, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { logIn, signUp } from '../../libs/auth';
+import { logIn, signUp, getJwtToken } from '../../libs/auth';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '../../apollo/store';
+import { MemberType } from '../../libs/enums/member.enum';
+import decodeJWT from 'jwt-decode';
+import { CustomJwtPayload } from '../../libs/types/customJwtPayload';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -22,6 +27,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const Join: NextPage = () => {
 	const router = useRouter();
 	const device = useDeviceDetect();
+	const user = useReactiveVar(userVar);
 	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: 'USER' });
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +84,23 @@ const Join: NextPage = () => {
 			setIsLoading(true);
 			await logIn(input.nick, input.password);
 			setIsLoading(false);
+			
+			// Admin tekshiruvi - JWT tokenni decode qilib memberType ni olish
+			const jwtToken = getJwtToken();
+			if (jwtToken) {
+				try {
+					const claims = decodeJWT<CustomJwtPayload>(jwtToken);
+					if (claims?.memberType === MemberType.ADMIN) {
+						// ADMIN bo'lsa, admin sahifasiga yo'naltirish
+						await router.push('/_admin');
+						return;
+					}
+				} catch (err) {
+					console.error('JWT decode error:', err);
+				}
+			}
+			
+			// Muvaffaqiyatli login bo'lgandan keyin home page ga yo'naltirish
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			setIsLoading(false);
@@ -96,6 +119,22 @@ const Join: NextPage = () => {
 			setIsLoading(true);
 			await signUp(input.nick, input.password, input.phone, input.type);
 			setIsLoading(false);
+			
+			// Admin tekshiruvi - JWT tokenni decode qilib memberType ni olish
+			const jwtToken = getJwtToken();
+			if (jwtToken) {
+				try {
+					const claims = decodeJWT<CustomJwtPayload>(jwtToken);
+					if (claims?.memberType === MemberType.ADMIN) {
+						// ADMIN bo'lsa, admin sahifasiga yo'naltirish
+						await router.push('/_admin');
+						return;
+					}
+				} catch (err) {
+					console.error('JWT decode error:', err);
+				}
+			}
+			
 			// Muvaffaqiyatli signup bo'lgandan keyin home page ga yo'naltirish
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
