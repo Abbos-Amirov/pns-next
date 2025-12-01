@@ -89,7 +89,7 @@ const AdminHome: NextPage = (props: any) => {
 	];
 
 	const quickLinks = [
-		{ title: 'User Management', path: '/_admin/users', icon: <PeopleIcon />, color: '#8B4513' },
+		{ title: 'User Management', path: '/_admin/users',   color: '#8B4513' },
 		{ title: 'Property Management', path: '/_admin/properties', icon: <HomeWorkIcon />, color: '#1646C1' },
 		{ title: 'Community Management', path: '/_admin/community', icon: <ArticleIcon />, color: '#E92C28' },
 		{ title: 'FAQ Management', path: '/_admin/cs/faq', icon: <SupportAgentIcon />, color: '#229a16' },
@@ -109,13 +109,7 @@ const AdminHome: NextPage = (props: any) => {
 						Here's what's happening with your platform today.
 					</Typography>
 				</Box>
-				<Button
-					className={'logout-btn-dashboard'}
-					onClick={handleLogout}
-					startIcon={<LogoutIcon />}
-				>
-					Logout
-				</Button>
+				
 			</Box>
 
 			{/* Statistics Cards */}

@@ -20,20 +20,41 @@
     .logo-box {
       display: flex;
       flex-direction: row;
+      justify-content: center;
+      align-items: center;
       padding: 16px 0;
-      img {
-        width: 90px;
-        height: 90px;
+      width: 100%;
+      
+      .admin-logo {
+        width: 120px;
+        height: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.05);
+        }
       }
     }
     .user {
-      background: #f5f5f5;
+      // Styles are now inline in the component for better control
+      // This keeps the SCSS clean while maintaining the design
     }
     hr {
       margin: 24px 0;
     }
     .MuiListItemIcon-root {
       margin-right: 16px;
+    }
+  }
+  
+  .admin-logout-btn {
+    font-family: $font;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.2);
     }
   }
   .user {
@@ -253,7 +274,8 @@
       }
       
       // Users Page Styles
-      &.users-page {
+      &.users-page,
+      &.products-page {
         .page-header-card {
           border-radius: 16px;
           box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
