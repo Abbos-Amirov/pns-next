@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { MemberPanelList } from '../../../libs/components/admin/users/MemberList';
-import { Box, InputAdornment, List, ListItem, Stack } from '@mui/material';
+import { Box, InputAdornment, Stack, Card, CardContent, Chip, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
@@ -11,11 +11,17 @@ import { TabContext } from '@mui/lab';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import PeopleIcon from '@mui/icons-material/People';
 import { MembersInquiry } from '../../../libs/types/member/member.input';
 import { Member } from '../../../libs/types/member/member';
 import { MemberStatus, MemberType } from '../../../libs/enums/member.enum';
-import { sweetErrorHandling } from '../../../libs/sweetAlert';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
 import { MemberUpdate } from '../../../libs/types/member/member.update';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ALL_MEMBERS_BY_ADMIN } from '../../../apollo/admin/query';
+import { UPDATE_MEMBER_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
@@ -29,9 +35,24 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
+	const { data: membersData, refetch: refetchMembers } = useQuery(GET_ALL_MEMBERS_BY_ADMIN, {
+		variables: { input: membersInquiry },
+		fetchPolicy: 'network-only',
+	});
+
+	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
 
 	/** LIFECYCLES **/
-	useEffect(() => {}, [membersInquiry]);
+	useEffect(() => {
+		if (membersData?.getAllMembersByAdmin) {
+			setMembers(membersData.getAllMembersByAdmin.list);
+			setMembersTotal(membersData.getAllMembersByAdmin.metaCounter.total);
+		}
+	}, [membersData]);
+
+	useEffect(() => {
+		refetchMembers();
+	}, [membersInquiry, refetchMembers]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
@@ -80,7 +101,12 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const updateMemberHandler = async (updateData: MemberUpdate) => {
 		try {
+			await updateMemberByAdmin({
+				variables: { input: updateData },
+			});
+			await sweetTopSuccessAlert('Member updated successfully!');
 			menuIconCloseHandler();
+			await refetchMembers();
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
@@ -132,81 +158,254 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	};
 
 	return (
-		<Box component={'div'} className={'content'}>
-			<Typography variant={'h2'} className={'tit'} sx={{ mb: '24px' }}>
-				Member List
-			</Typography>
-			<Box component={'div'} className={'table-wrap'}>
-				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
-					<TabContext value={value}>
-						<Box component={'div'}>
-							<List className={'tab-menu'}>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'ALL')}
-									value="ALL"
-									className={value === 'ALL' ? 'li on' : 'li'}
-								>
-									All
-								</ListItem>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'ACTIVE')}
-									value="ACTIVE"
-									className={value === 'ACTIVE' ? 'li on' : 'li'}
-								>
-									Active
-								</ListItem>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'BLOCK')}
-									value="BLOCK"
-									className={value === 'BLOCK' ? 'li on' : 'li'}
-								>
-									Blocked
-								</ListItem>
-								<ListItem
-									onClick={(e) => tabChangeHandler(e, 'DELETE')}
-									value="DELETE"
-									className={value === 'DELETE' ? 'li on' : 'li'}
-								>
-									Deleted
-								</ListItem>
-							</List>
-							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
+		<Box component={'div'} className={'content users-page'}>
+			{/* Header Section */}
+			<Card className={'page-header-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+						<Stack direction={'row'} alignItems={'center'} spacing={2}>
+							<Box
+								sx={{
+									width: 56,
+									height: 56,
+									borderRadius: '12px',
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									color: '#8B4513',
+								}}
+							>
+								<PeopleIcon sx={{ fontSize: 32 }} />
+							</Box>
+							<Box>
+								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
+									User Management
+								</Typography>
+								<Typography variant={'body2'} sx={{ color: '#717171' }}>
+									Manage and monitor all users in the platform
+								</Typography>
+							</Box>
+						</Stack>
+						<Chip
+							label={`Total: ${membersTotal}`}
+							sx={{
+								backgroundColor: 'rgba(139, 69, 19, 0.1)',
+								color: '#8B4513',
+								fontWeight: 600,
+								fontSize: '14px',
+								height: '36px',
+							}}
+						/>
+					</Stack>
+				</CardContent>
+			</Card>
+
+			{/* Filters and Search Section */}
+			<Card className={'filters-card'} sx={{ mb: 3 }}>
+				<CardContent>
+					<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
+						<TabContext value={value}>
+							{/* Status Tabs */}
+							<Box component={'div'} sx={{ mb: 3 }}>
+								<Stack direction={'row'} spacing={1} className={'status-tabs'}>
+									<Button
+										variant={value === 'ALL' ? 'contained' : 'outlined'}
+										onClick={(e) => tabChangeHandler(e, 'ALL')}
+										className={value === 'ALL' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'ALL'
+												? {
+														backgroundColor: '#8B4513',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#6B3410' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#8B4513', backgroundColor: 'rgba(139, 69, 19, 0.05)' },
+												  }),
+										}}
+									>
+										All
+									</Button>
+									<Button
+										variant={value === 'ACTIVE' ? 'contained' : 'outlined'}
+										onClick={(e) => tabChangeHandler(e, 'ACTIVE')}
+										className={value === 'ACTIVE' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'ACTIVE'
+												? {
+														backgroundColor: '#229a16',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#1a7a11' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#229a16', backgroundColor: 'rgba(34, 154, 22, 0.05)' },
+												  }),
+										}}
+									>
+										Active
+									</Button>
+									<Button
+										variant={value === 'BLOCK' ? 'contained' : 'outlined'}
+										onClick={(e) => tabChangeHandler(e, 'BLOCK')}
+										className={value === 'BLOCK' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'BLOCK'
+												? {
+														backgroundColor: '#B72136',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#8f1a2a' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#B72136', backgroundColor: 'rgba(183, 33, 54, 0.05)' },
+												  }),
+										}}
+									>
+										Blocked
+									</Button>
+									<Button
+										variant={value === 'DELETE' ? 'contained' : 'outlined'}
+										onClick={(e) => tabChangeHandler(e, 'DELETE')}
+										className={value === 'DELETE' ? 'tab-btn active' : 'tab-btn'}
+										sx={{
+											textTransform: 'none',
+											borderRadius: '8px',
+											px: 3,
+											py: 1,
+											fontWeight: 600,
+											...(value === 'DELETE'
+												? {
+														backgroundColor: '#757575',
+														color: '#fff',
+														'&:hover': { backgroundColor: '#5a5a5a' },
+												  }
+												: {
+														borderColor: '#e0e0e0',
+														color: '#424242',
+														'&:hover': { borderColor: '#757575', backgroundColor: 'rgba(117, 117, 117, 0.05)' },
+												  }),
+										}}
+									>
+										Deleted
+									</Button>
+								</Stack>
+							</Box>
+
+							<Divider sx={{ mb: 3 }} />
+
+							{/* Search and Filter */}
+							<Stack direction={'row'} spacing={2} className={'search-filter-area'}>
 								<OutlinedInput
 									value={searchText}
 									onChange={(e: any) => textHandler(e.target.value)}
-									sx={{ width: '100%' }}
-									className={'search'}
-									placeholder="Search user name"
+									sx={{
+										flex: 1,
+										borderRadius: '8px',
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#e0e0e0',
+										},
+										'&:hover .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+											borderWidth: '2px',
+										},
+									}}
+									className={'search-input'}
+									placeholder="Search by user name, phone, or ID..."
 									onKeyDown={(event) => {
 										if (event.key == 'Enter') searchTextHandler();
 									}}
+									startAdornment={
+										<InputAdornment position="start">
+											<SearchIcon sx={{ color: '#8B4513' }} />
+										</InputAdornment>
+									}
 									endAdornment={
 										<>
 											{searchText && (
-												<CancelRoundedIcon
-													style={{ cursor: 'pointer' }}
-													onClick={async () => {
-														setSearchText('');
-														setMembersInquiry({
-															...membersInquiry,
-															search: {
-																...membersInquiry.search,
-																text: '',
-															},
-														});
-													}}
-												/>
+												<InputAdornment position="end">
+													<CancelRoundedIcon
+														sx={{ cursor: 'pointer', color: '#9e9e9e', '&:hover': { color: '#424242' } }}
+														onClick={async () => {
+															setSearchText('');
+															setMembersInquiry({
+																...membersInquiry,
+																search: {
+																	...membersInquiry.search,
+																	text: '',
+																},
+															});
+														}}
+													/>
+												</InputAdornment>
 											)}
-											<InputAdornment position="end" onClick={() => searchTextHandler()}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
-											</InputAdornment>
 										</>
 									}
 								/>
-								<Select sx={{ width: '160px', ml: '20px' }} value={searchType}>
+								<Button
+									variant={'outlined'}
+									onClick={() => searchTextHandler()}
+									sx={{
+										borderRadius: '8px',
+										px: 3,
+										textTransform: 'none',
+										borderColor: '#8B4513',
+										color: '#8B4513',
+										fontWeight: 600,
+										'&:hover': {
+											borderColor: '#6B3410',
+											backgroundColor: 'rgba(139, 69, 19, 0.05)',
+										},
+									}}
+								>
+									Search
+								</Button>
+								<Select
+									value={searchType}
+									sx={{
+										minWidth: '160px',
+										borderRadius: '8px',
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#e0e0e0',
+										},
+										'&:hover .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+										},
+									}}
+									startAdornment={
+										<InputAdornment position="start" sx={{ mr: 1 }}>
+											<FilterListIcon sx={{ color: '#8B4513', fontSize: 20 }} />
+										</InputAdornment>
+									}
+								>
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
-										All
+										All Types
 									</MenuItem>
 									<MenuItem value={'USER'} onClick={() => searchTypeHandler('USER')}>
 										User
@@ -219,16 +418,23 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									</MenuItem>
 								</Select>
 							</Stack>
-							<Divider />
-						</Box>
-						<MemberPanelList
-							members={members}
-							anchorEl={anchorEl}
-							menuIconClickHandler={menuIconClickHandler}
-							menuIconCloseHandler={menuIconCloseHandler}
-							updateMemberHandler={updateMemberHandler}
-						/>
+						</TabContext>
+					</Box>
+				</CardContent>
+			</Card>
 
+			{/* Table Section */}
+			<Card className={'table-card'}>
+				<CardContent sx={{ p: 0 }}>
+					<MemberPanelList
+						members={members}
+						anchorEl={anchorEl}
+						menuIconClickHandler={menuIconClickHandler}
+						menuIconCloseHandler={menuIconCloseHandler}
+						updateMemberHandler={updateMemberHandler}
+					/>
+
+					<Box sx={{ px: 3, pb: 2 }}>
 						<TablePagination
 							rowsPerPageOptions={[10, 20, 40, 60]}
 							component="div"
@@ -237,10 +443,18 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 							page={membersInquiry?.page - 1}
 							onPageChange={changePageHandler}
 							onRowsPerPageChange={changeRowsPerPageHandler}
+							sx={{
+								'& .MuiTablePagination-toolbar': {
+									paddingLeft: 0,
+								},
+								'& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+									fontWeight: 500,
+								},
+							}}
 						/>
-					</TabContext>
-				</Box>
-			</Box>
+					</Box>
+				</CardContent>
+			</Card>
 		</Box>
 	);
 };
