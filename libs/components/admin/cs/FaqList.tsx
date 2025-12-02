@@ -13,11 +13,15 @@ import {
 	Fade,
 	MenuItem,
 	Chip,
+	IconButton,
+	Tooltip,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
 import Moment from 'react-moment';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 interface Data {
 	category: string;
@@ -233,63 +237,109 @@ export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
 											)}
 										</TableCell>
 										<TableCell align="center" className={'faq-status-cell'}>
-											<Button
-												onClick={(e: any) => handleMenuIconClick && handleMenuIconClick(e, index)}
-												className={`faq-status-badge ${statusColors.className || ''}`}
-											>
-												{article.status || 'N/A'}
-											</Button>
-
-											{handleMenuIconClick && anchorEl && (
-												<Menu
-													className={'menu-modal faq-status-menu'}
-													MenuListProps={{
-														'aria-labelledby': 'fade-button',
-													}}
-													anchorEl={anchorEl[index]}
-													open={Boolean(anchorEl[index])}
-													onClose={handleMenuIconClose}
-													TransitionComponent={Fade}
-													sx={{ p: 1 }}
+											<Stack direction={'row'} alignItems={'center'} spacing={1} justifyContent={'center'}>
+												<Button
+													onClick={(e: any) => handleMenuIconClick && handleMenuIconClick(e, index)}
+													className={`faq-status-badge ${statusColors.className || ''}`}
 												>
-													<MenuItem
-														onClick={() => {
-															if (updateArticleHandler) {
-																updateArticleHandler({ _id: article._id, status: 'ACTIVE' });
-															}
-															if (handleMenuIconClose) handleMenuIconClose();
+													{article.status || 'N/A'}
+												</Button>
+
+												{/* Update va Delete buttonlar - faqat ACTIVE status'da */}
+												{article.status === 'ACTIVE' && (
+													<>
+														<Tooltip title="Edit FAQ">
+															<IconButton
+																size="small"
+																onClick={() => {
+																	if (updateArticleHandler) {
+																		updateArticleHandler({ _id: article._id, action: 'edit' });
+																	}
+																}}
+																className={'faq-edit-btn'}
+																sx={{
+																	color: '#1646C1',
+																	'&:hover': {
+																		backgroundColor: 'rgba(22, 70, 193, 0.1)',
+																	},
+																}}
+															>
+																<EditRoundedIcon fontSize="small" />
+															</IconButton>
+														</Tooltip>
+														<Tooltip title="Delete FAQ">
+															<IconButton
+																size="small"
+																onClick={() => {
+																	if (removeArticleHandler) {
+																		removeArticleHandler(article._id);
+																	}
+																}}
+																className={'faq-delete-btn'}
+																sx={{
+																	color: '#E92C28',
+																	'&:hover': {
+																		backgroundColor: 'rgba(233, 44, 40, 0.1)',
+																	},
+																}}
+															>
+																<DeleteRoundedIcon fontSize="small" />
+															</IconButton>
+														</Tooltip>
+													</>
+												)}
+
+												{handleMenuIconClick && anchorEl && (
+													<Menu
+														className={'menu-modal faq-status-menu'}
+														MenuListProps={{
+															'aria-labelledby': 'fade-button',
 														}}
+														anchorEl={anchorEl[index]}
+														open={Boolean(anchorEl[index])}
+														onClose={handleMenuIconClose}
+														TransitionComponent={Fade}
+														sx={{ p: 1 }}
 													>
-														<Typography variant={'subtitle1'} component={'span'}>
-															ACTIVE
-														</Typography>
-													</MenuItem>
-													<MenuItem
-														onClick={() => {
-															if (updateArticleHandler) {
-																updateArticleHandler({ _id: article._id, status: 'BLOCKED' });
-															}
-															if (handleMenuIconClose) handleMenuIconClose();
-														}}
-													>
-														<Typography variant={'subtitle1'} component={'span'}>
-															BLOCKED
-														</Typography>
-													</MenuItem>
-													<MenuItem
-														onClick={() => {
-															if (updateArticleHandler) {
-																updateArticleHandler({ _id: article._id, status: 'DELETED' });
-															}
-															if (handleMenuIconClose) handleMenuIconClose();
-														}}
-													>
-														<Typography variant={'subtitle1'} component={'span'}>
-															DELETED
-														</Typography>
-													</MenuItem>
-												</Menu>
-											)}
+														<MenuItem
+															onClick={() => {
+																if (updateArticleHandler) {
+																	updateArticleHandler({ _id: article._id, status: 'ACTIVE' });
+																}
+																if (handleMenuIconClose) handleMenuIconClose();
+															}}
+														>
+															<Typography variant={'subtitle1'} component={'span'}>
+																ACTIVE
+															</Typography>
+														</MenuItem>
+														<MenuItem
+															onClick={() => {
+																if (updateArticleHandler) {
+																	updateArticleHandler({ _id: article._id, status: 'BLOCKED' });
+																}
+																if (handleMenuIconClose) handleMenuIconClose();
+															}}
+														>
+															<Typography variant={'subtitle1'} component={'span'}>
+																BLOCKED
+															</Typography>
+														</MenuItem>
+														<MenuItem
+															onClick={() => {
+																if (updateArticleHandler) {
+																	updateArticleHandler({ _id: article._id, status: 'DELETED' });
+																}
+																if (handleMenuIconClose) handleMenuIconClose();
+															}}
+														>
+															<Typography variant={'subtitle1'} component={'span'}>
+																DELETED
+															</Typography>
+														</MenuItem>
+													</Menu>
+												)}
+											</Stack>
 										</TableCell>
 									</TableRow>
 								);

@@ -46,9 +46,11 @@ const FaqArticles: NextPage = (props: any) => {
 
 	/** APOLLO REQUESTS **/
 	// Search object'ni tozalash - bo'sh field'larni olib tashlash
-	const cleanSearch = Object.fromEntries(
-		Object.entries(noticeInquiry.search).filter(([_, value]) => value !== undefined && value !== null && value !== '')
-	);
+	const cleanSearch = noticeInquiry.search 
+		? Object.fromEntries(
+			Object.entries(noticeInquiry.search).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+		)
+		: {};
 	
 	const cleanNoticeInquiry = {
 		page: noticeInquiry.page,
@@ -73,6 +75,16 @@ const FaqArticles: NextPage = (props: any) => {
 			console.log('Query completed with data:', data);
 		},
 	});
+
+	// Router query'dan refresh parametrini tekshirish - FAQ yaratilgandan keyin yangilash
+	useEffect(() => {
+		if (router.query.refresh === 'true') {
+			console.log('Refreshing notices after FAQ creation...');
+			refetchNotices();
+			// Query parametrini tozalash
+			router.replace('/_admin/cs/faq', undefined, { shallow: true });
+		}
+	}, [router.query.refresh, refetchNotices, router]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -182,14 +194,29 @@ const FaqArticles: NextPage = (props: any) => {
 		setAnchorEl([]);
 	};
 
-	const updateNoticeHandler = async (updateData: { _id: string; status: string }) => {
+	const updateNoticeHandler = async (updateData: { _id: string; status?: string; action?: string }) => {
 		try {
-			// TODO: Add update mutation when available
-			await sweetTopSuccessAlert('Notice status updated successfully!');
-			menuIconCloseHandler();
-			await refetchNotices();
+			if (updateData.action === 'edit') {
+				// Edit - FAQ edit page'ga yuborish
+				router.push(`/_admin/cs/faq_edit?id=${updateData._id}`);
+			} else if (updateData.status) {
+				// Status o'zgartirish - TODO: Add update mutation when available
+				await sweetTopSuccessAlert('Notice status updated successfully!');
+				menuIconCloseHandler();
+				await refetchNotices();
+			}
 		} catch (err: any) {
 			menuIconCloseHandler();
+			sweetErrorHandling(err).then();
+		}
+	};
+
+	const removeNoticeHandler = async (id: string) => {
+		try {
+			// TODO: Add remove mutation when available
+			await sweetTopSuccessAlert('FAQ deleted successfully!');
+			await refetchNotices();
+		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
 	};
@@ -342,6 +369,7 @@ const FaqArticles: NextPage = (props: any) => {
 							handleMenuIconClick={menuIconClickHandler}
 							handleMenuIconClose={menuIconCloseHandler}
 							updateArticleHandler={updateNoticeHandler}
+							removeArticleHandler={removeNoticeHandler}
 						/>
 					)}
 

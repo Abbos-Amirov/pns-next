@@ -66,7 +66,11 @@ const FaqCreate: NextPage = (props: any) => {
 				variables: { input: faqData },
 			});
 			await sweetTopSuccessAlert('FAQ created successfully!');
-			router.push('/_admin/cs/faq');
+			// FAQ page'ga qaytish va cache'ni yangilash
+			router.push({
+				pathname: '/_admin/cs/faq',
+				query: { refresh: 'true', timestamp: Date.now() },
+			});
 		} catch (err: any) {
 			await sweetMixinErrorAlert(err.message || 'Failed to create FAQ');
 		}

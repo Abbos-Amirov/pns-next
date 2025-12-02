@@ -207,3 +207,18 @@ export const CREATE_NOTICE = gql`
 		}
 	}
 `;
+
+export const UPDATE_NOTICE = gql`
+	mutation UpdateNotice($input: UpdateNoticeInput!) {
+		updateNotice(input: $input) {
+			_id
+			noticeCategory
+			noticeCategoryType
+			noticeStatus
+			noticeTitle
+			noticeContent
+			createdAt
+			updatedAt
+		}
+	}
+`;
