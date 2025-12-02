@@ -16,33 +16,137 @@ import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { FaqArticlesPanelList } from '../../../libs/components/admin/cs/FaqList';
+import { useQuery } from '@apollo/client';
+import { GET_NOTICE_LIST } from '../../../apollo/admin/query';
+import { NoticeInquiry } from '../../../libs/types/notice/notice.inquiry';
+import { Notice } from '../../../libs/types/notice/notice';
+import { NoticeCategory, NoticeCategoryType, NoticeStatus } from '../../../libs/enums/notice.enum';
+import { Direction } from '../../../libs/enums/common.enum';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
 
 const FaqArticles: NextPage = (props: any) => {
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
 	const [value, setValue] = useState('ALL');
 	const [searchText, setSearchText] = useState('');
-	const [searchCategory, setSearchCategory] = useState('mb_nick');
+	const [searchCategory, setSearchCategory] = useState('title');
 	const [faqTotal, setFaqTotal] = useState(0);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
+	const [notices, setNotices] = useState<Notice[]>([]);
+	const [noticeInquiry, setNoticeInquiry] = useState<NoticeInquiry>({
+		page: 1,
+		limit: 10,
+		sort: 'createdAt',
+		direction: Direction.DESC,
+		search: {
+			// Bo'sh search object - backend to'g'ri ishlashi uchun
+		},
+	});
 
 	/** APOLLO REQUESTS **/
-	// TODO: Add GraphQL queries when available
+	// Search object'ni tozalash - bo'sh field'larni olib tashlash
+	const cleanSearch = Object.fromEntries(
+		Object.entries(noticeInquiry.search).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+	);
+	
+	const cleanNoticeInquiry = {
+		page: noticeInquiry.page,
+		limit: noticeInquiry.limit,
+		sort: noticeInquiry.sort,
+		direction: noticeInquiry.direction,
+		search: Object.keys(cleanSearch).length > 0 ? cleanSearch : undefined,
+	};
+
+	const { data: noticeData, loading, error, refetch: refetchNotices } = useQuery(GET_NOTICE_LIST, {
+		variables: { input: cleanNoticeInquiry },
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		skip: false,
+		onError: (err) => {
+			console.error('FAQ Query Error:', err);
+			console.error('Error details:', JSON.stringify(err, null, 2));
+			console.error('Sent inquiry:', cleanNoticeInquiry);
+			sweetErrorHandling(err).then();
+		},
+		onCompleted: (data) => {
+			console.log('Query completed with data:', data);
+		},
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		// TODO: Fetch FAQ articles
-	}, []);
+		console.log('Notice Data:', noticeData);
+		console.log('Notice Inquiry:', noticeInquiry);
+		
+		if (noticeData?.getNoticeList) {
+			console.log('Notice List:', noticeData.getNoticeList.list);
+			console.log('Notice Total:', noticeData.getNoticeList.total);
+			setNotices(noticeData.getNoticeList.list || []);
+			setFaqTotal(noticeData.getNoticeList.total || 0);
+		} else if (noticeData) {
+			console.log('Notice Data exists but getNoticeList is missing:', noticeData);
+		}
+	}, [noticeData, noticeInquiry]);
+
+	useEffect(() => {
+		refetchNotices();
+	}, [noticeInquiry, refetchNotices]);
 
 	/** HANDLERS **/
 	const handleTabChange = (newValue: string) => {
 		setValue(newValue);
 		setPage(0);
+		
+		const newSearch: any = { ...noticeInquiry.search };
+		
+		switch (newValue) {
+			case 'ACTIVE':
+				newSearch.noticeStatus = NoticeStatus.ACTIVE;
+				break;
+			case 'BLOCKED':
+				newSearch.noticeStatus = NoticeStatus.HOLD;
+				break;
+			case 'DELETED':
+				newSearch.noticeStatus = NoticeStatus.DELETE;
+				break;
+			default:
+				delete newSearch.noticeStatus;
+				break;
+		}
+		
+		setNoticeInquiry({
+			...noticeInquiry,
+			page: 1,
+			search: newSearch,
+		});
 	};
 
 	const handleSearch = () => {
-		// TODO: Implement search
+		const newSearch: any = { ...noticeInquiry.search };
+		
+		if (searchText.trim()) {
+			if (searchCategory === 'title') {
+				newSearch.text = searchText.trim();
+			} else if (searchCategory === 'category') {
+				// Category bo'yicha qidirish
+				const category = Object.values(NoticeCategory).find(cat => 
+					cat.toLowerCase().includes(searchText.toLowerCase())
+				);
+				if (category) {
+					newSearch.noticeCategory = category;
+				}
+			}
+		} else {
+			delete newSearch.text;
+			delete newSearch.noticeCategory;
+		}
+		
+		setNoticeInquiry({
+			...noticeInquiry,
+			page: 1,
+			search: newSearch,
+		});
 	};
 
 	const handleAddClick = () => {
@@ -51,11 +155,43 @@ const FaqArticles: NextPage = (props: any) => {
 
 	const changePageHandler = (event: unknown, newPage: number) => {
 		setPage(newPage);
+		setNoticeInquiry({
+			...noticeInquiry,
+			page: newPage + 1,
+		});
 	};
 
 	const changeRowsPerPageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
+		const newRowsPerPage = parseInt(event.target.value, 10);
+		setRowsPerPage(newRowsPerPage);
 		setPage(0);
+		setNoticeInquiry({
+			...noticeInquiry,
+			page: 1,
+			limit: newRowsPerPage,
+		});
+	};
+
+	const menuIconClickHandler = (e: any, index: number) => {
+		const tempAnchor = anchorEl.slice();
+		tempAnchor[index] = e.currentTarget;
+		setAnchorEl(tempAnchor);
+	};
+
+	const menuIconCloseHandler = () => {
+		setAnchorEl([]);
+	};
+
+	const updateNoticeHandler = async (updateData: { _id: string; status: string }) => {
+		try {
+			// TODO: Add update mutation when available
+			await sweetTopSuccessAlert('Notice status updated successfully!');
+			menuIconCloseHandler();
+			await refetchNotices();
+		} catch (err: any) {
+			menuIconCloseHandler();
+			sweetErrorHandling(err).then();
+		}
 	};
 
 	return (
@@ -140,8 +276,6 @@ const FaqArticles: NextPage = (props: any) => {
 									onChange={(e) => setSearchCategory(e.target.value)}
 									className={'faq-filter-select'}
 								>
-									<MenuItem value={'mb_nick'}>Nick Name</MenuItem>
-									<MenuItem value={'mb_id'}>FAQ ID</MenuItem>
 									<MenuItem value={'title'}>Title</MenuItem>
 									<MenuItem value={'category'}>Category</MenuItem>
 								</Select>
@@ -183,10 +317,33 @@ const FaqArticles: NextPage = (props: any) => {
 			{/* Table Section */}
 			<Card className={'table-card'}>
 				<CardContent sx={{ p: 0 }}>
-					<FaqArticlesPanelList
-						anchorEl={anchorEl}
-						// TODO: Add props when GraphQL is implemented
-					/>
+					{loading ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'}>Loading notices...</Typography>
+						</Box>
+					) : error ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} color={'error'}>
+								Error loading notices: {error.message}
+							</Typography>
+						</Box>
+					) : (
+						<FaqArticlesPanelList
+							faqArticles={notices.map((notice) => ({
+								_id: notice._id,
+								category: notice.noticeCategory,
+								title: notice.noticeTitle,
+								content: notice.noticeContent,
+								status: notice.noticeStatus,
+								createdAt: notice.createdAt,
+								date: notice.createdAt,
+							}))}
+							anchorEl={anchorEl}
+							handleMenuIconClick={menuIconClickHandler}
+							handleMenuIconClose={menuIconCloseHandler}
+							updateArticleHandler={updateNoticeHandler}
+						/>
+					)}
 
 					<Box className={'faq-pagination-box'}>
 						<TablePagination

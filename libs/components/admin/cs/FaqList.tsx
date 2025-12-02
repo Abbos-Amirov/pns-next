@@ -197,8 +197,6 @@ export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
 							faqArticles.map((article: FaqArticle, index: number) => {
 								const statusColors = getStatusColor(article.status);
 								const categoryColors = getCategoryColor(article.category);
-								const writerImage = article.writerImage || '/img/profile/defaultUser.svg';
-								const writerName = article.writer || article.writerName || 'Admin';
 
 								return (
 									<TableRow hover key={article._id || index} className={'faq-table-row'}>
@@ -206,6 +204,11 @@ export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
 											<Chip
 												label={article.category || 'N/A'}
 												className={`faq-category-chip category-${article.category?.toLowerCase() || 'default'}`}
+												sx={{
+													backgroundColor: categoryColors.bg,
+													color: categoryColors.color,
+													fontWeight: 600,
+												}}
 											/>
 										</TableCell>
 										<TableCell align="left" className={'faq-title-cell'}>
@@ -214,20 +217,13 @@ export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
 											</Typography>
 										</TableCell>
 										<TableCell align="left" className={'faq-writer-cell'}>
-											<Stack direction={'row'} alignItems={'center'} spacing={1.5}>
-												<Avatar
-													alt={writerName}
-													src={writerImage}
-													className={'faq-writer-avatar'}
-												/>
-												<Typography variant={'body2'} className={'faq-writer-name'}>
-													{writerName}
-												</Typography>
-											</Stack>
+											<Typography variant={'body2'} className={'faq-writer-name'}>
+												Admin
+											</Typography>
 										</TableCell>
 										<TableCell align="left" className={'faq-date-cell'}>
 											{article.createdAt ? (
-												<Moment format="YYYY-MM-DD" className={'faq-date-text'}>
+												<Moment format="YYYY-MM-DD HH:mm" className={'faq-date-text'}>
 													{article.createdAt}
 												</Moment>
 											) : (
