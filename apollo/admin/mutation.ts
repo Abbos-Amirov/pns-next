@@ -222,3 +222,18 @@ export const UPDATE_NOTICE = gql`
 		}
 	}
 `;
+
+export const DELETE_NOTICE = gql`
+	mutation DeleteNotice($input: String!) {
+		deleteNotice(id: $input) {
+			_id
+			noticeCategory
+			noticeCategoryType
+			noticeStatus
+			noticeTitle
+			noticeContent
+			createdAt
+			updatedAt
+		}
+	}
+`;

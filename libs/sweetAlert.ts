@@ -12,11 +12,29 @@ export const sweetErrorHandling = async (err: any) => {
 
 export const sweetTopSuccessAlert = async (msg: string, duration: number = 2000) => {
 	await Swal.fire({
-		position: 'center',
+		position: 'bottom-end',
 		icon: 'success',
 		title: msg.replace('Definer: ', ''),
 		showConfirmButton: false,
 		timer: duration,
+		timerProgressBar: true,
+		toast: true,
+		width: '400px',
+		customClass: {
+			popup: 'sweet-success-popup',
+			title: 'sweet-success-title',
+			icon: 'sweet-success-icon',
+			timerProgressBar: 'sweet-success-progress',
+		},
+		showClass: {
+			popup: 'animate__animated animate__fadeInRight animate__faster',
+		},
+		hideClass: {
+			popup: 'animate__animated animate__fadeOutRight animate__faster',
+		},
+		background: '#ffffff',
+		color: '#181a20',
+		backdrop: false,
 	});
 };
 
