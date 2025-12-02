@@ -20,7 +20,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
-import { ProductInput } from '../../../libs/types/property/product.input';
+import { ProductInput } from '../../../libs/types/product/product.input';
 import {
 	ProductType,
 	ProductStatus,

@@ -6,8 +6,8 @@ import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
-import { PropertiesInquiry } from '../../types/property/property.input';
-import { Property } from '../../types/property/property';
+import { PropertiesInquiry } from '../../types/product/property.input';
+import { Property } from '../../types/product/property';
 
 interface TopPropertiesProps {
 	initialInput: PropertiesInquiry;

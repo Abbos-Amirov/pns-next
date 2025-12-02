@@ -2,7 +2,7 @@ import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 're
 import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { PropertyType } from '../../enums/property.enum';
-import { PropertiesInquiry } from '../../types/property/property.input';
+import { PropertiesInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';

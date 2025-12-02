@@ -4,7 +4,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import SearchIcon from '@mui/icons-material/Search';
-import { Property } from '../../types/property/property';
+import { Property } from '../../types/product/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
