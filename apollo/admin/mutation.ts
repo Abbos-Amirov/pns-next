@@ -130,6 +130,41 @@ export const CREATE_PRODUCT = gql`
 	}
 `;
 
+export const UPDATE_PRODUCT_BY_ADMIN = gql`
+	mutation UpdateProductByAdmin($input: ProductUpdate!) {
+		updateProductByAdmin(input: $input) {
+			_id
+			productType
+			productStatus
+			productLocation
+			productAddress
+			productHeight
+			productWidth
+			productTitle
+			productPrice
+			productMaterial
+			productGlassType
+			productOpenType
+			productCategory
+			productColor
+			productItems
+			productViews
+			productLikes
+			productComments
+			
+			productImages
+			productDesc
+			
+			memberId
+			soldAt
+			deletedAt
+			manufacturedAt
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 /**************************
  *      BOARD-ARTICLE     *
  *************************/

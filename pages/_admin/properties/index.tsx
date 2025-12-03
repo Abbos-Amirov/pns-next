@@ -19,7 +19,7 @@ import { ProductLocation, ProductStatus } from '../../../libs/enums/property.enu
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
 import { PropertyUpdate } from '../../../libs/types/product/property.update';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ALL_PROPERTIES_BY_ADMIN } from '../../../apollo/admin/query';
+import { GET_PRODUCTS } from '../../../apollo/admin/query';
 import { UPDATE_PROPERTY_BY_ADMIN, REMOVE_PROPERTY_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
@@ -34,9 +34,28 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
-	const { data: productsData, refetch: refetchProducts } = useQuery(GET_ALL_PROPERTIES_BY_ADMIN, {
-		variables: { input: productsInquiry },
+	// Search object'ni tozalash - bo'sh field'larni olib tashlash
+	const cleanSearch = productsInquiry.search 
+		? Object.fromEntries(
+			Object.entries(productsInquiry.search).filter(([_, value]) => 
+				value !== undefined && value !== null && value !== '' && 
+				!(Array.isArray(value) && value.length === 0)
+			)
+		)
+		: {};
+
+	const cleanProductsInquiry: ProductsInquiry = {
+		page: productsInquiry.page,
+		limit: productsInquiry.limit,
+		sort: productsInquiry.sort,
+		direction: productsInquiry.direction,
+		search: Object.keys(cleanSearch).length > 0 ? cleanSearch : {},
+	};
+
+	const { data: productsData, loading, error, refetch: refetchProducts } = useQuery(GET_PRODUCTS, {
+		variables: { input: cleanProductsInquiry },
 		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
 	});
 
 	const [updatePropertyByAdmin] = useMutation(UPDATE_PROPERTY_BY_ADMIN);
@@ -44,15 +63,37 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (productsData?.getAllProductsByAdmin) {
-			setProducts(productsData.getAllProductsByAdmin.list);
-			setProductsTotal(productsData.getAllProductsByAdmin.metaCounter.total);
+		if (productsData?.getProducts) {
+			const productsList = productsData.getProducts.list || [];
+			setProducts(Array.isArray(productsList) ? productsList : []);
+			
+			// metaCounter array ko'rinishida keladi: [{ total: 4 }]
+			const metaCounter = productsData.getProducts.metaCounter;
+			const total = Array.isArray(metaCounter) 
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+			setProductsTotal(total);
+			
+			console.log('Products data:', {
+				list: productsList,
+				listLength: productsList.length,
+				metaCounter: metaCounter,
+				total: total
+			});
 		}
 	}, [productsData]);
 
 	useEffect(() => {
 		refetchProducts();
 	}, [productsInquiry, refetchProducts]);
+
+	// Refresh when coming from edit page
+	useEffect(() => {
+		if (router.query.refresh === 'true') {
+			refetchProducts();
+			router.replace('/_admin/properties', undefined, { shallow: true });
+		}
+	}, [router.query.refresh, refetchProducts, router]);
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
@@ -156,15 +197,16 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
 						<Stack direction={'row'} alignItems={'center'} spacing={2}>
 							<Box
+								className={'products-icon-box'}
 								sx={{
 									width: 56,
 									height: 56,
 									borderRadius: '12px',
-									backgroundColor: 'rgba(22, 70, 193, 0.1)',
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
-									color: '#1646C1',
+									color: '#8B4513',
 								}}
 							>
 								<HomeWorkIcon sx={{ fontSize: 32 }} />
@@ -179,7 +221,18 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 							</Box>
 						</Stack>
 						<Stack direction={'row'} spacing={2} alignItems={'center'}>
-							<Chip label={`Total: ${productsTotal}`} className={'products-total-chip'} />
+							<Chip 
+								label={`Total: ${productsTotal}`} 
+								className={'products-total-chip'}
+								sx={{
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
+									color: '#8B4513',
+									fontWeight: 600,
+									fontSize: '14px',
+									height: '36px',
+									fontFamily: '$font',
+								}}
+							/>
 							<Button
 								variant={'contained'}
 								startIcon={<AddRoundedIcon />}
@@ -204,7 +257,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 									<Button
 										variant={value === 'ALL' ? 'contained' : 'outlined'}
 										onClick={(e: any) => tabChangeHandler(e, 'ALL')}
-										className={value === 'ALL' ? 'tab-btn active' : 'tab-btn'}
+										className={value === 'ALL' ? 'tab-btn active products-tab' : 'tab-btn products-tab'}
 										sx={{
 											textTransform: 'none',
 											borderRadius: '8px',
@@ -213,14 +266,14 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 											fontWeight: 600,
 											...(value === 'ALL'
 												? {
-														backgroundColor: '#1646C1',
+														backgroundColor: '#8B4513',
 														color: '#fff',
-														'&:hover': { backgroundColor: '#0f3490' },
+														'&:hover': { backgroundColor: '#6B3410' },
 												  }
 												: {
 														borderColor: '#e0e0e0',
 														color: '#424242',
-														'&:hover': { borderColor: '#1646C1', backgroundColor: 'rgba(22, 70, 193, 0.05)' },
+														'&:hover': { borderColor: '#8B4513', backgroundColor: 'rgba(139, 69, 19, 0.05)' },
 												  }),
 										}}
 									>
@@ -310,6 +363,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 							<Stack direction={'row'} spacing={2} className={'search-filter-area'}>
 								<Select
 									value={searchType}
+									className={'products-location-select'}
 									sx={{
 										minWidth: '200px',
 										borderRadius: '8px',
@@ -317,15 +371,15 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 											borderColor: '#e0e0e0',
 										},
 										'&:hover .MuiOutlinedInput-notchedOutline': {
-											borderColor: '#1646C1',
+											borderColor: '#8B4513',
 										},
 										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-											borderColor: '#1646C1',
+											borderColor: '#8B4513',
 										},
 									}}
 									startAdornment={
 										<Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-											<FilterListIcon sx={{ color: '#1646C1', fontSize: 20 }} />
+											<FilterListIcon sx={{ color: '#8B4513', fontSize: 20 }} />
 										</Box>
 									}
 								>
@@ -347,34 +401,41 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 			{/* Table Section */}
 			<Card className={'table-card'}>
 				<CardContent sx={{ p: 0 }}>
-					<PropertyPanelList
-						properties={products}
-						anchorEl={anchorEl}
-						menuIconClickHandler={menuIconClickHandler}
-						menuIconCloseHandler={menuIconCloseHandler}
-						updatePropertyHandler={updateProductHandler}
-						removePropertyHandler={removeProductHandler}
-					/>
+					{loading ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'}>Loading products...</Typography>
+						</Box>
+					) : error ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} color={'error'}>
+								Error loading products: {error.message}
+							</Typography>
+						</Box>
+					) : (
+						<>
+							<PropertyPanelList
+								properties={products}
+								anchorEl={anchorEl}
+								menuIconClickHandler={menuIconClickHandler}
+								menuIconCloseHandler={menuIconCloseHandler}
+								updatePropertyHandler={updateProductHandler}
+								removePropertyHandler={removeProductHandler}
+							/>
 
-					<Box sx={{ px: 3, pb: 2 }}>
-						<TablePagination
-							rowsPerPageOptions={[10, 20, 40, 60]}
-							component="div"
-							count={productsTotal}
-							rowsPerPage={productsInquiry?.limit}
-							page={productsInquiry?.page - 1}
-							onPageChange={changePageHandler}
-							onRowsPerPageChange={changeRowsPerPageHandler}
-							sx={{
-								'& .MuiTablePagination-toolbar': {
-									paddingLeft: 0,
-								},
-								'& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-									fontWeight: 500,
-								},
-							}}
-						/>
-					</Box>
+							<Box className={'products-pagination-box'}>
+								<TablePagination
+									rowsPerPageOptions={[10, 20, 40, 60]}
+									component="div"
+									count={productsTotal}
+									rowsPerPage={productsInquiry?.limit || 10}
+									page={(productsInquiry?.page || 1) - 1}
+									onPageChange={changePageHandler}
+									onRowsPerPageChange={changeRowsPerPageHandler}
+									className={'products-pagination'}
+								/>
+							</Box>
+						</>
+					)}
 				</CardContent>
 			</Card>
 		</Box>

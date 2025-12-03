@@ -194,6 +194,50 @@ export const GET_COMMENTS = gql`
 `;
 
 /**************************
+ *         PRODUCTS       *
+ *************************/
+
+export const GET_PRODUCTS = gql`
+	query GetProducts($input: ProductsInquiry!) {
+		getProducts(input: $input) {
+			list {
+				_id
+				productType
+				productStatus
+				productLocation
+				productAddress
+				productHeight
+				productWidth
+				productTitle
+				productPrice
+				productMaterial
+				productGlassType
+				productOpenType
+				productCategory
+				productColor
+				productItems
+				productViews
+				productLikes
+				productComments
+				productRank
+				productImages
+				productDesc
+				productRent
+				memberId
+				soldAt
+				deletedAt
+				manufacturedAt
+				createdAt
+				updatedAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+/**************************
  *         NOTICE         *
  *************************/
 
