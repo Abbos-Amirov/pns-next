@@ -132,7 +132,7 @@ const NoticeCreate: NextPage = (props: any) => {
 								</Typography>
 								<TextField
 									fullWidth
-									
+									multiline
 									rows={12}
 									label="Enter notice content..."
 									value={noticeData.noticeContent}

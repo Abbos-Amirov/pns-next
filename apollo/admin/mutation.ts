@@ -350,3 +350,18 @@ export const DELETE_NOTICE = gql`
 		}
 	}
 `;
+
+export const DELETE_CS_NOTICE = gql`
+	mutation DeleteCsNotice($input: String!) {
+		deleteCsNotice(id: $input) {
+			_id
+			noticeCategory
+			noticeCategoryType
+			noticeStatus
+			noticeTitle
+			noticeContent
+			createdAt
+			updatedAt
+		}
+	}
+`;
