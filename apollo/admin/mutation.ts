@@ -215,9 +215,37 @@ export const UPDATE_BOARD_ARTICLE_BY_ADMIN = gql`
 			articleImage
 			articleViews
 			articleLikes
+			articleComments
 			memberId
 			createdAt
 			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProducts
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
 		}
 	}
 `;

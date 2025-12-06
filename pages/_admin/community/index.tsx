@@ -10,41 +10,82 @@ import TablePagination from '@mui/material/TablePagination';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ArticleIcon from '@mui/icons-material/Article';
 import CommunityArticleList from '../../../libs/components/admin/community/CommunityArticleList';
-import { AllBoardArticlesInquiry } from '../../../libs/types/board-article/board-article.input';
+import { BoardArticlesInquiry } from '../../../libs/types/board-article/board-article.input';
 import { BoardArticle } from '../../../libs/types/board-article/board-article';
 import { BoardArticleCategory, BoardArticleStatus } from '../../../libs/enums/board-article.enum';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
 import { BoardArticleUpdate } from '../../../libs/types/board-article/board-article.update';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ALL_BOARD_ARTICLES_BY_ADMIN } from '../../../apollo/admin/query';
+import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { UPDATE_BOARD_ARTICLE_BY_ADMIN, REMOVE_BOARD_ARTICLE_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<any>([]);
-	const [communityInquiry, setCommunityInquiry] = useState<AllBoardArticlesInquiry>(initialInquiry);
+	const [communityInquiry, setCommunityInquiry] = useState<BoardArticlesInquiry>(initialInquiry);
 	const [articles, setArticles] = useState<BoardArticle[]>([]);
 	const [articleTotal, setArticleTotal] = useState<number>(0);
-	const [value, setValue] = useState(
-		communityInquiry?.search?.articleStatus ? communityInquiry?.search?.articleStatus : 'ALL',
+	const [value, setValue] = useState('ALL');
+	const [searchType, setSearchType] = useState<string>(
+		communityInquiry?.search?.articleCategory || 'ALL'
 	);
-	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
-	const { data: articlesData, refetch: refetchArticles } = useQuery(GET_ALL_BOARD_ARTICLES_BY_ADMIN, {
+	const { data: articlesData, loading, error, refetch: refetchArticles } = useQuery(GET_BOARD_ARTICLES, {
 		variables: { input: communityInquiry },
 		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onError: (err) => {
+			console.error('Articles Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+		onCompleted: (data) => {
+			console.log('Query completed with data:', data);
+		},
 	});
+
+	// Debug logs
+	console.log('Community Inquiry:', communityInquiry);
+	console.log('Articles Data:', articlesData);
+	console.log('Loading:', loading);
+	console.log('Error:', error);
 
 	const [updateArticleByAdmin] = useMutation(UPDATE_BOARD_ARTICLE_BY_ADMIN);
 	const [removeArticleByAdmin] = useMutation(REMOVE_BOARD_ARTICLE_BY_ADMIN);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (articlesData?.getAllBoardArticlesByAdmin) {
-			setArticles(articlesData.getAllBoardArticlesByAdmin.list);
-			setArticleTotal(articlesData.getAllBoardArticlesByAdmin.metaCounter.total);
+		if (articlesData?.getBoardArticles) {
+			console.log('Articles Data:', articlesData.getBoardArticles);
+			const articlesList = articlesData.getBoardArticles.list || [];
+			console.log('Articles List:', articlesList);
+			// Filter by articleStatus if needed (client-side filtering)
+			let filteredArticles = Array.isArray(articlesList) ? articlesList : [];
+			
+			if (value !== 'ALL') {
+				filteredArticles = filteredArticles.filter((article: BoardArticle) => {
+					if (value === 'ACTIVE') {
+						return article.articleStatus === BoardArticleStatus.ACTIVE;
+					} else if (value === 'DELETE') {
+						return article.articleStatus === BoardArticleStatus.DELETE;
+					}
+					return true;
+				});
+			}
+			
+			setArticles(filteredArticles);
+			
+			// metaCounter array ko'rinishida keladi: [{ total: 4 }]
+			const metaCounter = articlesData.getBoardArticles.metaCounter;
+			const total = Array.isArray(metaCounter) 
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+			setArticleTotal(total); // Use total from backend
+			console.log('Filtered Articles:', filteredArticles);
+			console.log('Total from metaCounter:', total);
+		} else {
+			console.log('No articles data:', articlesData);
 		}
-	}, [articlesData]);
+	}, [articlesData, value]);
 
 	useEffect(() => {
 		refetchArticles();
@@ -74,21 +115,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const tabChangeHandler = async (event: any, newValue: string) => {
 		setValue(newValue);
-
-		setCommunityInquiry({ ...communityInquiry, page: 1, sort: 'createdAt' });
-
-		switch (newValue) {
-			case 'ACTIVE':
-				setCommunityInquiry({ ...communityInquiry, search: { articleStatus: BoardArticleStatus.ACTIVE } });
-				break;
-			case 'DELETE':
-				setCommunityInquiry({ ...communityInquiry, search: { articleStatus: BoardArticleStatus.DELETE } });
-				break;
-			default:
-				delete communityInquiry?.search?.articleStatus;
-				setCommunityInquiry({ ...communityInquiry });
-				break;
-		}
+		// Note: getBoardArticles doesn't support articleStatus filter, so we filter client-side
 	};
 
 	const searchTypeHandler = async (newValue: string) => {
@@ -101,13 +128,20 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 					page: 1,
 					sort: 'createdAt',
 					search: {
-						...communityInquiry.search,
 						articleCategory: newValue as BoardArticleCategory,
 					},
 				});
 			} else {
-				delete communityInquiry?.search?.articleCategory;
-				setCommunityInquiry({ ...communityInquiry });
+				// For "All Categories", we need to query all categories
+				// Since BoardArticlesInquiry requires articleCategory, we'll use FREE as default
+				setCommunityInquiry({
+					...communityInquiry,
+					page: 1,
+					sort: 'createdAt',
+					search: {
+						// articleCategory ni undefined qilish - barcha category'larni ko'rsatish uchun
+					},
+				});
 			}
 		} catch (err: any) {
 			console.log('searchTypeHandler: ', err.message);
@@ -194,7 +228,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 								<Stack direction={'row'} spacing={1} className={'status-tabs'}>
 									<Button
 										variant={value === 'ALL' ? 'contained' : 'outlined'}
-										onClick={(e:eny) => tabChangeHandler(e, 'ALL')}
+										onClick={(e: any) => tabChangeHandler(e, 'ALL')}
 										className={value === 'ALL' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -219,7 +253,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 									</Button>
 									<Button
 										variant={value === 'ACTIVE' ? 'contained' : 'outlined'}
-										onClick={(e:eny) => tabChangeHandler(e, 'ACTIVE')}
+										onClick={(e: any) => tabChangeHandler(e, 'ACTIVE')}
 										className={value === 'ACTIVE' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -244,7 +278,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 									</Button>
 									<Button
 										variant={value === 'DELETE' ? 'contained' : 'outlined'}
-										onClick={(e) => tabChangeHandler(e, 'DELETE')}
+										onClick={(e: any) => tabChangeHandler(e, 'DELETE')}
 										className={value === 'DELETE' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -313,14 +347,26 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 			{/* Table Section */}
 			<Card className={'table-card'}>
 				<CardContent sx={{ p: 0 }}>
-					<CommunityArticleList
-						articles={articles}
-						anchorEl={anchorEl}
-						menuIconClickHandler={menuIconClickHandler}
-						menuIconCloseHandler={menuIconCloseHandler}
-						updateArticleHandler={updateArticleHandler}
-						removeArticleHandler={removeArticleHandler}
-					/>
+					{loading ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'}>Loading articles...</Typography>
+						</Box>
+					) : error ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} color={'error'}>
+								Error loading articles: {error.message}
+							</Typography>
+						</Box>
+					) : (
+						<CommunityArticleList
+							articles={articles}
+							anchorEl={anchorEl}
+							menuIconClickHandler={menuIconClickHandler}
+							menuIconCloseHandler={menuIconCloseHandler}
+							updateArticleHandler={updateArticleHandler}
+							removeArticleHandler={removeArticleHandler}
+						/>
+					)}
 
 					<Box sx={{ px: 3, pb: 2 }}>
 						<TablePagination
@@ -353,7 +399,9 @@ AdminCommunity.defaultProps = {
 		limit: 10,
 		sort: 'createdAt',
 		direction: 'DESC',
-		search: {},
+		search: {
+			// articleCategory ni undefined qoldirish - barcha category'larni ko'rsatish uchun
+		},
 	},
 };
 

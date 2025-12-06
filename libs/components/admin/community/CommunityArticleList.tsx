@@ -22,8 +22,11 @@ import Moment from 'react-moment';
 import { BoardArticle } from '../../../types/board-article/board-article';
 import { REACT_APP_API_URL } from '../../../config';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import Typography from '@mui/material/Typography';
 import { BoardArticleStatus } from '../../../enums/board-article.enum';
+import { useRouter } from 'next/router';
 
 interface Data {
 	category: string;
@@ -131,6 +134,7 @@ interface CommunityArticleListProps {
 const CommunityArticleList = (props: CommunityArticleListProps) => {
 	const { articles, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateArticleHandler, removeArticleHandler } =
 		props;
+	const router = useRouter();
 
 	return (
 		<Stack>
@@ -187,46 +191,71 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 										<Moment format={'DD.MM.YY HH:mm'}>{article?.createdAt}</Moment>
 									</TableCell>
 									<TableCell align="center">
-										{article.articleStatus === 'DELETE' ? (
-											<Button
-												variant="outlined"
-												sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
-												onClick={() => removeArticleHandler(article._id)}
-											>
-												<DeleteIcon fontSize="small" />
-											</Button>
-										) : (
-											<>
-												<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-													{article.articleStatus}
-												</Button>
-
-												<Menu
-													className={'menu-modal'}
-													MenuListProps={{
-														'aria-labelledby': 'fade-button',
-													}}
-													anchorEl={anchorEl[index]}
-													open={Boolean(anchorEl[index])}
-													onClose={menuIconCloseHandler}
-													TransitionComponent={Fade}
-													sx={{ p: 1 }}
+										<Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'center'}>
+											{article.articleStatus === 'DELETE' ? (
+												<Button
+													variant="outlined"
+													sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
+													onClick={() => removeArticleHandler(article._id)}
 												>
-													{Object.values(BoardArticleStatus)
-														.filter((ele) => ele !== article.articleStatus)
-														.map((status: string) => (
-															<MenuItem
-																onClick={() => updateArticleHandler({ _id: article._id, articleStatus: status })}
-																key={status}
-															>
-																<Typography variant={'subtitle1'} component={'span'}>
-																	{status}
-																</Typography>
-															</MenuItem>
-														))}
-												</Menu>
-											</>
-										)}
+													<DeleteIcon fontSize="small" />
+												</Button>
+											) : (
+												<>
+													<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
+														{article.articleStatus}
+													</Button>
+
+													{article.articleStatus === BoardArticleStatus.ACTIVE && (
+														<>
+															<Tooltip title="Edit">
+																<IconButton
+																	onClick={() => router.push(`/_admin/community/article_edit?id=${article._id}`)}
+																	className={'article-edit-btn'}
+																	size="small"
+																>
+																	<EditRoundedIcon fontSize="small" />
+																</IconButton>
+															</Tooltip>
+															<Tooltip title="Delete">
+																<IconButton
+																	onClick={() => removeArticleHandler(article._id)}
+																	className={'article-delete-btn'}
+																	size="small"
+																>
+																	<DeleteRoundedIcon fontSize="small" />
+																</IconButton>
+															</Tooltip>
+														</>
+													)}
+
+													<Menu
+														className={'menu-modal'}
+														MenuListProps={{
+															'aria-labelledby': 'fade-button',
+														}}
+														anchorEl={anchorEl[index]}
+														open={Boolean(anchorEl[index])}
+														onClose={menuIconCloseHandler}
+														TransitionComponent={Fade}
+														sx={{ p: 1 }}
+													>
+														{Object.values(BoardArticleStatus)
+															.filter((ele) => ele !== article.articleStatus)
+															.map((status: string) => (
+																<MenuItem
+																	onClick={() => updateArticleHandler({ _id: article._id, articleStatus: status })}
+																	key={status}
+																>
+																	<Typography variant={'subtitle1'} component={'span'}>
+																		{status}
+																	</Typography>
+																</MenuItem>
+															))}
+													</Menu>
+												</>
+											)}
+										</Stack>
 									</TableCell>
 								</TableRow>
 							))}

@@ -443,7 +443,7 @@ export const GET_BOARD_ARTICLES = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberProducts
 					memberRank
 					memberPoints
 					memberLikes
