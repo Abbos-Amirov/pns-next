@@ -274,66 +274,47 @@ export const GET_FAVORITES = gql`
 `;
 
 export const GET_VISITED = gql`
-	query GetVisited($input: OrdinaryInquiry!) {
-		getVisited(input: $input) {
-			list {
-				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyComments
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
-				memberId
-				soldAt
-				deletedAt
-				constructedAt
-				createdAt
-				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberProperties
-					memberArticles
-					memberPoints
-					memberLikes
-					memberViews
-					memberComments
-					memberFollowings
-					memberFollowers
-					memberRank
-					memberWarnings
-					memberBlocks
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
-				}
-			}
-			metaCounter {
-				total
-			}
-		}
-	}
+	
+				query GetVisited ($input: OrdinaryInquiry!) {
+    getVisited(input: $input) {
+        list {
+            _id
+            productType
+            productStatus
+            productLocation
+            productAddress
+            productHeight
+            productWidth
+            productTitle
+            productPrice
+            productMaterial
+            productGlassType
+            productOpenType
+            productCategory
+            productColor
+            productItems
+            productViews
+            productLikes
+            productComments
+            productRank
+            productImages
+            productDesc
+            productRent
+            memberId
+            soldAt
+            deletedAt
+            manufacturedAt
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+
+				
+	
 `;
 
 /**************************
