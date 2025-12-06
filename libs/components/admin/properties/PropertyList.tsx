@@ -195,7 +195,7 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 																	if (editPropertyHandler) {
 																		editPropertyHandler(property._id);
 																	} else {
-																		router.push(`/_admin/properties/product_edit?id=${property._id}`);
+																		router.push(`/_admin/products/product_edit?id=${property._id}`);
 																	}
 																}}
 																className={'product-edit-btn'}
