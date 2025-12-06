@@ -394,10 +394,10 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 						<Stack className="main-config" mb={'76px'}>
 							<Stack className={`list-config ${viewMode === 'list' ? 'list-view' : 'grid-view'}`}>
 							{properties?.length === 0 ? (
-								<div className={'no-data'}>
+								<Box component={'div'} className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No Properties found!</p>
-								</div>
+									<Typography component={'p'}>No Properties found!</Typography>
+								</Box>
 							) : (
 								properties
 									.slice((currentPage - 1) * searchFilter.limit, currentPage * searchFilter.limit)

@@ -371,7 +371,11 @@ const withLayoutBasic = (Component: any) => {
 								</Box>
 
 								{/* Description */}
-								
+								<Box component={'div'} className={'hero-description'}>
+									<Typography component={'p'} className={'description-text'}>
+										{memoizedValues.desc}
+									</Typography>
+								</Box>
 
 								{/* NEXT PROJECT Button */}
 								<Button className={'next-project-btn'}>

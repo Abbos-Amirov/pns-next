@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
-import { Stack } from '@mui/material';
+import { Stack, Box, Card, CardContent } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyProperties from '../../libs/components/mypage/MyProperties';
@@ -66,42 +66,45 @@ const MyPage: NextPage = () => {
 		return <div>MY PAGE</div>;
 	} else {
 		return (
-			<div id="my-page" style={{ position: 'relative' }}>
-				<div className="container">
-					<Stack className={'my-page'}>
-						<Stack className={'back-frame'}>
-							<Stack className={'left-config'}>
+			<Box component={'div'} id="my-page" className={'mypage-container'}>
+				<Box component={'div'} className={'container'}>
+					<Stack className={'my-page-wrapper'}>
+						{/* Sidebar Menu Card */}
+						<Card className={'mypage-sidebar-card'}>
+							<CardContent sx={{ p: 0 }}>
 								<MyMenu />
-							</Stack>
-							<Stack className="main-config" mb={'76px'}>
-								<Stack className={'list-config'}>
-									{category === 'addProperty' && <AddProperty />}
-									{category === 'myProperties' && <MyProperties />}
-									{category === 'myFavorites' && <MyFavorites />}
-									{category === 'recentlyVisited' && <RecentlyVisited />}
-									{category === 'myArticles' && <MyArticles />}
-									{category === 'writeArticle' && <WriteArticle />}
-									{category === 'myProfile' && <MyProfile />}
-									{category === 'followers' && (
-										<MemberFollowers
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-									{category === 'followings' && (
-										<MemberFollowings
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-								</Stack>
-							</Stack>
-						</Stack>
+							</CardContent>
+						</Card>
+
+						{/* Main Content Card */}
+						<Card className={'mypage-content-card'}>
+							<CardContent className={'mypage-content-wrapper'}>
+								{category === 'addProperty' && <AddProperty />}
+								{category === 'myProperties' && <MyProperties />}
+								{category === 'myFavorites' && <MyFavorites />}
+								{category === 'recentlyVisited' && <RecentlyVisited />}
+								{category === 'myArticles' && <MyArticles />}
+								{category === 'writeArticle' && <WriteArticle />}
+								{category === 'myProfile' && <MyProfile />}
+								{category === 'followers' && (
+									<MemberFollowers
+										subscribeHandler={subscribeHandler}
+										unsubscribeHandler={unsubscribeHandler}
+										redirectToMemberPageHandler={redirectToMemberPageHandler}
+									/>
+								)}
+								{category === 'followings' && (
+									<MemberFollowings
+										subscribeHandler={subscribeHandler}
+										unsubscribeHandler={unsubscribeHandler}
+										redirectToMemberPageHandler={redirectToMemberPageHandler}
+									/>
+								)}
+							</CardContent>
+						</Card>
 					</Stack>
-				</div>
-			</div>
+				</Box>
+			</Box>
 		);
 	}
 };

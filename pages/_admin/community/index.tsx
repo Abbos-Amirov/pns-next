@@ -139,7 +139,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 					page: 1,
 					sort: 'createdAt',
 					search: {
-						// articleCategory ni undefined qilish - barcha category'larni ko'rsatish uchun
+						articleCategory: BoardArticleCategory.FREE, // Default category
 					},
 				});
 			}
@@ -400,7 +400,8 @@ AdminCommunity.defaultProps = {
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {
-			// articleCategory ni undefined qoldirish - barcha category'larni ko'rsatish uchun
+			articleCategory: BoardArticleCategory,
+			articalStatus:BoardArticleStatus // Default to NEWS category to match backend data
 		},
 	},
 };

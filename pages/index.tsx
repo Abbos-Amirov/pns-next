@@ -38,8 +38,8 @@ const Home: NextPage = () => {
 				<Brand />
 				<PopularProducts />
 				<TrendProperties />
-				<Advertisement />
 				<TopProperties />
+				<Advertisement />
 				<TopAgents />
 				<Events />
 				<CommunityBoards />
