@@ -1,7 +1,8 @@
 export enum MemberType {
 	USER = 'USER',
-	AGENT = 'AGENT',
+	MEASURER = 'MEASURER',  // o'lchov oladigan
 	ADMIN = 'ADMIN',
+	INSTALLER = 'INSTALLER', // o'rnatadigan
 }
 
 export enum MemberStatus {

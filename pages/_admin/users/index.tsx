@@ -35,9 +35,32 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
-	const { data: membersData, refetch: refetchMembers } = useQuery(GET_ALL_MEMBERS_BY_ADMIN, {
-		variables: { input: membersInquiry },
+	// Search object'ni tozalash - bo'sh field'larni olib tashlash
+	const cleanSearch = membersInquiry.search 
+		? Object.fromEntries(
+			Object.entries(membersInquiry.search).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+		)
+		: {};
+	
+	const cleanMembersInquiry = {
+		page: membersInquiry.page,
+		limit: membersInquiry.limit,
+		sort: membersInquiry.sort,
+		direction: membersInquiry.direction,
+		search: Object.keys(cleanSearch).length > 0 ? cleanSearch : {},
+	};
+
+	const { data: membersData, loading, error, refetch: refetchMembers } = useQuery(GET_ALL_MEMBERS_BY_ADMIN, {
+		variables: { input: cleanMembersInquiry },
 		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onError: (err) => {
+			console.error('Members Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+		onCompleted: (data) => {
+			console.log('Query completed with data:', data);
+		},
 	});
 
 	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
@@ -45,8 +68,13 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (membersData?.getAllMembersByAdmin) {
-			setMembers(membersData.getAllMembersByAdmin.list);
-			setMembersTotal(membersData.getAllMembersByAdmin.metaCounter.total);
+			setMembers(membersData.getAllMembersByAdmin.list || []);
+			// metaCounter array ko'rinishida keladi: [{ total: 4 }]
+			const metaCounter = membersData.getAllMembersByAdmin.metaCounter;
+			const total = Array.isArray(metaCounter) 
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+			setMembersTotal(total);
 		}
 	}, [membersData]);
 
@@ -211,7 +239,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 								<Stack direction={'row'} spacing={1} className={'status-tabs'}>
 									<Button
 										variant={value === 'ALL' ? 'contained' : 'outlined'}
-										onClick={(e) => tabChangeHandler(e, 'ALL')}
+										onClick={(e:any) => tabChangeHandler(e, 'ALL')}
 										className={value === 'ALL' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -236,7 +264,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									</Button>
 									<Button
 										variant={value === 'ACTIVE' ? 'contained' : 'outlined'}
-										onClick={(e) => tabChangeHandler(e, 'ACTIVE')}
+										onClick={(e:any) => tabChangeHandler(e, 'ACTIVE')}
 										className={value === 'ACTIVE' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -286,7 +314,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									</Button>
 									<Button
 										variant={value === 'DELETE' ? 'contained' : 'outlined'}
-										onClick={(e) => tabChangeHandler(e, 'DELETE')}
+										onClick={(e:any) => tabChangeHandler(e, 'DELETE')}
 										className={value === 'DELETE' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -407,15 +435,11 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
 										All Types
 									</MenuItem>
-									<MenuItem value={'USER'} onClick={() => searchTypeHandler('USER')}>
-										User
-									</MenuItem>
-									<MenuItem value={'AGENT'} onClick={() => searchTypeHandler('AGENT')}>
-										Agent
-									</MenuItem>
-									<MenuItem value={'ADMIN'} onClick={() => searchTypeHandler('ADMIN')}>
-										Admin
-									</MenuItem>
+									{Object.values(MemberType).map((type) => (
+										<MenuItem key={type} value={type} onClick={() => searchTypeHandler(type)}>
+											{type}
+										</MenuItem>
+									))}
 								</Select>
 							</Stack>
 						</TabContext>
@@ -426,13 +450,25 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 			{/* Table Section */}
 			<Card className={'table-card'}>
 				<CardContent sx={{ p: 0 }}>
-					<MemberPanelList
-						members={members}
-						anchorEl={anchorEl}
-						menuIconClickHandler={menuIconClickHandler}
-						menuIconCloseHandler={menuIconCloseHandler}
-						updateMemberHandler={updateMemberHandler}
-					/>
+					{loading ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'}>Loading members...</Typography>
+						</Box>
+					) : error ? (
+						<Box sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} color={'error'}>
+								Error loading members: {error.message}
+							</Typography>
+						</Box>
+					) : (
+						<MemberPanelList
+							members={members}
+							anchorEl={anchorEl}
+							menuIconClickHandler={menuIconClickHandler}
+							menuIconCloseHandler={menuIconCloseHandler}
+							updateMemberHandler={updateMemberHandler}
+						/>
+					)}
 
 					<Box sx={{ px: 3, pb: 2 }}>
 						<TablePagination
