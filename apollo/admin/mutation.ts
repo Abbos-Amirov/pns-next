@@ -306,6 +306,21 @@ export const CREATE_NOTICE = gql`
 	}
 `;
 
+export const CREATE_CS_NOTICE = gql`
+	mutation CreateCsNotice($input: CreateNoticeInput!) {
+		createCsNotice(input: $input) {
+			_id
+			noticeCategory
+			noticeCategoryType
+			noticeStatus
+			noticeTitle
+			noticeContent
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 export const UPDATE_NOTICE = gql`
 	mutation UpdateNotice($input: UpdateNoticeInput!) {
 		updateNotice(input: $input) {

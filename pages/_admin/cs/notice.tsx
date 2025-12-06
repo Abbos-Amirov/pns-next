@@ -113,13 +113,7 @@ const AdminNotice: NextPage = (props: any) => {
 									>
 										Active
 									</Button>
-									<Button
-										variant={value === 'BLOCKED' ? 'contained' : 'outlined'}
-										onClick={() => handleTabChange('BLOCKED')}
-										className={`tab-btn notice-tab ${value === 'BLOCKED' ? 'active' : ''}`}
-									>
-										Blocked
-									</Button>
+								
 									<Button
 										variant={value === 'DELETED' ? 'contained' : 'outlined'}
 										onClick={() => handleTabChange('DELETED')}
