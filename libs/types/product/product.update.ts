@@ -24,7 +24,7 @@ export interface ProductUpdate {
 	productCategory?: ProductCategory;
 	productImages?: string[];
 	productDesc?: string;
-	productRent?: boolean;
+	// productRent backend'da ProductUpdate type'ida yo'q, shuning uchun olib tashlandi
 	productItems?: number;
 	productBarter?: boolean;
 }

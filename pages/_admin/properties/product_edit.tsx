@@ -109,7 +109,7 @@ const ProductEdit: NextPage = (props: any) => {
 					// productColor backend'da ProductUpdate type'ida yo'q, shuning uchun olib tashlandi
 					productImages: product.productImages ?? [],
 					productDesc: product.productDesc ?? '',
-					productRent: product.productRent ?? false,
+					// productRent backend'da ProductUpdate type'ida yo'q, shuning uchun olib tashlandi
 				});
 			}
 		}
@@ -232,7 +232,7 @@ const ProductEdit: NextPage = (props: any) => {
 			// productColor backend'da ProductUpdate type'ida yo'q, shuning uchun olib tashlandi
 			if (productData.productImages && productData.productImages.length > 0) updateInput.productImages = productData.productImages;
 			if (productData.productDesc !== undefined) updateInput.productDesc = productData.productDesc;
-			if (productData.productRent !== undefined) updateInput.productRent = productData.productRent;
+			// productRent backend'da ProductUpdate type'ida yo'q, shuning uchun olib tashlandi
 
 			await updateProduct({
 				variables: { input: updateInput },
