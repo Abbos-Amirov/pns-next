@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Stack, Card, CardContent, Chip, Button } from '@mui/material';
+import { 
+	Box, 
+	Stack, 
+	Card, 
+	CardContent, 
+	Chip, 
+	Button,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	IconButton,
+} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
@@ -11,6 +23,9 @@ import TablePagination from '@mui/material/TablePagination';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { useRouter } from 'next/router';
 import { PropertyPanelList } from '../../../libs/components/admin/properties/PropertyList';
 import { ProductsInquiry } from '../../../libs/types/product/products.input';
@@ -20,7 +35,7 @@ import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAle
 import { PropertyUpdate } from '../../../libs/types/product/property.update';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/admin/query';
-import { UPDATE_PROPERTY_BY_ADMIN, REMOVE_PROPERTY_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { UPDATE_PROPERTY_BY_ADMIN, REMOVE_PROPERTY_BY_ADMIN, REMOVE_PRODUCT_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	const router = useRouter();
@@ -60,6 +75,11 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const [updatePropertyByAdmin] = useMutation(UPDATE_PROPERTY_BY_ADMIN);
 	const [removePropertyByAdmin] = useMutation(REMOVE_PROPERTY_BY_ADMIN);
+	const [removeProductByAdmin] = useMutation(REMOVE_PRODUCT_BY_ADMIN);
+	
+	// Delete dialog state
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -140,16 +160,41 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	};
 
 	const removeProductHandler = async (id: string) => {
+		// Delete dialog'ni ochish
+		setProductToDelete(id);
+		setDeleteDialogOpen(true);
+	};
+
+	const handleDeleteConfirm = async () => {
+		if (!productToDelete) return;
+		
 		try {
-			await removePropertyByAdmin({
-				variables: { input: id },
+			const result = await removeProductByAdmin({
+				variables: { input: productToDelete },
 			});
-			await sweetTopSuccessAlert('Product removed successfully!');
-			menuIconCloseHandler();
-			await refetchProducts();
+			
+			if (result.data?.removeProductByAdmin) {
+				// Avval dialog yopish
+				setDeleteDialogOpen(false);
+				setProductToDelete(null);
+				// List'ni yangilash
+				await refetchProducts();
+				// Keyin alert chiqarish (dialog yopilgandan keyin)
+				setTimeout(async () => {
+					await sweetTopSuccessAlert('Product deleted successfully!');
+				}, 300);
+			}
 		} catch (err: any) {
+			console.error('Delete error:', err);
 			sweetErrorHandling(err).then();
+			setDeleteDialogOpen(false);
+			setProductToDelete(null);
 		}
+	};
+
+	const handleDeleteCancel = () => {
+		setDeleteDialogOpen(false);
+		setProductToDelete(null);
 	};
 
 	const searchTypeHandler = async (newValue: string) => {
@@ -163,11 +208,11 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 					sort: 'createdAt',
 					search: {
 						...productsInquiry.search,
-						productLocationList: [newValue as ProductLocation],
+						locationList: [newValue as ProductLocation], // Backend'da locationList deb nomlangan
 					},
 				});
 			} else {
-				delete productsInquiry?.search?.productLocationList;
+				delete productsInquiry?.search?.locationList;
 				setProductsInquiry({ ...productsInquiry });
 			}
 		} catch (err: any) {
@@ -438,6 +483,101 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Delete Confirmation Dialog */}
+			<Dialog
+				open={deleteDialogOpen}
+				onClose={handleDeleteCancel}
+				className={'faq-delete-dialog'}
+				PaperProps={{
+					sx: {
+						borderRadius: '16px',
+						minWidth: '400px',
+						maxWidth: '500px',
+					},
+				}}
+			>
+				<DialogTitle sx={{ pb: 1 }}>
+					<Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+						<Stack direction={'row'} alignItems={'center'} spacing={1.5}>
+							<Box
+								sx={{
+									width: 48,
+									height: 48,
+									borderRadius: '12px',
+									background: 'linear-gradient(135deg, rgba(233, 44, 40, 0.1) 0%, rgba(244, 67, 54, 0.1) 100%)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									color: '#E92C28',
+								}}
+							>
+								<WarningAmberIcon sx={{ fontSize: 28 }} />
+							</Box>
+							<Typography variant={'h6'} sx={{ fontWeight: 700, color: '#181a20', fontFamily: '$font' }}>
+								Delete Product
+							</Typography>
+						</Stack>
+						<IconButton
+							onClick={handleDeleteCancel}
+							sx={{
+								color: '#9e9e9e',
+								'&:hover': {
+									backgroundColor: 'rgba(0, 0, 0, 0.04)',
+								},
+							}}
+						>
+							<CloseIcon />
+						</IconButton>
+					</Stack>
+				</DialogTitle>
+				<DialogContent sx={{ pt: 2 }}>
+					<Typography variant={'body1'} sx={{ color: '#616161', lineHeight: 1.8, fontFamily: '$font' }}>
+						Are you sure you want to delete this product? This action cannot be undone and the product will be permanently removed from the system.
+					</Typography>
+				</DialogContent>
+				<DialogActions sx={{ px: 3, pb: 3, pt: 1 }}>
+					<Button
+						onClick={handleDeleteCancel}
+						variant={'outlined'}
+						className={'faq-delete-cancel-btn'}
+						sx={{
+							textTransform: 'none',
+							borderColor: '#e0e0e0',
+							color: '#616161',
+							fontWeight: 600,
+							padding: '10px 24px',
+							'&:hover': {
+								borderColor: '#bdbdbd',
+								background: 'rgba(0, 0, 0, 0.04)',
+							},
+						}}
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={handleDeleteConfirm}
+						variant={'contained'}
+						startIcon={<DeleteOutlineIcon />}
+						className={'faq-delete-confirm-btn'}
+						sx={{
+							textTransform: 'none',
+							background: 'linear-gradient(135deg, #E92C28 0%, #F44336 100%)',
+							color: '#ffffff',
+							fontWeight: 600,
+							padding: '10px 24px',
+							boxShadow: '0px 2px 8px rgba(233, 44, 40, 0.25)',
+							'&:hover': {
+								background: 'linear-gradient(135deg, #C62828 0%, #E92C28 100%)',
+								boxShadow: '0px 4px 16px rgba(233, 44, 40, 0.35)',
+								transform: 'translateY(-2px)',
+							},
+						}}
+					>
+						Delete Product
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Box>
 	);
 };

@@ -165,6 +165,41 @@ export const UPDATE_PRODUCT_BY_ADMIN = gql`
 	}
 `;
 
+export const REMOVE_PRODUCT_BY_ADMIN = gql`
+	mutation RemoveProductByAdmin($input: String!) {
+		removeProductByAdmin(productId: $input) {
+			_id
+			productType
+			productStatus
+			productLocation
+			productAddress
+			productHeight
+			productWidth
+			productTitle
+			productPrice
+			productMaterial
+			productGlassType
+			productOpenType
+			productCategory
+			productColor
+			productItems
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
+			productRent
+			memberId
+			soldAt
+			deletedAt
+			manufacturedAt
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 /**************************
  *      BOARD-ARTICLE     *
  *************************/

@@ -3,7 +3,7 @@ import { Direction } from '../../enums/common.enum';
 
 interface ProductsSearch {
 	productStatus?: ProductStatus;
-	productLocationList?: ProductLocation[];
+	locationList?: ProductLocation[]; // Backend'da PISearch type'ida locationList deb nomlangan
 }
 
 export interface ProductsInquiry {

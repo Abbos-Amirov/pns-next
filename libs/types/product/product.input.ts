@@ -14,7 +14,7 @@ export interface ProductInput {
 	productStatus: ProductStatus;
 	productAddress: string;
 	productTitle: string;
-	productLocation: ProductLocation;
+	locationList: ProductLocation;
 	productHeight: number;
 	productWidth: number;
 	productPrice: number;
