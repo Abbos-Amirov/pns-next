@@ -11,10 +11,13 @@ import {
 	Menu,
 	Fade,
 	MenuItem,
+	IconButton,
+	Tooltip,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { Member } from '../../../types/member/member';
 import { REACT_APP_API_URL } from '../../../config';
 import { MemberStatus, MemberType } from '../../../enums/member.enum';
@@ -135,10 +138,11 @@ interface MemberPanelListType {
 	menuIconClickHandler: any;
 	menuIconCloseHandler: any;
 	updateMemberHandler: any;
+	onEditClick?: (member: Member) => void;
 }
 
 export const MemberPanelList = (props: MemberPanelListType) => {
-	const { members, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateMemberHandler } = props;
+	const { members, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateMemberHandler, onEditClick } = props;
 
 	return (
 		<Stack>
@@ -214,9 +218,27 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="center">{member.memberWarnings}</TableCell>
 										<TableCell align="center">{member.memberBlocks}</TableCell>
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
-												{member.memberStatus}
-											</Button>
+											<Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'center'}>
+												<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
+													{member.memberStatus}
+												</Button>
+												{member.memberStatus === MemberStatus.ACTIVE && onEditClick && (
+													<Tooltip title="Edit Member">
+														<IconButton
+															onClick={() => onEditClick(member)}
+															className={'member-edit-btn'}
+															sx={{
+																color: '#8B4513',
+																'&:hover': {
+																	backgroundColor: 'rgba(139, 69, 19, 0.1)',
+																},
+															}}
+														>
+															<EditRoundedIcon />
+														</IconButton>
+													</Tooltip>
+												)}
+											</Stack>
 
 											<Menu
 												className={'menu-modal'}

@@ -33,6 +33,38 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 	}
 `;
 
+export const UPDATE_MEMBERS_BY_ADMIN = gql`
+	mutation UpdateMembersByAdmin($input: MemberUpdate!) {
+		updateMembersByAdmin(input: $input) {
+			_id
+			memberType
+			memberStatus
+			memberAuthType
+			memberPhone
+			memberNick
+			memberFullName
+			memberImage
+			memberAddress
+			memberDesc
+			memberProducts
+			memberArticles
+			memberFollowers
+			memberFollowings
+			memberPoints
+			memberLikes
+			memberViews
+			memberComments
+			memberRank
+			memberWarnings
+			memberBlocks
+			deletedAt
+			createdAt
+			updatedAt
+			accessToken
+		}
+	}
+`;
+
 /**************************
  *        PROPERTY        *
  *************************/

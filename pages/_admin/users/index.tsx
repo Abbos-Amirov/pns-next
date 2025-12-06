@@ -1,8 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { MemberPanelList } from '../../../libs/components/admin/users/MemberList';
-import { Box, InputAdornment, Stack, Card, CardContent, Chip, Button } from '@mui/material';
+import {
+	Box,
+	InputAdornment,
+	Stack,
+	Card,
+	CardContent,
+	Chip,
+	Button,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	TextField,
+	FormControl,
+	InputLabel,
+	Grid,
+	IconButton,
+} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
@@ -14,14 +31,21 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PeopleIcon from '@mui/icons-material/People';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { REACT_APP_API_URL, REACT_APP_API_GRAPHQL_URL } from '../../../libs/config';
+import { getJwtToken } from '../../../libs/auth';
+import axios from 'axios';
 import { MembersInquiry } from '../../../libs/types/member/member.input';
 import { Member } from '../../../libs/types/member/member';
 import { MemberStatus, MemberType } from '../../../libs/enums/member.enum';
-import { sweetErrorHandling, sweetTopSuccessAlert } from '../../../libs/sweetAlert';
+import { sweetErrorHandling, sweetTopSuccessAlert, sweetMixinErrorAlert } from '../../../libs/sweetAlert';
 import { MemberUpdate } from '../../../libs/types/member/member.update';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ALL_MEMBERS_BY_ADMIN } from '../../../apollo/admin/query';
-import { UPDATE_MEMBER_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { UPDATE_MEMBER_BY_ADMIN, UPDATE_MEMBERS_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
@@ -33,6 +57,22 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	);
 	const [searchText, setSearchText] = useState('');
 	const [searchType, setSearchType] = useState('ALL');
+	const [editDialogOpen, setEditDialogOpen] = useState(false);
+	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+	const [memberUpdateData, setMemberUpdateData] = useState<MemberUpdate>({
+		_id: '',
+		memberType: MemberType.USER,
+		memberStatus: MemberStatus.ACTIVE,
+		memberPhone: '',
+		memberNick: '',
+		memberPassword: '',
+		memberFullName: '',
+		memberImage: '',
+		memberAddress: '',
+		memberDesc: '',
+	});
+	const inputRef = useRef<HTMLInputElement>(null);
+	const token = getJwtToken();
 
 	/** APOLLO REQUESTS **/
 	// Search object'ni tozalash - bo'sh field'larni olib tashlash
@@ -64,6 +104,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	});
 
 	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
+	const [updateMembersByAdmin] = useMutation(UPDATE_MEMBERS_BY_ADMIN);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -182,6 +223,136 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 			}
 		} catch (err: any) {
 			console.log('searchTypeHandler: ', err.message);
+		}
+	};
+
+	const handleEditClick = (member: Member) => {
+		setSelectedMember(member);
+		setMemberUpdateData({
+			_id: member._id,
+			memberType: member.memberType || MemberType.USER,
+			memberStatus: member.memberStatus || MemberStatus.ACTIVE,
+			memberPhone: member.memberPhone || '',
+			memberNick: member.memberNick || '',
+			memberPassword: '',
+			memberFullName: member.memberFullName || '',
+			memberImage: member.memberImage || '',
+			memberAddress: member.memberAddress || '',
+			memberDesc: member.memberDesc || '',
+		});
+		setEditDialogOpen(true);
+	};
+
+	const handleEditClose = () => {
+		setEditDialogOpen(false);
+		setSelectedMember(null);
+		setMemberUpdateData({
+			_id: '',
+			memberType: MemberType.USER,
+			memberStatus: MemberStatus.ACTIVE,
+			memberPhone: '',
+			memberNick: '',
+			memberPassword: '',
+			memberFullName: '',
+			memberImage: '',
+			memberAddress: '',
+			memberDesc: '',
+		});
+	};
+
+	const handleInputChange = (field: keyof MemberUpdate, value: any) => {
+		setMemberUpdateData((prev) => ({ ...prev, [field]: value }));
+	};
+
+	const uploadImage = async () => {
+		try {
+			const formData = new FormData();
+			const selectedFile = inputRef.current?.files?.[0];
+
+			if (!selectedFile) {
+				await sweetMixinErrorAlert('Please select an image!');
+				return false;
+			}
+
+			formData.append(
+				'operations',
+				JSON.stringify({
+					query: `mutation ImagesUploader($files: [Upload!]!, $target: String!) { 
+						imagesUploader(files: $files, target: $target)
+				  }`,
+					variables: {
+						files: [null],
+						target: 'member',
+					},
+				}),
+			);
+			formData.append('map', JSON.stringify({ '0': ['variables.files.0'] }));
+			formData.append('0', selectedFile);
+
+			const graphqlUrl = REACT_APP_API_GRAPHQL_URL || 'http://localhost:3007/graphql';
+			const response = await axios.post(graphqlUrl, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					'apollo-require-preflight': true,
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!response.data || !response.data.data || !response.data.data.imagesUploader) {
+				throw new Error('Invalid response from server');
+			}
+
+			const responseImages = response.data.data.imagesUploader;
+			if (responseImages && responseImages.length > 0) {
+				setMemberUpdateData({ ...memberUpdateData, memberImage: responseImages[0] });
+				await sweetTopSuccessAlert('Image uploaded successfully!');
+				return true;
+			}
+			return false;
+		} catch (err: any) {
+			console.error('Image upload error:', err);
+			const errorMessage = err.response?.data?.message || err.message || 'Failed to upload image';
+			await sweetMixinErrorAlert(errorMessage);
+			return false;
+		}
+	};
+
+	const removeImage = () => {
+		setMemberUpdateData({ ...memberUpdateData, memberImage: '' });
+		if (inputRef.current) {
+			inputRef.current.value = '';
+		}
+	};
+
+	const handleUpdateMember = async () => {
+		try {
+			if (!memberUpdateData._id) {
+				await sweetMixinErrorAlert('Member ID is missing');
+				return;
+			}
+
+			const updateInput: MemberUpdate = {
+				_id: memberUpdateData._id,
+			};
+
+			if (memberUpdateData.memberType) updateInput.memberType = memberUpdateData.memberType;
+			if (memberUpdateData.memberStatus) updateInput.memberStatus = memberUpdateData.memberStatus;
+			if (memberUpdateData.memberPhone) updateInput.memberPhone = memberUpdateData.memberPhone;
+			if (memberUpdateData.memberNick) updateInput.memberNick = memberUpdateData.memberNick;
+			if (memberUpdateData.memberPassword) updateInput.memberPassword = memberUpdateData.memberPassword;
+			if (memberUpdateData.memberFullName) updateInput.memberFullName = memberUpdateData.memberFullName;
+			if (memberUpdateData.memberImage) updateInput.memberImage = memberUpdateData.memberImage;
+			if (memberUpdateData.memberAddress) updateInput.memberAddress = memberUpdateData.memberAddress;
+			if (memberUpdateData.memberDesc) updateInput.memberDesc = memberUpdateData.memberDesc;
+
+			await updateMembersByAdmin({
+				variables: { input: updateInput },
+			});
+			await sweetTopSuccessAlert('Member updated successfully!');
+			handleEditClose();
+			await refetchMembers();
+		} catch (err: any) {
+			await sweetMixinErrorAlert(err.message || 'Failed to update member');
 		}
 	};
 
@@ -467,6 +638,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 							menuIconClickHandler={menuIconClickHandler}
 							menuIconCloseHandler={menuIconCloseHandler}
 							updateMemberHandler={updateMemberHandler}
+							onEditClick={handleEditClick}
 						/>
 					)}
 
@@ -491,6 +663,449 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 					</Box>
 				</CardContent>
 			</Card>
+
+			{/* Edit Member Dialog */}
+			<Dialog
+				open={editDialogOpen}
+				onClose={handleEditClose}
+				maxWidth="md"
+				fullWidth
+				PaperProps={{
+					sx: {
+						borderRadius: '20px',
+						boxShadow: '0px 12px 32px rgba(0, 0, 0, 0.2)',
+						overflow: 'hidden',
+					},
+				}}
+			>
+				<DialogTitle
+					sx={{
+						background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%)',
+						padding: '24px 32px',
+						pb: 2,
+						position: 'relative',
+						'&::after': {
+							content: '""',
+							position: 'absolute',
+							bottom: 0,
+							left: 0,
+							right: 0,
+							height: '1px',
+							background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+						},
+					}}
+				>
+					<Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+						<Stack direction={'row'} alignItems={'center'} spacing={2}>
+							<Box
+								sx={{
+									width: 56,
+									height: 56,
+									borderRadius: '14px',
+									background: 'rgba(255, 255, 255, 0.2)',
+									backdropFilter: 'blur(10px)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									color: '#ffffff',
+									border: '2px solid rgba(255, 255, 255, 0.3)',
+									boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
+								}}
+							>
+								<EditIcon sx={{ fontSize: 30 }} />
+							</Box>
+							<Box>
+								<Typography
+									variant={'h5'}
+									sx={{
+										fontWeight: 700,
+										color: '#ffffff',
+										fontFamily: '$font',
+										textShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+										mb: 0.5,
+									}}
+								>
+									Edit Member
+								</Typography>
+								<Typography
+									variant={'body2'}
+									sx={{
+										color: 'rgba(255, 255, 255, 0.9)',
+										fontSize: '13px',
+										fontWeight: 500,
+									}}
+								>
+									Update member information and settings
+								</Typography>
+							</Box>
+						</Stack>
+						<IconButton
+							onClick={handleEditClose}
+							sx={{
+								color: '#ffffff',
+								backgroundColor: 'rgba(255, 255, 255, 0.15)',
+								backdropFilter: 'blur(10px)',
+								width: 40,
+								height: 40,
+								'&:hover': {
+									backgroundColor: 'rgba(255, 255, 255, 0.25)',
+									transform: 'rotate(90deg)',
+									transition: 'all 0.3s ease',
+								},
+								transition: 'all 0.3s ease',
+							}}
+						>
+							<CloseIcon />
+						</IconButton>
+					</Stack>
+				</DialogTitle>
+				<DialogContent sx={{ pt: 5, px: 3, pb: 2 }}>
+					<Grid container spacing={3}>
+						{/* Member Type */}
+						<Grid item xs={12} sm={6}>
+							<FormControl fullWidth variant="outlined" sx={{ mt: 1 }}>
+								<InputLabel 
+									sx={{ 
+										backgroundColor: '#ffffff',
+										px: 1,
+										fontWeight: 600,
+										fontSize: '14px',
+										'&.Mui-focused': {
+											color: '#8B4513',
+										},
+									}}
+								>
+									Member Type
+								</InputLabel>
+								<Select
+									value={memberUpdateData.memberType || MemberType.USER}
+									onChange={(e) => handleInputChange('memberType', e.target.value)}
+									label="Member Type"
+									sx={{
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#e0e0e0',
+											borderWidth: '2px',
+										},
+										'&:hover .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+											borderWidth: '2px',
+										},
+										'& .MuiSelect-icon': {
+											color: '#8B4513',
+										},
+									}}
+								>
+									{Object.values(MemberType).map((type) => (
+										<MenuItem key={type} value={type}>
+											{type}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Grid>
+
+						{/* Member Status */}
+						<Grid item xs={12} sm={6}>
+							<FormControl fullWidth variant="outlined" sx={{ mt: 1 }}>
+								<InputLabel 
+									sx={{ 
+										backgroundColor: '#ffffff',
+										px: 1,
+										fontWeight: 600,
+										fontSize: '14px',
+										'&.Mui-focused': {
+											color: '#8B4513',
+										},
+									}}
+								>
+									Member Status
+								</InputLabel>
+								<Select
+									value={memberUpdateData.memberStatus || MemberStatus.ACTIVE}
+									onChange={(e) => handleInputChange('memberStatus', e.target.value)}
+									label="Member Status"
+									sx={{
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#e0e0e0',
+											borderWidth: '2px',
+										},
+										'&:hover .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#8B4513',
+											borderWidth: '2px',
+										},
+										'& .MuiSelect-icon': {
+											color: '#8B4513',
+										},
+									}}
+								>
+									{Object.values(MemberStatus).map((status) => (
+										<MenuItem key={status} value={status}>
+											{status}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Grid>
+
+						{/* Member Phone */}
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+								label="Phone"
+								value={memberUpdateData.memberPhone || ''}
+								onChange={(e) => handleInputChange('memberPhone', e.target.value)}
+								variant="outlined"
+							/>
+						</Grid>
+
+						{/* Member Nick */}
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+								label="Nick Name"
+								value={memberUpdateData.memberNick || ''}
+								onChange={(e) => handleInputChange('memberNick', e.target.value)}
+								variant="outlined"
+							/>
+						</Grid>
+
+						{/* Member Password */}
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+								type="password"
+								label="Password (optional)"
+								value={memberUpdateData.memberPassword || ''}
+								onChange={(e) => handleInputChange('memberPassword', e.target.value)}
+								variant="outlined"
+								helperText="Leave empty to keep current password"
+							/>
+						</Grid>
+
+						{/* Member Full Name */}
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+								label="Full Name"
+								value={memberUpdateData.memberFullName || ''}
+								onChange={(e) => handleInputChange('memberFullName', e.target.value)}
+								variant="outlined"
+							/>
+						</Grid>
+
+						{/* Member Address */}
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								label="Address"
+								value={memberUpdateData.memberAddress || ''}
+								onChange={(e) => handleInputChange('memberAddress', e.target.value)}
+								variant="outlined"
+								sx={{
+									'& .MuiOutlinedInput-root': {
+										'& fieldset': {
+											borderColor: '#e0e0e0',
+											borderWidth: '2px',
+										},
+										'&:hover fieldset': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused fieldset': {
+											borderColor: '#8B4513',
+											borderWidth: '2px',
+										},
+									},
+									'& .MuiInputLabel-root.Mui-focused': {
+										color: '#8B4513',
+									},
+								}}
+							/>
+						</Grid>
+
+						{/* Member Description */}
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								multiline
+								rows={4}
+								label="Description"
+								value={memberUpdateData.memberDesc || ''}
+								onChange={(e) => handleInputChange('memberDesc', e.target.value)}
+								variant="outlined"
+								sx={{
+									'& .MuiOutlinedInput-root': {
+										'& fieldset': {
+											borderColor: '#e0e0e0',
+											borderWidth: '2px',
+										},
+										'&:hover fieldset': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused fieldset': {
+											borderColor: '#8B4513',
+											borderWidth: '2px',
+										},
+									},
+									'& .MuiInputLabel-root.Mui-focused': {
+										color: '#8B4513',
+									},
+								}}
+							/>
+						</Grid>
+
+						{/* Image Upload Section */}
+						<Grid item xs={12}>
+							<Box
+								sx={{
+									padding: '24px',
+									borderRadius: '12px',
+									backgroundColor: '#fafafa',
+									border: '2px dashed #e0e0e0',
+								}}
+							>
+								<Typography variant={'h6'} sx={{ mb: 2, fontWeight: 600, color: '#8B4513' }}>
+									Member Image
+								</Typography>
+								<Stack direction={'row'} spacing={2} alignItems={'center'} sx={{ mb: 2 }}>
+									<input
+										type="file"
+										ref={inputRef}
+										accept="image/*"
+										style={{ display: 'none' }}
+									/>
+									<Button
+										variant={'outlined'}
+										startIcon={<AddRoundedIcon />}
+										onClick={() => inputRef.current?.click()}
+										sx={{
+											textTransform: 'none',
+											borderColor: '#8B4513',
+											color: '#8B4513',
+											fontWeight: 600,
+											'&:hover': {
+												borderColor: '#6B3410',
+												backgroundColor: 'rgba(139, 69, 19, 0.05)',
+											},
+										}}
+									>
+										Select Image
+									</Button>
+									<Button
+										variant={'contained'}
+										onClick={uploadImage}
+										disabled={!inputRef.current?.files || inputRef.current.files.length === 0}
+										sx={{
+											textTransform: 'none',
+											background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+											color: '#ffffff',
+											fontWeight: 600,
+											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.25)',
+											'&:hover': {
+												background: 'linear-gradient(135deg, #6B3410 0%, #8B4513 100%)',
+												boxShadow: '0px 4px 16px rgba(139, 69, 19, 0.35)',
+											},
+											'&:disabled': {
+												background: '#e0e0e0',
+												color: '#9e9e9e',
+												boxShadow: 'none',
+											},
+										}}
+									>
+										Upload Image
+									</Button>
+								</Stack>
+								{memberUpdateData.memberImage && (
+									<Box
+										sx={{
+											position: 'relative',
+											borderRadius: '12px',
+											overflow: 'hidden',
+											boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+											maxWidth: '300px',
+										}}
+									>
+										<img
+											src={`${REACT_APP_API_URL}/${memberUpdateData.memberImage}`}
+											alt="Member"
+											style={{
+												width: '100%',
+												height: '200px',
+												objectFit: 'cover',
+												display: 'block',
+											}}
+										/>
+										<Button
+											onClick={removeImage}
+											startIcon={<DeleteRoundedIcon />}
+											sx={{
+												position: 'absolute',
+												bottom: '8px',
+												right: '8px',
+												backgroundColor: 'rgba(233, 44, 40, 0.9)',
+												color: '#ffffff',
+												textTransform: 'none',
+												fontWeight: 600,
+												minWidth: 'auto',
+												padding: '6px 12px',
+												'&:hover': {
+													backgroundColor: 'rgba(233, 44, 40, 1)',
+												},
+											}}
+										>
+											Remove
+										</Button>
+									</Box>
+								)}
+							</Box>
+						</Grid>
+					</Grid>
+				</DialogContent>
+				<DialogActions sx={{ px: 3, pb: 3, pt: 1 }}>
+					<Button
+						onClick={handleEditClose}
+						variant={'outlined'}
+						sx={{
+							textTransform: 'none',
+							borderColor: '#e0e0e0',
+							color: '#616161',
+							fontWeight: 600,
+							padding: '10px 24px',
+							'&:hover': {
+								borderColor: '#bdbdbd',
+								background: 'rgba(0, 0, 0, 0.04)',
+							},
+						}}
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={handleUpdateMember}
+						variant={'contained'}
+						startIcon={<EditIcon />}
+						sx={{
+							textTransform: 'none',
+							background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+							color: '#ffffff',
+							fontWeight: 600,
+							padding: '10px 24px',
+							boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.25)',
+							'&:hover': {
+								background: 'linear-gradient(135deg, #6B3410 0%, #8B4513 100%)',
+								boxShadow: '0px 4px 16px rgba(139, 69, 19, 0.35)',
+								transform: 'translateY(-2px)',
+							},
+						}}
+					>
+						Update Member
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Box>
 	);
 };
