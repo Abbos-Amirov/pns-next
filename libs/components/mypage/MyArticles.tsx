@@ -155,27 +155,39 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 							))}
 						</Grid>
 
-						{/* Pagination */}
-						<Card>
-							<CardContent>
+						{/* Pagination - Always show */}
+						<Card sx={{ mt: 3, position: 'relative', zIndex: 10 }}>
+							<CardContent sx={{ py: 3, px: 3 }}>
 								<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
-									<Typography variant={'body2'} sx={{ color: '#717171' }}>
+									<Typography variant={'body1'} sx={{ color: '#717171', fontSize: '15px', fontWeight: 500 }}>
 										Showing {((searchCommunity.page - 1) * searchCommunity.limit) + 1} to{' '}
-										{Math.min(searchCommunity.page * searchCommunity.limit, totalCount)} of {totalCount} articles
+										{Math.min(searchCommunity.page * searchCommunity.limit, totalCount || boardArticles.length)} of {totalCount || boardArticles.length} articles
 									</Typography>
 									<Pagination
-										count={Math.ceil(totalCount / searchCommunity.limit)}
+										count={Math.max(1, Math.ceil((totalCount || boardArticles.length) / searchCommunity.limit))}
 										page={searchCommunity.page}
 										shape="circular"
 										color="primary"
 										onChange={paginationHandler}
+										size="large"
 										sx={{
+											'& .MuiPaginationItem-root': {
+												fontSize: '16px',
+												minWidth: '40px',
+												height: '40px',
+												fontWeight: 500,
+											},
 											'& .MuiPaginationItem-root.Mui-selected': {
 												backgroundColor: '#8B4513',
 												color: '#ffffff',
+												fontSize: '16px',
+												fontWeight: 600,
 												'&:hover': {
 													backgroundColor: '#6B3410',
 												},
+											},
+											'& .MuiPaginationItem-root:hover': {
+												backgroundColor: 'rgba(139, 69, 19, 0.1)',
 											},
 										}}
 									/>

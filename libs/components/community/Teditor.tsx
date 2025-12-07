@@ -1,48 +1,36 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
 import { getJwtToken } from '../../auth';
-import { REACT_APP_API_URL, REACT_APP_API_GRAPHQL_URL } from '../../config';
+import { REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { T } from '../../types/common';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import { useMutation } from '@apollo/client';
 import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
-import { BoardArticleInput } from '../../types/board-article/board-article.input';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
-import '@toast-ui/editor/dist/toastui-editor.css';
+import { Message } from '../../enums/common.enum';
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
 		token = getJwtToken(),
 		router = useRouter();
 	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.FREE);
-	const [articleTitle, setArticleTitle] = useState<string>('');
-	const [articleImage, setArticleImage] = useState<string>('');
 
 	/** APOLLO REQUESTS **/
-	const [createBoardArticle, { loading: creating }] = useMutation(CREATE_BOARD_ARTICLE, {
-		onCompleted: () => {
-			sweetTopSuccessAlert('Article created successfully!').then();
-			router.push('/mypage?category=myArticles').then();
-		},
-		onError: (err) => {
-			console.error('Create Article Error:', err);
-			sweetErrorHandling(err).then();
-		},
-	});
+	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE)
+
+	const memoizedValues = useMemo(() => {
+		const articleTitle = '',
+			articleContent = '',
+			articleImage = '';
+
+		return { articleTitle, articleContent, articleImage };
+	}, []);
 
 	/** HANDLERS **/
-	const changeCategoryHandler = (e: any) => {
-		setArticleCategory(e.target.value);
-	};
-
-	const articleTitleHandler = (e: T) => {
-		setArticleTitle(e.target.value);
-	};
-
-	// Upload image for editor content
 	const uploadImage = async (image: any) => {
 		try {
 			const formData = new FormData();
@@ -66,7 +54,7 @@ const TuiEditor = () => {
 			);
 			formData.append('0', image);
 
-			const response = await axios.post(`${REACT_APP_API_GRAPHQL_URL}`, formData, {
+			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					'apollo-require-preflight': true,
@@ -74,71 +62,64 @@ const TuiEditor = () => {
 				},
 			});
 
-			if (response?.data?.data?.imageUploader) {
-				const responseImage = response.data.data.imageUploader;
-				console.log('=responseImage: ', responseImage);
-				return `${REACT_APP_API_URL}/${responseImage}`;
-			} else {
-				console.log('Image upload failed, response:', response);
-				return null;
-			}
-		} catch (err: any) {
+			const responseImage = response.data.data.imageUploader;
+			console.log('=responseImage: ', responseImage);
+			memoizedValues.articleImage = responseImage;
+
+			return `${REACT_APP_API_URL}/${responseImage}`;
+		} catch (err) {
 			console.log('Error, uploadImage:', err);
-			await sweetErrorHandling({ message: err.message || 'Failed to upload image' });
-			return null;
 		}
+	};
+
+	const changeCategoryHandler = (e: any) => {
+		setArticleCategory(e.target.value);
+	};
+
+	const articleTitleHandler = (e: T) => {
+		console.log(e.target.value);
+		memoizedValues.articleTitle = e.target.value;
 	};
 
 	const handleRegisterButton = async () => {
 		try {
-			// Get article content from editor
-			const articleContent = editorRef.current?.getInstance()?.getMarkdown() || '';
-			const cleanContent = articleContent.trim();
-			
-			if (!articleTitle.trim()) {
-				await sweetErrorHandling({ message: 'Please enter article title' });
-				return;
-			}
-
-			if (!cleanContent || cleanContent === 'Type here') {
-				await sweetErrorHandling({ message: 'Please enter article content' });
-				return;
-			}
-
-			const input: BoardArticleInput = {
-				articleCategory,
-				articleTitle: articleTitle.trim(),
-				articleContent: cleanContent,
-				articleImage: articleImage || '',
-			};
-
-			console.log('Creating article with input:', input);
-			await createBoardArticle({
-				variables: { input },
-			});
+		  const editor = editorRef.current;
+		  const articleContent = editor?.getInstance().getHTML() as string;
+		  console.log("articleContent",articleContent);
+		  memoizedValues.articleContent = articleContent;
+	  
+		  if (memoizedValues.articleContent === '' || memoizedValues.articleTitle === '') {
+			throw new Error(Message.INSERT_ALL_INPUTS);
+		  }
+	  
+		  await createBoardArticle({
+			variables:{
+			  input:{...memoizedValues, articleCategory},
+			},
+		  });
+	  
+		  await sweetTopSuccessAlert('Article is created successfully!', 700);
+	  
+		  await router.push({
+			pathname: '/mypage',
+			query: { category: 'myArticles' },
+		  });
 		} catch (err: any) {
-			console.error('Error creating article:', err);
-			await sweetErrorHandling(err);
+		  console.log(err);
+		   sweetErrorHandling(new Error(Message.INSERT_ALL_INPUTS)).then();
+		 
 		}
-	};
+	  };
 
 	const doDisabledCheck = () => {
-		if (creating) return true;
-		if (!articleTitle.trim()) return true;
-		try {
-			if (!editorRef.current) return true;
-			const articleContent = editorRef.current.getInstance()?.getMarkdown() || '';
-			const cleanContent = articleContent.trim();
-			if (!cleanContent || cleanContent === 'Type here') return true;
-			return false;
-		} catch (err) {
-			return false;
+		if (memoizedValues.articleContent === '' || memoizedValues.articleTitle === '') {
+			return true;
 		}
 	};
 
 	return (
 		<Stack>
-			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly" spacing={3}>
+			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly">
 				<Box component={'div'} className={'form_row'} style={{ width: '300px' }}>
 					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
 						Category
@@ -165,7 +146,6 @@ const TuiEditor = () => {
 					</Typography>
 					<TextField
 						onChange={articleTitleHandler}
-						value={articleTitle}
 						id="filled-basic"
 						label="Type Title"
 						style={{ width: '300px', background: 'white' }}
@@ -189,9 +169,7 @@ const TuiEditor = () => {
 				hooks={{
 					addImageBlobHook: async (image: any, callback: any) => {
 						const uploadedImageURL = await uploadImage(image);
-						if (uploadedImageURL) {
-							callback(uploadedImageURL);
-						}
+						callback(uploadedImageURL);
 						return false;
 					},
 				}}
@@ -200,30 +178,14 @@ const TuiEditor = () => {
 				}}
 			/>
 
-			<Stack direction="row" justifyContent="center" sx={{ marginTop: '30px', marginBottom: '30px' }}>
+			<Stack direction="row" justifyContent="center">
 				<Button
 					variant="contained"
 					color="primary"
-					sx={{
-						width: '300px',
-						height: '50px',
-						borderRadius: '12px',
-						backgroundColor: '#8B4513',
-						fontSize: '16px',
-						fontWeight: 600,
-						textTransform: 'none',
-						'&:hover': {
-							backgroundColor: '#6B3410',
-						},
-						'&:disabled': {
-							backgroundColor: '#cccccc',
-							color: '#666666',
-						},
-					}}
+					style={{ margin: '30px', width: '250px', height: '45px' }}
 					onClick={handleRegisterButton}
-					disabled={doDisabledCheck()}
 				>
-					{creating ? 'Creating...' : 'Create'}
+					Register
 				</Button>
 			</Stack>
 		</Stack>

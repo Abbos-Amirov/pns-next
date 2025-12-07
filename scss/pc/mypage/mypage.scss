@@ -77,6 +77,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: 24px;
+		min-height: 400px;
+		position: relative;
 	}
 
 	// My Articles Page Styles
@@ -115,6 +117,41 @@
 						transform: translateY(-4px);
 						box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
 					}
+				}
+			}
+		}
+
+		// Pagination Card Styles
+		.MuiCard-root:has(.MuiPagination-root) {
+			position: relative;
+			z-index: 10;
+			margin-top: 24px;
+			box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12) !important;
+			
+			.MuiCardContent-root {
+				padding: 20px 32px !important;
+			}
+
+			.MuiPagination-root {
+				display: flex !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				
+				.MuiPaginationItem-root {
+					font-size: 16px !important;
+					min-width: 42px !important;
+					height: 42px !important;
+					font-weight: 500;
+					margin: 0 4px;
+				}
+
+				.MuiPaginationItem-root.Mui-selected {
+					background-color: #8B4513 !important;
+					color: #ffffff !important;
+					font-size: 16px !important;
+					font-weight: 600 !important;
+					min-width: 42px !important;
+					height: 42px !important;
 				}
 			}
 		}
