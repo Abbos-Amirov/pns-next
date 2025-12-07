@@ -8,10 +8,12 @@ import { Property } from '../../types/product/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import IconButton from '@mui/material/IconButton';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
+import { sweetTopSuccessAlert, sweetErrorHandling } from '../../sweetAlert';
 
 interface PropertyCardType {
 	property: Property;
@@ -25,6 +27,59 @@ const PropertyCard = (props: PropertyCardType) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [isHovered, setIsHovered] = useState(false);
+	const [isLiked, setIsLiked] = useState(
+		myFavorites || (property?.meLiked && property?.meLiked[0]?.myFavorite) || false
+	);
+
+	// Like Product Mutation
+	const [likeTargetProduct, { loading: likeLoading }] = useMutation(LIKE_TARGET_PRODUCT, {
+		onCompleted: (data) => {
+			if (data?.likeTargetProduct) {
+				setIsLiked((prev) => {
+					const newState = !prev;
+					const message = newState ? 'Product liked successfully!' : 'Product unliked successfully!';
+					sweetTopSuccessAlert(message, 700).then();
+					return newState;
+				});
+			}
+		},
+		onError: (err) => {
+			sweetErrorHandling(err).then();
+		},
+	});
+
+	// Handle like button click
+	const handleLikeClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		if (!user) {
+			sweetTopSuccessAlert('Please login to like products', 700).then();
+			return;
+		}
+
+		if (!property?._id) {
+			return;
+		}
+
+		if (likePropertyHandler) {
+			// Use custom handler if provided
+			likePropertyHandler(user, property._id);
+			// Update local state if custom handler is used
+			setIsLiked((prev) => !prev);
+		} else {
+			// Use mutation directly
+			try {
+				await likeTargetProduct({
+					variables: {
+						input: property._id,
+					},
+				});
+			} catch (err) {
+				console.error('Error liking product:', err);
+			}
+		}
+	};
 
 	// Hard coded images array for fallback
 	const defaultImages = [
@@ -117,17 +172,11 @@ const PropertyCard = (props: PropertyCardType) => {
 							</Box>
 							<IconButton
 								className={'action-btn'}
-								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-									e.preventDefault();
-									if (likePropertyHandler && property?._id) {
-										likePropertyHandler(user, property._id);
-									}
-								}}
+								onClick={handleLikeClick}
+								disabled={likeLoading}
 							>
-								{myFavorites ? (
-									<FavoriteIcon />
-								) : property?.meLiked && property?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon />
+								{isLiked ? (
+									<FavoriteIcon sx={{ color: '#eb6753' }} />
 								) : (
 									<FavoriteBorderIcon />
 								)}
@@ -162,7 +211,7 @@ const PropertyCard = (props: PropertyCardType) => {
 									query: { id: property?._id },
 								}}
 							>
-								<Typography>{property.propertyTitle}</Typography>
+								<Typography sx={{fontSize:'20px'}}>{property.propertyTitle}</Typography>
 							</Link>
 						</Stack>
 						<Stack className="address">

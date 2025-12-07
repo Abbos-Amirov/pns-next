@@ -220,6 +220,41 @@ export const LIKE_TARGET_PROPERTY = gql`
 	}
 `;
 
+export const LIKE_TARGET_PRODUCT = gql`
+	mutation LikeTargetProduct($input: String!) {
+		likeTargetProduct(productId: $input) {
+			_id
+			productType
+			productStatus
+			productLocation
+			productAddress
+			productHeight
+			productWidth
+			productTitle
+			productPrice
+			productMaterial
+			productGlassType
+			productOpenType
+			productCategory
+			productColor
+			productItems
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
+			productRent
+			memberId
+			soldAt
+			deletedAt
+			manufacturedAt
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 /**************************
  *      BOARD-ARTICLE     *
  *************************/
