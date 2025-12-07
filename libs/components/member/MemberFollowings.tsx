@@ -3,14 +3,15 @@ import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
-import { useReactiveVar, useQuery } from '@apollo/client';
+import { useReactiveVar, useQuery, useMutation } from '@apollo/client';
 import { Following } from '../../types/follow/follow';
 import { REACT_APP_API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { userVar } from '../../../apollo/store';
 import { GET_MEMBER_FOLLOWINGS } from '../../../apollo/user/query';
-import { sweetErrorHandling } from '../../sweetAlert';
+import { SUBSCRIBE, UNSUBSCRIBE } from '../../../apollo/user/mutation';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 
 interface MemberFollowingsProps {
 	initialInput: FollowInquiry;
@@ -47,6 +48,9 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 		},
 	});
 
+	const [subscribeMutation, { loading: subscribing }] = useMutation(SUBSCRIBE);
+	const [unsubscribeMutation, { loading: unsubscribing }] = useMutation(UNSUBSCRIBE);
+
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.memberId) {
@@ -79,6 +83,36 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	const paginationHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		followInquiry.page = value;
 		setFollowInquiry({ ...followInquiry });
+	};
+
+	const handleSubscribe = async (memberId: string) => {
+		try {
+			await subscribeMutation({
+				variables: {
+					input: memberId,
+				},
+			});
+			await sweetTopSuccessAlert('Successfully followed!', 700);
+			await refetch();
+		} catch (err: any) {
+			console.error('Subscribe Error:', err);
+			await sweetErrorHandling(err);
+		}
+	};
+
+	const handleUnsubscribe = async (memberId: string) => {
+		try {
+			await unsubscribeMutation({
+				variables: {
+					input: memberId,
+				},
+			});
+			await sweetTopSuccessAlert('Successfully unfollowed!', 700);
+			await refetch();
+		} catch (err: any) {
+			console.error('Unsubscribe Error:', err);
+			await sweetErrorHandling(err);
+		}
 	};
 
 	if (device === 'mobile') {
@@ -144,7 +178,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 										<span>({follower?.followingData?.memberLikes})</span>
 									</Box>
 								</Stack>
-								{user?._id !== follower?.followingId && (
+								{user?._id !== follower?.followingId && follower?.followingData?._id && (
 									<Stack className="action-box">
 										{follower.meFollowed && follower.meFollowed[0]?.myFollowing ? (
 											<>
@@ -152,18 +186,20 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 												<Button
 													variant="outlined"
 													sx={{ background: '#f78181', ':hover': { background: '#f06363' } }}
-													onClick={() => unsubscribeHandler(follower?.followingData?._id, null, followInquiry)}
+													onClick={() => handleUnsubscribe(follower.followingData!._id)}
+													disabled={unsubscribing}
 												>
-													Unfollow
+													{unsubscribing ? 'Unfollowing...' : 'Unfollow'}
 												</Button>
 											</>
 										) : (
 											<Button
 												variant="contained"
 												sx={{ background: '#60eb60d4', ':hover': { background: '#60eb60d4' } }}
-												onClick={() => subscribeHandler(follower?.followingData?._id, null, followInquiry)}
+												onClick={() => handleSubscribe(follower.followingData!._id)}
+												disabled={subscribing}
 											>
-												Follow
+												{subscribing ? 'Following...' : 'Follow'}
 											</Button>
 										)}
 									</Stack>
