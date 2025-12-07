@@ -1,24 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Pagination, Stack, Typography } from '@mui/material';
+import { Pagination, Stack, Typography, Box, Card, CardContent, Grid } from '@mui/material';
 import CommunityCard from '../common/CommunityCard';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useQuery } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
 import { BoardArticle } from '../../types/board-article/board-article';
+import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
+import { BoardArticlesInquiry } from '../../types/board-article/board-article.input';
+import { sweetErrorHandling } from '../../sweetAlert';
+import ArticleIcon from '@mui/icons-material/Article';
+import { Direction } from '../../enums/common.enum';
 
 const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const [searchCommunity, setSearchCommunity] = useState({
-		...initialInput,
-		search: { memberId: user._id },
+	const [searchCommunity, setSearchCommunity] = useState<BoardArticlesInquiry>({
+		page: 1,
+		limit: 6,
+		sort: 'createdAt',
+		direction: Direction.DESC,
+		search: {},
 	});
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
 
 	/** APOLLO REQUESTS **/
+	const { data: articlesData, loading, error, refetch } = useQuery(GET_BOARD_ARTICLES, {
+		variables: {
+			input: {
+				page: searchCommunity.page,
+				limit: searchCommunity.limit,
+				sort: searchCommunity.sort,
+				direction: searchCommunity.direction,
+				search: {
+					...searchCommunity.search,
+					memberId: user._id,
+				},
+			},
+		},
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		skip: !user._id || !searchCommunity.page || !searchCommunity.limit,
+		onError: (err) => {
+			console.error('Articles Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
+
+	/** LIFECYCLES **/
+	useEffect(() => {
+		if (articlesData?.getBoardArticles) {
+			const articles = articlesData.getBoardArticles.list || [];
+			// Debug: Log article images to see their format
+			console.log('Articles with images:', articles.map((article: BoardArticle) => ({
+				_id: article._id,
+				title: article.articleTitle,
+				image: article.articleImage,
+			})));
+			setBoardArticles(articles);
+			
+			const metaCounter = articlesData.getBoardArticles.metaCounter;
+			const total = Array.isArray(metaCounter) 
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+			setTotalCount(total);
+		}
+	}, [articlesData]);
+
+	useEffect(() => {
+		if (user._id) {
+			refetch();
+		}
+	}, [searchCommunity, user._id, refetch]);
 
 	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {
@@ -29,43 +84,132 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		return <>ARTICLE PAGE MOBILE</>;
 	} else
 		return (
-			<div id="my-articles-page">
-				<Stack className="main-title-box">
-					<Stack className="right-box">
-						<Typography className="main-title">Article</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
-					</Stack>
-				</Stack>
-				<Stack className="article-list-box">
-					{boardArticles?.length > 0 ? (
-						boardArticles?.map((boardArticle: BoardArticle) => {
-							return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} size={'small'} />;
-						})
-					) : (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Articles found!</p>
-						</div>
-					)}
-				</Stack>
+			<Box component={'div'} className={'my-articles-page'}>
+				{/* Header Section */}
+				<Card className={'articles-header-card'} sx={{ mb: 3 }}>
+					<CardContent>
+						<Stack direction={'row'} alignItems={'center'} spacing={2}>
+							<Box
+								sx={{
+									width: 56,
+									height: 56,
+									borderRadius: '12px',
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									color: '#8B4513',
+								}}
+							>
+								<ArticleIcon sx={{ fontSize: 32 }} />
+							</Box>
+							<Box>
+								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
+									My Articles
+								</Typography>
+								<Typography variant={'body2'} sx={{ color: '#717171' }}>
+									Your published articles
+								</Typography>
+							</Box>
+							<Box sx={{ flex: 1 }} />
+							<Box
+								sx={{
+									padding: '8px 16px',
+									borderRadius: '12px',
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
+									color: '#8B4513',
+									fontWeight: 600,
+									fontSize: '14px',
+								}}
+							>
+								Total: {totalCount}
+							</Box>
+						</Stack>
+					</CardContent>
+				</Card>
 
-				{boardArticles?.length > 0 && (
-					<Stack className="pagination-conf">
-						<Stack className="pagination-box">
-							<Pagination
-								count={Math.ceil(totalCount / searchCommunity.limit)}
-								page={searchCommunity.page}
-								shape="circular"
-								color="primary"
-								onChange={paginationHandler}
-							/>
-						</Stack>
-						<Stack className="total">
-							<Typography>Total {totalCount ?? 0} article(s) available</Typography>
-						</Stack>
-					</Stack>
+				{/* Articles List */}
+				{loading ? (
+					<Card>
+						<CardContent sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} sx={{ color: '#717171' }}>
+								Loading articles...
+							</Typography>
+						</CardContent>
+					</Card>
+				) : error ? (
+					<Card>
+						<CardContent sx={{ p: 4, textAlign: 'center' }}>
+							<Typography variant={'body2'} color={'error'}>
+								Error loading articles: {error.message}
+							</Typography>
+						</CardContent>
+					</Card>
+				) : boardArticles?.length > 0 ? (
+					<>
+						<Grid container spacing={3} sx={{ mb: 3 }}>
+							{boardArticles.map((boardArticle: BoardArticle) => (
+								<Grid item xs={12} sm={6} md={4} lg={4} key={boardArticle._id}>
+									<CommunityCard boardArticle={boardArticle} size={'small'} />
+								</Grid>
+							))}
+						</Grid>
+
+						{/* Pagination */}
+						<Card>
+							<CardContent>
+								<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+									<Typography variant={'body2'} sx={{ color: '#717171' }}>
+										Showing {((searchCommunity.page - 1) * searchCommunity.limit) + 1} to{' '}
+										{Math.min(searchCommunity.page * searchCommunity.limit, totalCount)} of {totalCount} articles
+									</Typography>
+									<Pagination
+										count={Math.ceil(totalCount / searchCommunity.limit)}
+										page={searchCommunity.page}
+										shape="circular"
+										color="primary"
+										onChange={paginationHandler}
+										sx={{
+											'& .MuiPaginationItem-root.Mui-selected': {
+												backgroundColor: '#8B4513',
+												color: '#ffffff',
+												'&:hover': {
+													backgroundColor: '#6B3410',
+												},
+											},
+										}}
+									/>
+								</Stack>
+							</CardContent>
+						</Card>
+					</>
+				) : (
+					<Card>
+						<CardContent sx={{ p: 6, textAlign: 'center' }}>
+							<Box
+								sx={{
+									width: 120,
+									height: 120,
+									margin: '0 auto 24px',
+									borderRadius: '50%',
+									backgroundColor: 'rgba(139, 69, 19, 0.1)',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<ArticleIcon sx={{ fontSize: 60, color: '#8B4513' }} />
+							</Box>
+							<Typography variant={'h6'} sx={{ fontWeight: 600, mb: 1, color: '#181a20' }}>
+								No Articles Found
+							</Typography>
+							<Typography variant={'body2'} sx={{ color: '#717171' }}>
+								You haven't published any articles yet.
+							</Typography>
+						</CardContent>
+					</Card>
 				)}
-			</div>
+			</Box>
 		);
 };
 

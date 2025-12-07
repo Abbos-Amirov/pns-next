@@ -12,6 +12,7 @@ export interface BoardArticleInput {
 interface BAISearch {
 	articleCategory?: BoardArticleCategory; // Made optional to support "All Categories"
 	text?: string;
+	memberId?: string;
 }
 
 export interface BoardArticlesInquiry {

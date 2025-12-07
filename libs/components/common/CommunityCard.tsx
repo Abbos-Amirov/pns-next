@@ -22,9 +22,30 @@ const CommunityCard = (props: CommunityCardProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = boardArticle?.articleImage
-		? `${REACT_APP_API_URL}/${boardArticle?.articleImage}`
-		: '/img/community/communityImg.png';
+	
+	// Get image path - handle different formats
+	const getImagePath = (): string => {
+		if (!boardArticle?.articleImage) {
+			return '/img/community/communityImg.png';
+		}
+		
+		const articleImage = boardArticle.articleImage;
+		
+		// If image path starts with http:// or https://, it's already a full URL
+		if (articleImage.startsWith('http://') || articleImage.startsWith('https://')) {
+			return articleImage;
+		}
+		
+		// If image path starts with /img/, use it directly (public folder)
+		if (articleImage.startsWith('/img/')) {
+			return articleImage;
+		}
+		
+		// Otherwise, prepend API URL
+		return `${REACT_APP_API_URL}/${articleImage}`;
+	};
+	
+	const imagePath: string = getImagePath();
 
 	/** HANDLERS **/
 	const chooseArticleHandler = (e: React.SyntheticEvent, boardArticle: BoardArticle) => {
@@ -50,7 +71,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 			<Stack
 				sx={{ width: size === 'small' ? '285px' : '317px' }}
 				className="community-general-card-config"
-				onClick={(e) => chooseArticleHandler(e, boardArticle)}
+				onClick={(e:any) => chooseArticleHandler(e, boardArticle)}
 			>
 				<Stack className="image-box">
 					<img src={imagePath} alt="" className="card-img" />
@@ -59,7 +80,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 					<Stack>
 						<Typography
 							className="desc"
-							onClick={(e) => {
+							onClick={(e:any) => {
 								e.stopPropagation();
 								goMemberPage(boardArticle?.memberData?._id as string);
 							}}

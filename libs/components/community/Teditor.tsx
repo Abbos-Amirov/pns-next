@@ -34,6 +34,15 @@ const TuiEditor = () => {
 	});
 
 	/** HANDLERS **/
+	const changeCategoryHandler = (e: any) => {
+		setArticleCategory(e.target.value);
+	};
+
+	const articleTitleHandler = (e: T) => {
+		setArticleTitle(e.target.value);
+	};
+
+	// Upload image for editor content
 	const uploadImage = async (image: any) => {
 		try {
 			const formData = new FormData();
@@ -65,22 +74,19 @@ const TuiEditor = () => {
 				},
 			});
 
-			const responseImage = response.data.data.imageUploader;
-			console.log('=responseImage: ', responseImage);
-			setArticleImage(responseImage);
-
-			return `${REACT_APP_API_URL}/${responseImage}`;
-		} catch (err) {
+			if (response?.data?.data?.imageUploader) {
+				const responseImage = response.data.data.imageUploader;
+				console.log('=responseImage: ', responseImage);
+				return `${REACT_APP_API_URL}/${responseImage}`;
+			} else {
+				console.log('Image upload failed, response:', response);
+				return null;
+			}
+		} catch (err: any) {
 			console.log('Error, uploadImage:', err);
+			await sweetErrorHandling({ message: err.message || 'Failed to upload image' });
+			return null;
 		}
-	};
-
-	const changeCategoryHandler = (e: any) => {
-		setArticleCategory(e.target.value);
-	};
-
-	const articleTitleHandler = (e: T) => {
-		setArticleTitle(e.target.value);
 	};
 
 	const handleRegisterButton = async () => {
@@ -132,7 +138,7 @@ const TuiEditor = () => {
 
 	return (
 		<Stack>
-			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly">
+			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly" spacing={3}>
 				<Box component={'div'} className={'form_row'} style={{ width: '300px' }}>
 					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
 						Category
@@ -183,7 +189,9 @@ const TuiEditor = () => {
 				hooks={{
 					addImageBlobHook: async (image: any, callback: any) => {
 						const uploadedImageURL = await uploadImage(image);
-						callback(uploadedImageURL);
+						if (uploadedImageURL) {
+							callback(uploadedImageURL);
+						}
 						return false;
 					},
 				}}
@@ -215,7 +223,7 @@ const TuiEditor = () => {
 					onClick={handleRegisterButton}
 					disabled={doDisabledCheck()}
 				>
-					{creating ? 'Yaratilmoqda...' : 'Yaratish'}
+					{creating ? 'Creating...' : 'Create'}
 				</Button>
 			</Stack>
 		</Stack>
