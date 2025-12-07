@@ -3,12 +3,14 @@ import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useQuery } from '@apollo/client';
 import { Following } from '../../types/follow/follow';
 import { REACT_APP_API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { userVar } from '../../../apollo/store';
+import { GET_MEMBER_FOLLOWINGS } from '../../../apollo/user/query';
+import { sweetErrorHandling } from '../../sweetAlert';
 
 interface MemberFollowingsProps {
 	initialInput: FollowInquiry;
@@ -28,15 +30,50 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
+	const { data: followingsData, loading, error, refetch } = useQuery(GET_MEMBER_FOLLOWINGS, {
+		variables: {
+			input: {
+				page: followInquiry.page,
+				limit: followInquiry.limit,
+				search: followInquiry.search,
+			},
+		},
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		skip: !followInquiry.search?.followerId || !followInquiry.page || !followInquiry.limit,
+		onError: (err) => {
+			console.error('Followings Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (router.query.memberId)
+		if (router.query.memberId) {
 			setFollowInquiry({ ...followInquiry, search: { followerId: router.query.memberId as string } });
-		else setFollowInquiry({ ...followInquiry, search: { followerId: user?._id } });
-	}, [router]);
+		} else {
+			setFollowInquiry({ ...followInquiry, search: { followerId: user?._id } });
+		}
+	}, [router, user?._id]);
 
-	useEffect(() => {}, [followInquiry]);
+	useEffect(() => {
+		if (followingsData?.getMemberFollowings) {
+			const followings = followingsData.getMemberFollowings.list || [];
+			setMemberFollowings(followings);
+			
+			const metaCounter = followingsData.getMemberFollowings.metaCounter;
+			const totalCount = Array.isArray(metaCounter) 
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+			setTotal(totalCount);
+		}
+	}, [followingsData]);
+
+	useEffect(() => {
+		if (followInquiry.search?.followerId) {
+			refetch();
+		}
+	}, [followInquiry, refetch]);
 
 	/** HANDLERS **/
 	const paginationHandler = async (event: ChangeEvent<unknown>, value: number) => {
@@ -60,12 +97,21 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 						<Typography className="title-text">Details</Typography>
 						<Typography className="title-text">Subscription</Typography>
 					</Stack>
-					{memberFollowings?.length === 0 && (
+					{loading ? (
+						<div className={'no-data'}>
+							<Typography>Loading followings...</Typography>
+						</div>
+					) : error ? (
+						<div className={'no-data'}>
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<Typography color={'error'}>Error loading followings: {error.message}</Typography>
+						</div>
+					) : memberFollowings?.length === 0 ? (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
 							<p>No Followings yet!</p>
 						</div>
-					)}
+					) : null}
 					{memberFollowings.map((follower: Following) => {
 						const imagePath: string = follower?.followingData?.memberImage
 							? `${REACT_APP_API_URL}/${follower?.followingData?.memberImage}`

@@ -541,7 +541,7 @@ export const GET_MEMBER_FOLLOWINGS = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberProducts
 					memberArticles
 					memberPoints
 					memberLikes
