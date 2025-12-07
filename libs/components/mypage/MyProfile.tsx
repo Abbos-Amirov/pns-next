@@ -3,11 +3,13 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
-import { REACT_APP_API_URL } from '../../config';
+import { REACT_APP_API_URL, REACT_APP_API_GRAPHQL_URL } from '../../config';
 import { getJwtToken } from '../../auth';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { MemberUpdate } from '../../types/member/member.update';
+import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const device = useDeviceDetect();
@@ -16,17 +18,20 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
 
 	/** APOLLO REQUESTS **/
+	const [updateMemberMutation, { loading: updating }] = useMutation(UPDATE_MEMBER);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		setUpdateData({
-			...updateData,
-			memberNick: user.memberNick,
-			memberPhone: user.memberPhone,
-			memberAddress: user.memberAddress,
-			memberImage: user.memberImage,
-		});
-	}, [user]);
+		if (user._id) {
+			setUpdateData({
+				_id: user._id,
+				memberNick: user.memberNick || '',
+				memberPhone: user.memberPhone || '',
+				memberAddress: user.memberAddress || '',
+				memberImage: user.memberImage || '',
+			});
+		}
+	}, [user._id, user.memberNick, user.memberPhone, user.memberAddress, user.memberImage]);
 
 	/** HANDLERS **/
 	const uploadImage = async (e: any) => {
@@ -55,7 +60,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			);
 			formData.append('0', image);
 
-			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
+			const response = await axios.post(`${REACT_APP_API_GRAPHQL_URL}`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					'apollo-require-preflight': true,
@@ -65,8 +70,18 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 			const responseImage = response.data.data.imageUploader;
 			console.log('+responseImage: ', responseImage);
-			updateData.memberImage = responseImage;
-			setUpdateData({ ...updateData });
+			
+			// Update updateData state
+			setUpdateData((prev) => ({
+				...prev,
+				memberImage: responseImage,
+			}));
+
+			// Update userVar immediately when image is uploaded
+			userVar({
+				...user,
+				memberImage: responseImage,
+			});
 
 			return `${REACT_APP_API_URL}/${responseImage}`;
 		} catch (err) {
@@ -74,20 +89,94 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		}
 	};
 
-	const updatePropertyHandler = useCallback(async () => {}, [updateData]);
+	const updatePropertyHandler = useCallback(async () => {
+		try {
+			if (!user._id) {
+				await sweetErrorHandling(new Error('User not found'));
+				return;
+			}
+
+			console.log('Updating profile with data:', {
+				_id: user._id,
+				memberNick: updateData.memberNick,
+				memberPhone: updateData.memberPhone,
+				memberAddress: updateData.memberAddress,
+				memberImage: updateData.memberImage,
+			});
+
+			const result = await updateMemberMutation({
+				variables: {
+					input: {
+						_id: user._id,
+						memberNick: updateData.memberNick?.trim() || '',
+						memberPhone: updateData.memberPhone?.trim() || '',
+						memberAddress: updateData.memberAddress?.trim() || '',
+						memberImage: updateData.memberImage || '',
+					},
+				},
+			});
+
+			console.log('Update result:', result);
+
+			if (result.data?.updateMember) {
+				const updatedMember = result.data.updateMember;
+				
+				// Update userVar with new data from mutation response
+				// Only update fields that exist in CustomJwtPayload type
+				userVar({
+					_id: updatedMember._id || user._id,
+					memberType: updatedMember.memberType || user.memberType,
+					memberStatus: updatedMember.memberStatus || user.memberStatus,
+					memberAuthType: updatedMember.memberAuthType || user.memberAuthType,
+					memberPhone: updatedMember.memberPhone || user.memberPhone,
+					memberNick: updatedMember.memberNick || user.memberNick,
+					memberFullName: updatedMember.memberFullName || user.memberFullName,
+					memberImage: updatedMember.memberImage || user.memberImage,
+					memberAddress: updatedMember.memberAddress || user.memberAddress,
+					memberDesc: updatedMember.memberDesc || user.memberDesc,
+					memberProperties: updatedMember.memberProducts || user.memberProperties || 0,
+					memberRank: updatedMember.memberRank || user.memberRank || 0,
+					memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
+					memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
+					memberLikes: updatedMember.memberLikes || user.memberLikes || 0,
+					memberViews: updatedMember.memberViews || user.memberViews || 0,
+					memberWarnings: updatedMember.memberWarnings || user.memberWarnings || 0,
+					memberBlocks: updatedMember.memberBlocks || user.memberBlocks || 0,
+				});
+
+				await sweetTopSuccessAlert('Profile updated successfully!', 700);
+			}
+		} catch (err: any) {
+			console.error('Update Profile Error:', err);
+			await sweetErrorHandling(err);
+		}
+	}, [updateData, user, updateMemberMutation]);
 
 	const doDisabledCheck = () => {
-		if (
-			updateData.memberNick === '' ||
-			updateData.memberPhone === '' ||
-			updateData.memberAddress === '' ||
-			updateData.memberImage === ''
-		) {
+		// Only disable if user is not loaded or updating
+		if (!user._id || updating) {
 			return true;
 		}
+		
+		// Check if required fields are filled
+		const isDisabled = !updateData.memberNick?.trim() ||
+			!updateData.memberPhone?.trim() ||
+			!updateData.memberAddress?.trim();
+		
+		console.log('doDisabledCheck:', {
+			userId: user._id,
+			memberNick: updateData.memberNick,
+			memberPhone: updateData.memberPhone,
+			memberAddress: updateData.memberAddress,
+			isDisabled,
+			updating,
+		});
+		
+		return isDisabled;
 	};
 
 	console.log('+updateData', updateData);
+	console.log('+user', user);
 
 	if (device === 'mobile') {
 		return <>MY PROFILE PAGE MOBILE</>;
@@ -159,8 +248,21 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						/>
 					</Stack>
 					<Stack className="about-me-box">
-						<Button className="update-button" onClick={updatePropertyHandler} disabled={doDisabledCheck()}>
-							<Typography>Update Profile</Typography>
+						<Button 
+							className="update-button" 
+							onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+								e.preventDefault();
+								e.stopPropagation();
+								console.log('Button clicked!', { updateData, user });
+								updatePropertyHandler();
+							}} 
+							disabled={doDisabledCheck()}
+							sx={{ 
+								cursor: doDisabledCheck() ? 'not-allowed' : 'pointer',
+								opacity: doDisabledCheck() ? 0.6 : 1,
+							}}
+						>
+							<Typography>{updating ? 'Updating...' : 'Update Profile'}</Typography>
 							<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
 								<g clipPath="url(#clip0_7065_6985)">
 									<path
