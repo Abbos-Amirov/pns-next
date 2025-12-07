@@ -4,11 +4,12 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { REACT_APP_API_URL, REACT_APP_API_GRAPHQL_URL } from '../../config';
-import { getJwtToken } from '../../auth';
-import { useReactiveVar, useMutation } from '@apollo/client';
+import { getJwtToken, setJwtToken, updateUserInfo } from '../../auth';
+import { useReactiveVar, useMutation, useLazyQuery } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { MemberUpdate } from '../../types/member/member.update';
 import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
+import { GET_MEMBER } from '../../../apollo/user/query';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
@@ -19,6 +20,9 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 	/** APOLLO REQUESTS **/
 	const [updateMemberMutation, { loading: updating }] = useMutation(UPDATE_MEMBER);
+	const [getMemberQuery] = useLazyQuery(GET_MEMBER, {
+		fetchPolicy: 'network-only',
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -121,28 +125,71 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			if (result.data?.updateMember) {
 				const updatedMember = result.data.updateMember;
 				
-				// Update userVar with new data from mutation response
-				// Only update fields that exist in CustomJwtPayload type
-				userVar({
-					_id: updatedMember._id || user._id,
-					memberType: updatedMember.memberType || user.memberType,
-					memberStatus: updatedMember.memberStatus || user.memberStatus,
-					memberAuthType: updatedMember.memberAuthType || user.memberAuthType,
-					memberPhone: updatedMember.memberPhone || user.memberPhone,
-					memberNick: updatedMember.memberNick || user.memberNick,
-					memberFullName: updatedMember.memberFullName || user.memberFullName,
-					memberImage: updatedMember.memberImage || user.memberImage,
-					memberAddress: updatedMember.memberAddress || user.memberAddress,
-					memberDesc: updatedMember.memberDesc || user.memberDesc,
-					memberProperties: updatedMember.memberProducts || user.memberProperties || 0,
-					memberRank: updatedMember.memberRank || user.memberRank || 0,
-					memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
-					memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
-					memberLikes: updatedMember.memberLikes || user.memberLikes || 0,
-					memberViews: updatedMember.memberViews || user.memberViews || 0,
-					memberWarnings: updatedMember.memberWarnings || user.memberWarnings || 0,
-					memberBlocks: updatedMember.memberBlocks || user.memberBlocks || 0,
-				});
+				// Update JWT token if new accessToken is provided
+				if (updatedMember.accessToken) {
+					setJwtToken(updatedMember.accessToken);
+					// Update userVar from new JWT token to ensure consistency
+					updateUserInfo(updatedMember.accessToken);
+				} else {
+					// If no new token, fetch fresh member data to get updated JWT token
+					try {
+						const memberResult = await getMemberQuery({
+							variables: {
+								input: user._id,
+							},
+						});
+
+						if (memberResult.data?.getMember?.accessToken) {
+							setJwtToken(memberResult.data.getMember.accessToken);
+							updateUserInfo(memberResult.data.getMember.accessToken);
+						} else {
+							// Fallback: Update userVar directly if no new token
+							userVar({
+								_id: updatedMember._id || user._id,
+								memberType: updatedMember.memberType || user.memberType,
+								memberStatus: updatedMember.memberStatus || user.memberStatus,
+								memberAuthType: updatedMember.memberAuthType || user.memberAuthType,
+								memberPhone: updatedMember.memberPhone || user.memberPhone,
+								memberNick: updatedMember.memberNick || user.memberNick,
+								memberFullName: updatedMember.memberFullName || user.memberFullName,
+								memberImage: updatedMember.memberImage || user.memberImage,
+								memberAddress: updatedMember.memberAddress || user.memberAddress,
+								memberDesc: updatedMember.memberDesc || user.memberDesc,
+								memberProperties: updatedMember.memberProducts || user.memberProperties || 0,
+								memberRank: updatedMember.memberRank || user.memberRank || 0,
+								memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
+								memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
+								memberLikes: updatedMember.memberLikes || user.memberLikes || 0,
+								memberViews: updatedMember.memberViews || user.memberViews || 0,
+								memberWarnings: updatedMember.memberWarnings || user.memberWarnings || 0,
+								memberBlocks: updatedMember.memberBlocks || user.memberBlocks || 0,
+							});
+						}
+					} catch (fetchErr) {
+						console.error('Error fetching updated member:', fetchErr);
+						// Fallback: Update userVar directly
+						userVar({
+							_id: updatedMember._id || user._id,
+							memberType: updatedMember.memberType || user.memberType,
+							memberStatus: updatedMember.memberStatus || user.memberStatus,
+							memberAuthType: updatedMember.memberAuthType || user.memberAuthType,
+							memberPhone: updatedMember.memberPhone || user.memberPhone,
+							memberNick: updatedMember.memberNick || user.memberNick,
+							memberFullName: updatedMember.memberFullName || user.memberFullName,
+							memberImage: updatedMember.memberImage || user.memberImage,
+							memberAddress: updatedMember.memberAddress || user.memberAddress,
+							memberDesc: updatedMember.memberDesc || user.memberDesc,
+							memberProperties: updatedMember.memberProducts || user.memberProperties || 0,
+							memberRank: updatedMember.memberRank || user.memberRank || 0,
+							memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
+							memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
+							memberLikes: updatedMember.memberLikes || user.memberLikes || 0,
+							memberViews: updatedMember.memberViews || user.memberViews || 0,
+							memberWarnings: updatedMember.memberWarnings || user.memberWarnings || 0,
+							memberBlocks: updatedMember.memberBlocks || user.memberBlocks || 0,
+						});
+					}
+				}
 
 				await sweetTopSuccessAlert('Profile updated successfully!', 700);
 			}
