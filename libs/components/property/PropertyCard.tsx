@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -8,7 +8,7 @@ import { Property } from '../../types/product/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
-import { useReactiveVar, useMutation } from '@apollo/client';
+import { useReactiveVar, useMutation, useApolloClient } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import IconButton from '@mui/material/IconButton';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -26,21 +26,95 @@ const PropertyCard = (props: PropertyCardType) => {
 	const { property, likePropertyHandler, myFavorites, recentlyVisited } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const apolloClient = useApolloClient();
 	const [isHovered, setIsHovered] = useState(false);
-	const [isLiked, setIsLiked] = useState(
-		myFavorites || (property?.meLiked && property?.meLiked[0]?.myFavorite) || false
-	);
+	
+	// Get liked products from localStorage
+	const getLikedProducts = (): string[] => {
+		if (typeof window !== 'undefined') {
+			const liked = localStorage.getItem('likedProducts');
+			return liked ? JSON.parse(liked) : [];
+		}
+		return [];
+	};
+
+	// Check if current product is liked
+	const checkIfLiked = (): boolean => {
+		if (myFavorites) return true;
+		if (property?.meLiked && property?.meLiked[0]?.myFavorite) return true;
+		if (typeof window !== 'undefined' && property?._id) {
+			const likedProducts = getLikedProducts();
+			return likedProducts.includes(property._id);
+		}
+		return false;
+	};
+
+	const [isLiked, setIsLiked] = useState(checkIfLiked());
+	const [likesCount, setLikesCount] = useState(property?.propertyLikes || 0);
+
+	// Update isLiked state when property changes
+	useEffect(() => {
+		if (myFavorites) {
+			setIsLiked(true);
+		} else if (property?.meLiked && property?.meLiked[0]?.myFavorite) {
+			setIsLiked(true);
+		} else if (typeof window !== 'undefined' && property?._id) {
+			const likedProducts = getLikedProducts();
+			setIsLiked(likedProducts.includes(property._id));
+		} else {
+			setIsLiked(false);
+		}
+		
+		// Update likes count when property changes
+		if (property?.propertyLikes !== undefined) {
+			setLikesCount(property.propertyLikes);
+		}
+	}, [property?._id, property?.meLiked, property?.propertyLikes, myFavorites]);
 
 	// Like Product Mutation
 	const [likeTargetProduct, { loading: likeLoading }] = useMutation(LIKE_TARGET_PRODUCT, {
 		onCompleted: (data) => {
-			if (data?.likeTargetProduct) {
-				setIsLiked((prev) => {
-					const newState = !prev;
-					const message = newState ? 'Product liked successfully!' : 'Product unliked successfully!';
+			if (data?.likeTargetProduct && property?._id) {
+				// Check current liked state from localStorage
+				if (typeof window !== 'undefined') {
+					const likedProducts = getLikedProducts();
+					const currentlyLiked = likedProducts.includes(property._id);
+					const newLikedState = !currentlyLiked;
+					
+					// Update localStorage
+					if (newLikedState) {
+						// Add to liked products
+						if (!likedProducts.includes(property._id)) {
+							likedProducts.push(property._id);
+							localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+						}
+					} else {
+						// Remove from liked products
+						const updatedLiked = likedProducts.filter((id: string) => id !== property._id);
+						localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+					}
+					
+					// Update isLiked state
+					setIsLiked(newLikedState);
+					
+					// Update likes count based on mutation response
+					// Backend should return the updated productLikes count
+					console.log('Mutation response:', data.likeTargetProduct);
+					if (data.likeTargetProduct.productLikes !== undefined && data.likeTargetProduct.productLikes !== null) {
+						setLikesCount(data.likeTargetProduct.productLikes);
+						console.log('Updated productLikes from backend:', data.likeTargetProduct.productLikes);
+					} else {
+						// Fallback: increment/decrement manually if backend doesn't return the count
+						setLikesCount((prev) => {
+							const newCount = newLikedState ? prev + 1 : Math.max(0, prev - 1);
+							console.log('Manually updated productLikes:', newCount);
+							return newCount;
+						});
+					}
+					
+					const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
 					sweetTopSuccessAlert(message, 700).then();
-					return newState;
-				});
+				}
 			}
 		},
 		onError: (err) => {
@@ -66,7 +140,25 @@ const PropertyCard = (props: PropertyCardType) => {
 			// Use custom handler if provided
 			likePropertyHandler(user, property._id);
 			// Update local state if custom handler is used
-			setIsLiked((prev) => !prev);
+			if (typeof window !== 'undefined') {
+				const likedProducts = getLikedProducts();
+				const currentlyLiked = likedProducts.includes(property._id);
+				const newState = !currentlyLiked;
+				
+				// Update localStorage
+				if (newState) {
+					if (!likedProducts.includes(property._id)) {
+						likedProducts.push(property._id);
+						localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+					}
+				} else {
+					const updatedLiked = likedProducts.filter((id: string) => id !== property._id);
+					localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+				}
+				
+				setIsLiked(newState);
+				setLikesCount((current) => newState ? current + 1 : Math.max(0, current - 1));
+			}
 		} else {
 			// Use mutation directly
 			try {
@@ -170,17 +262,20 @@ const PropertyCard = (props: PropertyCardType) => {
 								</IconButton>
 								<Typography className={'view-count'}>{property?.propertyViews || 0}</Typography>
 							</Box>
-							<IconButton
-								className={'action-btn'}
-								onClick={handleLikeClick}
-								disabled={likeLoading}
-							>
+							<Box component={'div'} className={'like-action'}>
+								<IconButton
+									className={`action-btn ${isLiked ? 'liked' : ''}`}
+									onClick={handleLikeClick}
+									disabled={likeLoading}
+								>
 								{isLiked ? (
-									<FavoriteIcon sx={{ color: '#eb6753' }} />
+									<FavoriteIcon className="favorite-icon-filled" sx={{ color: '#eb6753', fill: '#eb6753' }} />
 								) : (
-									<FavoriteBorderIcon />
+									<FavoriteBorderIcon className="favorite-icon-outline" />
 								)}
-							</IconButton>
+								</IconButton>
+								<Typography className={'like-count'}>{likesCount}</Typography>
+							</Box>
 							<IconButton
 								className={'action-btn'}
 								onClick={(e: React.MouseEvent<HTMLButtonElement>) => {

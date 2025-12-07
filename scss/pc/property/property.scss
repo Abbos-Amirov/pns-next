@@ -217,7 +217,7 @@
 										.hot-deal-name {
 											color: #181a20;
 											font-family: $font;
-											font-size: 20px;
+											font-size: 14px;
 											font-weight: 600;
 											text-transform: uppercase;
 										}
@@ -670,6 +670,33 @@
 											padding: 0;
 										}
 									}
+									.like-action {
+										display: flex;
+										flex-direction: row;
+										align-items: center;
+										gap: 4px;
+										background: rgba(255, 255, 255, 0.95);
+										padding: 4px 8px;
+										border-radius: 20px;
+										box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+										.action-btn {
+											width: 32px;
+											height: 32px;
+											padding: 0;
+											svg {
+												width: 18px;
+												height: 18px;
+											}
+										}
+										.like-count {
+											font-family: $font;
+											font-size: 12px;
+											font-weight: 600;
+											color: #181a20;
+											margin: 0;
+											padding: 0;
+										}
+									}
 									.action-btn {
 										width: 40px;
 										height: 40px;
@@ -693,6 +720,67 @@
 											transform: scale(1.1);
 											svg {
 												color: #fff;
+											}
+										}
+										&.liked {
+											.favorite-icon-filled {
+												color: #eb6753 !important;
+												fill: #eb6753 !important;
+												path {
+													fill: #eb6753 !important;
+												}
+											}
+											&:hover {
+												background: rgba(235, 103, 83, 0.1);
+												border-color: #eb6753;
+												.favorite-icon-filled {
+													color: #eb6753 !important;
+													fill: #eb6753 !important;
+													path {
+														fill: #eb6753 !important;
+													}
+												}
+											}
+										}
+										.favorite-icon-filled {
+											color: #eb6753 !important;
+											fill: #eb6753 !important;
+											path {
+												fill: #eb6753 !important;
+											}
+										}
+										.favorite-icon-outline {
+											color: #181a20;
+										}
+									}
+									.like-action {
+										.action-btn {
+											&.liked {
+												.favorite-icon-filled {
+													color: #eb6753 !important;
+													fill: #eb6753 !important;
+													path {
+														fill: #eb6753 !important;
+													}
+												}
+												&:hover {
+													background: rgba(235, 103, 83, 0.1);
+													border-color: #eb6753;
+													.favorite-icon-filled {
+														color: #eb6753 !important;
+														fill: #eb6753 !important;
+														path {
+															fill: #eb6753 !important;
+														}
+													}
+												}
+											}
+											.favorite-icon-filled {
+												color: #eb6753 !important;
+												fill: #eb6753 !important;
+												path {
+													fill: #eb6753 !important;
+												}
 											}
 										}
 									}
