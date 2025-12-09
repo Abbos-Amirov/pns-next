@@ -9,6 +9,9 @@ import AgentCard from '../../libs/components/common/AgentCard';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
+import { useQuery } from '@apollo/client';
+import { GET_MEASURERS } from '../../apollo/user/query';
+import { sweetErrorHandling } from '../../libs/sweetAlert';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -32,6 +35,36 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchText, setSearchText] = useState<string>('');
 
 	/** APOLLO REQUESTS **/
+	const { data: measurersData, loading, error, refetch } = useQuery(GET_MEASURERS, {
+		variables: {
+			input: {
+				page: searchFilter.page || 1,
+				limit: searchFilter.limit || 3,
+				sort: searchFilter.sort || 'createdAt',
+				direction: searchFilter.direction || 'DESC',
+				search: searchFilter.search || {},
+			},
+		},
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onCompleted: (data) => {
+			if (data?.getMeasurers) {
+				const measurers = data.getMeasurers.list || [];
+				setAgents(measurers);
+				
+				const metaCounter = data.getMeasurers.metaCounter;
+				const totalCount = Array.isArray(metaCounter) 
+					? (metaCounter[0]?.total || 0)
+					: (metaCounter?.total || 0);
+				setTotal(totalCount);
+			}
+		},
+		onError: (err) => {
+			console.error('GetMeasurers Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
+
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
@@ -42,6 +75,21 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 
 		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
 	}, [router]);
+
+	useEffect(() => {
+		// Refetch when searchFilter changes
+		if (refetch) {
+			refetch({
+				input: {
+					page: searchFilter.page || 1,
+					limit: searchFilter.limit || 3,
+					sort: searchFilter.sort || 'createdAt',
+					direction: searchFilter.direction || 'DESC',
+					search: searchFilter.search || {},
+				},
+			});
+		}
+	}, [searchFilter, refetch]);
 
 	/** HANDLERS **/
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
@@ -132,7 +180,16 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 						</Box>
 					</Stack>
 					<Stack className={'card-wrap'}>
-						{agents?.length === 0 ? (
+						{loading ? (
+							<div className={'no-data'}>
+								<p>Loading agents...</p>
+							</div>
+						) : error ? (
+							<div className={'no-data'}>
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>Error loading agents: {error.message}</p>
+							</div>
+						) : agents?.length === 0 ? (
 							<div className={'no-data'}>
 								<img src="/img/icons/icoAlert.svg" alt="" />
 								<p>No Agents found!</p>

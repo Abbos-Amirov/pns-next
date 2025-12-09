@@ -42,6 +42,43 @@ export const GET_AGENTS = gql`
 	}
 `;
 
+export const GET_MEASURERS = gql`
+	query GetMeasurers($input: AgentsInquiry!) {
+		getMeasurers(input: $input) {
+			list {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProducts
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
 export const GET_MEMBER = gql(`
 query GetMember($input: String!) {
     getMember(memberId: $input) {
@@ -614,6 +651,73 @@ export const GET_PRODUCTS = gql`
 			}
 			metaCounter {
 				total
+			}
+		}
+	}
+`;
+
+export const GET_PRODUCT = gql`
+	query GetProduct($input: String!) {
+		getProduct(ProductId: $input) {
+			_id
+			productType
+			productStatus
+			productLocation
+			productAddress
+			productHeight
+			productWidth
+			productTitle
+			productPrice
+			productMaterial
+			productGlassType
+			productOpenType
+			productCategory
+			productColor
+			productItems
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
+			productRent
+			memberId
+			soldAt
+			deletedAt
+			manufacturedAt
+			createdAt
+			updatedAt
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProducts
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
 			}
 		}
 	}

@@ -189,16 +189,37 @@ const PropertyCard = (props: PropertyCardType) => {
 
 	// Get image path - use property image or fallback to hard coded images
 	const getImagePath = (): string => {
+		// First priority: Use product's own images if available
 		if (property?.propertyImages && property.propertyImages.length > 0) {
 			const imgPath = property.propertyImages[0];
-			// If image path starts with /img/, use it directly (public folder)
-			if (imgPath.startsWith('/img/')) {
+			
+			// If image path is empty or just whitespace, skip to default
+			if (!imgPath || imgPath.trim() === '') {
+				console.log('Product image path is empty, using default');
+				const index = property?._id ? parseInt(property._id.slice(-1), 16) % defaultImages.length : 0;
+				return defaultImages[index];
+			}
+			
+			// If image path starts with http:// or https://, use it directly (full URL)
+			if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+				console.log('Using full URL image:', imgPath);
 				return imgPath;
 			}
-			// Otherwise, prepend API URL
-			return `${REACT_APP_API_URL}/${imgPath}`;
+			
+			// If image path starts with /img/, use it directly (public folder)
+			if (imgPath.startsWith('/img/')) {
+				console.log('Using public folder image:', imgPath);
+				return imgPath;
+			}
+			
+			// Otherwise, prepend API URL (backend image path)
+			const fullPath = `${REACT_APP_API_URL}/${imgPath}`;
+			console.log('Using backend image:', fullPath);
+			return fullPath;
 		}
-		// Use property index or random to select from default images
+		
+		// Fallback: Use default images only if no product images exist
+		console.log('No product images found, using default');
 		const index = property?._id ? parseInt(property._id.slice(-1), 16) % defaultImages.length : 0;
 		return defaultImages[index];
 	};

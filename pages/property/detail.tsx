@@ -11,13 +11,16 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { Property } from '../../libs/types/product/property';
 import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
+import { GET_PRODUCT } from '../../apollo/user/query';
+import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentGroup } from '../../libs/enums/comment.enum';
@@ -57,25 +60,215 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentContent: '',
 		commentRefId: '',
 	});
+	const [isLiked, setIsLiked] = useState<boolean>(false);
+
+	// Get liked products from localStorage
+	const getLikedProducts = (): string[] => {
+		if (typeof window !== 'undefined') {
+			const liked = localStorage.getItem('likedProducts');
+			return liked ? JSON.parse(liked) : [];
+		}
+		return [];
+	};
+
+	// Check if current product is liked
+	const checkIfLiked = (): boolean => {
+		if (property?.meLiked && property?.meLiked[0]?.myFavorite) return true;
+		if (!property?._id) return false;
+		const likedProducts = getLikedProducts();
+		return likedProducts.includes(property._id);
+	};
 
 	/** APOLLO REQUESTS **/
+	const { data: productData, loading: productLoading, error: productError } = useQuery(GET_PRODUCT, {
+		variables: {
+			input: propertyId || '',
+		},
+		skip: !propertyId,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onCompleted: (data) => {
+			if (data?.getProduct) {
+				const product = data.getProduct;
+				// Convert product to Property format
+				const convertedProperty: Property = {
+					_id: product._id,
+					propertyType: product.productType,
+					propertyStatus: product.productStatus,
+					propertyLocation: product.productLocation,
+					propertyAddress: product.productAddress || '',
+					propertyTitle: product.productTitle,
+					propertyPrice: product.productPrice,
+					propertySquare: product.productHeight && product.productWidth ? product.productHeight * product.productWidth : 0,
+					propertyBeds: 0,
+					propertyRooms: 0,
+					propertyViews: product.productViews || 0,
+					propertyLikes: product.productLikes || 0,
+					propertyComments: product.productComments || 0,
+					propertyRank: product.productRank || 0,
+					propertyImages: product.productImages || [],
+					propertyDesc: product.productDesc || '',
+					propertyBarter: false,
+					propertyRent: product.productRent || false,
+					memberId: product.memberId,
+					soldAt: product.soldAt,
+					deletedAt: product.deletedAt,
+					constructedAt: product.manufacturedAt,
+					createdAt: product.createdAt,
+					updatedAt: product.updatedAt,
+					meLiked: product.meLiked,
+					memberData: product.memberData,
+				};
+				setProperty(convertedProperty);
+				// Set first image as slide image
+				if (product.productImages && product.productImages.length > 0) {
+					const firstImage = product.productImages[0];
+					setSlideImage(firstImage);
+					console.log('Setting slide image:', firstImage);
+					console.log('All product images:', product.productImages);
+				} else {
+					setSlideImage('');
+					console.log('No product images found');
+				}
+				// Update isLiked state based on product data
+				const liked = convertedProperty.meLiked && convertedProperty.meLiked[0]?.myFavorite 
+					? true 
+					: (typeof window !== 'undefined' && getLikedProducts().includes(convertedProperty._id));
+				setIsLiked(liked);
+			}
+		},
+		onError: (err) => {
+			sweetErrorHandling(err).then();
+		},
+	});
+
+	// Like Product Mutation
+	const [likeTargetProduct, { loading: likeLoading }] = useMutation(LIKE_TARGET_PRODUCT, {
+		onCompleted: (data) => {
+			if (data?.likeTargetProduct && property?._id) {
+				// Check current liked state from localStorage
+				if (typeof window !== 'undefined') {
+					const likedProducts = getLikedProducts();
+					const currentlyLiked = likedProducts.includes(property._id);
+					const newLikedState = !currentlyLiked;
+					
+					// Update localStorage
+					if (newLikedState) {
+						// Add to liked products
+						if (!likedProducts.includes(property._id)) {
+							likedProducts.push(property._id);
+							localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+						}
+					} else {
+						// Remove from liked products
+						const updatedLiked = likedProducts.filter((id: string) => id !== property._id);
+						localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+					}
+					
+					// Update isLiked state
+					setIsLiked(newLikedState);
+					
+					// Update property with new data
+					setProperty({
+						...property,
+						propertyLikes: data.likeTargetProduct.productLikes || property.propertyLikes,
+						meLiked: data.likeTargetProduct.meLiked || property.meLiked,
+					});
+					
+					const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
+					sweetTopSuccessAlert(message, 700).then();
+				}
+			}
+		},
+		onError: (err) => {
+			sweetErrorHandling(err).then();
+		},
+	});
+
+	// Like Property Handler
+	const likePropertyHandler = async (user: any, productId: string) => {
+		if (!user) {
+			sweetTopSuccessAlert('Please login to like products', 700).then();
+			return;
+		}
+		try {
+			// Backendga like mutation yuboramiz
+			const res = await likeTargetProduct({
+				variables: {
+					input: productId,
+				},
+			});
+			
+			// Backend qaytaradigan yangi qiymatlar:
+			const updated = res?.data?.likeTargetProduct;
+			
+			if (updated) {
+				// local state yangilash
+				const newLikedState = updated.meLiked && updated.meLiked[0]?.myFavorite ? true : false;
+				setIsLiked(newLikedState);
+				
+				// Update property with new likes count
+				if (property) {
+					setProperty({
+						...property,
+						propertyLikes: updated.productLikes || property.propertyLikes,
+						meLiked: updated.meLiked || property.meLiked,
+					});
+				}
+				
+				// Update localStorage
+				if (typeof window !== 'undefined') {
+					const likedProducts = getLikedProducts();
+					if (newLikedState) {
+						// Add to liked products
+						if (!likedProducts.includes(productId)) {
+							likedProducts.push(productId);
+							localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+						}
+					} else {
+						// Remove from liked products
+						const updatedLiked = likedProducts.filter((id: string) => id !== productId);
+						localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+					}
+				}
+				
+				const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
+				sweetTopSuccessAlert(message, 700).then();
+			}
+		} catch (err) {
+			console.error('Like error: ', err);
+			sweetErrorHandling(err).then();
+		}
+	};
 
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.id) {
-			setPropertyId(router.query.id as string);
+			const newPropertyId = router.query.id as string;
+			setPropertyId(newPropertyId);
+			setSlideImage(''); // Reset slide image when property changes
+			setProperty(null); // Reset property when property changes
+			setIsLiked(false); // Reset isLiked when property changes
 			setCommentInquiry({
 				...commentInquiry,
 				search: {
-					commentRefId: router.query.id as string,
+					commentRefId: newPropertyId,
 				},
 			});
 			setInsertCommentData({
 				...insertCommentData,
-				commentRefId: router.query.id as string,
+				commentRefId: newPropertyId,
 			});
 		}
-	}, [router]);
+	}, [router.query.id]);
+
+	// Update isLiked when property changes
+	useEffect(() => {
+		if (property?._id) {
+			const liked = checkIfLiked();
+			setIsLiked(liked);
+		}
+	}, [property?._id, property?.meLiked]);
 
 	useEffect(() => {}, [commentInquiry]);
 
@@ -92,6 +285,34 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	if (device === 'mobile') {
 		return <div>PROPERTY DETAIL PAGE</div>;
 	} else {
+		// Show loading state
+		if (productLoading) {
+			return (
+				<div id={'property-detail-page'}>
+					<div className={'container'}>
+						<Stack sx={{ py: 5, alignItems: 'center' }}>
+							<Typography>Loading product...</Typography>
+						</Stack>
+					</div>
+				</div>
+			);
+		}
+
+		// Show error state
+		if (productError || !property) {
+			return (
+				<div id={'property-detail-page'}>
+					<div className={'container'}>
+						<Stack sx={{ py: 5, alignItems: 'center' }}>
+							<Typography color={'error'}>
+								{productError ? `Error loading product: ${productError.message}` : 'Product not found!'}
+							</Typography>
+						</Stack>
+					</div>
+				</div>
+			);
+		}
+
 		return (
 			<div id={'property-detail-page'}>
 				<div className={'container'}>
@@ -153,18 +374,22 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<Typography>{(property as any)?.productViews || property?.propertyViews}</Typography>
 										</Stack>
 										<Stack className="button-box">
-											{property?.meLiked && property?.meLiked[0]?.myFavorite ? (
-												<FavoriteIcon sx={{ color: '#8B4513' }} fontSize={'medium'} />
-											) : (
-												<FavoriteBorderIcon
-													fontSize={'medium'}
-													sx={{ color: '#8B4513', cursor: 'pointer' }}
-													// @ts-ignore
-													onClick={() => likePropertyHandler(user, property?._id)}
-												/>
-											)}
-											<Typography>{(property as any)?.productLikes || property?.propertyLikes}</Typography>
-										</Stack>
+														{isLiked ? (
+															<FavoriteIcon 
+															sx={{ color: '#eb6753', cursor: 'pointer' }} 
+															fontSize="medium"
+															onClick={() => likePropertyHandler(user, property?._id)}
+															/>
+														) : (
+															<FavoriteBorderIcon
+															fontSize="medium"
+															sx={{ color: '#8B4513', cursor: 'pointer' }}
+															onClick={() => likePropertyHandler(user, property?._id)}
+															/>
+														)}
+
+														<Typography>{(property as any)?.productLikes || property?.propertyLikes}</Typography>
+														</Stack>
 									</Stack>
 									<Typography>${formatterStr((property as any)?.productPrice || property?.propertyPrice)}</Typography>
 								</Stack>
@@ -172,15 +397,33 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 							<Stack className={'images'}>
 								<Stack className={'main-image'}>
 									<img
-										src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : ((property as any)?.productImages?.[0] ? `${REACT_APP_API_URL}/${(property as any)?.productImages[0]}` : (property?.propertyImages?.[0] ? `${REACT_APP_API_URL}/${property?.propertyImages[0]}` : '/img/property/bigImage.png'))}
+										src={
+											slideImage 
+												? (slideImage.startsWith('http://') || slideImage.startsWith('https://') 
+													? slideImage 
+													: slideImage.startsWith('/img/') 
+														? slideImage 
+														: `${REACT_APP_API_URL}/${slideImage}`)
+												: (property?.propertyImages && property.propertyImages.length > 0
+													? (property.propertyImages[0].startsWith('http://') || property.propertyImages[0].startsWith('https://')
+														? property.propertyImages[0]
+														: property.propertyImages[0].startsWith('/img/')
+															? property.propertyImages[0]
+															: `${REACT_APP_API_URL}/${property.propertyImages[0]}`)
+													: '/img/property/bigImage.png')
+										}
 										alt={'main-image'}
 									/>
 								</Stack>
 								<Stack className={'sub-images'}>
-									{((property as any)?.productImages || property?.propertyImages || []).map((subImg: string) => {
-										const imagePath: string = `${REACT_APP_API_URL}/${subImg}`;
+									{(property?.propertyImages || []).map((subImg: string, index: number) => {
+										const imagePath: string = subImg.startsWith('http://') || subImg.startsWith('https://')
+											? subImg
+											: subImg.startsWith('/img/')
+												? subImg
+												: `${REACT_APP_API_URL}/${subImg}`;
 										return (
-											<Stack className={'sub-img-box'} onClick={() => changeImageHandler(subImg)} key={subImg}>
+											<Stack className={'sub-img-box'} onClick={() => changeImageHandler(subImg)} key={`${subImg}-${index}`}>
 												<img src={imagePath} alt={'sub-image'} />
 											</Stack>
 										);
@@ -365,17 +608,33 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<Stack className={'plan-item'}>
 											<Typography className={'plan-title'}>Door Plan</Typography>
 											<Stack className={'image-box'}>
-												<img src={'/img/property/door-plan.png'} alt={'Door Plan'} onError={(e) => {
-													(e.target as HTMLImageElement).src = '/img/property/window-plan.png';
-												}} />
+												<a href="https://www.shutterstock.com/search/doors-plan" target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
+													<img 
+														src={'https://t4.ftcdn.net/jpg/17/83/11/47/240_F_1783114735_wVf1isO3bRO52xUy8kDUbgT9NCZEOFnC.jpg'} 
+														alt={'Door Plan'}
+														style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+														onError={(e) => {
+															// Prevent infinite loop by checking if already tried fallback
+															const target = e.target as HTMLImageElement;
+															if (!target.dataset.fallback) {
+																target.dataset.fallback = 'true';
+																target.src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800';
+															}
+														}}
+													/>
+												</a>
 											</Stack>
 										</Stack>
 										<Stack className={'plan-item'}>
 											<Typography className={'plan-title'}>Window Plan</Typography>
-									<Stack className={'image-box'}>
-												<img src={'/img/property/window-plan.png'} alt={'Window Plan'} onError={(e) => {
-													(e.target as HTMLImageElement).src = '/img/property/door-plan.png';
-												}} />
+											<Stack className={'image-box'}>
+												<a href="https://www.bibliocad.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
+													<img 
+														src={'https://thumb.bibliocad.com/thumbs/content/586x440/00130000/0000/130080.webp'} 
+														alt={'Window Plan'}
+														style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+													/>
+												</a>
 											</Stack>
 										</Stack>
 									</Stack>
