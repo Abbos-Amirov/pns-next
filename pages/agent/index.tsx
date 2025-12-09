@@ -9,9 +9,11 @@ import AgentCard from '../../libs/components/common/AgentCard';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_MEASURERS } from '../../apollo/user/query';
-import { sweetErrorHandling } from '../../libs/sweetAlert';
+import { sweetErrorAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
+import { Messages } from '../../libs/config';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -35,11 +37,17 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchText, setSearchText] = useState<string>('');
 
 	/** APOLLO REQUESTS **/
-	const { data: measurersData, loading, error, refetch } = useQuery(GET_MEASURERS, {
+
+	const { data: 
+		measurersData,
+		 loading,
+		  error,
+		   refetch: getMeasurersRefetch
+		 } = useQuery(GET_MEASURERS, {
 		variables: {
 			input: {
 				page: searchFilter.page || 1,
-				limit: searchFilter.limit || 3,
+				limit: searchFilter.limit || 10,
 				sort: searchFilter.sort || 'createdAt',
 				direction: searchFilter.direction || 'DESC',
 				search: searchFilter.search || {},
@@ -65,6 +73,53 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 		},
 	});
 
+	const [likeTargetMember, { loading: likeLoading }] = useMutation(LIKE_TARGET_MEMBER, {
+		onCompleted: (data) => {
+			if (data?.likeTargetMember) {
+				const updatedMember = data.likeTargetMember;
+				const memberId = updatedMember._id;
+				
+				// Update agents list with backend response (database'dan kelgan to'g'ri qiymat)
+				setAgents((prevAgents) => {
+					return prevAgents.map((agent) => {
+						if (agent._id === memberId) {
+							return {
+								...agent,
+								memberLikes: updatedMember.memberLikes !== undefined && updatedMember.memberLikes !== null 
+									? updatedMember.memberLikes 
+									: agent.memberLikes,
+								meLiked: updatedMember.meLiked || agent.meLiked,
+							};
+						}
+						return agent;
+					});
+				});
+				
+				// Show success message
+				const isLiked = updatedMember.meLiked && updatedMember.meLiked[0]?.myFavorite;
+				const message = isLiked ? 'Member liked successfully!' : 'Member unliked successfully!';
+				sweetTopSmallSuccessAlert(message, 700).then();
+			}
+		},
+		onError: (err) => {
+			console.error('LIKE_TARGET_MEMBER Mutation Error:', err);
+			sweetErrorHandling(err).then();
+			
+			// Refetch to get correct state on error
+			if (getMeasurersRefetch) {
+				getMeasurersRefetch({
+					input: {
+						page: searchFilter.page || 1,
+						limit: searchFilter.limit || 3,
+						sort: searchFilter.sort || 'createdAt',
+						direction: searchFilter.direction || 'DESC',
+						search: searchFilter.search || {},
+					},
+				});
+			}
+		},
+	});
+
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
@@ -78,8 +133,8 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 
 	useEffect(() => {
 		// Refetch when searchFilter changes
-		if (refetch) {
-			refetch({
+		if (getMeasurersRefetch) {
+			getMeasurersRefetch({
 				input: {
 					page: searchFilter.page || 1,
 					limit: searchFilter.limit || 3,
@@ -89,7 +144,78 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 				},
 			});
 		}
-	}, [searchFilter, refetch]);
+	}, [searchFilter, getMeasurersRefetch]);
+
+	const likeMemberHandler = async (user: any, id: string) => {
+		if (!id) return;
+		if (!user?._id) {
+			sweetTopSmallSuccessAlert('Please login to like members', 700).then();
+			return;
+		}
+
+		// Find the agent to get current state
+		const currentAgent = agents.find((agent) => agent._id === id);
+		if (!currentAgent) return;
+
+		const currentLiked = currentAgent.meLiked && currentAgent.meLiked[0]?.myFavorite;
+		const newLikedState = !currentLiked;
+
+		// Optimistically update the agent in the list immediately
+		setAgents((prevAgents) => {
+			return prevAgents.map((agent) => {
+				if (agent._id === id) {
+					return {
+						...agent,
+						memberLikes: newLikedState 
+							? (agent.memberLikes || 0) + 1 
+							: Math.max(0, (agent.memberLikes || 0) - 1),
+						meLiked: newLikedState 
+							? [{ memberId: user._id, likeRefId: id, myFavorite: true }]
+							: [],
+					};
+				}
+				return agent;
+			});
+		});
+
+		// Call backend mutation - onCompleted callback will handle the response
+		try {
+			await likeTargetMember({
+				variables: {
+					input: id,
+				},
+			});
+			// onCompleted callback will update the state with backend response
+		} catch (err: any) {
+			console.error('ERROR likeMemberHandler:', err);
+			
+			// Revert optimistic update on error
+			setAgents((prevAgents) => {
+				return prevAgents.map((agent) => {
+					if (agent._id === id) {
+						// Revert to original state
+						return currentAgent;
+					}
+					return agent;
+				});
+			});
+
+			// Refetch to get correct state from backend
+			if (getMeasurersRefetch) {
+				await getMeasurersRefetch({
+					input: {
+						page: searchFilter.page || 1,
+						limit: searchFilter.limit || 3,
+						sort: searchFilter.sort || 'createdAt',
+						direction: searchFilter.direction || 'DESC',
+						search: searchFilter.search || {},
+					},
+				});
+			}
+
+			sweetErrorAlert(err?.message || 'Failed to like member').then();
+		}
+	};
 
 	/** HANDLERS **/
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
@@ -196,7 +322,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 							</div>
 						) : (
 							agents.map((agent: Member) => {
-								return <AgentCard agent={agent} key={agent._id} />;
+								return <AgentCard agent={agent} key={agent._id} likeMemberHandler = {likeMemberHandler} />;
 							})
 						)}
 					</Stack>

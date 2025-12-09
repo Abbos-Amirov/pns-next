@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack, Box, Typography } from '@mui/material';
 import Link from 'next/link';
@@ -12,15 +12,29 @@ import { userVar } from '../../../apollo/store';
 
 interface AgentCardProps {
 	agent: any;
+	likeMemberHandler?: (user: any, id: string) => void;
 }
 
 const AgentCard = (props: AgentCardProps) => {
-	const { agent } = props;
+	const { agent, likeMemberHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const [isLiked, setIsLiked] = useState<boolean>(false);
+	const [likesCount, setLikesCount] = useState<number>(agent?.memberLikes || 0);
+	
 	const imagePath: string = agent?.memberImage
 		? `${REACT_APP_API_URL}/${agent?.memberImage}`
 		: '/img/profile/defaultUser.svg';
+
+	// Check if agent is liked
+	useEffect(() => {
+		const liked = agent?.meLiked && agent?.meLiked[0]?.myFavorite;
+		setIsLiked(liked || false);
+		
+		if (agent?.memberLikes !== undefined) {
+			setLikesCount(agent.memberLikes);
+		}
+	}, [agent?._id, agent?.meLiked, agent?.memberLikes]);
 
 	if (device === 'mobile') {
 		return <div>AGENT CARD</div>;
@@ -60,18 +74,81 @@ const AgentCard = (props: AgentCardProps) => {
 						<span>Agent</span>
 					</Box>
 					<Box component={'div'} className={'buttons'}>
-						<IconButton color={'default'}>
-							<RemoveRedEyeIcon />
+						<IconButton 
+							color={'default'}
+							sx={{ 
+								'&:hover': { 
+									backgroundColor: 'transparent' 
+								},
+								padding: '4px'
+							}}
+						>
+							<RemoveRedEyeIcon 
+								sx={{ 
+									color: '#8B4513',
+									fontSize: '20px'
+								}} 
+							/>
 						</IconButton>
-						<Typography className="view-cnt">{agent?.memberViews}</Typography>
-						<IconButton color={'default'}>
-							{agent?.meLiked && agent?.meLiked[0]?.myFavorite ? (
-								<FavoriteIcon color={'primary'} />
+						<Typography className="view-cnt">{agent?.memberViews || 0}</Typography>
+						<IconButton 
+							color={'default'} 
+							onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+								e.preventDefault();
+								e.stopPropagation();
+								
+								if (!user?._id) {
+									return;
+								}
+								
+								if (!agent?._id) {
+									return;
+								}
+
+								// Optimistically update UI immediately
+								const currentLikedState = isLiked;
+								const newLikedState = !currentLikedState;
+								
+								// Update state immediately for instant UI feedback
+								setIsLiked(newLikedState);
+								
+								// Update likes count optimistically
+								setLikesCount((prev) => {
+									return newLikedState ? prev + 1 : Math.max(0, prev - 1);
+								});
+
+								// Call the handler (it will handle backend update)
+								if (likeMemberHandler) {
+									likeMemberHandler(user, agent._id);
+								}
+							}}
+							sx={{ 
+								'&:hover': { 
+									backgroundColor: 'transparent' 
+								},
+								padding: '4px'
+							}}
+						>
+							{isLiked ? (
+								<FavoriteIcon 
+									sx={{ 
+										color: '#eb6753',
+										fill: '#eb6753',
+										fontSize: '20px'
+									}} 
+									className="favorite-icon-filled"
+								/>
 							) : (
-								<FavoriteBorderIcon />
+								<FavoriteBorderIcon 
+									sx={{ 
+										color: '#8B4513',
+										fontSize: '20px'
+									}}
+									className="favorite-icon-outline"
+								/>
 							)}
 						</IconButton>
-						<Typography className="view-cnt">{agent?.memberLikes}</Typography>
+						<Typography className="view-cnt">{likesCount}</Typography>
 					</Box>
 				</Stack>
 			</Stack>
