@@ -50,14 +50,21 @@ const AgentCard = (props: AgentCardProps) => {
 					<Box
 						component={'div'}
 						className={'agent-img'}
-						style={{
-							backgroundImage: `url(${imagePath})`,
-							backgroundSize: 'cover',
-							backgroundPosition: 'center',
-							backgroundRepeat: 'no-repeat',
-						}}
 					>
-						<div>{agent?.memberProperties} properties</div>
+						<img 
+							src={imagePath} 
+							alt={agent?.memberFullName || agent?.memberNick || 'Agent'} 
+							className="agent-image"
+							onError={(e) => {
+								(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
+							}}
+						/>
+						{agent?.memberProperties && (
+							<Box component={'div'} className={'agent-badge'}>
+								<Typography>{agent.memberProperties} MEASURER</Typography>
+							</Box>
+						)}
+						<Box component={'div'} className={'agent-overlay'}></Box>
 					</Box>
 				</Link>
 
@@ -71,7 +78,7 @@ const AgentCard = (props: AgentCardProps) => {
 						>
 							<strong>{agent?.memberFullName ?? agent?.memberNick}</strong>
 						</Link>
-						<span>Agent</span>
+						<span>MEASURER</span>
 					</Box>
 					<Box component={'div'} className={'buttons'}>
 						<IconButton 
