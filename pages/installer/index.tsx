@@ -2,9 +2,10 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Stack, Box, Button, Pagination, Typography } from '@mui/material';
-import { Menu, MenuItem } from '@mui/material';
+import { Stack, Box, Pagination, Typography, TextField, Select, MenuItem, FormControl, InputAdornment } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import InstallerCard from '../../libs/components/common/InstallerCard';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -25,10 +26,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
 	const [filterSortName, setFilterSortName] = useState('Recent');
-	const [sortingOpen, setSortingOpen] = useState(false);
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
@@ -216,38 +214,6 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 		}
 	};
 
-	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget);
-		setSortingOpen(true);
-	};
-
-	const sortingCloseHandler = () => {
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
-			case 'recent':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'DESC' });
-				setFilterSortName('Recent');
-				break;
-			case 'old':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'ASC' });
-				setFilterSortName('Oldest order');
-				break;
-			case 'likes':
-				setSearchFilter({ ...searchFilter, sort: 'memberLikes', direction: 'DESC' });
-				setFilterSortName('Likes');
-				break;
-			case 'views':
-				setSearchFilter({ ...searchFilter, sort: 'memberViews', direction: 'DESC' });
-				setFilterSortName('Views');
-				break;
-		}
-		setSortingOpen(false);
-		setAnchorEl2(null);
-	};
 
 	const paginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		searchFilter.page = value;
@@ -263,11 +229,11 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 		return (
 			<Stack className={'agent-list-page'}>
 				<Stack className={'container'}>
-					<Stack className={'filter'}>
-						<Box component={'div'} className={'left'}>
-							<input
-								type="text"
-								placeholder={'Search for an installer'}
+					<Stack className={'filter-section'}>
+						<Box component={'div'} className={'filter-left'}>
+							<TextField
+								fullWidth
+								placeholder="Search for an installer..."
 								value={searchText}
 								onChange={(e: any) => setSearchText(e.target.value)}
 								onKeyDown={(event: any) => {
@@ -278,29 +244,102 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 										});
 									}
 								}}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<SearchIcon sx={{ color: '#8B4513' }} />
+										</InputAdornment>
+									),
+								}}
+								sx={{
+									'& .MuiOutlinedInput-root': {
+										borderRadius: '40px',
+										backgroundColor: '#fff',
+										border: '1px solid #e0e0e0',
+										'&:hover': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused': {
+											borderColor: '#8B4513',
+										},
+										'& fieldset': {
+											border: 'none',
+										},
+									},
+									'& .MuiInputBase-input': {
+										padding: '14px 20px',
+										fontSize: '14px',
+										color: '#181a20',
+									},
+								}}
 							/>
 						</Box>
-						<Box component={'div'} className={'right'}>
-							<span>Sort by</span>
-							<div>
-								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-									{filterSortName}
-								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-									<MenuItem onClick={sortingHandler} id={'recent'} disableRipple>
-										Recent
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'old'} disableRipple>
-										Oldest
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'likes'} disableRipple>
-										Likes
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'views'} disableRipple>
-										Views
-									</MenuItem>
-								</Menu>
-							</div>
+						<Box component={'div'} className={'filter-right'}>
+							<Box component={'div'} className={'sort-label'}>
+								<FilterListIcon sx={{ color: '#8B4513', fontSize: '20px', marginRight: '8px' }} />
+								<Typography sx={{ color: '#181a20', fontSize: '14px', fontWeight: 500, marginRight: '12px', whiteSpase: "nowrap" }}>
+									Sort_by:
+								</Typography>
+							</Box>
+							<FormControl
+								sx={{
+									minWidth: 180,
+									'& .MuiOutlinedInput-root': {
+										borderRadius: '40px',
+										backgroundColor: '#fff',
+										border: '1px solid #e0e0e0',
+										'&:hover': {
+											borderColor: '#8B4513',
+										},
+										'&.Mui-focused': {
+											borderColor: '#8B4513',
+										},
+										'& fieldset': {
+											border: 'none',
+										},
+									},
+									'& .MuiSelect-select': {
+										padding: '14px 40px 14px 20px',
+										fontSize: '14px',
+										color: '#181a20',
+										fontWeight: 500,
+									},
+								}}
+							>
+								<Select
+									value={filterSortName}
+									onChange={(e) => {
+										const value = e.target.value as string;
+										setFilterSortName(value);
+										
+										switch (value) {
+											case 'Recent':
+												setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'DESC' });
+												break;
+											case 'Oldest order':
+												setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'ASC' });
+												break;
+											case 'Likes':
+												setSearchFilter({ ...searchFilter, sort: 'memberLikes', direction: 'DESC' });
+												break;
+											case 'Views':
+												setSearchFilter({ ...searchFilter, sort: 'memberViews', direction: 'DESC' });
+												break;
+										}
+									}}
+									IconComponent={KeyboardArrowDownRoundedIcon}
+									sx={{
+										'& .MuiSvgIcon-root': {
+											color: '#8B4513',
+										},
+									}}
+								>
+									<MenuItem value="Recent">Recent</MenuItem>
+									<MenuItem value="Oldest order">Oldest</MenuItem>
+									<MenuItem value="Likes">Likes</MenuItem>
+									<MenuItem value="Views">Views</MenuItem>
+								</Select>
+							</FormControl>
 						</Box>
 					</Stack>
 					<Stack className={'card-wrap'}>
