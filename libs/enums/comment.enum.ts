@@ -9,4 +9,5 @@ export enum CommentGroup {
 	PROPERTY = 'PROPERTY',
 	COMMENT = 'COMMENT',
 	MEASURER = 'MEASURER',
+	INSTALLER = 'INSTALLER',
 }
