@@ -104,18 +104,16 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	});
 
 	// Get Comments Query
-	const { data: commentsData, loading: commentsLoading, refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
+	const { data: commentsData, loading: commentsLoading, refetch: refetchComments } = useQuery(GET_COMMENTS, {
 		variables: {
 			input: commentInquiry,
 		},
-		skip: !commentInquiry.search?.commentRefId,
+		skip: !installer?._id,
 		fetchPolicy: 'network-only',
 		errorPolicy: 'all',
 		onCompleted: (data) => {
 			if (data?.getComments) {
-				const comments = data.getComments.list || [];
-				setInstallerComments(comments);
-				
+				setInstallerComments(data.getComments.list || []);
 				const metaCounter = data.getComments.metaCounter;
 				const totalCount = Array.isArray(metaCounter) 
 					? (metaCounter[0]?.total || 0)
@@ -125,7 +123,6 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 		},
 		onError: (err) => {
 			console.error('GetComments Query Error:', err);
-			sweetErrorHandling(err).then();
 		},
 	});
 
@@ -141,8 +138,8 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 				});
 				
 				// Refetch comments to show new comment
-				if (getCommentsRefetch) {
-					getCommentsRefetch();
+				if (refetchComments) {
+					refetchComments();
 				}
 				
 				sweetTopSuccessAlert('Review submitted successfully!', 700).then();
@@ -162,6 +159,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 		}
 	}, [router.query.installerId]);
 
+	// Update comment inquiry when installer is loaded
 	useEffect(() => {
 		if (installer?._id) {
 			setCommentInquiry({
@@ -173,18 +171,37 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 					commentRefId: installer._id,
 				},
 			});
+			
+			setInsertCommentData({
+				commentGroup: CommentGroup.MEMBER,
+				commentContent: '',
+				commentRefId: installer._id,
+			});
 		}
 	}, [installer?._id]);
 
+	// Refetch comments when commentInquiry page changes (for pagination)
 	useEffect(() => {
-		if (commentInquiry.search?.commentRefId && getCommentsRefetch) {
-			getCommentsRefetch({
-				input: commentInquiry,
+		if (installer?._id && commentInquiry.search?.commentRefId && refetchComments) {
+			refetchComments({
+				variables: {
+					input: commentInquiry,
+				},
 			});
 		}
-	}, [commentInquiry, getCommentsRefetch]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [commentInquiry.page, commentInquiry.limit]);
 
 	/** HANDLERS **/
+	const redirectToMemberPageHandler = async (memberId: string) => {
+		try {
+			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
+			else await router.push(`/member?memberId=${memberId}`);
+		} catch (error) {
+			await sweetErrorHandling(error);
+		}
+	};
+
 	const likeInstallerHandler = async () => {
 		if (!installer?._id) return;
 		if (!user?._id) {
@@ -251,11 +268,9 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 		}
 	};
 
-	const paginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
-		setCommentInquiry({
-			...commentInquiry,
-			page: value,
-		});
+	const commentPaginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
+		commentInquiry.page = value;
+		setCommentInquiry({ ...commentInquiry });
 	};
 
 	const imagePath: string = installer?.memberImage
@@ -366,27 +381,40 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 											)}
 										</Box>
 
-										<Box className={'agent-actions'}>
+										<Stack className={'agent-actions'}>
 											<Button
-												variant="contained"
-												startIcon={isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+												className={'like-button'}
+												variant={isLiked ? 'contained' : 'outlined'}
 												onClick={likeInstallerHandler}
 												disabled={likeLoading}
+												startIcon={isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
 												sx={{
-													backgroundColor: isLiked ? '#eb6753' : '#8B4513',
-													color: '#fff',
-													borderRadius: '40px',
-													padding: '12px 32px',
-													fontWeight: 600,
-													textTransform: 'none',
+													background: isLiked ? '#eb6753' : 'transparent',
+													color: isLiked ? '#fff' : '#8B4513',
+													borderColor: '#8B4513',
 													'&:hover': {
-														backgroundColor: isLiked ? '#d45542' : '#6B3410',
+														background: isLiked ? '#d45542' : 'rgba(139, 69, 19, 0.1)',
+														borderColor: '#8B4513',
 													},
 												}}
 											>
 												{isLiked ? 'Liked' : 'Like'}
 											</Button>
-										</Box>
+											<Button
+												className={'view-profile-button'}
+												variant="contained"
+												onClick={() => redirectToMemberPageHandler(installer._id)}
+												sx={{
+													background: '#8B4513',
+													color: '#fff',
+													'&:hover': {
+														background: '#6B3410',
+													},
+												}}
+											>
+												View Full Profile
+											</Button>
+										</Stack>
 									</Box>
 								</Box>
 							</Stack>
@@ -418,7 +446,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<Pagination
 													page={commentInquiry.page || 1}
 													count={Math.ceil(commentTotal / (commentInquiry.limit || 4))}
-													onChange={paginationChangeHandler}
+													onChange={commentPaginationChangeHandler}
 													shape="circular"
 													color="primary"
 													sx={{
