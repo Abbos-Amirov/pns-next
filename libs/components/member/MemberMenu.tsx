@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { Member } from '../../types/member/member';
 import { REACT_APP_API_URL } from '../../config';
+import { useQuery } from '@apollo/client';
+import { GET_MEMBER } from '../../../apollo/user/query';
+import { sweetErrorHandling } from '../../sweetAlert';
+import { MemberType } from '../../enums/member.enum';
 
 interface MemberMenuProps {
 	subscribeHandler: any;
@@ -17,9 +21,30 @@ const MemberMenu = (props: MemberMenuProps) => {
 	const router = useRouter();
 	const category: any = router.query?.category;
 	const [member, setMember] = useState<Member | null>(null);
+	const [isFollowing, setIsFollowing] = useState<boolean>(false);
 	const { memberId } = router.query;
 
 	/** APOLLO REQUESTS **/
+	const { data: memberData, loading: memberLoading, error: memberError, refetch: refetchMember } = useQuery(GET_MEMBER, {
+		variables: {
+			input: (memberId as string) || '',
+		},
+		skip: !memberId,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onCompleted: (data) => {
+			if (data?.getMember) {
+				setMember(data.getMember);
+				// Update isFollowing state based on member data
+				const followed = data.getMember.meFollowed && data.getMember.meFollowed[0]?.myFollowing;
+				setIsFollowing(followed || false);
+			}
+		},
+		onError: (err) => {
+			console.error('GetMember Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
 
 	if (device === 'mobile') {
 		return <div>MEMBER MENU MOBILE</div>;
@@ -43,22 +68,63 @@ const MemberMenu = (props: MemberMenuProps) => {
 					</Stack>
 				</Stack>
 				<Stack className="follow-button-box">
-					{member?.meFollowed && member?.meFollowed[0]?.myFollowing ? (
-						<>
-							<Button
-								variant="outlined"
-								sx={{ background: '#b9b9b9' }}
-								onClick={() => unsubscribeHandler(member?._id, null, memberId)}
-							>
-								Unfollow
-							</Button>
-							<Typography>Following</Typography>
-						</>
+					{isFollowing ? (
+						<Button
+							variant="outlined"
+							sx={{ 
+								borderColor: '#8B4513',
+								color: '#8B4513',
+								background: 'transparent',
+								'&:hover': {
+									borderColor: '#6B3410',
+									background: 'rgba(139, 69, 19, 0.1)',
+								},
+							}}
+							onClick={async () => {
+								if (member?._id) {
+									// Optimistic update - immediately change button
+									setIsFollowing(false);
+									try {
+										await unsubscribeHandler(member._id, refetchMember, memberId);
+										// Refetch to get updated data
+										if (refetchMember) {
+											await refetchMember();
+										}
+									} catch (err) {
+										// Revert on error
+										setIsFollowing(true);
+									}
+								}
+							}}
+						>
+							Unfollow
+						</Button>
 					) : (
 						<Button
 							variant="contained"
-							sx={{ background: '#ff5d18', ':hover': { background: '#ff5d18' } }}
-							onClick={() => subscribeHandler(member?._id, null, memberId)}
+							sx={{ 
+								background: '#8B4513',
+								color: '#fff',
+								'&:hover': { 
+									background: '#6B3410',
+								},
+							}}
+							onClick={async () => {
+								if (member?._id) {
+									// Optimistic update - immediately change button
+									setIsFollowing(true);
+									try {
+										await subscribeHandler(member._id, refetchMember, memberId);
+										// Refetch to get updated data
+										if (refetchMember) {
+											await refetchMember();
+										}
+									} catch (err) {
+										// Revert on error
+										setIsFollowing(false);
+									}
+								}
+							}}
 						>
 							Follow
 						</Button>
@@ -70,7 +136,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 							Details
 						</Typography>
 						<List className={'sub-section'}>
-							{member?.memberType === 'AGENT' && (
+							{(member?.memberType === MemberType.MEASURER || member?.memberType === MemberType.INSTALLER) && (
 								<ListItem className={category === 'properties' ? 'focus' : ''}>
 									<Link
 										href={{
