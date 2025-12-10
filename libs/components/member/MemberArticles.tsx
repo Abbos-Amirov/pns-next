@@ -107,7 +107,28 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 						</div>
 					) : (
 						memberBoArticles?.map((boardArticle: BoardArticle) => {
-							return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} size={'small'} />;
+							return (
+								<CommunityCard 
+									boardArticle={boardArticle} 
+									key={boardArticle?._id} 
+									size={'small'}
+									onLikeUpdate={(articleId, updatedArticle) => {
+										// Update the article in the list
+										setMemberBoArticles((prevArticles) => {
+											return prevArticles.map((article) => {
+												if (article._id === articleId) {
+													return {
+														...article,
+														articleLikes: updatedArticle.articleLikes,
+														meLiked: updatedArticle.meLiked,
+													};
+												}
+												return article;
+											});
+										});
+									}}
+								/>
+							);
 						})
 					)}
 				</Stack>

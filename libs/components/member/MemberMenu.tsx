@@ -104,11 +104,12 @@ const MemberMenu = (props: MemberMenuProps) => {
 							variant="contained"
 							sx={{ 
 								background: '#8B4513',
-								color: '#fff',
+								color: '#FFFFFF',
 								'&:hover': { 
 									background: '#6B3410',
 								},
 							}}
+							style={{coler:"white"}}
 							onClick={async () => {
 								if (member?._id) {
 									// Optimistic update - immediately change button
@@ -153,7 +154,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 												<img className={'com-icon'} src={'/img/icons/home.svg'} alt={'com-icon'} />
 											)}
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-												Properties
+											Citys
 											</Typography>
 											<Typography className="count-title" variant="subtitle1">
 												{member?.memberProperties}
