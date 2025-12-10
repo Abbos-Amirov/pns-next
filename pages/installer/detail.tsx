@@ -43,7 +43,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [installerComments, setInstallerComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
-		commentGroup: CommentGroup.INSTALLER,
+		commentGroup: CommentGroup.MEMBER,
 		commentContent: '',
 		commentRefId: '',
 	});
@@ -67,7 +67,8 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 				
 				// Update comment inquiry
 				setInsertCommentData({
-					...insertCommentData,
+					commentGroup: CommentGroup.MEMBER,
+					commentContent: '',
 					commentRefId: member._id,
 				});
 			}
@@ -132,16 +133,19 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [createComment, { loading: createCommentLoading }] = useMutation(CREATE_COMMENT, {
 		onCompleted: (data) => {
 			if (data?.createComment) {
+				// Clear comment input
 				setInsertCommentData({
-					...insertCommentData,
+					commentGroup: CommentGroup.MEMBER,
 					commentContent: '',
+					commentRefId: installer?._id || '',
 				});
-				sweetTopSuccessAlert('Review submitted successfully!', 700).then();
 				
-				// Refetch comments
+				// Refetch comments to show new comment
 				if (getCommentsRefetch) {
 					getCommentsRefetch();
 				}
+				
+				sweetTopSuccessAlert('Review submitted successfully!', 700).then();
 			}
 		},
 		onError: (err) => {
@@ -216,28 +220,33 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	};
 
 	const submitCommentHandler = async () => {
+		if (!user?._id) {
+			sweetTopSuccessAlert('Please login to leave a review', 700).then();
+			return;
+		}
+
 		if (!insertCommentData.commentContent.trim()) {
 			sweetTopSuccessAlert('Please enter a review', 700).then();
 			return;
 		}
 
-		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to submit a review', 700).then();
-			return;
-		}
-
-		if (!insertCommentData.commentRefId) {
-			sweetTopSuccessAlert('Installer ID is missing', 700).then();
+		if (!installer?._id) {
+			sweetTopSuccessAlert('Installer not found', 700).then();
 			return;
 		}
 
 		try {
 			await createComment({
 				variables: {
-					input: insertCommentData,
+					input: {
+						commentGroup: CommentGroup.MEMBER,
+						commentContent: insertCommentData.commentContent.trim(),
+						commentRefId: installer._id,
+					},
 				},
 			});
 		} catch (err: any) {
+			console.error('Error creating comment:', err);
 			sweetErrorHandling(err).then();
 		}
 	};
@@ -383,71 +392,29 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 							</Stack>
 
 							{/* Reviews Section */}
-							<Stack className={'reviews-section'}>
-								<Typography className={'section-title'}>Reviews ({commentTotal})</Typography>
+							<Stack className={'review-section'}>
+								<Stack className={'review-header'}>
+									<Typography className={'section-title'}>Reviews</Typography>
+									<Typography className={'section-subtitle'}>Share your experience with this installer</Typography>
+								</Stack>
 								
-								{/* Comment Form */}
-								<Box className={'comment-form'}>
-									<textarea
-										className={'comment-textarea'}
-										placeholder={user?._id ? 'Write your review here...' : 'Please login to write a review'}
-										value={insertCommentData.commentContent}
-										onChange={(e) => {
-											setInsertCommentData({
-												...insertCommentData,
-												commentContent: e.target.value,
-											});
-										}}
-										disabled={!user?._id || createCommentLoading}
-									/>
-									{!user?._id && (
-										<Typography className={'login-prompt'}>
-											Please login to submit a review
-										</Typography>
-									)}
-									<Button
-										variant="contained"
-										onClick={submitCommentHandler}
-										disabled={!user?._id || !insertCommentData.commentContent.trim() || createCommentLoading}
-										sx={{
-											backgroundColor: '#8B4513',
-											color: '#fff',
-											borderRadius: '40px',
-											padding: '12px 32px',
-											fontWeight: 600,
-											textTransform: 'none',
-											marginTop: '16px',
-											'&:hover': {
-												backgroundColor: '#6B3410',
-											},
-											'&:disabled': {
-												backgroundColor: '#ccc',
-											},
-										}}
-									>
-										{createCommentLoading ? 'Submitting...' : 'Submit Review'}
-									</Button>
-								</Box>
-
-								{/* Comments List */}
 								{commentsLoading ? (
-									<Box sx={{ padding: '20px', textAlign: 'center' }}>
-										<Typography>Loading reviews...</Typography>
-									</Box>
-								) : installerComments.length === 0 ? (
-									<Box sx={{ padding: '40px', textAlign: 'center' }}>
-										<Typography sx={{ color: '#717171' }}>No reviews yet. Be the first to review!</Typography>
-									</Box>
-								) : (
-									<>
-										<Stack className={'comments-list'}>
-											{installerComments.map((comment: Comment) => (
-												<ReviewCard key={comment._id} comment={comment} />
-											))}
-										</Stack>
-										
-										{commentTotal > commentInquiry.limit && (
-											<Box className={'pagination-section'}>
+									<Stack sx={{ py: 3, alignItems: 'center' }}>
+										<Typography sx={{ color: '#717171' }}>Loading reviews...</Typography>
+									</Stack>
+								) : commentTotal > 0 ? (
+									<Stack className={'review-wrap'}>
+										<Box component={'div'} className={'review-title-box'}>
+											<StarIcon sx={{ color: '#FFD700', fontSize: '24px' }} />
+											<Typography className={'review-count'}>
+												{commentTotal} review{commentTotal > 1 ? 's' : ''}
+											</Typography>
+										</Box>
+										{installerComments?.map((comment: Comment) => {
+											return <ReviewCard comment={comment} key={comment?._id} />;
+										})}
+										{Math.ceil(commentTotal / (commentInquiry.limit || 4)) > 1 && (
+											<Box component={'div'} className={'pagination-box'}>
 												<Pagination
 													page={commentInquiry.page || 1}
 													count={Math.ceil(commentTotal / (commentInquiry.limit || 4))}
@@ -466,7 +433,63 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 												/>
 											</Box>
 										)}
-									</>
+									</Stack>
+								) : (
+									<Stack sx={{ py: 3, alignItems: 'center' }}>
+										<Typography sx={{ color: '#717171' }}>No reviews yet. Be the first to leave a review!</Typography>
+									</Stack>
+								)}
+
+								{/* Comment Form */}
+								{user?._id && (
+									<Stack className={'leave-review-config'}>
+										<Typography className={'main-title'}>Leave A Review</Typography>
+										<Typography className={'review-title'}>Review</Typography>
+										<textarea
+											onChange={({ target: { value } }: any) => {
+												setInsertCommentData({ ...insertCommentData, commentContent: value });
+											}}
+											value={insertCommentData.commentContent}
+											placeholder="Write your review here..."
+											disabled={createCommentLoading}
+										></textarea>
+										<Box className={'submit-btn'} component={'div'}>
+											<Button
+												className={'submit-review'}
+												disabled={insertCommentData.commentContent === '' || !user?._id || createCommentLoading}
+												onClick={submitCommentHandler}
+												sx={{
+													background: '#8B4513',
+													color: '#fff',
+													'&:hover': {
+														background: '#6B3410',
+													},
+													'&:disabled': {
+														background: '#ccc',
+													},
+												}}
+											>
+												<Typography className={'title'}>
+													{createCommentLoading ? 'Submitting...' : 'Submit Review'}
+												</Typography>
+												{!createCommentLoading && (
+													<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+														<g clipPath="url(#clip0_6975_3642)">
+															<path
+																d="M16.1571 0.5H6.37936C6.1337 0.5 5.93491 0.698792 5.93491 0.944458C5.93491 1.19012 6.1337 1.38892 6.37936 1.38892H15.0842L0.731781 15.7413C0.558156 15.915 0.558156 16.1962 0.731781 16.3698C0.818573 16.4566 0.932323 16.5 1.04603 16.5C1.15974 16.5 1.27345 16.4566 1.36028 16.3698L15.7127 2.01737V10.7222C15.7127 10.9679 15.9115 11.1667 16.1572 11.1667C16.4028 11.1667 16.6016 10.9679 16.6016 10.7222V0.944458C16.6016 0.698792 16.4028 0.5 16.1571 0.5Z"
+																fill="white"
+															/>
+														</g>
+														<defs>
+															<clipPath id="clip0_6975_3642">
+																<rect width="16" height="16" fill="white" transform="translate(0.601562 0.5)" />
+															</clipPath>
+														</defs>
+													</svg>
+												)}
+											</Button>
+										</Box>
+									</Stack>
 								)}
 							</Stack>
 						</>
