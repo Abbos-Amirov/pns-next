@@ -4,7 +4,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import SearchIcon from '@mui/icons-material/Search';
-import { Property } from '../../types/product/property';
+import { Location } from '../../types/location/location';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 interface CityCardType {
-	city: Property;
+	city: Location;
 	likeCityHandler?: any;
 	myFavorites?: boolean;
 	recentlyVisited?: boolean;
@@ -25,28 +25,16 @@ const CityCard = (props: CityCardType) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [isHovered, setIsHovered] = useState(false);
-	const [isLiked, setIsLiked] = useState(
-		myFavorites || (city?.meLiked && city?.meLiked[0]?.myFavorite) || false
-	);
+	const [isLiked, setIsLiked] = useState(false);
 
-	// Hard coded images array for fallback
-	const defaultImages = [
-		'/img/property/window.jpg',
-		'/img/property/window1.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/windows5.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/window4.jpg',
-		'/img/property/window5.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/window1.jpg',
-		'/img/property/window2.jpg',
-	];
-
-	// Get image path - use city image or fallback to hard coded images
+	// Get image path - use location images or fallback
 	const getImagePath = (): string => {
-		if (city?.propertyImages && city.propertyImages.length > 0) {
-			const imgPath = city.propertyImages[0];
+		if (city?.images && city.images.length > 0) {
+			const imgPath = city.images[0];
+			// If image path starts with http:// or https://, it's already a full URL
+			if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+				return imgPath;
+			}
 			// If image path starts with /img/, use it directly (public folder)
 			if (imgPath.startsWith('/img/')) {
 				return imgPath;
@@ -54,18 +42,11 @@ const CityCard = (props: CityCardType) => {
 			// Otherwise, prepend API URL
 			return `${REACT_APP_API_URL}/${imgPath}`;
 		}
-		// Use city index or random to select from default images
-		const index = city?._id ? parseInt(city._id.slice(-1), 16) % defaultImages.length : 0;
-		return defaultImages[index];
+		// Fallback to default image
+		return '/img/property/window.jpg';
 	};
 
 	const imagePath: string = getImagePath();
-
-	// Sale calculation - check if city has sale (can use propertyRank or other flags)
-	// For now, we'll show sale badge for cities with high rank or specific conditions
-	const isOnSale = city?.propertyRank && city.propertyRank > 4;
-	const salePercent = isOnSale ? 16 : 0; // Default sale percent
-	const displayPrice = city?.propertyPrice || 0;
 
 
 	if (device === 'mobile') {
@@ -86,11 +67,6 @@ const CityCard = (props: CityCardType) => {
 					>
 						<img src={imagePath} alt="" />
 					</Link>
-					{/* Price Badge - Yellow circular badge */}
-					<Box component={'div'} className={'price-badge'}>
-						<Typography component={'span'} className={'price-amount'}>{formatterStr(displayPrice)}</Typography>
-						<Typography component={'span'} className={'price-period'}>WORKS</Typography>
-					</Box>
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
@@ -101,11 +77,11 @@ const CityCard = (props: CityCardType) => {
 									query: { id: city?._id },
 								}}
 							>
-								<Typography>{city.propertyTitle}</Typography>
+								<Typography>{city.locationName}</Typography>
 							</Link>
 						</Stack>
 						<Stack className="address">
-							<Typography>{city?.propertyLocation || city?.propertyAddress || 'Location'}</Typography>
+							<Typography>{city?.address || 'Location'}</Typography>
 						</Stack>
 					</Stack>
 					<Stack className="specifications">
@@ -125,11 +101,11 @@ const CityCard = (props: CityCardType) => {
 							) : (
 								<FavoriteBorderIcon className={'spec-icon'} />
 							)}
-							<Typography className={'spec-text'}>{city?.propertyLikes || 0}</Typography>
+							<Typography className={'spec-text'}>{city?.locationLikes || 0}</Typography>
 						</Stack>
 						<Stack className="spec-item">
 							<RemoveRedEyeIcon className={'spec-icon'} />
-							<Typography className={'spec-text'}>{city?.propertyViews || 0}</Typography>
+							<Typography className={'spec-text'}>{city?.locationViews || 0}</Typography>
 						</Stack>
 					</Stack>
 				</Stack>

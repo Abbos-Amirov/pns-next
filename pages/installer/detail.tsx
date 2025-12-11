@@ -400,20 +400,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 											>
 												{isLiked ? 'Liked' : 'Like'}
 											</Button>
-											<Button
-												className={'view-profile-button'}
-												variant="contained"
-												onClick={() => redirectToMemberPageHandler(installer._id)}
-												sx={{
-													background: '#8B4513',
-													color: '#fff',
-													'&:hover': {
-														background: '#6B3410',
-													},
-												}}
-											>
-												View Full Profile
-											</Button>
+										
 										</Stack>
 									</Box>
 								</Box>

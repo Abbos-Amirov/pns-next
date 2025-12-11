@@ -504,6 +504,35 @@ export const GET_BOARD_ARTICLES = gql`
 `;
 
 /**************************
+ *        LOCATION        *
+ *************************/
+
+export const GET_LOCATIONS = gql`
+	query GetLocations($input: LocationsInquiry!) {
+		getLocations(input: $input) {
+			metaCounter {
+				total
+			}
+			list {
+				_id
+				locationName
+				address
+				description
+				locationType
+				latitude
+				longitude
+				locationViews
+				locationLikes
+				images
+				memberId
+				createdAt
+				updatedAt
+			}
+		}
+	}
+`;
+
+/**************************
  *         COMMENT        *
  *************************/
 
