@@ -2,69 +2,57 @@ import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 're
 import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { PropertyType } from '../../enums/property.enum';
-import { PropertiesInquiry } from '../../types/product/property.input';
+import { LocationsInquiry } from '../../types/location/location.input';
 import { useRouter } from 'next/router';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface FilterType {
-	searchFilter: PropertiesInquiry;
+	searchFilter: LocationsInquiry;
 	setSearchFilter: any;
-	initialInput: PropertiesInquiry;
+	initialInput: LocationsInquiry;
 }
 
 const Filter = (props: FilterType) => {
 	const { searchFilter, setSearchFilter, initialInput } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [propertyType] = useState<PropertyType[]>(Object.values(PropertyType));
 	const [availabilityFilter, setAvailabilityFilter] = useState<string>('all');
 	const [hotDealsIndex, setHotDealsIndex] = useState<number>(0);
-	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text || '');
-	const [minPrice, setMinPrice] = useState<string>(searchFilter?.search?.pricesRange?.start?.toString() || '');
-	const [maxPrice, setMaxPrice] = useState<string>(searchFilter?.search?.pricesRange?.end?.toString() || '');
+	const [searchText, setSearchText] = useState<string>('');
 	const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const priceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	/** HANDLERS **/
-	const propertyTypeSelectHandler = useCallback(
-		async (type: string) => {
+	const categorySelectHandler = useCallback(
+		async (category: PropertyType) => {
 			try {
-				const isSelected = (searchFilter?.search?.typeList || []).includes(type as PropertyType);
-				if (isSelected) {
-					await router.push(
-						`/city?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== type),
-							},
-						})}`,
-						`/city?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== type),
-							},
-						})}`,
-						{ scroll: false },
-					);
-				} else {
-					await router.push(
-						`/city?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), type] },
-						})}`,
-						`/city?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), type] },
-						})}`,
-						{ scroll: false },
-					);
-				}
+				const currentTypeList = (searchFilter?.search as any)?.typeList || [];
+				const isSelected = currentTypeList.includes(category);
+				
+				const newTypeList = isSelected
+					? currentTypeList.filter((item: PropertyType) => item !== category)
+					: [...currentTypeList, category];
+				
+				await router.push(
+					`/city?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+							typeList: newTypeList,
+						},
+					})}`,
+					`/city?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+							typeList: newTypeList,
+						},
+					})}`,
+					{ scroll: false },
+				);
 			} catch (err: any) {
-				console.log('ERROR, propertyTypeSelectHandler:', err);
+				console.log('ERROR, categorySelectHandler:', err);
 			}
 		},
 		[searchFilter, router],
@@ -101,8 +89,6 @@ const Filter = (props: FilterType) => {
 			);
 			setAvailabilityFilter('all');
 			setSearchText('');
-			setMinPrice('');
-			setMaxPrice('');
 		} catch (err: any) {
 			console.log('ERROR, refreshHandler:', err);
 		}
@@ -146,14 +132,8 @@ const Filter = (props: FilterType) => {
 
 	// Update state when searchFilter changes
 	useEffect(() => {
-		if (searchFilter?.search?.text !== undefined) {
-			setSearchText(searchFilter.search.text || '');
-		}
-		if (searchFilter?.search?.pricesRange) {
-			const start = searchFilter.search.pricesRange.start;
-			const end = searchFilter.search.pricesRange.end;
-			setMinPrice(start !== undefined && start !== 0 ? start.toString() : '');
-			setMaxPrice(end !== undefined && end !== 2000000 ? end.toString() : '');
+		if ((searchFilter?.search as any)?.text !== undefined) {
+			setSearchText((searchFilter.search as any).text || '');
 		}
 		if ((searchFilter?.search as any)?.availability) {
 			setAvailabilityFilter((searchFilter.search as any).availability);
@@ -166,77 +146,15 @@ const Filter = (props: FilterType) => {
 			if (searchTimeoutRef.current) {
 				clearTimeout(searchTimeoutRef.current);
 			}
-			if (priceTimeoutRef.current) {
-				clearTimeout(priceTimeoutRef.current);
-			}
 		};
 	}, []);
 
-	const priceRangeHandler = useCallback(
-		async (min: string, max: string) => {
-			try {
-				const minNum = min === '' ? 0 : parseInt(min) || 0;
-				const maxNum = max === '' ? 2000000 : parseInt(max) || 2000000;
-				
-				await router.push(
-					`/city?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { start: minNum, end: maxNum },
-						},
-					})}`,
-					`/city?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { start: minNum, end: maxNum },
-						},
-					})}`,
-					{ scroll: false },
-				);
-			} catch (err: any) {
-				console.log('ERROR, priceRangeHandler:', err);
-			}
-		},
-		[searchFilter, router],
-	);
-
-	const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setMinPrice(value);
-		
-		// Clear previous timeout
-		if (priceTimeoutRef.current) {
-			clearTimeout(priceTimeoutRef.current);
-		}
-		
-		// Set new timeout for debounce
-		priceTimeoutRef.current = setTimeout(() => {
-			priceRangeHandler(value, maxPrice);
-		}, 500);
-	};
-
-	const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setMaxPrice(value);
-		
-		// Clear previous timeout
-		if (priceTimeoutRef.current) {
-			clearTimeout(priceTimeoutRef.current);
-		}
-		
-		// Set new timeout for debounce
-		priceTimeoutRef.current = setTimeout(() => {
-			priceRangeHandler(minPrice, value);
-		}, 500);
-	};
 
 	// Mock hot deals data - bu keyinchalik backenddan keladi
 	const hotDeals = [
 		{
 			id: '1',
-			name: 'cities',
+			name: 'locations',
 			image: '/img/property/window2.jpg',
 			price: 210,
 			oldPrice: 250,
@@ -244,7 +162,7 @@ const Filter = (props: FilterType) => {
 		},
 		{
 			id: '2',
-			name: 'cities',
+			name: 'locations',
 			image: '/img/property/window1.jpg',
 			price: 320,
 			oldPrice: 380,
@@ -252,7 +170,7 @@ const Filter = (props: FilterType) => {
 		},
 		{
 			id: '3',
-			name: 'cities',
+			name: 'locations',
 			image: '/img/property/window.jpg',
 			price: 280,
 			oldPrice: 330,
@@ -262,18 +180,32 @@ const Filter = (props: FilterType) => {
 			
 	];
 
-	// Category list - APARTMENT, VILLA, HOUSE
-	const categories = ['Aluminum Frame', 'PVC Window', 'Steel / Iron Door','Wooden / Thermowood', 'Aluminum Hybrid'];
+	// Category list - using PropertyType enum values for locations
+	const categories: PropertyType[] = [
+		PropertyType.HOUSE,
+		PropertyType.APARTMENT,
+		PropertyType.OFFICE,
+		PropertyType.STORE,
+		PropertyType.FACTORY,
+	];
+
+	// Category display names mapping
+	const categoryDisplayNames: Record<PropertyType, string> = {
+		[PropertyType.HOUSE]: 'House',
+		[PropertyType.APARTMENT]: 'Apartment',
+		[PropertyType.VILLA]: 'Villa',
+		[PropertyType.OFFICE]: 'Office',
+		[PropertyType.STORE]: 'Store',
+		[PropertyType.FACTORY]: 'Factory',
+	};
 
 	if (device === 'mobile') {
 		return <div>CITIES FILTER</div>;
 	} else {
 		return (
 			<Stack className={'filter-main'}>
-
-<Stack className={'filter-section'} mb={'30px'}>
-
-	{/* Search Section */}
+				{/* Search Section */}
+				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
 						<Typography style={{color: "#ffffff"}}>Search</Typography>
 					</Box>
@@ -293,72 +225,25 @@ const Filter = (props: FilterType) => {
 							className={'search-input'}
 						/>
 					</Stack>
-
-
-
-					{/* Price Range Section */}
 				</Stack>
 
-				<Stack className={'filter-section'} mb={'30px'}>
-					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Price Range</Typography>
-					</Box>
-					<Stack className={'price-range-content'}>
-						<Stack className={'price-inputs'} direction={'row'} gap={'12px'}>
-							<TextField
-								type="number"
-								placeholder="Min Price"
-								value={minPrice}
-								onChange={handleMinPriceChange}
-								InputProps={{
-									startAdornment: <InputAdornment position="start">$</InputAdornment>,
-								}}
-								className={'price-input'}
-								inputProps={{
-									min: 0,
-									step: 1,
-								}}
-							/>
-							<TextField
-								type="number"
-								placeholder="Max Price"
-								value={maxPrice}
-								onChange={handleMaxPriceChange}
-								InputProps={{
-									startAdornment: <InputAdornment position="start">$</InputAdornment>,
-								}}
-								className={'price-input'}
-								inputProps={{
-									min: 0,
-									step: 1,
-								}}
-							/>
-						</Stack>
-					</Stack>
-				</Stack>
 				{/* Category Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
 						<Typography style={{color: "#ffffff"}}>Category</Typography>
 					</Box>
 					<Stack className={'category-list'}>
-						{categories.map((category: string) => {
-							const isSelected = (searchFilter?.search?.typeList || []).some(
-								(type: string) => type.toUpperCase() === category,
-							);
+						{categories.map((category: PropertyType) => {
+							const currentTypeList = (searchFilter?.search as any)?.typeList || [];
+							const isSelected = currentTypeList.includes(category);
 							return (
 								<Stack
 									className={`category-item ${isSelected ? 'selected' : ''}`}
 									key={category}
-										onClick={() => {
-										// Find matching PropertyType
-										const matchingType = propertyType.find((t) => t.toUpperCase() === category);
-										if (matchingType) {
-											propertyTypeSelectHandler(matchingType);
-										}
-									}}
+									onClick={() => categorySelectHandler(category)}
+									sx={{ cursor: 'pointer' }}
 								>
-									<Typography>{category}</Typography>
+									<Typography>{categoryDisplayNames[category] || category}</Typography>
 								</Stack>
 							);
 						})}
@@ -382,9 +267,9 @@ const Filter = (props: FilterType) => {
 									<Stack className={'hot-deal-price'}>
 										<Typography className={'current-price'}>${hotDeals[hotDealsIndex]?.price}</Typography>
 										<Typography className={'old-price'}>${hotDeals[hotDealsIndex]?.oldPrice}</Typography>
-				</Stack>
-					</Stack>
-				</Stack>
+									</Stack>
+								</Stack>
+							</Stack>
 							{hotDeals.length > 1 && (
 								<Stack className={'hot-deals-nav'}>
 									<IconButton
@@ -401,32 +286,9 @@ const Filter = (props: FilterType) => {
 									</IconButton>
 								</Stack>
 							)}
-					</Stack>
+						</Stack>
 					)}
 				</Stack>
-
-				{/* Search Section */}
-				
-				{/* Price Range Section */}
-				
-
-				{/* Availability Filter */}
-				{/* <Stack className={'filter-section'}>
-					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Availability</Typography>
-					</Box>
-					<Stack className={'availability-content'}>
-						<RadioGroup
-							value={availabilityFilter}
-							onChange={(e) => availabilityHandler(e.target.value)}
-							className={'availability-radio-group'}
-						>
-							<FormControlLabel value="all" control={<Radio />} label="All" />
-							<FormControlLabel value="in_stock" control={<Radio />} label="In stock (5)" />
-							<FormControlLabel value="out_of_stock" control={<Radio />} label="Out of stock (1)" />
-						</RadioGroup>
-					</Stack>
-				</Stack> */}
 			</Stack>
 		);
 	}

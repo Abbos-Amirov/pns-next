@@ -1,7 +1,9 @@
 import { Direction } from '../../enums/common.enum';
+import { PropertyType } from '../../enums/property.enum';
 
 interface LocationsSearch {
-	// Add search fields here if needed
+	text?: string;
+	typeList?: PropertyType[];
 }
 
 export interface LocationsInquiry {

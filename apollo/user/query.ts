@@ -532,6 +532,26 @@ export const GET_LOCATIONS = gql`
 	}
 `;
 
+export const GET_LOCATION = gql`
+	query GetLocation($input: String!) {
+		getLocation(locationId: $input) {
+			_id
+			locationName
+			address
+			description
+			locationType
+			latitude
+			longitude
+			images
+			memberId
+			createdAt
+			updatedAt
+			locationViews
+			locationLikes
+		}
+	}
+`;
+
 /**************************
  *         COMMENT        *
  *************************/
