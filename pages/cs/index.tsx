@@ -1,12 +1,15 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Notice from '../../libs/components/cs/Notice';
 import Faq from '../../libs/components/cs/Faq';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -37,34 +40,42 @@ const CS: NextPage = () => {
 		return (
 			<Stack className={'cs-page'}>
 				<Stack className={'container'}>
-					<Box component={'div'} className={'cs-main-info'}>
-						<Box component={'div'} className={'info'}>
-							<span>Cs center</span>
-							<p>I will answer your questions</p>
-						</Box>
-						<Box component={'div'} className={'btns'}>
-							<div
-								className={tab == 'notice' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('notice');
-								}}
-							>
-								Notice
-							</div>
-							<div
-								className={tab == 'faq' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('faq');
-								}}
-							>
-								FAQ
-							</div>
-						</Box>
+					{/* Header Section */}
+					<Box component={'div'} className={'cs-header'}>
+						<Stack className={'header-content'} direction="row" alignItems="center" spacing={2}>
+							<HelpCenterIcon className={'header-icon'} />
+							<Stack spacing={0.5}>
+								<Typography className={'header-title'}>Customer Service Center</Typography>
+								<Typography className={'header-subtitle'}>We're here to help you with any questions</Typography>
+							</Stack>
+						</Stack>
 					</Box>
 
+					{/* Tab Navigation */}
+					<Box component={'div'} className={'cs-tabs'}>
+						<Stack className={'tab-buttons'} direction="row" spacing={2}>
+							<Box
+								component={'div'}
+								className={`tab-button ${tab === 'notice' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('notice')}
+							>
+								<NotificationsIcon className={'tab-icon'} />
+								<Typography className={'tab-text'}>Notice</Typography>
+							</Box>
+							<Box
+								component={'div'}
+								className={`tab-button ${tab === 'faq' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('faq')}
+							>
+								<QuestionAnswerIcon className={'tab-icon'} />
+								<Typography className={'tab-text'}>FAQ</Typography>
+							</Box>
+						</Stack>
+					</Box>
+
+					{/* Content Section */}
 					<Box component={'div'} className={'cs-content'}>
 						{tab === 'notice' && <Notice />}
-
 						{tab === 'faq' && <Faq />}
 					</Box>
 				</Stack>

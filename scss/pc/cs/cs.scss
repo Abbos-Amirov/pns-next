@@ -1,75 +1,138 @@
 #pc-wrap {
   .cs-page {
     position: relative;
-    padding: 60px 0px 60px;
+    padding: 133px 0 75px;
     width: 100%;
     height: auto;
+    background: #f6f6f6;
+    min-height: calc(100vh - 200px);
+
     .container {
       display: flex;
       flex-direction: column;
-      .cs-main-info {
-        display: flex;
-        flex-direction: column;
-        .info {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          span {
-            color: #000;
-            font-family: $font;
-            font-size: 35px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
-            letter-spacing: 0.525px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 40px;
+      padding: 0 24px;
+
+      // Header Section
+      .cs-header {
+        width: 100%;
+        padding: 40px;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        border-radius: 16px;
+        box-shadow: 0px 4px 20px rgba(139, 69, 19, 0.2);
+
+        .header-content {
+          .header-icon {
+            font-size: 48px;
+            color: #fff;
+            opacity: 0.9;
           }
-          p {
-            color: #757575;
+
+          .header-title {
+            color: #fff;
+            font-family: $font;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0;
+          }
+
+          .header-subtitle {
+            color: rgba(255, 255, 255, 0.9);
             font-family: $font;
             font-size: 16px;
-            font-style: normal;
             font-weight: 400;
-            line-height: normal;
+            line-height: 1.5;
+            margin: 0;
           }
         }
-        .btns {
-          margin-top: 50px;
+      }
+
+      // Tab Navigation
+      .cs-tabs {
+        width: 100%;
+        background: #fff;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+
+        .tab-buttons {
           display: flex;
-          flex-direction: row;
-          justify-content: center;
-          :first-child {
-            border-radius: 4px 0 0 4px;
-          }
-          :last-child {
-            border-radius: 0 4px 4px 0;
-          }
-          div {
-            width: 204px;
-            height: 46px;
+          gap: 8px;
+
+          .tab-button {
+            flex: 1;
             display: flex;
-            justify-content: center;
+            flex-direction: row;
             align-items: center;
-            border: 1px solid #EEE;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            border-radius: 8px;
             cursor: pointer;
-            color: #BDBDBD;
-            font-family: $font;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
-            letter-spacing: 0.42px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+            border: 2px solid transparent;
+
+            .tab-icon {
+              font-size: 20px;
+              color: #717171;
+              transition: all 0.3s ease;
+            }
+
+            .tab-text {
+              color: #717171;
+              font-family: $font;
+              font-size: 16px;
+              font-weight: 500;
+              line-height: normal;
+              margin: 0;
+              transition: all 0.3s ease;
+            }
+
+            &:hover {
+              background: rgba(139, 69, 19, 0.05);
+              transform: translateY(-2px);
+
+              .tab-icon,
+              .tab-text {
+                color: #8B4513;
+              }
+            }
+
             &.active {
-              border: 1px solid #725CE8;
-              background: #EB6753;
-              color: #FFF;
+              background: #8B4513;
+              border-color: #8B4513;
+              box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+
+              .tab-icon,
+              .tab-text {
+                color: #fff;
+              }
+
+              &:hover {
+                background: #A0522D;
+                border-color: #A0522D;
+                transform: translateY(-2px);
+                box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.4);
+              }
             }
           }
         }
       }
+      // Content Section
       .cs-content {
-        margin-top: 25px;
+        width: 100%;
         display: flex;
         flex-direction: column;
+        background: #fff;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+        min-height: 400px;
         .title {
           margin-bottom: 25px;
           color: #000;
