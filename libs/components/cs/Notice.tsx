@@ -1,6 +1,8 @@
 import React from 'react';
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Typography, Chip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import EventIcon from '@mui/icons-material/Event';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const Notice = () => {
 	const device = useDeviceDetect();
@@ -28,20 +30,52 @@ const Notice = () => {
 	} else {
 		return (
 			<Stack className={'notice-content'}>
-				<span className={'title'}>Notice</span>
+				<Typography className={'title'} variant="h5">
+					Notice
+				</Typography>
 				<Stack className={'main'}>
-					<Box component={'div'} className={'top'}>
-						<span>number</span>
-						<span>title</span>
-						<span>date</span>
+					{/* Table Header */}
+					<Box component={'div'} className={'notice-header'}>
+						<Box component={'div'} className={'header-item'}>
+							<Typography className={'header-text'}>No.</Typography>
+						</Box>
+						<Box component={'div'} className={'header-item header-title'}>
+							<Typography className={'header-text'}>Title</Typography>
+						</Box>
+						<Box component={'div'} className={'header-item'}>
+							<Typography className={'header-text'}>Date</Typography>
+						</Box>
 					</Box>
-					<Stack className={'bottom'}>
-						{data.map((ele: any) => (
-							<div className={`notice-card ${ele?.event && 'event'}`} key={ele.title}>
-								{ele?.event ? <div>event</div> : <span className={'notice-number'}>{ele.no}</span>}
-								<span className={'notice-title'}>{ele.title}</span>
-								<span className={'notice-date'}>{ele.date}</span>
-							</div>
+					{/* Notice Cards */}
+					<Stack className={'notice-list'}>
+						{data.map((ele: any, index: number) => (
+							<Box
+								component={'div'}
+								className={`notice-card ${ele?.event ? 'event' : ''}`}
+								key={ele.title || index}
+							>
+								<Box component={'div'} className={'notice-number-section'}>
+									{ele?.event ? (
+										<Chip
+											icon={<EventIcon />}
+											label="Event"
+											className={'event-badge'}
+											size="small"
+										/>
+									) : (
+										<Typography className={'notice-number'}>{ele.no}</Typography>
+									)}
+								</Box>
+								<Box component={'div'} className={'notice-title-section'}>
+									<Typography className={'notice-title'}>{ele.title}</Typography>
+								</Box>
+								<Box component={'div'} className={'notice-date-section'}>
+									<Stack direction="row" alignItems="center" spacing={1}>
+										<CalendarTodayIcon className={'date-icon'} />
+										<Typography className={'notice-date'}>{ele.date}</Typography>
+									</Stack>
+								</Box>
+							</Box>
 						))}
 					</Stack>
 				</Stack>

@@ -33,7 +33,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 const Faq = () => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [category, setCategory] = useState<string>('property');
+	const [category, setCategory] = useState<string>('product');
 	const [expanded, setExpanded] = useState<string | false>('panel1');
 
 	/** APOLLO REQUESTS **/
@@ -49,7 +49,7 @@ const Faq = () => {
 	};
 
 	const data: any = {
-		property: [
+		product: [
 			{
 				id: '00f5a45ed8897f8090116a01',
 				subject: 'Are the properties displayed on the site reliable?',
@@ -101,7 +101,7 @@ const Faq = () => {
 				content: 'Our team can provide basic guidance and recommend legal professionals if needed.',
 			},
 		],
-		payment: [
+		location: [
 			{
 				id: '00f5a45ed8897f8090116a02',
 				subject: 'How can I make the payment?',
@@ -158,7 +158,7 @@ const Faq = () => {
 					'Late payment penalties may apply depending on the terms of your agreement. Please refer to your contract or contact us for details.',
 			},
 		],
-		buyers: [
+		measurer: [
 			{
 				id: '00f5a45ed8897f8090116a03',
 				subject: 'What should buyers pay attention to?',
@@ -220,7 +220,7 @@ const Faq = () => {
 			},
 		],
 
-		agents: [
+		installer: [
 			{
 				id: '00f5a45ed8897f8090116a04',
 				subject: 'What do I need to do if I want to become an agent?',
@@ -274,7 +274,7 @@ const Faq = () => {
 				content: 'Build relationships, provide exceptional service, seek referrals, and continuously improve skills.',
 			},
 		],
-		membership: [
+		members: [
 			{
 				id: '00f5a45ed8897f8090116a05',
 				subject: 'Do you have a membership service on your site?',
@@ -327,7 +327,7 @@ const Faq = () => {
 				content: 'Membership perks, including deals or discounts, are not available at this time.',
 			},
 		],
-		community: [
+		system: [
 			{
 				id: '00f5a45ed8897f8090116a06',
 				subject: 'What should I do if there is abusive or criminal behavior in the community section?',
@@ -440,52 +440,52 @@ const Faq = () => {
 			<Stack className={'faq-content'}>
 				<Box className={'categories'} component={'div'}>
 					<div
-						className={category === 'property' ? 'active' : ''}
+						className={category === 'product' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('property');
+							changeCategoryHandler('product');
 						}}
 					>
-						Property
+						PRODUCT
 					</div>
 					<div
-						className={category === 'payment' ? 'active' : ''}
+						className={category === 'location' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('payment');
+							changeCategoryHandler('location');
 						}}
 					>
-						Payment
+						LOCATION
 					</div>
 					<div
-						className={category === 'buyers' ? 'active' : ''}
+						className={category === 'measurer' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('buyers');
+							changeCategoryHandler('measurer');
 						}}
 					>
-						Foy Buyers
+						MEASURER
 					</div>
 					<div
-						className={category === 'agents' ? 'active' : ''}
+						className={category === 'installer' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('agents');
+							changeCategoryHandler('installer');
 						}}
 					>
-						For Agents
+						INSTALLER
 					</div>
 					<div
-						className={category === 'membership' ? 'active' : ''}
+						className={category === 'members' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('membership');
+							changeCategoryHandler('members');
 						}}
 					>
-						Membership
+						MEMBERS
 					</div>
 					<div
-						className={category === 'community' ? 'active' : ''}
+						className={category === 'system' ? 'active' : ''}
 						onClick={() => {
-							changeCategoryHandler('community');
+							changeCategoryHandler('system');
 						}}
 					>
-						Community
+						SYSTEM
 					</div>
 					<div
 						className={category === 'other' ? 'active' : ''}
@@ -493,7 +493,7 @@ const Faq = () => {
 							changeCategoryHandler('other');
 						}}
 					>
-						Other
+						OTHER
 					</div>
 				</Box>
 				<Box className={'wrap'} component={'div'}>
