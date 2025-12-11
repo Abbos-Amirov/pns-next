@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import SearchIcon from '@mui/icons-material/Search';
 import { Location } from '../../types/location/location';
 import Link from 'next/link';
-import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import IconButton from '@mui/material/IconButton';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { LIKE_TARGET_LOCATION } from '../../../apollo/user/mutation';
+import { sweetTopSuccessAlert, sweetErrorHandling } from '../../sweetAlert';
 
 interface CityCardType {
 	city: Location;
@@ -26,6 +25,47 @@ const CityCard = (props: CityCardType) => {
 	const user = useReactiveVar(userVar);
 	const [isHovered, setIsHovered] = useState(false);
 	const [isLiked, setIsLiked] = useState(false);
+	const [likesCount, setLikesCount] = useState(city?.locationLikes || 0);
+
+	// Initialize isLiked and likesCount from city prop
+	useEffect(() => {
+		if (myFavorites) {
+			setIsLiked(true);
+		}
+		if (city?.locationLikes !== undefined) {
+			setLikesCount(city.locationLikes);
+		}
+	}, [city?._id, city?.locationLikes, myFavorites]);
+
+	// Like Location Mutation
+	const [likeTargetLocation, { loading: likeLoading }] = useMutation(LIKE_TARGET_LOCATION, {
+		onCompleted: (data) => {
+			if (data?.likeTargetLocation && city?._id) {
+				const updatedLocation = data.likeTargetLocation;
+				
+				// Update likes count from backend response
+				if (updatedLocation.locationLikes !== undefined && updatedLocation.locationLikes !== null) {
+					setLikesCount(updatedLocation.locationLikes);
+				} else {
+					// Fallback: increment/decrement manually
+					setLikesCount((prev) => {
+						const newCount = isLiked ? Math.max(0, prev - 1) : prev + 1;
+						return newCount;
+					});
+				}
+				
+				const message = !isLiked ? 'Location liked successfully!' : 'Location unliked successfully!';
+				sweetTopSuccessAlert(message, 700).then();
+			}
+		},
+		onError: (err) => {
+			console.error('LIKE_TARGET_LOCATION Mutation Error:', err);
+			sweetErrorHandling(err).then();
+			// Revert optimistic update on error
+			setIsLiked((prev) => !prev);
+			setLikesCount((prev) => (isLiked ? prev + 1 : Math.max(0, prev - 1)));
+		},
+	});
 
 	// Get image path - use location images or fallback
 	const getImagePath = (): string => {
@@ -87,11 +127,34 @@ const CityCard = (props: CityCardType) => {
 					<Stack className="specifications">
 						<Stack 
 							className="spec-item like-item"
-							onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+							onClick={async (e: React.MouseEvent<HTMLDivElement>) => {
 								e.preventDefault();
-								setIsLiked(!isLiked);
-								if (likeCityHandler && city?._id) {
-									likeCityHandler(user, city._id);
+								e.stopPropagation();
+								
+								if (!user?._id) {
+									sweetTopSuccessAlert('Please login to like locations', 700).then();
+									return;
+								}
+
+								if (!city?._id) {
+									return;
+								}
+
+								// Optimistic update
+								const currentLikedState = isLiked;
+								setIsLiked(!currentLikedState);
+								setLikesCount((prev) => {
+									return !currentLikedState ? prev + 1 : Math.max(0, prev - 1);
+								});
+
+								try {
+									await likeTargetLocation({
+										variables: {
+											input: city._id,
+										},
+									});
+								} catch (err) {
+									// Error handled by onError callback
 								}
 							}}
 							sx={{ cursor: 'pointer' }}
@@ -101,7 +164,7 @@ const CityCard = (props: CityCardType) => {
 							) : (
 								<FavoriteBorderIcon className={'spec-icon'} />
 							)}
-							<Typography className={'spec-text'}>{city?.locationLikes || 0}</Typography>
+							<Typography className={'spec-text'}>{likesCount}</Typography>
 						</Stack>
 						<Stack className="spec-item">
 							<RemoveRedEyeIcon className={'spec-icon'} />
