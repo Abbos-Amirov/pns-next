@@ -1,29 +1,60 @@
-import React from 'react';
-import { Stack, Box, Typography, Chip } from '@mui/material';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Stack, Box, Typography, Chip, CircularProgress } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import EventIcon from '@mui/icons-material/Event';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { useQuery } from '@apollo/client';
+import { GET_CS_NOTICE_LIST } from '../../../apollo/user/query';
+import type { Notice } from '../../types/notice/notice';
+import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
+import { Direction } from '../../enums/common.enum';
+import { sweetErrorHandling } from '../../sweetAlert';
+import moment from 'moment';
 
 const Notice = () => {
 	const device = useDeviceDetect();
+	const [noticeList, setNoticeList] = useState<Notice[]>([]);
+	const [total, setTotal] = useState<number>(0);
+
+	// Create notice inquiry for TERMS and INQUIRY categories
+	const noticeInquiry = useMemo(() => {
+		return {
+			page: 1,
+			limit: 100,
+			sort: 'createdAt',
+			direction: Direction.DESC,
+			noticeStatus: NoticeStatus.ACTIVE,
+		};
+	}, []);
 
 	/** APOLLO REQUESTS **/
+	const { data: noticeData, loading: noticeLoading, error: noticeError, refetch } = useQuery(GET_CS_NOTICE_LIST, {
+		variables: {
+			input: noticeInquiry,
+		},
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onCompleted: (data) => {
+			console.log('Notice Query Response:', data);
+			if (data?.getCsNoticeList) {
+				// Filter by TERMS and INQUIRY categories
+				const filteredList = (data.getCsNoticeList.list || []).filter(
+					(notice: Notice) => notice.noticeCategory === NoticeCategory.TERMS || notice.noticeCategory === NoticeCategory.INQUIRY
+				);
+				console.log('Filtered Notice List:', filteredList);
+				console.log('Notice Total:', filteredList.length);
+				setNoticeList(filteredList);
+				setTotal(filteredList.length);
+			}
+		},
+		onError: (err) => {
+			console.error('GetCsNoticeList Query Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
+
 	/** LIFECYCLES **/
 	/** HANDLERS **/
-
-	const data = [
-		{
-			no: 1,
-			event: true,
-			title: 'Register to use and get discounts',
-			date: '01.03.2024',
-		},
-		{
-			no: 2,
-			title: "It's absolutely free to upload and trade properties",
-			date: '31.03.2024',
-		},
-	];
 
 	if (device === 'mobile') {
 		return <div>NOTICE MOBILE</div>;
@@ -48,35 +79,52 @@ const Notice = () => {
 					</Box>
 					{/* Notice Cards */}
 					<Stack className={'notice-list'}>
-						{data.map((ele: any, index: number) => (
-							<Box
-								component={'div'}
-								className={`notice-card ${ele?.event ? 'event' : ''}`}
-								key={ele.title || index}
-							>
-								<Box component={'div'} className={'notice-number-section'}>
-									{ele?.event ? (
-										<Chip
-											icon={<EventIcon />}
-											label="Event"
-											className={'event-badge'}
-											size="small"
-										/>
-									) : (
-										<Typography className={'notice-number'}>{ele.no}</Typography>
-									)}
+						{noticeLoading ? (
+							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
+								<CircularProgress sx={{ color: '#8B4513' }} />
+								<Typography sx={{ mt: 2, color: '#717171' }}>Loading notices...</Typography>
+							</Stack>
+						) : noticeError ? (
+							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
+								<Typography color="error">Error loading notices: {noticeError.message}</Typography>
+							</Stack>
+						) : noticeList.length === 0 ? (
+							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
+								<Typography sx={{ color: '#717171' }}>No notices found.</Typography>
+							</Stack>
+						) : (
+							noticeList.map((notice: Notice, index: number) => (
+								<Box
+									component={'div'}
+									className={`notice-card ${notice.noticeCategory === NoticeCategory.TERMS ? 'event' : ''}`}
+									key={notice._id || index}
+								>
+									<Box component={'div'} className={'notice-number-section'}>
+										{notice.noticeCategory === NoticeCategory.TERMS ? (
+											<Chip
+												icon={<EventIcon />}
+												label="Terms"
+												className={'event-badge'}
+												size="small"
+											/>
+										) : (
+											<Typography className={'notice-number'}>{index + 1}</Typography>
+										)}
+									</Box>
+									<Box component={'div'} className={'notice-title-section'}>
+										<Typography className={'notice-title'}>{notice.noticeTitle}</Typography>
+									</Box>
+									<Box component={'div'} className={'notice-date-section'}>
+										<Stack direction="row" alignItems="center" spacing={1}>
+											<CalendarTodayIcon className={'date-icon'} />
+											<Typography className={'notice-date'}>
+												{moment(notice.createdAt).format('DD.MM.YYYY')}
+											</Typography>
+										</Stack>
+									</Box>
 								</Box>
-								<Box component={'div'} className={'notice-title-section'}>
-									<Typography className={'notice-title'}>{ele.title}</Typography>
-								</Box>
-								<Box component={'div'} className={'notice-date-section'}>
-									<Stack direction="row" alignItems="center" spacing={1}>
-										<CalendarTodayIcon className={'date-icon'} />
-										<Typography className={'notice-date'}>{ele.date}</Typography>
-									</Stack>
-								</Box>
-							</Box>
-						))}
+							))
+						)}
 					</Stack>
 				</Stack>
 			</Stack>

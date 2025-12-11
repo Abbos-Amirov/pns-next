@@ -574,6 +574,24 @@ export const GET_NOTICE_LIST = gql`
 	}
 `;
 
+export const GET_CS_NOTICE_LIST = gql`
+	query GetCsNoticeList($input: NoticeInquiry!) {
+		getCsNoticeList(input: $input) {
+			total
+			list {
+				_id
+				noticeCategory
+				noticeCategoryType
+				noticeStatus
+				noticeTitle
+				noticeContent
+				createdAt
+				updatedAt
+			}
+		}
+	}
+`;
+
 /**************************
  *         COMMENT        *
  *************************/
