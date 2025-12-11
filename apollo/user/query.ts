@@ -553,6 +553,28 @@ export const GET_LOCATION = gql`
 `;
 
 /**************************
+ *         NOTICE         *
+ *************************/
+
+export const GET_NOTICE_LIST = gql`
+	query GetNoticeList($input: NoticeInquiry!) {
+		getNoticeList(input: $input) {
+			total
+			list {
+				_id
+				noticeCategory
+				noticeCategoryType
+				noticeStatus
+				noticeTitle
+				noticeContent
+				createdAt
+				updatedAt
+			}
+		}
+	}
+`;
+
+/**************************
  *         COMMENT        *
  *************************/
 
