@@ -11,3 +11,4 @@ export interface Notice {
 	updatedAt: string;
 }
 
+

@@ -8,3 +8,4 @@ export interface CreateNoticeInput {
 	noticeContent: string;
 }
 
+

@@ -313,3 +313,4 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 
 export default withLayoutBasic(LocationDetail);
 
+

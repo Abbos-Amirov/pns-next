@@ -23,7 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
-import { CREATE_COMMENT, UPDATE_COMMENT } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, UPDATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { Direction } from '../../libs/enums/common.enum';
@@ -172,6 +172,21 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		},
 	});
 
+	// Like board article mutation
+	const [likeBoardArticle, { loading: likeBoardArticleLoading }] = useMutation(LIKE_TARGET_BOARD_ARTICLE, {
+		onCompleted: (data) => {
+			console.log('Like Board Article Response:', data);
+			if (data?.likeTargetBoardArticle) {
+				// Refetch article to get updated like count and status
+				refetch();
+			}
+		},
+		onError: (err) => {
+			console.error('LikeBoardArticle Mutation Error:', err);
+			sweetErrorHandling(err).then();
+		},
+	});
+
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (articleId) {
@@ -302,6 +317,32 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
 	const paginationHandler = (e: T, value: number) => {
 		setCommentInquiry({ ...commentInquiry, page: value });
+	};
+
+	const likeButtonHandler = async () => {
+		if (!user?._id) {
+			sweetTopSmallSuccessAlert('Please login to like this article', 700).then();
+			return;
+		}
+
+		if (!articleId) {
+			sweetTopSmallSuccessAlert('Article ID is missing', 700).then();
+			return;
+		}
+
+		try {
+			setLikeLoading(true);
+			await likeBoardArticle({
+				variables: {
+					input: articleId,
+				},
+			});
+		} catch (err: any) {
+			console.error('Error liking article:', err);
+			// Error handled by onError callback
+		} finally {
+			setLikeLoading(false);
+		}
 	};
 
 	if (device === 'mobile') {
@@ -436,7 +477,10 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 										</Stack>
 										<Stack className="like-and-dislike">
 											<Stack className="top">
-												<Button>
+												<Button
+													onClick={likeButtonHandler}
+													disabled={!user?._id || likeLoading || likeBoardArticleLoading}
+												>
 													{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
 														<ThumbUpAltIcon />
 													) : (
