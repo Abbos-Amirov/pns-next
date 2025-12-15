@@ -1,0 +1,9 @@
+export enum LocationType {
+	OFFICE = 'OFFICE',
+	STORE = 'STORE',
+	FACTORY = 'FACTORY',
+	WAREHOUSE = 'WAREHOUSE',
+	SHOWROOM = 'SHOWROOM',
+	OTHER = 'OTHER',
+}
+

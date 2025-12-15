@@ -53,14 +53,36 @@ export const sweetConfirmAlert = (msg: string) => {
 	return new Promise(async (resolve, reject) => {
 		await Swal.fire({
 			icon: 'question',
-			text: msg,
+			title: 'Confirm Action',
+			html: msg,
 			showClass: {
-				popup: 'animate__bounceIn',
+				popup: 'animate__animated animate__fadeInUp animate__faster',
+				backdrop: 'animate__animated animate__fadeIn animate__faster',
+			},
+			hideClass: {
+				popup: 'animate__animated animate__fadeOutDown animate__faster',
+				backdrop: 'animate__animated animate__fadeOut animate__faster',
 			},
 			showCancelButton: true,
 			showConfirmButton: true,
-			confirmButtonColor: '#e92C28',
-			cancelButtonColor: '#bdbdbd',
+			confirmButtonText: 'Yes, Confirm',
+			cancelButtonText: 'Cancel',
+			confirmButtonColor: '#8B4513',
+			cancelButtonColor: '#f5f5f5',
+			reverseButtons: false,
+			focusConfirm: false,
+			focusCancel: false,
+			customClass: {
+				popup: 'sweet-confirm-popup',
+				title: 'sweet-confirm-title',
+				htmlContainer: 'sweet-confirm-html',
+				confirmButton: 'sweet-confirm-button',
+				cancelButton: 'sweet-cancel-button',
+				icon: 'sweet-confirm-icon',
+			},
+			buttonsStyling: true,
+			allowOutsideClick: true,
+			allowEscapeKey: true,
 		}).then((response) => {
 			if (response?.isConfirmed) resolve(true);
 			else resolve(false);

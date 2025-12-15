@@ -114,6 +114,28 @@ const MyMenu = () => {
 							)}
 								</>
 							)}
+							{user.memberType === 'MEASURER' && (
+								<ListItem className={pathname === 'myLocations' ? 'menu-item-active' : 'menu-item'}>
+									<Link
+										href={{
+											pathname: '/mypage',
+											query: { category: 'myLocations' },
+										}}
+										scroll={false}
+									>
+										<Box component={'div'} className={'menu-item-content'}>
+											{category === 'myLocations' ? (
+												<img className={'menu-icon'} src={'/img/icons/whiteTab.svg'} alt={'icon'} />
+											) : (
+												<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
+											)}
+											<Typography className={'menu-item-text'} variant={'body2'}>
+												My Locations
+											</Typography>
+										</Box>
+									</Link>
+								</ListItem>
+							)}
 							<ListItem className={pathname === 'myFavorites' ? 'menu-item-active' : 'menu-item'}>
 								<Link
 									href={{

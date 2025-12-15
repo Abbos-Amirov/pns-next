@@ -1,5 +1,6 @@
 import { Direction } from '../../enums/common.enum';
 import { PropertyType } from '../../enums/property.enum';
+import { LocationType } from '../../enums/location.enum';
 
 interface LocationsSearch {
 	text?: string;
@@ -12,5 +13,15 @@ export interface LocationsInquiry {
 	sort?: string;
 	direction?: Direction;
 	search: LocationsSearch;
+}
+
+export interface CreateLocationInput {
+	locationName: string;
+	address: string;
+	description?: string;
+	locationType: LocationType;
+	latitude: number;
+	longitude: number;
+	images?: string[];
 }
 

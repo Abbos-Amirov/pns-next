@@ -231,6 +231,24 @@ export const LIKE_TARGET_PROPERTY = gql`
 	}
 `;
 
+export const CREATE_LOCATION = gql`
+	mutation CreateLocation($input: CreateLocationInput!) {
+		createLocation(input: $input) {
+			_id
+			locationName
+			address
+			description
+			locationType
+			latitude
+			longitude
+			images
+			createdAt
+			updatedAt
+			memberId
+		}
+	}
+`;
+
 export const LIKE_TARGET_LOCATION = gql`
 	mutation LikeTargetLocation($input: String!) {
 		likeTargetLocation(locationId: $input) {
