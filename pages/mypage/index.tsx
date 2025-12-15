@@ -19,6 +19,7 @@ import { sweetErrorHandling } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddLocation from '../../libs/components/mypage/AddLocation';
+import MyLocations from '../../libs/components/mypage/MyLocations';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -87,7 +88,8 @@ const MyPage: NextPage = () => {
 								{category === 'myArticles' && <MyArticles />}
 								{category === 'writeArticle' && <WriteArticle />}
 								{category === 'myProfile' && <MyProfile />}
-								{category === 'myLocations' && <AddLocation />}
+								{category === 'myLocations' && <MyLocations />}
+								{category === 'addLocation' && <AddLocation />}
 								{category === 'followers' && (
 									<MemberFollowers
 										subscribeHandler={subscribeHandler}

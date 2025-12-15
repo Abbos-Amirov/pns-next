@@ -115,26 +115,48 @@ const MyMenu = () => {
 								</>
 							)}
 							{user.memberType === 'MEASURER' && (
-								<ListItem className={pathname === 'myLocations' ? 'menu-item-active' : 'menu-item'}>
-									<Link
-										href={{
-											pathname: '/mypage',
-											query: { category: 'myLocations' },
-										}}
-										scroll={false}
-									>
-										<Box component={'div'} className={'menu-item-content'}>
-											{category === 'myLocations' ? (
-												<img className={'menu-icon'} src={'/img/icons/whiteTab.svg'} alt={'icon'} />
-											) : (
-												<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
-											)}
-											<Typography className={'menu-item-text'} variant={'body2'}>
-												My Locations
-											</Typography>
-										</Box>
-									</Link>
-								</ListItem>
+								<>
+									<ListItem className={pathname === 'myLocations' ? 'menu-item-active' : 'menu-item'}>
+										<Link
+											href={{
+												pathname: '/mypage',
+												query: { category: 'myLocations' },
+											}}
+											scroll={false}
+										>
+											<Box component={'div'} className={'menu-item-content'}>
+												{category === 'myLocations' ? (
+													<img className={'menu-icon'} src={'/img/icons/homeWhite.svg'} alt={'icon'} />
+												) : (
+													<img className={'menu-icon'} src={'/img/icons/home.svg'} alt={'icon'} />
+												)}
+												<Typography className={'menu-item-text'} variant={'body2'}>
+													My Locations
+												</Typography>
+											</Box>
+										</Link>
+									</ListItem>
+									<ListItem className={pathname === 'addLocation' ? 'menu-item-active' : 'menu-item'}>
+										<Link
+											href={{
+												pathname: '/mypage',
+												query: { category: 'addLocation' },
+											}}
+											scroll={false}
+										>
+											<Box component={'div'} className={'menu-item-content'}>
+												{category === 'addLocation' ? (
+													<img className={'menu-icon'} src={'/img/icons/whiteTab.svg'} alt={'icon'} />
+												) : (
+													<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
+												)}
+												<Typography className={'menu-item-text'} variant={'body2'}>
+													Add Location
+												</Typography>
+											</Box>
+										</Link>
+									</ListItem>
+								</>
 							)}
 							<ListItem className={pathname === 'myFavorites' ? 'menu-item-active' : 'menu-item'}>
 								<Link
