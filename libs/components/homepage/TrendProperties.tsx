@@ -1,15 +1,107 @@
-import React from 'react';
-import { Stack, Box, Button } from '@mui/material';
+import React, { useMemo } from 'react';
+import { Stack, Box, Button, CircularProgress } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper';
+import { useQuery } from '@apollo/client';
+import { GET_LOCATIONS } from '../../../apollo/user/query';
+import { LocationsInquiry } from '../../types/location/location.input';
+import { REACT_APP_API_URL } from '../../config';
+import { Direction } from '../../enums/common.enum';
 
 interface TrendPropertiesProps {
-	initialInput?: any;
+	initialInput?: LocationsInquiry;
 }
 
 const TrendProperties = (props: TrendPropertiesProps) => {
 	const device = useDeviceDetect();
+
+	// Default input for query
+	const defaultInput: LocationsInquiry = {
+		page: 1,
+		limit: 100,
+		sort: 'locationViews',
+		direction: Direction.DESC,
+		search: {},
+	};
+
+	const initialInput = props.initialInput || defaultInput;
+
+	// Fetch locations from backend
+	const { data, loading, error } = useQuery(GET_LOCATIONS, {
+		variables: {
+			input: initialInput,
+		},
+		fetchPolicy: 'network-only',
+	});
+	console.log(">>>>>>>>>> data",data)
+
+	// Transform backend data to component format and filter by locationViews >= 1
+	const locations = useMemo(() => {
+		if (!data?.getLocations?.list) {
+			console.log('TrendProperties: No data from backend');
+			return [];
+		}
+
+		console.log('TrendProperties: Raw data from backend', data.getLocations.list);
+		console.log('TrendProperties: Total locations before filter', data.getLocations.list.length);
+
+		// Debug: Har bir location'ning views'ini ko'rsatish
+		data.getLocations.list.forEach((location: any) => {
+			console.log('TrendProperties: Location details', {
+				id: location._id,
+				name: location.locationName,
+				views: location.locationViews,
+				viewsType: typeof location.locationViews,
+			});
+		});
+
+		const allLocations = data.getLocations.list
+			.filter((location: any) => {
+				// Faqat views'lari 1 yoki undan ko'p bo'lganlar
+				const views = location.locationViews ?? 0;
+				const hasViews = views >= 1;
+				if (!hasViews) {
+					console.log('TrendProperties: Filtered out location (views < 1)', {
+						id: location._id,
+						name: location.locationName,
+						views: views,
+						originalViews: location.locationViews,
+					});
+				}
+				return hasViews;
+			})
+			.map((location: any) => {
+				// Get first image from images array
+				const firstImage = location.images && location.images.length > 0
+					? location.images[0] 
+					: null;
+				
+				// Construct image URL
+				let imageUrl = '';
+				if (firstImage) {
+					if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+						imageUrl = firstImage;
+					} else if (firstImage.startsWith('/')) {
+						imageUrl = `${REACT_APP_API_URL}${firstImage}`;
+					} else {
+						imageUrl = `${REACT_APP_API_URL}/${firstImage}`;
+					}
+				}
+
+				return {
+					id: location._id,
+					name: location.locationName || 'Untitled Location',
+					image: imageUrl || 'https://via.placeholder.com/400x300?text=No+Image',
+					locationViews: location.locationViews || 0,
+				};
+			});
+
+		console.log('TrendProperties: Filtered locations count', allLocations.length);
+		console.log('TrendProperties: Final locations', allLocations);
+
+		return allLocations;
+	}, [data]);
 
 	// Cities data - eng ko'p xizmatdan foydalangan shaharlar
 	const cities = [
@@ -40,14 +132,6 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		},
 	];
 
-	const products = [
-		{ id: 1, image: 'https://artfasad.com/wp-content/uploads/2024/07/front-door-with-window-design-4-1.jpg', name: 'Glass Window', },
-		{ id: 2, image: 'https://artfasad.com/wp-content/uploads/2024/07/front-door-with-window-design-3-1.jpg', name: 'Steel Window', },
-		{ id: 3, image: 'https://www.homestars.com/images/sp/original/3eeacf04-80d7-41af-a87c-03d7db1a75f5.jpg', name: 'Digital Doors', },
-		{ id: 4, image: 'https://vinyllight.ca/assets/cache_image/assets/template/img/blog/best-front-doors-with-side-window-4_730xx410_586.jpg', name: 'GOOD DOOR ', },
-		{ id: 5, image: 'https://builderssupplyco.com/wp-content/uploads/2019/11/service_windows-doors.jpg', name: 'Digital Doors', },
-	   ];
-	   
 
 	if (device === 'mobile') {
 		return (
@@ -175,36 +259,48 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 							</Button>
 						</Stack>
 						<Box className={'window-swiper-wrapper'}>
-      <Swiper
-        className={'window-swiper'}
-        slidesPerView={3}
-        spaceBetween={30}
-        centeredSlides={true}
-        grabCursor={true}
-        modules={[Navigation]}
-        navigation={{
-          nextEl: '.next-btn',
-          prevEl: '.prev-btn',
-        }}
-        loop={true}
-      >
-        {products.map((p) => (
-          <SwiperSlide key={p.id}>
-            <Box className={'window-card'} style={{ backgroundImage: `url(${p.image})` }}>
-              <Box className={'window-overlay'}>
-                <h3>{p.name}</h3>
-              </Box>
-            </Box>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+							{loading ? (
+								<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+									<CircularProgress />
+								</Box>
+							) : error || locations.length === 0 ? (
+								<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+									<p>No locations found</p>
+								</Box>
+							) : (
+								<>
+									<Swiper
+										className={'window-swiper'}
+										slidesPerView={3}
+										spaceBetween={30}
+										centeredSlides={true}
+										grabCursor={true}
+										modules={[Navigation]}
+										navigation={{
+											nextEl: '.next-btn',
+											prevEl: '.prev-btn',
+										}}
+										loop={locations.length > 3}
+									>
+										{locations.map((location: any) => (
+											<SwiperSlide key={location.id}>
+												<Box className={'window-card'} style={{ backgroundImage: `url(${location.image})` }}>
+													<Box className={'window-overlay'}>
+														<h3>{location.name}</h3>
+													</Box>
+												</Box>
+											</SwiperSlide>
+										))}
+									</Swiper>
 
-      {/* ARROWS */}
-      <Box className={'arrow-box'}>
-        <button className={'prev-btn'}>←</button>
-        <button className={'next-btn'}>→</button>
-      </Box>
-    </Box>
+									{/* ARROWS */}
+									<Box className={'arrow-box'}>
+										<button className={'prev-btn'}>←</button>
+										<button className={'next-btn'}>→</button>
+									</Box>
+								</>
+							)}
+						</Box>
 
 					</Box>
 					<Stack className={'statistics'}>
@@ -231,7 +327,14 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 };
 
 TrendProperties.defaultProps = {
-	initialInput: {},
-};
+	initialInput: {
+			page: 1,
+		limit: 100,
+		sort: 'locationViews',
+		direction: Direction.DESC,
+		search: {},
+		}
+	};
+
 
 export default TrendProperties;

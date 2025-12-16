@@ -12,6 +12,7 @@ import { ProductsInquiry } from '../../types/product/products.input';
 import { REACT_APP_API_URL } from '../../config';
 import { Direction } from '../../enums/common.enum';
 import { ProductStatus } from '../../enums/property.enum';
+import { useRouter } from 'next/router';
 
 interface PopularProductsProps {
 	initialInput?: ProductsInquiry;
@@ -19,6 +20,7 @@ interface PopularProductsProps {
 
 const PopularProducts = (props: PopularProductsProps) => {
 	const device = useDeviceDetect();
+	const router = useRouter();
 	const [activeIndex, setActiveIndex] = useState<number>(2); // Dastlabki markazdagi slide (2-chi, 1-based = 2)
 
 	// Default input for query
@@ -102,6 +104,11 @@ const PopularProducts = (props: PopularProductsProps) => {
 		return allProducts;
 	}, [data]);
 
+	/** HANDLERS **/
+	const goToProductDetail = (productId: string) => {
+		router.push(`/property/detail?id=${productId}`);
+	};
+
 
 	// Loading state
 	if (loading) {
@@ -161,7 +168,15 @@ const PopularProducts = (props: PopularProductsProps) => {
 										<h3 className={'card-title'}>{product.title}</h3>
 										<p className={'card-description'}>{product.description}</p>
 										{product.featured && (
-											<Button className={'view-more-btn'}>VIEW MORE →</Button>
+											<Button 
+												className={'view-more-btn'}
+												onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+													e.stopPropagation();
+													goToProductDetail(product.id);
+												}}
+											>
+												VIEW MORE →
+											</Button>
 										)}
 									</Box>
 								</Box>
@@ -230,7 +245,15 @@ const PopularProducts = (props: PopularProductsProps) => {
 												<h3 className={'card-title'}>{product.title}</h3>
 												<p className={'card-description'}>{product.description}</p>
 												{isCenter && (
-													<Button className={'view-more-btn'}>VIEW MORE →</Button>
+													<Button 
+														className={'view-more-btn'}
+														onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+															e.stopPropagation();
+															goToProductDetail(product.id);
+														}}
+													>
+														VIEW MORE →
+													</Button>
 												)}
 											</Box>
 										</Box>
