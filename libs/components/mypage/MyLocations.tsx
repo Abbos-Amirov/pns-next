@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
-import { Pagination, Stack, Typography, Box, Card, CardContent } from '@mui/material';
+import { Pagination, Stack, Typography, Box, Card, CardContent, IconButton, Tooltip } from '@mui/material';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { useReactiveVar, useQuery } from '@apollo/client';
+import { useReactiveVar, useQuery, useMutation } from '@apollo/client';
 import { Location, Locations } from '../../types/location/location';
 import { LocationsInquiry } from '../../types/location/location.input';
 import { T } from '../../types/common';
 import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
 import { GET_LOCATIONS } from '../../../apollo/user/query';
+import { DELETE_LOCATION } from '../../../apollo/user/mutation';
 import { REACT_APP_API_URL } from '../../config';
 import Moment from 'react-moment';
 import { LocationType } from '../../enums/location.enum';
-import { sweetMixinErrorAlert } from '../../sweetAlert';
+import { sweetMixinErrorAlert, sweetConfirmAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
 const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
@@ -33,6 +36,16 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 		},
 		skip: !user?._id,
 		fetchPolicy: 'network-only',
+	});
+
+	const [deleteLocation] = useMutation(DELETE_LOCATION, {
+		onCompleted: () => {
+			sweetTopSmallSuccessAlert('Location deleted successfully!', 1000).then();
+			refetch();
+		},
+		onError: (err) => {
+			sweetMixinErrorAlert(err.message || 'Failed to delete location').then();
+		},
 	});
 
 	useEffect(() => {
@@ -101,9 +114,10 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 									<Typography className="title-text">Date Created</Typography>
 									<Typography className="title-text">Views</Typography>
 									<Typography className="title-text">Likes</Typography>
+									<Typography className="title-text">Actions</Typography>
 								</Stack>
 								{locations.map((location: Location) => {
-									return <LocationCard key={location._id} location={location} />;
+									return <LocationCard key={location._id} location={location} deleteLocation={deleteLocation} refetch={refetch} />;
 								})}
 							</>
 						)}
@@ -133,9 +147,34 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 
 interface LocationCardProps {
 	location: Location;
+	deleteLocation: any;
+	refetch: any;
 }
 
-const LocationCard = ({ location }: LocationCardProps) => {
+const LocationCard = ({ location, deleteLocation, refetch }: LocationCardProps) => {
+	const router = useRouter();
+
+	const updateLocationHandler = () => {
+		router.push(`/mypage?category=addLocation&locationId=${location._id}`);
+	};
+
+	const deleteLocationHandler = async () => {
+		const result: any = await sweetConfirmAlert(
+			`Are you sure you want to delete "${location.locationName}"? This action cannot be undone.`
+		);
+
+		if (result?.isConfirmed) {
+			try {
+				await deleteLocation({
+					variables: {
+						input: location._id,
+					},
+				});
+			} catch (err: any) {
+				console.error('Delete error:', err);
+			}
+		}
+	};
 	// Get first image from location images array
 	const images = location?.images;
     console.log("images", images);
@@ -244,6 +283,26 @@ const LocationCard = ({ location }: LocationCardProps) => {
 			</Stack>
 			<Stack className="likes-box">
 				<Typography className="likes">{location.locationLikes?.toLocaleString() || '0'}</Typography>
+			</Stack>
+			<Stack className="actions-box">
+				<Tooltip title="Edit Location">
+					<IconButton
+						onClick={updateLocationHandler}
+						className="edit-icon-button"
+						size="small"
+					>
+						<EditRoundedIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip title="Delete Location">
+					<IconButton
+						onClick={deleteLocationHandler}
+						className="delete-icon-button"
+						size="small"
+					>
+						<DeleteRoundedIcon />
+					</IconButton>
+				</Tooltip>
 			</Stack>
 		</Stack>
 	);

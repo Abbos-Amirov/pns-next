@@ -269,6 +269,46 @@ export const LIKE_TARGET_LOCATION = gql`
 	}
 `;
 
+export const UPDATE_LOCATION = gql`
+	mutation UpdateLocation($input: LocationUpdate!) {
+		updateLocation(input: $input) {
+			_id
+			locationName
+			address
+			description
+			locationType
+			latitude
+			longitude
+			locationViews
+			locationLikes
+			images
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const DELETE_LOCATION = gql`
+	mutation DeleteLocation($input: String!) {
+		deleteLocation(locationId: $input) {
+			_id
+			locationName
+			address
+			description
+			locationType
+			latitude
+			longitude
+			locationViews
+			locationLikes
+			images
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 export const LIKE_TARGET_PRODUCT = gql`
 	mutation LikeTargetProduct($input: String!) {
 		likeTargetProduct(productId: $input) {
