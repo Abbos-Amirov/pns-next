@@ -306,6 +306,26 @@ export const DELETE_LOCATION = gql`
 	}
 `;
 
+export const REMOVE_LOCATION_BY_ADMIN = gql`
+	mutation RemoveLocationByAdmin($input: String!) {
+		removeLocationByAdmin(locationId: $input) {
+			_id
+			locationName
+			address
+			description
+			locationType
+			latitude
+			longitude
+			locationViews
+			locationLikes
+			images
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 export const LIKE_TARGET_PRODUCT = gql`
 	mutation LikeTargetProduct($input: String!) {
 		likeTargetProduct(productId: $input) {

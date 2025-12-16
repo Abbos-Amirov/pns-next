@@ -11,7 +11,7 @@ import { T } from '../../types/common';
 import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
 import { GET_LOCATIONS } from '../../../apollo/user/query';
-import { DELETE_LOCATION } from '../../../apollo/user/mutation';
+import { REMOVE_LOCATION_BY_ADMIN } from '../../../apollo/user/mutation';
 import { REACT_APP_API_URL } from '../../config';
 import Moment from 'react-moment';
 import { LocationType } from '../../enums/location.enum';
@@ -38,12 +38,17 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 		fetchPolicy: 'network-only',
 	});
 
-	const [deleteLocation] = useMutation(DELETE_LOCATION, {
-		onCompleted: () => {
+	const [deleteLocation] = useMutation(REMOVE_LOCATION_BY_ADMIN, {
+		onCompleted: (data) => {
+			console.log('Delete location completed:', data);
 			sweetTopSmallSuccessAlert('Location deleted successfully!', 1000).then();
-			refetch();
+			// Refetch locations after successful delete
+			setTimeout(() => {
+				refetch();
+			}, 500);
 		},
 		onError: (err) => {
+			console.error('Delete location error:', err);
 			sweetMixinErrorAlert(err.message || 'Failed to delete location').then();
 		},
 	});
@@ -159,20 +164,29 @@ const LocationCard = ({ location, deleteLocation, refetch }: LocationCardProps) 
 	};
 
 	const deleteLocationHandler = async () => {
-		const result: any = await sweetConfirmAlert(
-			`Are you sure you want to delete "${location.locationName}"? This action cannot be undone.`
-		);
+		try {
+			const confirmed = await sweetConfirmAlert(
+				`Are you sure you want to delete "${location.locationName}"? This action cannot be undone.`
+			);
 
-		if (result?.isConfirmed) {
-			try {
-				await deleteLocation({
+			console.log('Delete confirmation result:', confirmed);
+
+			if (confirmed) {
+				console.log('Deleting location with ID:', location._id);
+				
+				const deleteResult = await deleteLocation({
 					variables: {
 						input: location._id,
 					},
 				});
-			} catch (err: any) {
-				console.error('Delete error:', err);
+
+				console.log('Delete mutation result:', deleteResult);
+			} else {
+				console.log('Delete cancelled by user');
 			}
+		} catch (err: any) {
+			console.error('Delete error:', err);
+			sweetMixinErrorAlert(err.message || 'Failed to delete location').then();
 		}
 	};
 	// Get first image from location images array
