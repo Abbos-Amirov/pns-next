@@ -80,6 +80,8 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 				if (/^\d+$/.test(key)) formData.append(`${key}`, selectedFiles[key]);
 			}
 
+			console.log('Uploading images...', selectedFiles.length, 'files');
+
 			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -88,13 +90,28 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 				},
 			});
 
+			if (!response.data || !response.data.data) {
+				throw new Error('Invalid response from server');
+			}
+
 			const responseImages = response.data.data.imagesUploader;
 
 			console.log('+responseImages: ', responseImages);
-			setInsertLocationData({ ...insertLocationData, images: responseImages });
+			console.log('Response full:', response.data);
+			
+			if (responseImages && Array.isArray(responseImages) && responseImages.length > 0) {
+				setInsertLocationData({ ...insertLocationData, images: responseImages });
+				await sweetTopSmallSuccessAlert('Images uploaded successfully!', 1000).then();
+			} else if (responseImages && Array.isArray(responseImages) && responseImages.length === 0) {
+				console.warn('Backend returned empty images array. Check if target "location" is supported.');
+				await sweetMixinErrorAlert('Failed to upload images. Please check if location image upload is supported.');
+			} else {
+				throw new Error('Invalid response format from server');
+			}
 		} catch (err: any) {
 			console.log('err: ', err.message);
-			await sweetMixinErrorAlert(err.message);
+			console.error('Full error:', err);
+			await sweetMixinErrorAlert(err.message || 'Failed to upload images');
 		}
 	}
 
@@ -118,6 +135,10 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 			return;
 		}
 
+		// Debug: log images before sending
+		console.log('Creating location with images:', insertLocationData.images);
+		console.log('Full location data:', insertLocationData);
+
 		try {
 			await createLocation({
 				variables: {
@@ -128,7 +149,9 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 						locationType: insertLocationData.locationType,
 						latitude: insertLocationData.latitude,
 						longitude: insertLocationData.longitude,
-						images: insertLocationData.images || [],
+						images: insertLocationData.images && Array.isArray(insertLocationData.images) && insertLocationData.images.length > 0
+							? insertLocationData.images
+							: [],
 					},
 				},
 			});

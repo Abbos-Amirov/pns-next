@@ -69,15 +69,6 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 	const locations = allLocations.filter((location: Location) => location.memberId === user?._id);
 	const total = locations.length;
 
-	// Debug: log locations to see images
-	if (process.env.NODE_ENV === 'development' && locations.length > 0) {
-		console.log('All locations with images:', locations.map(loc => ({
-			name: loc.locationName,
-			images: loc.images,
-			imageCount: loc.images?.length || 0
-		})));
-		console.log('REACT_APP_API_URL:', REACT_APP_API_URL);
-	}
 
 	if (device === 'mobile') {
 		return <div>MY LOCATIONS MOBILE</div>;
@@ -147,11 +138,8 @@ interface LocationCardProps {
 const LocationCard = ({ location }: LocationCardProps) => {
 	// Get first image from location images array
 	const images = location?.images;
-	
-	// Debug: log images to see what we're getting
-	if (process.env.NODE_ENV === 'development') {
-		console.log('Location images:', images, 'Location:', location.locationName);
-	}
+    console.log("images", images);
+    
 	
 	const firstImage = images && Array.isArray(images) && images.length > 0 && images[0] 
 		? images[0] 
@@ -160,62 +148,73 @@ const LocationCard = ({ location }: LocationCardProps) => {
 	// Construct image path - same format as AddLocation component
 	let imagePath = null;
 	if (firstImage) {
-		// Remove leading slash if present to avoid double slashes
-		const cleanImagePath = firstImage.startsWith('/') ? firstImage.substring(1) : firstImage;
-		imagePath = `${REACT_APP_API_URL}/${cleanImagePath}`;
+		// Handle different image path formats
+		if (typeof firstImage === 'string') {
+			if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) {
+				// Full URL already provided
+				imagePath = firstImage;
+			} else if (firstImage.startsWith('/')) {
+				// Path starts with /, add API URL
+				imagePath = `${REACT_APP_API_URL}${firstImage}`;
+			} else {
+				// Relative path, add API URL with /
+				imagePath = `${REACT_APP_API_URL}/${firstImage}`;
+			}
+		}
 	}
 
 	const hasImage = !!imagePath && !!firstImage;
+	
+	// Debug in development
+	if (process.env.NODE_ENV === 'development') {
+		if (hasImage) {
+			console.log(`Location: ${location.locationName}, Image Path: ${imagePath}`);
+		} else {
+			console.log(`Location: ${location.locationName}, No image. Images array:`, images);
+		}
+	}
 
 	return (
 		<Stack className="location-card-box">
 			<Stack className={`image-box ${!hasImage ? 'no-image' : ''}`}>
 				{hasImage && imagePath ? (
-					<>
-						<img 
-							src={imagePath} 
-							alt={location.locationName || 'Location image'}
-							loading="lazy"
-							onError={(e) => {
-								const target = e.target as HTMLImageElement;
+					<img 
+						src={imagePath} 
+						alt={location.locationName || 'Location image'}
+						loading="lazy"
+						onError={(e) => {
+							const target = e.target as HTMLImageElement;
+							const parent = target.parentElement;
+							if (parent) {
+								parent.classList.add('no-image');
 								target.style.display = 'none';
-								const parent = target.parentElement;
-								if (parent) {
-									parent.classList.add('no-image');
-									// Show placeholder if image fails to load
-									const existingPlaceholder = parent.querySelector('.placeholder-icon');
-									if (!existingPlaceholder) {
-										const placeholder = document.createElement('div');
-										placeholder.className = 'placeholder-icon';
-										placeholder.innerHTML = `
-											<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#8B4513" opacity="0.3"/>
-											</svg>
-										`;
-										parent.appendChild(placeholder);
-									}
+								// Show placeholder if image fails to load
+								const existingPlaceholder = parent.querySelector('.placeholder-icon');
+								if (!existingPlaceholder) {
+									const placeholder = document.createElement('div');
+									placeholder.className = 'placeholder-icon';
+									placeholder.innerHTML = `
+										<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#8B4513" opacity="0.3"/>
+										</svg>
+									`;
+									parent.appendChild(placeholder);
 								}
-							}}
-							onLoad={(e) => {
-								// Remove no-image class when image loads successfully
-								const target = e.target as HTMLImageElement;
-								const parent = target.parentElement;
-								if (parent) {
-									parent.classList.remove('no-image');
-									const placeholder = parent.querySelector('.placeholder-icon');
-									if (placeholder) {
-										placeholder.remove();
-									}
+							}
+						}}
+						onLoad={(e) => {
+							// Remove no-image class when image loads successfully
+							const target = e.target as HTMLImageElement;
+							const parent = target.parentElement;
+							if (parent) {
+								parent.classList.remove('no-image');
+								const placeholder = parent.querySelector('.placeholder-icon');
+								if (placeholder) {
+									placeholder.remove();
 								}
-							}}
-						/>
-						{/* Fallback placeholder that shows while image is loading */}
-						<div className="placeholder-icon" style={{ display: 'none' }}>
-							<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#8B4513" opacity="0.3"/>
-							</svg>
-						</div>
-					</>
+							}
+						}}
+					/>
 				) : (
 					<div className="placeholder-icon">
 						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -231,7 +230,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
 			<Stack className="type-box">
 				<Stack className="coloured-box">
 					<Typography className="type">
-						{location.locationType || LocationType.OTHER}
+						{location.locationType || LocationType.OFFICE}
 					</Typography>
 				</Stack>
 			</Stack>
