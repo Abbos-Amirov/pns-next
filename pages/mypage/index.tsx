@@ -20,6 +20,7 @@ import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddLocation from '../../libs/components/mypage/AddLocation';
 import MyLocations from '../../libs/components/mypage/MyLocations';
+import EditLocation from '../../libs/components/mypage/EditLocation';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -90,6 +91,7 @@ const MyPage: NextPage = () => {
 								{category === 'myProfile' && <MyProfile />}
 								{category === 'myLocations' && <MyLocations />}
 								{category === 'addLocation' && <AddLocation />}
+								{category === 'editLocation' && <EditLocation />}
 								{category === 'followers' && (
 									<MemberFollowers
 										subscribeHandler={subscribeHandler}

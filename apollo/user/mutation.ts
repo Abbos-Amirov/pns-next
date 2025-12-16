@@ -270,7 +270,7 @@ export const LIKE_TARGET_LOCATION = gql`
 `;
 
 export const UPDATE_LOCATION = gql`
-	mutation UpdateLocation($input: LocationUpdate!) {
+	mutation UpdateLocation($input: LocationUpdateInput!) {
 		updateLocation(input: $input) {
 			_id
 			locationName
@@ -279,10 +279,7 @@ export const UPDATE_LOCATION = gql`
 			locationType
 			latitude
 			longitude
-			locationViews
-			locationLikes
 			images
-			memberId
 			createdAt
 			updatedAt
 		}

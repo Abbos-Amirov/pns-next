@@ -25,3 +25,14 @@ export interface CreateLocationInput {
 	images?: string[];
 }
 
+export interface LocationUpdateInput {
+	_id: string;
+	locationName?: string;
+	address?: string;
+	description?: string;
+	locationType?: LocationType;
+	latitude?: number;
+	longitude?: number;
+	images?: string[];
+}
+

@@ -155,7 +155,7 @@ const LocationCard = ({ location, deleteLocation, refetch }: LocationCardProps) 
 	const router = useRouter();
 
 	const updateLocationHandler = () => {
-		router.push(`/mypage?category=addLocation&locationId=${location._id}`);
+		router.push(`/mypage?category=editLocation&locationId=${location._id}`);
 	};
 
 	const deleteLocationHandler = async () => {

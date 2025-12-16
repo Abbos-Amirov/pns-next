@@ -161,6 +161,7 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 		}
 	}, [insertLocationData, createLocation]);
 
+
 	if (user?.memberType !== 'MEASURER') {
 		router.back();
 		return null;
@@ -365,8 +366,14 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 						</Stack>
 
 						<Stack className="buttons-row">
-							<Button className="next-button" disabled={doDisabledCheck() || createLocationLoading} onClick={insertLocationHandler}>
-								<Typography className="next-button-text">{createLocationLoading ? 'Creating...' : 'Save'}</Typography>
+							<Button 
+								className="next-button" 
+								disabled={doDisabledCheck() || createLocationLoading} 
+								onClick={insertLocationHandler}
+							>
+								<Typography className="next-button-text">
+									{createLocationLoading ? 'Creating...' : 'Save'}
+								</Typography>
 							</Button>
 						</Stack>
 					</Stack>
