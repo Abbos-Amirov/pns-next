@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Stack, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Stack, Box, CircularProgress, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
@@ -11,6 +11,7 @@ import { Product } from '../../types/product/property';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
+import { Direction } from '../../enums/common.enum';
 
 interface TopPropertiesProps {
 	initialInput: ProductsInquiry;
@@ -32,20 +33,54 @@ const TopProperties = (props: TopPropertiesProps) => {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: any) => {
-			setTopProducts(data?.getProducts?.list || []);
-		},
 	});
 
-	console.log(">>>>>>>>>>> top Product",getProductsData)
-
 	// Update state when data changes
-	React.useEffect(() => {
+	useEffect(() => {
 		if (getProductsData?.getProducts?.list) {
 			setTopProducts(getProductsData.getProducts.list);
 		}
 	}, [getProductsData]);
+
 	/** HANDLERS **/
+
+	// Loading state
+	if (getProductsLoading) {
+		return (
+			<Stack className={'top-properties'}>
+				<Stack className={'container'}>
+					<Stack className={'info-box'}>
+						<span>Top products</span>
+					</Stack>
+					<Stack className={'card-box'}>
+						<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', py: 4 }}>
+							<CircularProgress sx={{ color: '#8B4513' }} />
+						</Stack>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
+	}
+
+	// Error state or no products
+	if (getProductsError || !topProducts || topProducts.length === 0) {
+		return (
+			<Stack className={'top-properties'}>
+				<Stack className={'container'}>
+					<Stack className={'info-box'}>
+						<span>Top products</span>
+					</Stack>
+					<Stack className={'card-box'}>
+						<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', py: 4 }}>
+							<Typography sx={{ color: '#616161', fontSize: '16px', fontFamily: 'inherit' }}>
+								{getProductsError ? 'Error loading products' : 'No top products found'}
+							</Typography>
+						</Stack>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
+	}
 
 	if (device === 'mobile') {
 		return (
@@ -62,7 +97,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							spaceBetween={15}
 							modules={[Autoplay]}
 						>
-							{(topProducts || []).map((product: Product) => {
+							{topProducts.map((product: Product) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={product?._id}>
 										<TopPropertyCard product={product} />
@@ -105,7 +140,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 								el: '.swiper-top-pagination',
 							}}
 						>
-							{(topProducts || []).map((product: Product) => {
+							{topProducts.map((product: Product) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={product?._id}>
 										<TopPropertyCard product={product} />
@@ -123,9 +158,9 @@ const TopProperties = (props: TopPropertiesProps) => {
 TopProperties.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 4,
+		limit: 8,
 		sort: 'productRank',
-		direction: 'DESC',
+		direction: Direction.DESC,
 		search: {},
 	},
 };
