@@ -6,19 +6,45 @@ import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
-import { PropertiesInquiry } from '../../types/product/property.input';
-import { Property } from '../../types/product/property';
+import { ProductsInquiry } from '../../types/product/products.input';
+import { Product } from '../../types/product/property';
+import { GET_PRODUCTS } from '../../../apollo/user/query';
+import { useMutation, useQuery } from '@apollo/client';
+import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 
 interface TopPropertiesProps {
-	initialInput: PropertiesInquiry;
+	initialInput: ProductsInquiry;
 }
 
 const TopProperties = (props: TopPropertiesProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const [topProperties, setTopProperties] = useState<Property[]>([]);
+	const [topProducts, setTopProducts] = useState<Product[]>([]);
 
 	/** APOLLO REQUESTS **/
+	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
+	const {
+		loading: getProductsLoading,
+		data: getProductsData,
+		error: getProductsError,
+		refetch: getProductsRefetch,
+	} = useQuery(GET_PRODUCTS, {
+		fetchPolicy: 'cache-and-network',
+		variables: { input: initialInput },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: any) => {
+			setTopProducts(data?.getProducts?.list || []);
+		},
+	});
+
+	console.log(">>>>>>>>>>> top Product",getProductsData)
+
+	// Update state when data changes
+	React.useEffect(() => {
+		if (getProductsData?.getProducts?.list) {
+			setTopProducts(getProductsData.getProducts.list);
+		}
+	}, [getProductsData]);
 	/** HANDLERS **/
 
 	if (device === 'mobile') {
@@ -26,7 +52,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 			<Stack className={'top-properties'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top properties</span>
+						<span>Top products</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -36,10 +62,10 @@ const TopProperties = (props: TopPropertiesProps) => {
 							spaceBetween={15}
 							modules={[Autoplay]}
 						>
-							{topProperties.map((property: Property) => {
+							{(topProducts || []).map((product: Product) => {
 								return (
-									<SwiperSlide className={'top-property-slide'} key={property?._id}>
-										<TopPropertyCard property={property} />
+									<SwiperSlide className={'top-property-slide'} key={product?._id}>
+										<TopPropertyCard product={product} />
 									</SwiperSlide>
 								);
 							})}
@@ -54,8 +80,8 @@ const TopProperties = (props: TopPropertiesProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top properties</span>
-							<p>Check out our Top Properties</p>
+							<span>Top products</span>
+							<p>Check out our Top Products</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'pagination-box'}>
@@ -79,10 +105,10 @@ const TopProperties = (props: TopPropertiesProps) => {
 								el: '.swiper-top-pagination',
 							}}
 						>
-							{topProperties.map((property: Property) => {
+							{(topProducts || []).map((product: Product) => {
 								return (
-									<SwiperSlide className={'top-property-slide'} key={property?._id}>
-										<TopPropertyCard property={property} />
+									<SwiperSlide className={'top-property-slide'} key={product?._id}>
+										<TopPropertyCard product={product} />
 									</SwiperSlide>
 								);
 							})}
@@ -97,8 +123,8 @@ const TopProperties = (props: TopPropertiesProps) => {
 TopProperties.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 8,
-		sort: 'propertyRank',
+		limit: 4,
+		sort: 'productRank',
 		direction: 'DESC',
 		search: {},
 	},

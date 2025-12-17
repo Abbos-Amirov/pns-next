@@ -456,7 +456,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 					{/* Agent Properties Section */}
 					<Stack className={'agent-properties-section'}>
-						<Typography className={'section-title'}>Agent Properties</Typography>
+						<Typography className={'section-title'}>working city</Typography>
 						<Stack className={'card-wrap'}>
 							{agentProperties.length > 0 ? (
 								agentProperties.map((property: Property) => {
