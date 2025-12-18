@@ -83,6 +83,42 @@
 						width: 16px;
 						height: 16px;
 					}
+
+					&.measurers-more {
+						padding: 10px 14px;
+						border-radius: 10px;
+						background: rgba(139, 69, 19, 0.06);
+						border: 1px solid rgba(139, 69, 19, 0.18);
+						transition: all 0.25s ease;
+
+						span {
+							color: #8B4513;
+							font-weight: 700;
+							letter-spacing: 0.2px;
+						}
+
+						img {
+							transition: transform 0.25s ease, opacity 0.25s ease;
+							opacity: 0.85;
+						}
+
+						&:hover {
+							background: rgba(139, 69, 19, 0.12);
+							border-color: rgba(139, 69, 19, 0.28);
+							transform: translateY(-1px);
+							box-shadow: 0px 10px 30px rgba(24, 26, 32, 0.08);
+
+							img {
+								transform: translate(2px, -2px);
+								opacity: 1;
+							}
+						}
+
+						&:active {
+							transform: translateY(0px);
+							box-shadow: none;
+						}
+					}
 				}
 				.btn-box {
 					display: flex;
@@ -573,14 +609,38 @@
 								overflow: hidden;
 								color: #181a20;
 								text-overflow: ellipsis;
-								white-space: nowrap;
+								display: -webkit-box;
+								-webkit-line-clamp: 2;
+								-webkit-box-orient: vertical;
 								font-family: $font;
-								font-size: 15px;
+								font-size: 16px;
 								font-style: normal;
-								font-weight: 600;
+								font-weight: 700;
 								line-height: normal;
 								text-transform: capitalize;
 								cursor: pointer;
+								position: relative;
+								transition: color 0.2s ease;
+
+								&:after {
+									content: '';
+									position: absolute;
+									left: 0;
+									bottom: -6px;
+									width: 28px;
+									height: 2px;
+									border-radius: 999px;
+									background: rgba(139, 69, 19, 0.6);
+									transition: width 0.25s ease, background 0.25s ease;
+								}
+
+								&:hover {
+									color: #8B4513;
+									&:after {
+										width: 44px;
+										background: rgba(139, 69, 19, 0.9);
+									}
+								}
 							}
 							.desc {
 								margin-top: 5px;
@@ -592,7 +652,9 @@
 								font-weight: 400;
 								line-height: normal;
 								text-overflow: ellipsis;
-								white-space: nowrap;
+								display: -webkit-box;
+								-webkit-line-clamp: 1;
+								-webkit-box-orient: vertical;
 							}
 							.options {
 								margin-top: 15px;
@@ -622,6 +684,7 @@
 								flex-direction: row;
 								justify-content: space-between;
 								align-items: center;
+								gap: 10px;
 								p {
 									color: #181a20;
 									font-family: $font;
@@ -630,6 +693,20 @@
 									font-weight: 500;
 									line-height: normal;
 									text-transform: capitalize;
+								}
+								.left-actions {
+									display: flex;
+									align-items: center;
+									gap: 10px;
+									min-width: 0;
+									p {
+										white-space: nowrap;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										max-width: 110px;
+										color: #616161;
+										font-weight: 600;
+									}
 								}
 								.view-like-box button {
 									margin-left: 7px;

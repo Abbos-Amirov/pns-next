@@ -4,7 +4,7 @@ import withLayoutMain from '../libs/components/layout/LayoutHome';
 import CommunityBoards from '../libs/components/homepage/CommunityBoards';
 import Brand from '../libs/components/homepage/Brand';
 import PopularProducts from '../libs/components/homepage/PopularProducts';
-import TopAgents from '../libs/components/homepage/TopAgents';
+import TopMeasurers from '../libs/components/homepage/TopMeasurers';
 import Events from '../libs/components/homepage/Events';
 import TrendProperties from '../libs/components/homepage/TrendProperties';
 import TopProperties from '../libs/components/homepage/TopProperties';
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
 				<TrendProperties />
 				<Advertisement />
 				<TopProperties />
-				<TopAgents />
+				<TopMeasurers />
 			</Stack>
 		);
 	} else {
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
 				<TrendProperties />
 				<TopProperties />
 				<Advertisement />
-				<TopAgents />
+				<TopMeasurers />
 				<Events />
 				<CommunityBoards />
 			</Stack>

@@ -53,7 +53,11 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 	if (device === 'mobile') {
 		return (
 			<Stack className="top-card-box">
-				<Box component={'div'} className={'card-img'}>
+				<Box
+					component={'div'}
+					className={'card-img'}
+					onClick={() => goProductDetailPage(product?._id)}
+				>
 					{imageError || !imagePath ? (
 						<div className="image-placeholder">
 							<svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +87,9 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 					<div className={'price'}>${product?.productPrice?.toLocaleString() || '0'}</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{product?.productTitle}</strong>
+					<strong className={'title'} onClick={() => goProductDetailPage(product?._id)}>
+						{product?.productTitle}
+					</strong>
 					<p className={'desc'}>{product?.productAddress}</p>
 					<div className={'options'}>
 						<div>
@@ -101,11 +107,23 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
-						<p>
-							{' '}
-							{product.productRent ? 'Rent' : ''} {product.productRent && product.productBarter && '/'}{' '}
-							{product.productBarter ? 'Barter' : ''}
-						</p>
+						<div className="left-actions">
+							<p>
+								{product.productRent ? 'Rent' : ''} {product.productRent && product.productBarter && '/'}{' '}
+								{product.productBarter ? 'Barter' : ''}
+							</p>
+							<button
+								type="button"
+								className="detail-btn"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									goProductDetailPage(product?._id);
+								}}
+							>
+								VIEW MORE →
+							</button>
+						</div>
 						<div className="view-like-box">
 							<IconButton color={'default'}>
 								<RemoveRedEyeIcon />
@@ -127,7 +145,11 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 	} else {
 		return (
 			<Stack className="top-card-box">
-				<Box component={'div'} className={'card-img'}>
+				<Box
+					component={'div'}
+					className={'card-img'}
+					onClick={() => goProductDetailPage(product?._id)}
+				>
 					{imageError || !imagePath ? (
 						<div className="image-placeholder">
 							<svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +179,9 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 					<div className={'price'}>${product?.productPrice?.toLocaleString() || '0'}</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{product?.productTitle}</strong>
+					<strong className={'title'} onClick={() => goProductDetailPage(product?._id)}>
+						{product?.productTitle}
+					</strong>
 					<p className={'desc'}>{product?.productAddress}</p>
 					<div className={'options'}>
 						
@@ -165,18 +189,23 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
-						
-						<button
-							type="button"
-							className="detail-btn"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								goProductDetailPage(product?._id);
-							}}
-						>
-							DEATIL →
-						</button>
+						<div className="left-actions">
+							<p>
+								{product.productRent ? 'Rent' : ''} {product.productRent && product.productBarter && '/'}{' '}
+								{product.productBarter ? 'Barter' : ''}
+							</p>
+							<button
+								type="button"
+								className="detail-btn"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									goProductDetailPage(product?._id);
+								}}
+							>
+								VIEW MORE →
+							</button>
+						</div>
 						
 						<div className="view-like-box">
 							<IconButton color={'default'}>

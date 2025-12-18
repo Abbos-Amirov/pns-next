@@ -14,7 +14,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import { useReactiveVar, useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { Property } from '../../libs/types/product/property';
+import { Product } from '../../libs/types/product/property';
 import { Member } from '../../libs/types/member/member';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import { userVar } from '../../apollo/store';
@@ -44,7 +44,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	const [agent, setAgent] = useState<Member | null>(null);
 	const [isLiked, setIsLiked] = useState<boolean>(false);
 	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(initialInput);
-	const [agentProperties, setAgentProperties] = useState<Property[]>([]);
+	const [agentProperties, setAgentProperties] = useState<Product[]>([]);
 	const [propertyTotal, setPropertyTotal] = useState<number>(0);
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [agentComments, setAgentComments] = useState<Comment[]>([]);
@@ -459,7 +459,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 						<Typography className={'section-title'}>working city</Typography>
 						<Stack className={'card-wrap'}>
 							{agentProperties.length > 0 ? (
-								agentProperties.map((property: Property) => {
+								agentProperties.map((property: Product) => {
 									return (
 										<div className={'wrap-main'} key={property?._id}>
 											<PropertyBigCard property={property} key={property?._id} />
