@@ -2,11 +2,16 @@
   "Home": "Home",
   "Products": "Products",
   "Measurer": "Measurers",
+  "Measurers": "Measurers",
+  "Experts": "Experts",
+  "Installers": "Installers",
+  "City": "City",
   "Community": "Community",
   "My Page": "My Page",
   "CS": "Support",
   "Login": "Login",
   "Signup": "Signup",
+  "Logout": "Logout",
   "Location": "Location",
   "Product type": "Product type",
   "Rooms": "Rooms",
@@ -18,5 +23,6 @@
   "my page": "My Page",
   "Community Detail": "Community Detail",
   "Login/Signup": "Login/Signup",
+  "Authentication Process": "Authentication Process",
   "Member Page": "Member Page"
 }

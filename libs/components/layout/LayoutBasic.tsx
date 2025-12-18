@@ -39,49 +39,49 @@ const withLayoutBasic = (Component: any) => {
 
 			switch (router.pathname) {
 				case '/property':
-					title = 'Property Search';
-					desc = 'We are glad to see you again!';
+					title = t('Product Search');
+					desc = t('We are glad to see you again!');
 					bgImage = '/img/banner/properties.png';
 					break;
 				case '/agent':
-					title = 'Agents';
-					desc = 'Home / For Rent';
+					title = t('Measurer Page');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/agents.webp';
 					break;
 				case '/agent/detail':
-					title = 'Agent Page';
-					desc = 'Home / For Rent';
+					title = t('Measurer Page');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/mypage':
-					title = 'my page';
-					desc = 'Home / For Rent';
+					title = t('my page');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/header1.svg';
 					break;
 				case '/community':
-					title = 'Community';
-					desc = 'Home / For Rent';
+					title = t('Community');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/community/detail':
-					title = 'Community Detail';
-					desc = 'Home / For Rent';
+					title = t('Community Detail');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/cs':
-					title = 'CS';
-					desc = 'We are glad to see you again!';
+					title = t('CS');
+					desc = t('We are glad to see you again!');
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/account/join':
-					title = 'Login/Signup';
-					desc = 'Authentication Process';
+					title = t('Login/Signup');
+					desc = t('Authentication Process');
 					bgImage = '/img/banner/header2.svg';
 					setAuthHeader(true);
 					break;
 				case '/member':
-					title = 'Member Page';
-					desc = 'Home / For Rent';
+					title = t('Member Page');
+					desc = t('Home / For Rent');
 					bgImage = '/img/banner/header1.svg';
 					break;
 				default:
@@ -89,7 +89,7 @@ const withLayoutBasic = (Component: any) => {
 			}
 
 			return { title, desc, bgImage };
-		}, [router.pathname]);
+		}, [router.pathname, i18n.language, t]);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -184,11 +184,11 @@ const withLayoutBasic = (Component: any) => {
 								{/* Navigation Links - Center */}
 								<Box component={'div'} className={'nav-menu-dark'}>
 									<Link href={'/'}>
-										<span className={'nav-link-dark'}>HOME</span>
+										<span className={'nav-link-dark'}>{t('Home')}</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/property'}>
-										<span className={'nav-link-dark'}>PRODUCTS</span>
+										<span className={'nav-link-dark'}>{t('Products')}</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Box 
@@ -199,7 +199,7 @@ const withLayoutBasic = (Component: any) => {
 									>
 										<Link href={'/agent'} style={{ textDecoration: 'none' }}>
 											<span className={'nav-link-dark measurer-link-dark'}>
-											EXPERTS
+												{t('Experts')}
 												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
 											</span>
 										</Link>
@@ -227,7 +227,7 @@ const withLayoutBasic = (Component: any) => {
 												}}
 												className={'measurer-menu-item-dark'}
 											>
-												MEASURER
+												{t('Measurers')}
 											</MenuItem>
 											<MenuItem 
 												onClick={() => {
@@ -236,29 +236,29 @@ const withLayoutBasic = (Component: any) => {
 												}}
 												className={'measurer-menu-item-dark'}
 											>
-												INSTALLERS
+												{t('Installers')}
 											</MenuItem>
 										</Menu>
 									</Box>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/city'}>
-										<span className={'nav-link-dark'}>CITY</span>
+										<span className={'nav-link-dark'}>{t('City')}</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/community'}>
-										<span className={'nav-link-dark'}>community</span>
+										<span className={'nav-link-dark'}>{t('Community')}</span>
 									</Link>
 									{user?._id && (
 										<>
 											<span className={'nav-separator-dark'}>/</span>
 											<Link href={'/mypage'}>
-												<span className={'nav-link-dark'}>MYPAGE</span>
+												<span className={'nav-link-dark'}>{t('My Page')}</span>
 											</Link>
 										</>
 									)}
 									<span className={'nav-separator-dark'}>/</span>
 									<Link href={'/cs'}>
-										<span className={'nav-link-dark'}>CONTACT US</span>
+										<span className={'nav-link-dark'}>{t('CS')}</span>
 									</Link>
 								</Box>
 

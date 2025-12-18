@@ -2,11 +2,15 @@
 	"Home": "Главная",
 	"Products": "Продукты",
 	"Measurers": "Замерщики",
+	"Experts": "Эксперты",
+	"Installers": "Установщики",
+	"City": "Город",
 	"Community": "Сообщество",
 	"My Page": "Моя страница",
 	"CS": "Поддержка",
 	"Login": "Логин",
 	"Signup": "Регистрация",
+	"Logout": "Выйти",
 	"Location": "Расположение",
 	"Product type": "Тип продукта",
 	"Rooms": "Комнаты",
@@ -20,5 +24,6 @@
 	"my page": "Моя страница",
 	"Community Detail": "Детали сообщества",
 	"Login/Signup": "Логин/регистрация",
+	"Authentication Process": "Процесс авторизации",
 	"Member Page": "Страница участника"
 }

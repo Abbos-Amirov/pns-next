@@ -102,9 +102,18 @@ const Top = () => {
 			setLang(locale);
 			localStorage.setItem('locale', locale);
 			setAnchorEl2(null);
+			// Ensure client i18n updates immediately (esp. for newly added keys)
+			try {
+				await i18n.changeLanguage(locale);
+				// reload common namespace to avoid stale cached resources in dev
+				// @ts-ignore
+				await i18n.reloadResources([locale], ['common']);
+			} catch (e) {
+				// ignore i18n errors; router locale switch still works
+			}
 			await router.push(router.asPath, router.asPath, { locale });
 		},
-		[router],
+		[i18n, router],
 	);
 
 	const changeNavbarColor = () => {
@@ -153,7 +162,7 @@ const Top = () => {
 					<div>{t('Home')}</div>
 				</Link>
 				<Link href={'/property'}>
-					<div>{t('Properties')}</div>
+					<div>{t('Products')}</div>
 				</Link>
 				<Link href={'/installer'}>
 					<div> {t('Installers')} </div>
@@ -209,7 +218,7 @@ const Top = () => {
 								{user?._id && (
 									<Button className={'logout-btn-top'} onClick={logoutHandler}>
 										<Logout className={'logout-icon'} />
-										<span>Logout</span>
+										<span>{t('Logout')}</span>
 									</Button>
 								)}
 								<CloseIcon className={'close-icon'} onClick={closeTopBar} />
@@ -223,11 +232,11 @@ const Top = () => {
 					<Stack className={'container'}>
 						<Box component={'div'} className={'nav-menu'}>
 							<Link href={'/'}>
-								<span className={'nav-link'}>HOME</span>
+								<span className={'nav-link'}>{t('Home')}</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/property'}>
-								<span className={'nav-link'}>PRODUCTS</span>
+								<span className={'nav-link'}>{t('Products')}</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Box 
@@ -238,7 +247,8 @@ const Top = () => {
 							>
 								<Link href={'/agent'} style={{ textDecoration: 'none' }}>
 									<span className={'nav-link measurer-link'}>
-										EXPERTS
+										{t('Experts')}
+										
 										<KeyboardArrowDownIcon className={'dropdown-icon'} />
 									</span>
 							</Link>
@@ -266,7 +276,8 @@ const Top = () => {
 										}}
 										className={'measurer-menu-item'}
 									>
-										MEASURER
+										{t('Measurers')}
+
 									</MenuItem>
 									<MenuItem 
 										onClick={() => {
@@ -275,30 +286,32 @@ const Top = () => {
 										}}
 										className={'measurer-menu-item'}
 									>
-										INSTALLERS
+										{t('Installers')}
+
 									</MenuItem>
 								</Menu>
 								
 							</Box>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/city'}>
-								<span className={'nav-link'}>CITY</span>
+								<span className={'nav-link'}>{t('City')}</span>
+
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/community'}>
-								<span className={'nav-link'}>community</span>
+								<span className={'nav-link'}>{t('Community')}</span>
 							</Link>
 							{user?._id && (
 								<>
 									<span className={'nav-separator'}>/</span>
 									<Link href={'/mypage'}>
-										<span className={'nav-link'}>MYPAGE</span>
+										<span className={'nav-link'}>{t('My Page')}</span>
 									</Link>
 								</>
 							)}
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/cs'}>
-								<span className={'nav-link'}>CONTACT US</span>
+								<span className={'nav-link'}>{t('CS')}</span>
 							</Link>
 						</Box>
 
@@ -387,13 +400,13 @@ const Top = () => {
 										className={'login-btn'}
 										onClick={() => router.push('/account/join?mode=login')}
 									>
-										LOGIN
+										{t('Login')}
 									</Button>
 									<Button 
 										className={'signup-btn'}
 										onClick={() => router.push('/account/join?mode=signup')}
 									>
-										SIGN UP
+										{t('Signup')}
 									</Button>
 								</Box>
 							)}

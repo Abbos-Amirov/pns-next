@@ -209,7 +209,7 @@ const TopBasic = () => {
 								{user?._id && (
 									<Button className={'logout-btn-top'} onClick={logoutHandler}>
 										<Logout className={'logout-icon'} />
-										<span>Logout</span>
+										<span>{t('Logout')}</span>
 									</Button>
 								)}
 								<CloseIcon className={'close-icon'} onClick={closeTopBar} />
