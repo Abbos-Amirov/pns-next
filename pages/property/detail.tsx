@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Box, Button, Checkbox, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { NextPage } from 'next';
@@ -11,9 +11,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
-import { useReactiveVar, useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useReactiveVar, useQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { Property } from '../../libs/types/product/property';
+import { Product } from '../../libs/types/product/property';
 import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';
@@ -49,9 +49,20 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [propertyId, setPropertyId] = useState<string | null>(null);
-	const [property, setProperty] = useState<Property | null>(null);
+	type ProductDetail = Product & {
+		productHeight?: number;
+		productWidth?: number;
+		productMaterial?: string;
+		productGlassType?: string;
+		productOpenType?: string;
+		productCategory?: string;
+		productColor?: string;
+		productItems?: number;
+	};
+
+	const [property, setProperty] = useState<ProductDetail | null>(null);
 	const [slideImage, setSlideImage] = useState<string>('');
-	const [destinationProperty, setDestinationProperty] = useState<Property[]>([]);
+	const [destinationProperty, setDestinationProperty] = useState<ProductDetail[]>([]);
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [propertyComments, setPropertyComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
@@ -61,23 +72,6 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentRefId: '',
 	});
 	const [isLiked, setIsLiked] = useState<boolean>(false);
-
-	// Get liked products from localStorage
-	const getLikedProducts = (): string[] => {
-		if (typeof window !== 'undefined') {
-			const liked = localStorage.getItem('likedProducts');
-			return liked ? JSON.parse(liked) : [];
-		}
-		return [];
-	};
-
-	// Check if current product is liked
-	const checkIfLiked = (): boolean => {
-		if (property?.meLiked && property?.meLiked[0]?.myFavorite) return true;
-		if (!property?._id) return false;
-		const likedProducts = getLikedProducts();
-		return likedProducts.includes(property._id);
-	};
 
 	/** APOLLO REQUESTS **/
 	const { data: productData, loading: productLoading, error: productError } = useQuery(GET_PRODUCT, {
@@ -89,52 +83,12 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		errorPolicy: 'all',
 		onCompleted: (data) => {
 			if (data?.getProduct) {
-				const product = data.getProduct;
-				// Convert product to Property format
-				const convertedProperty: Property = {
-					_id: product._id,
-					propertyType: product.productType,
-					propertyStatus: product.productStatus,
-					propertyLocation: product.productLocation,
-					propertyAddress: product.productAddress || '',
-					propertyTitle: product.productTitle,
-					propertyPrice: product.productPrice,
-					propertySquare: product.productHeight && product.productWidth ? product.productHeight * product.productWidth : 0,
-					propertyBeds: 0,
-					propertyRooms: 0,
-					propertyViews: product.productViews || 0,
-					propertyLikes: product.productLikes || 0,
-					propertyComments: product.productComments || 0,
-					propertyRank: product.productRank || 0,
-					propertyImages: product.productImages || [],
-					propertyDesc: product.productDesc || '',
-					propertyBarter: false,
-					propertyRent: product.productRent || false,
-					memberId: product.memberId,
-					soldAt: product.soldAt,
-					deletedAt: product.deletedAt,
-					constructedAt: product.manufacturedAt,
-					createdAt: product.createdAt,
-					updatedAt: product.updatedAt,
-					meLiked: product.meLiked,
-					memberData: product.memberData,
-				};
-				setProperty(convertedProperty);
+				const product: ProductDetail = data.getProduct;
+				setProperty(product);
 				// Set first image as slide image
-				if (product.productImages && product.productImages.length > 0) {
-					const firstImage = product.productImages[0];
-					setSlideImage(firstImage);
-					console.log('Setting slide image:', firstImage);
-					console.log('All product images:', product.productImages);
-				} else {
-					setSlideImage('');
-					console.log('No product images found');
-				}
-				// Update isLiked state based on product data
-				const liked = convertedProperty.meLiked && convertedProperty.meLiked[0]?.myFavorite 
-					? true 
-					: (typeof window !== 'undefined' && getLikedProducts().includes(convertedProperty._id));
-				setIsLiked(liked);
+				setSlideImage(product.productImages?.[0] || '');
+				// backend-driven like state (USER ↔ PRODUCT relationship)
+				setIsLiked(!!product?.meLiked?.[0]?.myFavorite);
 			}
 		},
 		onError: (err) => {
@@ -145,39 +99,20 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	// Like Product Mutation
 	const [likeTargetProduct, { loading: likeLoading }] = useMutation(LIKE_TARGET_PRODUCT, {
 		onCompleted: (data) => {
-			if (data?.likeTargetProduct && property?._id) {
-				// Check current liked state from localStorage
-				if (typeof window !== 'undefined') {
-					const likedProducts = getLikedProducts();
-					const currentlyLiked = likedProducts.includes(property._id);
-					const newLikedState = !currentlyLiked;
-					
-					// Update localStorage
-					if (newLikedState) {
-						// Add to liked products
-						if (!likedProducts.includes(property._id)) {
-							likedProducts.push(property._id);
-							localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
-						}
-					} else {
-						// Remove from liked products
-						const updatedLiked = likedProducts.filter((id: string) => id !== property._id);
-						localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
-					}
-					
-					// Update isLiked state
-					setIsLiked(newLikedState);
-					
-					// Update property with new data
-					setProperty({
-						...property,
-						propertyLikes: data.likeTargetProduct.productLikes || property.propertyLikes,
-						meLiked: data.likeTargetProduct.meLiked || property.meLiked,
-					});
-					
-					const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
-					sweetTopSuccessAlert(message, 700).then();
-				}
+			if (data?.likeTargetProduct) {
+				const updated = data.likeTargetProduct as ProductDetail;
+				const newLikedState = !!updated?.meLiked?.[0]?.myFavorite;
+				setIsLiked(newLikedState);
+				setProperty((prev) => {
+					if (!prev) return prev;
+					return {
+						...prev,
+						productLikes: updated.productLikes ?? prev.productLikes,
+						meLiked: updated.meLiked ?? prev.meLiked,
+					};
+				});
+				const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
+				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
 		onError: (err) => {
@@ -187,56 +122,49 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 	// Like Property Handler
 	const likePropertyHandler = async (user: any, productId: string) => {
-		if (!user) {
+		if (!user?._id) {
 			sweetTopSuccessAlert('Please login to like products', 700).then();
 			return;
 		}
+		if (!property?._id || !productId) return;
+
+		// backend-driven current state
+		const prevMeLiked = property?.meLiked || [];
+		const prevLikedState = !!property?.meLiked?.[0]?.myFavorite;
+		const prevLikesCount = property?.productLikes || 0;
+
+		// optimistic update
+		const nextLikedState = !prevLikedState;
+		setIsLiked(nextLikedState);
+		setProperty((prev) => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				productLikes: nextLikedState ? prevLikesCount + 1 : Math.max(0, prevLikesCount - 1),
+				meLiked: nextLikedState ? [{ memberId: user._id, likeRefId: productId, myFavorite: true }] : [],
+			};
+		});
+
 		try {
-			// Backendga like mutation yuboramiz
 			const res = await likeTargetProduct({
 				variables: {
 					input: productId,
 				},
 			});
-			
-			// Backend qaytaradigan yangi qiymatlar:
-			const updated = res?.data?.likeTargetProduct;
-			
-			if (updated) {
-				// local state yangilash
-				const newLikedState = updated.meLiked && updated.meLiked[0]?.myFavorite ? true : false;
-				setIsLiked(newLikedState);
-				
-				// Update property with new likes count
-				if (property) {
-					setProperty({
-						...property,
-						propertyLikes: updated.productLikes || property.propertyLikes,
-						meLiked: updated.meLiked || property.meLiked,
-					});
-				}
-				
-				// Update localStorage
-				if (typeof window !== 'undefined') {
-					const likedProducts = getLikedProducts();
-					if (newLikedState) {
-						// Add to liked products
-						if (!likedProducts.includes(productId)) {
-							likedProducts.push(productId);
-							localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
-						}
-					} else {
-						// Remove from liked products
-						const updatedLiked = likedProducts.filter((id: string) => id !== productId);
-						localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
-					}
-				}
-				
-				const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
-				sweetTopSuccessAlert(message, 700).then();
-			}
+			// onCompleted handler sync qiladi (backend returned state)
+			void res;
 		} catch (err) {
 			console.error('Like error: ', err);
+			// revert
+			setIsLiked(prevLikedState);
+			setProperty((prev) => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					productLikes: prevLikesCount,
+					meLiked: prevMeLiked,
+				};
+			});
 			sweetErrorHandling(err).then();
 		}
 	};
@@ -265,8 +193,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	// Update isLiked when property changes
 	useEffect(() => {
 		if (property?._id) {
-			const liked = checkIfLiked();
-			setIsLiked(liked);
+			setIsLiked(!!property?.meLiked?.[0]?.myFavorite);
 		}
 	}, [property?._id, property?.meLiked]);
 
@@ -320,9 +247,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 						<Stack className={'property-info-config'}>
 							<Stack className={'info'}>
 								<Stack className={'left-box'}>
-									<Typography className={'title-main'}>{(property as any)?.productTitle || property?.propertyTitle}</Typography>
+									<Typography className={'title-main'}>{property?.productTitle}</Typography>
 									<Stack className={'top-box'}>
-										<Typography className={'city'}>{(property as any)?.productLocation || property?.propertyLocation}</Typography>
+										<Typography className={'city'}>{property?.productLocation}</Typography>
 										<Stack className={'divider'}></Stack>
 										{(property as any)?.productCategory && (
 											<>
@@ -371,7 +298,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 									<Stack className="buttons">
 										<Stack className="button-box">
 											<RemoveRedEyeIcon fontSize="medium" />
-											<Typography>{(property as any)?.productViews || property?.propertyViews}</Typography>
+											<Typography>{property?.productViews}</Typography>
 										</Stack>
 										<Stack className="button-box">
 														{isLiked ? (
@@ -388,10 +315,10 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 															/>
 														)}
 
-														<Typography>{(property as any)?.productLikes || property?.propertyLikes}</Typography>
+														<Typography>{property?.productLikes}</Typography>
 														</Stack>
 									</Stack>
-									<Typography>${formatterStr((property as any)?.productPrice || property?.propertyPrice)}</Typography>
+									<Typography>${formatterStr(property?.productPrice)}</Typography>
 								</Stack>
 							</Stack>
 							<Stack className={'images'}>
@@ -404,19 +331,19 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 													: slideImage.startsWith('/img/') 
 														? slideImage 
 														: `${REACT_APP_API_URL}/${slideImage}`)
-												: (property?.propertyImages && property.propertyImages.length > 0
-													? (property.propertyImages[0].startsWith('http://') || property.propertyImages[0].startsWith('https://')
-														? property.propertyImages[0]
-														: property.propertyImages[0].startsWith('/img/')
-															? property.propertyImages[0]
-															: `${REACT_APP_API_URL}/${property.propertyImages[0]}`)
+												: (property?.productImages && property.productImages.length > 0
+													? (property.productImages[0].startsWith('http://') || property.productImages[0].startsWith('https://')
+														? property.productImages[0]
+														: property.productImages[0].startsWith('/img/')
+															? property.productImages[0]
+															: `${REACT_APP_API_URL}/${property.productImages[0]}`)
 													: '/img/property/bigImage.png')
 										}
 										alt={'main-image'}
 									/>
 								</Stack>
 								<Stack className={'sub-images'}>
-									{(property?.propertyImages || []).map((subImg: string, index: number) => {
+									{(property?.productImages || []).map((subImg: string, index: number) => {
 										const imagePath: string = subImg.startsWith('http://') || subImg.startsWith('https://')
 											? subImg
 											: subImg.startsWith('/img/')
@@ -435,7 +362,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<HeightIcon className={'spec-icon'} />
 										<Stack className={'spec-content'}>
 											<Typography className={'spec-label'}>Height</Typography>
-											<Typography className={'spec-value'}>{(property as any)?.productHeight || property?.propertySquare || 'N/A'} {(property as any)?.productHeight ? 'cm' : ''}</Typography>
+											<Typography className={'spec-value'}>{(property as any)?.productHeight ?? 'N/A'} {(property as any)?.productHeight ? 'cm' : ''}</Typography>
 										</Stack>
 									</Stack>
 									<Stack className={'spec-item'}>
@@ -449,7 +376,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<ConstructionIcon className={'spec-icon'} />
 										<Stack className={'spec-content'}>
 											<Typography className={'spec-label'}>Material</Typography>
-											<Typography className={'spec-value'}>{(property as any)?.productMaterial || (property as any)?.productType || property?.propertyType || 'N/A'}</Typography>
+											<Typography className={'spec-value'}>{property?.productMaterial || property?.productType || 'N/A'}</Typography>
 										</Stack>
 									</Stack>
 									<Stack className={'spec-item'}>
@@ -536,7 +463,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										</Stack>
 										<Stack className={'option-includes'}>
 												<Typography className={'title'}>Product Type</Typography>
-												<Typography className={'option-data'}>{(property as any)?.productType || property?.propertyType}</Typography>
+												<Typography className={'option-data'}>{property?.productType}</Typography>
 											</Stack>
 										</Stack>
 									)}
@@ -544,7 +471,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 								<Stack className={'prop-desc-config'}>
 									<Stack className={'top'}>
 										<Typography className={'title'}>Product Description</Typography>
-										<Typography className={'desc'}>{(property as any)?.productDesc || property?.propertyDesc || 'No Description!'}</Typography>
+										<Typography className={'desc'}>{property?.productDesc || 'No Description!'}</Typography>
 									</Stack>
 									<Stack className={'bottom'}>
 										<Typography className={'title'}>Product Details</Typography>
@@ -552,7 +479,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<Stack className={'left'}>
 												<Box component={'div'} className={'info'}>
 													<Typography className={'title'}>Price</Typography>
-													<Typography className={'data'}>${formatterStr((property as any)?.productPrice || property?.propertyPrice)}</Typography>
+													<Typography className={'data'}>${formatterStr(property?.productPrice)}</Typography>
 												</Box>
 												{(property as any)?.productHeight && (
 												<Box component={'div'} className={'info'}>
@@ -595,7 +522,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 												{(property as any)?.productType && (
 												<Box component={'div'} className={'info'}>
 														<Typography className={'title'}>Product Type</Typography>
-														<Typography className={'data'}>{(property as any)?.productType || property?.propertyType}</Typography>
+														<Typography className={'data'}>{property?.productType}</Typography>
 												</Box>
 												)}
 											</Stack>
@@ -806,9 +733,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											el: '.swiper-similar-pagination',
 										}}
 									>
-										{destinationProperty.map((property: Property) => {
+										{destinationProperty.map((property: ProductDetail) => {
 											return (
-												<SwiperSlide className={'similar-homes-slide'} key={property.propertyTitle}>
+												<SwiperSlide className={'similar-homes-slide'} key={property.productTitle}>
 													<PropertyBigCard property={property} key={property?._id} />
 												</SwiperSlide>
 											);
