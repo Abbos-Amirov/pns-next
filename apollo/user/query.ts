@@ -71,6 +71,11 @@ export const GET_MEASURERS = gql`
 				createdAt
 				updatedAt
 				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
 			}
 			metaCounter {
 				total
