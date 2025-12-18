@@ -4,91 +4,109 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 interface EventData {
 	eventTitle: string;
-	city: string;
+	category: string;
 	description: string;
 	imageSrc: string;
 }
 const eventsData: EventData[] = [
 	{
-		eventTitle: 'Paradise City Theme Park',
-		city: 'Incheon',
+		eventTitle: 'Curved Facade & LED Line Showcase',
+		category: 'FACADE',
 		description:
-			'Experience magic and wonder in Incheon with a visit to the night-themed indoor theme park Wonderbox at Paradise City!',
-		imageSrc: '/img/events/INCHEON.webp',
+			'See sleek curved aluminum frames, full‑height glazing, and clean LED details—built for premium modern exteriors.',
+		imageSrc: '/img/events/bino1.jpg',
 	},
 	{
-		eventTitle: 'Taebaeksan Snow Festival',
-		city: 'Seoul',
-		description: 'If you have the opportunity to travel to South Korea, do not miss the Taebaeksan Snow Festival!',
-		imageSrc: '/img/events/SEOUL.webp',
-	},
-	{
-		eventTitle: 'Suseong Lake Event',
-		city: 'Daegu',
-		description: 'The Suseong Lake Festival is a culture and arts festival held alongside Suseongmot Lake!',
-		imageSrc: '/img/events/DAEGU.webp',
-	},
-	{
-		eventTitle: 'Sand Festival',
-		city: 'Busan',
+		eventTitle: 'Glass Room / Winter Garden Systems',
+		category: 'GLASS ROOM',
 		description:
-			'Haeundae Sand Festival, the nation’s largest eco-friendly exhibition on sand, is held at Haeundae Beach!',
-		imageSrc: '/img/events/BUSAN.webp',
+			'Panoramic sliding walls and a skylight roof concept—perfect for terrace glass rooms and year‑round comfort builds.',
+		imageSrc: '/img/events/bino4.jpg',
+	},
+	{
+		eventTitle: 'Panoramic Sliding & Balcony Solutions',
+		category: 'SLIDING',
+		description:
+			'Wide‑span sliding doors, rounded balcony glazing, and warm facade lighting—designed for elegant, open living spaces.',
+		imageSrc: '/img/events/bino3.jpg',
+	},
+	{
+		eventTitle: 'Arched Windows & Entry Door Collection',
+		category: 'ARCH',
+		description:
+			'Classic arches with modern performance—custom curved frames, tall statement glass, and a clean insulated entry door look.',
+		imageSrc: '/img/events/bino2.jpg',
 	},
 ];
 
 const EventCard = ({ event }: { event: EventData }) => {
-	const device = useDeviceDetect();
-
-	if (device === 'mobile') {
-		return <div>EVENT CARD</div>;
-	} else {
-		return (
-			<Stack
-				className="event-card"
-				style={{
-					backgroundImage: `url(${event?.imageSrc})`,
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-					backgroundRepeat: 'no-repeat',
-				}}
-			>
-				<Box component={'div'} className={'info'}>
-					<strong>{event?.city}</strong>
-					<span>{event?.eventTitle}</span>
-				</Box>
-				<Box component={'div'} className={'more'}>
-					<span>{event?.description}</span>
-				</Box>
-			</Stack>
-		);
-	}
+	return (
+		<Stack
+			className="event-card"
+			role="article"
+			style={{
+				backgroundImage: `url(${event?.imageSrc})`,
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+				backgroundRepeat: 'no-repeat',
+			}}
+		>
+			<Box component={'div'} className={'info'}>
+				<strong>{event?.category}</strong>
+				<span>{event?.eventTitle}</span>
+			</Box>
+			<Box component={'div'} className={'more'}>
+				<span>{event?.description}</span>
+			</Box>
+		</Stack>
+	);
 };
 
 const Events = () => {
 	const device = useDeviceDetect();
 
 	if (device === 'mobile') {
-		return <div>EVENT CARD</div>;
-	} else {
+		// Not used on mobile home right now, but kept consistent
 		return (
 			<Stack className={'events'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span className={'white'}>Events</span>
-							<p className={'white'}>Events waiting your attention!</p>
+							<span className={'white'}>
+								Door &amp; Window <span className={'accent'}>Events</span>
+							</span>
+							<p className={'white'}>Workshops & showcases for doors and windows—curated for pros.</p>
 						</Box>
 					</Stack>
 					<Stack className={'card-wrapper'}>
-						{eventsData.map((event: EventData) => {
-							return <EventCard event={event} key={event?.eventTitle} />;
-						})}
+						{eventsData.map((event: EventData) => (
+							<EventCard event={event} key={event?.eventTitle} />
+						))}
 					</Stack>
 				</Stack>
 			</Stack>
 		);
 	}
+
+	return (
+		<Stack className={'events'}>
+			<Stack className={'container'}>
+				<Stack className={'info-box'}>
+					<Box component={'div'} className={'left'}>
+						<span className={'white'}>
+							Door &amp; Window <span className={'accent'}>Events</span>
+						</span>
+						<p className={'white'}>Workshops & showcases for doors and windows—curated for pros.</p>
+					</Box>
+				</Stack>
+				<Stack className={'card-wrapper'}>
+					{eventsData.map((event: EventData) => (
+						<EventCard event={event} key={event?.eventTitle} />
+					))}
+				</Stack>
+			</Stack>
+		</Stack>
+	);
 };
 
 export default Events;

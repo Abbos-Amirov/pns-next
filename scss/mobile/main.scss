@@ -814,6 +814,126 @@
     }
   }
 
+  // Events (Door & Window themed)
+  .events {
+    position: relative;
+    padding: 40px 20px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    background: #181a20;
+    overflow: hidden;
+
+    .container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .info-box {
+        .left {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+          .white {
+            color: #ffffff;
+            .accent {
+              color: #D4A574;
+            }
+          }
+
+          p.white {
+            color: rgba(255, 255, 255, 0.78);
+          }
+        }
+      }
+
+      .card-wrapper {
+        width: 100%;
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+
+        .event-card {
+          position: relative;
+          width: 100%;
+          height: 220px;
+          border-radius: 12px;
+          overflow: hidden;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          box-shadow: 0px 18px 40px rgba(0, 0, 0, 0.35);
+
+          &:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+              180deg,
+              rgba(24, 26, 32, 0.08) 0%,
+              rgba(24, 26, 32, 0.60) 55%,
+              rgba(24, 26, 32, 0.92) 100%
+            );
+            z-index: 1;
+          }
+
+          .info {
+            position: absolute;
+            top: 16px;
+            left: 14px;
+            right: 14px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            strong {
+              align-self: flex-start;
+              padding: 6px 10px;
+              border-radius: 999px;
+              background: rgba(212, 165, 116, 0.16);
+              border: 1px solid rgba(212, 165, 116, 0.35);
+              color: #D4A574;
+              font-family: $font;
+              font-size: 11px;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.6px;
+            }
+            span {
+              margin-top: 10px;
+              color: #ffffff;
+              font-family: $font;
+              font-size: 18px;
+              font-weight: 700;
+              line-height: 22px;
+            }
+          }
+
+          .more {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 14px;
+            z-index: 2;
+            span {
+              display: block;
+              padding: 8px 10px;
+              border-radius: 10px;
+              background: rgba(255, 255, 255, 0.10);
+              border: 1px solid rgba(255, 255, 255, 0.16);
+              color: rgba(255, 255, 255, 0.92);
+              font-family: $font;
+              font-size: 12px;
+              line-height: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+
   #footer {
     position: relative;
     padding: 40px 0px 80px 0px;
