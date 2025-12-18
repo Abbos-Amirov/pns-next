@@ -10,6 +10,7 @@
   "CS": "고객지원",
   "Login": "로그인",
   "Signup": "가입",
+  "Logout": "로그아웃",
   "Location": "위치",
   "Product type": "제품 유형",
   "Rooms": "방",
@@ -23,5 +24,15 @@
   "my page": "마이 페이지",
   "Community Detail": "커뮤니티 디테일",
   "Login/Signup": "로그인/가입",
-  "Member Page": "멤버 페이지"
+  "Member Page": "멤버 페이지",
+  "TRUSTED COMPANY": "신뢰받는 회사",
+  "Create your inspired doors": "영감을 담은 문을 만드세요",
+  "Hero description": "창의성과 기능성을 더해 공간을 새롭게 바꿔보세요.",
+  "Get in touch": "문의하기"
+  ,
+  "Design": "디자인",
+  "Your": "당신의",
+  "Inspired Doors": "영감을 주는 문",
+  "NEXT": "다음",
+  "PROJECT": "프로젝트"
 }

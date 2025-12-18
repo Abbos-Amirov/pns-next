@@ -353,20 +353,20 @@ const withLayoutBasic = (Component: any) => {
 							<Stack className={'container'}>
 								{/* TRUSTED COMPANY Badge */}
 								<Box component={'div'} className={'trusted-badge'}>
-									<Typography>TRUSTED COMPANY</Typography>
+									<Typography>{t('TRUSTED COMPANY')}</Typography>
 								</Box>
 
 								{/* Headline */}
 								<Box component={'div'} className={'hero-headline'}>
 									<Typography component={'span'} className={'headline-text'}>
-										Design{' '}
+										{t('Design')}{' '}
 									</Typography>
 									<Typography component={'span'} className={'headline-accent'}>
-										Your{' '}
+										{t('Your')}{' '}
 									</Typography>
 									<br/>
 									<Typography component={'span'} className={'headline-text'}>
-										Inspired Doors
+										{t('Inspired Doors')}
 									</Typography>
 								</Box>
 
@@ -379,8 +379,8 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* NEXT PROJECT Button */}
 								<Button className={'next-project-btn'}>
-									<Typography className={'next-project-text'}>NEXT</Typography>
-									<Typography className={'next-project-text'}>PROJECT</Typography>
+									<Typography className={'next-project-text'}>{t('NEXT')}</Typography>
+									<Typography className={'next-project-text'}>{t('PROJECT')}</Typography>
 								</Button>
 							</Stack>
 						</Stack>
