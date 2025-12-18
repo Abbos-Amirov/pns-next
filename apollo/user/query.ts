@@ -786,6 +786,11 @@ export const GET_PRODUCTS = gql`
 				manufacturedAt
 				createdAt
 				updatedAt
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
 			}
 			metaCounter {
 				total

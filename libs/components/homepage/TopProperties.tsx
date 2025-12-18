@@ -11,7 +11,9 @@ import { Product } from '../../types/product/property';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
-import { Direction } from '../../enums/common.enum';
+import { Direction, Message } from '../../enums/common.enum';
+import { T } from '../../types/common';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
 interface TopPropertiesProps {
 	initialInput: ProductsInquiry;
@@ -44,8 +46,27 @@ const TopProperties = (props: TopPropertiesProps) => {
 
 	/** HANDLERS **/
 
+
+	const likeProductHandler = async (user: T, id: string) => {
+		try {
+		 if (!id) return;
+		 if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+		 // execute likeTargetProperty Mutation
+		 await likeTargetProduct({
+		  variables: {
+		   input: id,
+		  },
+		 });
+		 await getProductsRefetch({ input: initialInput });
+	  
+		 await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+		 console.log('ERROR, likeProductHandler :', err.message);
+		 sweetMixinErrorAlert(err.message).then();
+		}
+	   }; 
 	// Loading state
-	if (getProductsLoading) {
+	if (getProductsLoading || ! topProducts || topProducts.length === 0) {
 		return (
 			<Stack className={'top-properties'}>
 				<Stack className={'container'}>
@@ -100,7 +121,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							{topProducts.map((product: Product) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={product?._id}>
-										<TopPropertyCard product={product} />
+										<TopPropertyCard product={product} likeProductHandler ={likeProductHandler } />
 									</SwiperSlide>
 								);
 							})}
@@ -143,7 +164,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							{topProducts.map((product: Product) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={product?._id}>
-										<TopPropertyCard product={product} />
+										<TopPropertyCard product={product} likeProductHandler ={likeProductHandler } />
 									</SwiperSlide>
 								);
 							})}

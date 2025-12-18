@@ -12,10 +12,11 @@ import { userVar } from '../../../apollo/store';
 
 interface TopPropertyCardProps {
 	product: Product;
+	likeProductHandler : any
 }
 
 const TopPropertyCard = (props: TopPropertyCardProps) => {
-	const { product } = props;
+	const { product,likeProductHandler  } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
@@ -23,6 +24,11 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 	const [imageLoading, setImageLoading] = useState(true);
 
 	/** HANDLERS **/
+	const goProductDetailPage = async (productId?: string) => {
+		if (!productId) return;
+		await router.push(`/property/detail?id=${productId}`);
+	};
+
 	const getImagePath = (): string => {
 		if (!product?.productImages || product.productImages.length === 0) {
 			return '';
@@ -105,7 +111,7 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 								<RemoveRedEyeIcon />
 							</IconButton>
 							<Typography className="view-cnt">{product?.productViews}</Typography>
-							<IconButton color={'default'}>
+							<IconButton color={'default'} onClick={() => likeProductHandler(user, product?._id)}>
 								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
 									<FavoriteIcon style={{ color: 'red' }} />
 								) : (
@@ -159,17 +165,25 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
-						<p>
-							{' '}
-							{product?.productRent ? 'Rent' : ''} {product?.productRent && product?.productBarter && '/'}{' '}
-							{product?.productBarter ? 'Barter' : ''}
-						</p>
+						
+						<button
+							type="button"
+							className="detail-btn"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								goProductDetailPage(product?._id);
+							}}
+						>
+							DEATIL →
+						</button>
+						
 						<div className="view-like-box">
 							<IconButton color={'default'}>
 								<RemoveRedEyeIcon />
 							</IconButton>
 							<Typography className="view-cnt">{product?.productViews}</Typography>
-							<IconButton color={'default'}>
+							<IconButton color={'default'} onClick={() => likeProductHandler(user, product._id)}>
 								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
 									<FavoriteIcon style={{ color: 'red' }} />
 								) : (
