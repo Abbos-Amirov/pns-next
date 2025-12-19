@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -27,30 +27,50 @@ const PropertyCard = (props: PropertyCardType) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [isHovered, setIsHovered] = useState(false);
+	const pendingLikeRef = useRef<boolean | null>(null);
 
 	// Backend-driven like state (USER ↔ PRODUCT relationship)
-	const [isLiked, setIsLiked] = useState<boolean>(myFavorites ? true : !!property?.meLiked?.[0]?.myFavorite);
-	const [likesCount, setLikesCount] = useState<number>(property?.productLikes || 0);
-
+	const [isLiked, setIsLiked] = useState<boolean>(() => {
+		return myFavorites ? true : !!property?.meLiked?.[0]?.myFavorite;
+	  });
+	  
+	  const [likesCount, setLikesCount] = useState<number>(
+		property?.productLikes || 0
+	  );
 	// Update isLiked state when property changes
 	useEffect(() => {
 		setIsLiked(myFavorites ? true : !!property?.meLiked?.[0]?.myFavorite);
 		setLikesCount(property?.productLikes ?? 0);
-	}, [property?._id, property?.meLiked, property?.productLikes, myFavorites]);
-
+	  }, [property?._id]); // ❗ FAQQAT ID
 	// Like Product Mutation
 	const [likeTargetProduct, { loading: likeLoading }] = useMutation(LIKE_TARGET_PRODUCT, {
 		onCompleted: (data) => {
 			if (data?.likeTargetProduct) {
 				const updated = data.likeTargetProduct;
-				const newLikedState = !!updated?.meLiked?.[0]?.myFavorite;
-				setIsLiked(newLikedState);
-				setLikesCount(updated?.productLikes ?? 0);
+				const serverLiked = updated?.meLiked?.[0]?.myFavorite;
+				const serverLikes = updated?.productLikes;
+
+				// Instagram-like rule:
+				// If backend returns a stale liked-state (can happen with race/caching),
+				// don't overwrite the user's current UI decision.
+				if (typeof serverLiked === 'boolean') {
+					if (pendingLikeRef.current === null || serverLiked === pendingLikeRef.current) {
+						setIsLiked(serverLiked);
+					}
+				}
+
+				if (typeof serverLikes === 'number') {
+					setLikesCount(serverLikes);
+				}
+
+				const newLikedState = pendingLikeRef.current ?? isLiked;
+				pendingLikeRef.current = null;
 				const message = newLikedState ? 'Product liked successfully!' : 'Product unliked successfully!';
 				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
 		onError: (err) => {
+			pendingLikeRef.current = null;
 			sweetErrorHandling(err).then();
 		},
 	});
@@ -59,49 +79,34 @@ const PropertyCard = (props: PropertyCardType) => {
 	const handleLikeClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
-		
+	  
 		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to like products', 700).then();
-			return;
+		  sweetTopSuccessAlert('Please login first', 700);
+		  return;
 		}
-
-		if (!property?._id) {
-			return;
-		}
-
-		// optimistic UI
+	  
+		// 🔥 OPTIMISTIC UI
 		const prevLiked = isLiked;
 		const prevLikes = likesCount;
+	  
 		const nextLiked = !prevLiked;
+		pendingLikeRef.current = nextLiked;
+	  
 		setIsLiked(nextLiked);
 		setLikesCount(nextLiked ? prevLikes + 1 : Math.max(0, prevLikes - 1));
-
-		if (likePropertyHandler) {
-			// Use custom handler if provided (parent can update list/cache)
-			try {
-				await likePropertyHandler(user, property._id);
-			} catch (err) {
-				setIsLiked(prevLiked);
-				setLikesCount(prevLikes);
-				sweetErrorHandling(err).then();
-			}
-		} else {
-			// Use mutation directly
-			try {
-				await likeTargetProduct({
-					variables: {
-						input: property._id,
-					},
-				});
-			} catch (err) {
-				console.error('Error liking product:', err);
-				setIsLiked(prevLiked);
-				setLikesCount(prevLikes);
-				sweetErrorHandling(err).then();
-			}
+	  
+		try {
+		  await likeTargetProduct({
+			variables: { input: property._id },
+		  });
+		} catch (err) {
+		  // ❌ ERROR → ROLLBACK
+		  pendingLikeRef.current = null;
+		  setIsLiked(prevLiked);
+		  setLikesCount(prevLikes);
+		  sweetErrorHandling(err);
 		}
-	};
-
+	  };
 	// Hard coded images array for fallback
 	const defaultImages = [
 		'/img/property/window.jpg',
