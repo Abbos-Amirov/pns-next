@@ -22,6 +22,11 @@ const Review = (props: ReviewProps) => {
 		? `${REACT_APP_API_URL}/${comment?.memberData?.memberImage}`
 		: '/img/profile/defaultUser.svg';
 
+	const displayName =
+		comment?.memberData?.memberNick ||
+		comment?.memberData?.memberFullName ||
+		(comment?.memberId ? `User (${String(comment.memberId).slice(-6)})` : 'User');
+
 	/** HANDLERS **/
 	const goMemberPage = (id: string) => {
 		if (id === user?._id) router.push('/mypage');
@@ -36,8 +41,14 @@ const Review = (props: ReviewProps) => {
 					<Stack className={'img-name-box'}>
 						<img src={imagePath} alt="" className={'img-box'} />
 						<Stack>
-							<Typography className={'name'} onClick={() => goMemberPage(comment?.memberData?._id as string)}>
-								{comment.memberData?.memberNick}
+							<Typography
+								className={'name'}
+								onClick={() => {
+									const memberId = comment?.memberData?._id || comment?.memberId;
+									if (memberId) goMemberPage(memberId as string);
+								}}
+							>
+								{displayName}
 							</Typography>
 							<Typography className={'date'}>
 								<Moment format={'DD MMMM, YYYY'}>{comment.createdAt}</Moment>

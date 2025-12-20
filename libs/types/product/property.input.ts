@@ -1,4 +1,4 @@
-import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
+import { ProductMaterial, PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface PropertyInput {
@@ -22,6 +22,7 @@ interface PISearch {
 	memberId?: string;
 	locationList?: PropertyLocation[];
 	typeList?: PropertyType[];
+	productMaterial?: ProductMaterial;
 	roomsList?: Number[];
 	options?: string[];
 	bedsList?: Number[];

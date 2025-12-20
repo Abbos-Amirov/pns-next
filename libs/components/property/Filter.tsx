@@ -1,7 +1,7 @@
 import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 'react';
 import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { PropertyType } from '../../enums/property.enum';
+import { ProductMaterial, PropertyType } from '../../enums/property.enum';
 import { PropertiesInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -19,6 +19,7 @@ const Filter = (props: FilterType) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [propertyType] = useState<PropertyType[]>(Object.values(PropertyType));
+	const [productMaterials] = useState<ProductMaterial[]>(Object.values(ProductMaterial));
 	const [availabilityFilter, setAvailabilityFilter] = useState<string>('all');
 	const [hotDealsIndex, setHotDealsIndex] = useState<number>(0);
 	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text || '');
@@ -87,6 +88,31 @@ const Filter = (props: FilterType) => {
 				);
 			} catch (err: any) {
 				console.log('ERROR, availabilityHandler:', err);
+			}
+		},
+		[searchFilter, router],
+	);
+
+	// Product material filter (ALUMINUM/PVC/WOOD/STEEL/GLASS)
+	const productMaterialSelectHandler = useCallback(
+		async (material: ProductMaterial) => {
+			try {
+				const current = searchFilter?.search?.productMaterial;
+				const next = current === material ? undefined : material;
+
+				await router.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: { ...searchFilter.search, productMaterial: next },
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: { ...searchFilter.search, productMaterial: next },
+					})}`,
+					{ scroll: false },
+				);
+			} catch (err: any) {
+				console.log('ERROR, productMaterialSelectHandler:', err);
 			}
 		},
 		[searchFilter, router],
@@ -262,8 +288,8 @@ const Filter = (props: FilterType) => {
 			
 	];
 
-	// Category list - APARTMENT, VILLA, HOUSE
-	const categories = ['Aluminum Frame', 'PVC Window', 'Steel / Iron Door','Wooden / Thermowood', 'Aluminum Hybrid'];
+	// Material list - ProductMaterial enum
+	const materials: ProductMaterial[] = productMaterials;
 
 	if (device === 'mobile') {
 		return <div>PROPERTIES FILTER</div>;
@@ -336,29 +362,23 @@ const Filter = (props: FilterType) => {
 						</Stack>
 					</Stack>
 				</Stack>
-				{/* Category Section */}
+				{/* Material Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Category</Typography>
+						<Typography style={{color: "#ffffff"}}>Material</Typography>
 					</Box>
 					<Stack className={'category-list'}>
-						{categories.map((category: string) => {
-							const isSelected = (searchFilter?.search?.typeList || []).some(
-								(type: string) => type.toUpperCase() === category,
-							);
+						{materials.map((material: ProductMaterial) => {
+							const isSelected = searchFilter?.search?.productMaterial === material;
 							return (
 								<Stack
 									className={`category-item ${isSelected ? 'selected' : ''}`}
-									key={category}
+									key={material}
 										onClick={() => {
-										// Find matching PropertyType
-										const matchingType = propertyType.find((t) => t.toUpperCase() === category);
-										if (matchingType) {
-											propertyTypeSelectHandler(matchingType);
-										}
+										productMaterialSelectHandler(material);
 									}}
 								>
-									<Typography>{category}</Typography>
+									<Typography>{material}</Typography>
 								</Stack>
 							);
 						})}

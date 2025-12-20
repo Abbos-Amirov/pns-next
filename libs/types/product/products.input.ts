@@ -1,4 +1,4 @@
-import { ProductLocation, ProductStatus } from '../../enums/property.enum';
+import { ProductLocation, ProductMaterial, ProductStatus } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
 interface ProductsSearch {
@@ -7,6 +7,7 @@ interface ProductsSearch {
 	text?: string; // Search text
 	pricesRange?: { start: number; end: number }; // Price range filter
 	productType?: string[]; // Product type filter (DOOR, WINDOW)
+	productMaterial?: ProductMaterial; // Product material filter (ALUMINUM, PVC, WOOD, STEEL, GLASS)
 }
 
 export interface ProductsInquiry {

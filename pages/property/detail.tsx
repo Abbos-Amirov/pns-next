@@ -18,8 +18,8 @@ import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
-import { GET_PRODUCT } from '../../apollo/user/query';
-import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
+import { GET_COMMENTS, GET_PRODUCT } from '../../apollo/user/query';
+import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
@@ -67,7 +67,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [propertyComments, setPropertyComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
-		commentGroup: CommentGroup.PROPERTY,
+		commentGroup: CommentGroup.PRODUCT,
 		commentContent: '',
 		commentRefId: '',
 	});
@@ -92,6 +92,82 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 			}
 		},
 		onError: (err) => {
+			sweetErrorHandling(err).then();
+		},
+	});
+
+	// Get Comments Query
+	const {
+		loading: commentsLoading,
+		error: commentsError,
+		refetch: refetchComments,
+	} = useQuery(GET_COMMENTS, {
+		variables: {
+			input: commentInquiry,
+		},
+		skip: !commentInquiry?.search?.commentRefId,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+		onCompleted: (data) => {
+			if (data?.getComments) {
+				setPropertyComments(data.getComments.list || []);
+				const metaCounter = data.getComments.metaCounter;
+				const totalCount = Array.isArray(metaCounter) ? metaCounter?.[0]?.total || 0 : metaCounter?.total || 0;
+				setCommentTotal(totalCount);
+			}
+		},
+		onError: (err) => {
+			console.error('GetComments Query Error:', err);
+		},
+	});
+
+	// Create Comment Mutation
+	const [createComment, { loading: createCommentLoading }] = useMutation(CREATE_COMMENT, {
+		onCompleted: async (data) => {
+			const createdRaw = data?.createComment as Comment | undefined;
+			const created =
+				createdRaw && !(createdRaw as any)?.memberData && user?._id
+					? ({
+							...createdRaw,
+							memberData: {
+								_id: user._id,
+								memberNick: (user as any)?.memberNick,
+								memberFullName: (user as any)?.memberFullName,
+								memberImage: (user as any)?.memberImage,
+							},
+					  } as any as Comment)
+					: createdRaw;
+
+			// instant UI update (no reload)
+			if (created) {
+				setPropertyComments((prev) => {
+					const next = [created, ...(prev || [])];
+					// keep list size reasonable in UI (server is source of truth)
+					return next.slice(0, commentInquiry.limit || 5);
+				});
+				setCommentTotal((prev) => (prev || 0) + 1);
+			}
+
+			setInsertCommentData((prev) => ({ ...prev, commentContent: '' }));
+
+			// ensure the newest comment is visible
+			setCommentInquiry((prev) => ({ ...prev, page: 1 }));
+
+			// sync with backend list
+			if (refetchComments && propertyId) {
+				await refetchComments({
+					input: {
+						...commentInquiry,
+						page: 1,
+						search: { commentRefId: propertyId },
+					},
+				});
+			}
+
+			sweetTopSuccessAlert('Review submitted successfully!', 700).then();
+		},
+		onError: (err) => {
+			console.error('CreateComment Mutation Error:', err);
 			sweetErrorHandling(err).then();
 		},
 	});
@@ -177,16 +253,18 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 			setSlideImage(''); // Reset slide image when property changes
 			setProperty(null); // Reset property when property changes
 			setIsLiked(false); // Reset isLiked when property changes
-			setCommentInquiry({
-				...commentInquiry,
+			setCommentInquiry((prev) => ({
+				...prev,
+				page: 1,
 				search: {
 					commentRefId: newPropertyId,
 				},
-			});
-			setInsertCommentData({
-				...insertCommentData,
+			}));
+			setInsertCommentData((prev) => ({
+				...prev,
+				commentGroup: CommentGroup.PRODUCT,
 				commentRefId: newPropertyId,
-			});
+			}));
 		}
 	}, [router.query.id]);
 
@@ -207,6 +285,31 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const commentPaginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		commentInquiry.page = value;
 		setCommentInquiry({ ...commentInquiry });
+	};
+
+	const createCommentHandler = async () => {
+		if (!user?._id) {
+			sweetTopSuccessAlert('Please login to leave a review', 700).then();
+			return;
+		}
+		if (!propertyId) return;
+		if (!insertCommentData.commentContent.trim()) {
+			sweetTopSuccessAlert('Please enter a review', 700).then();
+			return;
+		}
+		try {
+			await createComment({
+				variables: {
+					input: {
+						commentGroup: CommentGroup.PRODUCT,
+						commentContent: insertCommentData.commentContent.trim(),
+						commentRefId: propertyId,
+					},
+				},
+			});
+		} catch (err) {
+			console.error('Create comment error:', err);
+		}
 	};
 
 	if (device === 'mobile') {
@@ -251,12 +354,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 									<Stack className={'top-box'}>
 										<Typography className={'city'}>{property?.productLocation}</Typography>
 										<Stack className={'divider'}></Stack>
-										{(property as any)?.productCategory && (
-											<>
-												<Typography className={'category'}>{(property as any)?.productCategory}</Typography>
-												<Stack className={'divider'}></Stack>
-												</>
-											)}
+										
 										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
 											<g clipPath="url(#clip0_6505_6282)">
 												<path
@@ -276,23 +374,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										</svg>
 										<Typography className={'date'}>{moment().diff(property?.createdAt, 'days')} days ago</Typography>
 									</Stack>
-									<Stack className={'bottom-box'}>
-										{(property as any)?.productHeight && (
-										<Stack className="option">
-												<img src="/img/icons/expand.svg" alt="" /> <Typography>H: {(property as any)?.productHeight} cm</Typography>
-										</Stack>
-										)}
-										{(property as any)?.productWidth && (
-										<Stack className="option">
-												<img src="/img/icons/expand.svg" alt="" /> <Typography>W: {(property as any)?.productWidth} cm</Typography>
-										</Stack>
-										)}
-										{(property as any)?.productMaterial && (
-										<Stack className="option">
-												<Typography>Material: {(property as any)?.productMaterial}</Typography>
-										</Stack>
-										)}
-									</Stack>
+								
 								</Stack>
 								<Stack className={'right-box'}>
 									<Stack className="buttons">
@@ -578,7 +660,8 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 									<Box className={'submit-btn'} component={'div'}>
 										<Button
 											className={'submit-review'}
-											disabled={insertCommentData.commentContent === '' || user?._id === ''}
+											onClick={createCommentHandler}
+											disabled={createCommentLoading || !user?._id || insertCommentData.commentContent.trim() === ''}
 										>
 											<Typography className={'title'}>Submit Review</Typography>
 											<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -597,10 +680,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										</Button>
 									</Box>
 								</Stack>
-								{commentTotal !== 0 && (
-									<Stack className={'reviews-config'}>
-										<Stack className={'filter-box'}>
-											<Stack className={'review-cnt'}>
+								<Stack className={'reviews-config'}>
+									<Stack className={'filter-box'}>
+										<Stack className={'review-cnt'}>
 												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12" fill="none">
 													<g clipPath="url(#clip0_6507_7309)">
 														<path
@@ -615,24 +697,43 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 													</defs>
 												</svg>
 												<Typography className={'reviews'}>{commentTotal} reviews</Typography>
-											</Stack>
-										</Stack>
-										<Stack className={'review-list'}>
-											{propertyComments?.map((comment: Comment) => {
-												return <Review comment={comment} key={comment?._id} />;
-											})}
-											<Box component={'div'} className={'pagination-box'}>
-												<MuiPagination
-													page={commentInquiry.page}
-													count={Math.ceil(commentTotal / commentInquiry.limit)}
-													onChange={commentPaginationChangeHandler}
-													shape="circular"
-													color="primary"
-												/>
-											</Box>
 										</Stack>
 									</Stack>
-								)}
+									<Stack className={'review-list'}>
+										{commentsLoading ? (
+											<Stack sx={{ py: 3, alignItems: 'center' }}>
+												<Typography sx={{ color: '#717171' }}>Loading reviews...</Typography>
+											</Stack>
+										) : commentsError ? (
+											<Stack sx={{ py: 3, alignItems: 'center' }}>
+												<Typography sx={{ color: '#717171' }}>
+													Error loading reviews: {commentsError.message}
+												</Typography>
+											</Stack>
+										) : propertyComments.length === 0 ? (
+											<Stack sx={{ py: 3, alignItems: 'center' }}>
+												<Typography sx={{ color: '#717171' }}>
+													No reviews yet. Be the first to leave a review!
+												</Typography>
+											</Stack>
+										) : (
+											<>
+												{propertyComments?.map((comment: Comment) => {
+													return <Review comment={comment} key={comment?._id} />;
+												})}
+												<Box component={'div'} className={'pagination-box'}>
+													<MuiPagination
+														page={commentInquiry.page}
+														count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
+														onChange={commentPaginationChangeHandler}
+														shape="circular"
+														color="primary"
+													/>
+												</Box>
+											</>
+										)}
+									</Stack>
+								</Stack>
 							</Stack>
 							<Stack className={'right-config'}>
 								<Stack className={'info-box'}>

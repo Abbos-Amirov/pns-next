@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { PropertiesInquiry } from '../../libs/types/product/property.input';
 import { ProductsInquiry } from '../../libs/types/product/products.input';
 import { Product } from '../../libs/types/product/property';
-import { ProductStatus } from '../../libs/enums/property.enum';
+import { ProductMaterial, ProductStatus } from '../../libs/enums/property.enum';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -68,6 +68,11 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		// Add productType if exists
 		if (searchFilter.search?.typeList && searchFilter.search.typeList.length > 0) {
 			search.productType = searchFilter.search.typeList;
+		}
+
+		// Add productMaterial if exists (single enum)
+		if (searchFilter.search?.productMaterial) {
+			search.productMaterial = searchFilter.search.productMaterial as ProductMaterial;
 		}
 		
 		const inquiry = {
@@ -329,7 +334,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 							) : properties?.length === 0 ? (
 								<Box component={'div'} className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<Typography component={'p'}>No Properties found!</Typography>
+									<Typography component={'p'}>No Products found!</Typography>
 								</Box>
 							) : (
 								properties.map((property: Product) => {
