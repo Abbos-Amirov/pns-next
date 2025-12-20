@@ -16,6 +16,7 @@ import { Direction } from '../../libs/enums/common.enum';
 import { useQuery } from '@apollo/client';
 import { GET_LOCATIONS } from '../../apollo/user/query';
 import { sweetErrorHandling } from '../../libs/sweetAlert';
+import { LocationCity } from '../../libs/enums/location-city.enum';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -34,7 +35,7 @@ const CityList: NextPage = ({ initialInput, ...props }: any) => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
-	const [filterSortName, setFilterSortName] = useState('Featured');
+	const [filterSortName, setFilterSortName] = useState('All Cities');
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
 	/** APOLLO REQUESTS **/
@@ -72,27 +73,14 @@ const CityList: NextPage = ({ initialInput, ...props }: any) => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
-			const inputObj = JSON.parse(router?.query?.input as string);
+			const inputObj = JSON.parse(router.query.input as string);
 			setSearchFilter(inputObj);
+			setCurrentPage(inputObj?.page === undefined ? 1 : inputObj.page);
+		} else {
+			setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
 		}
-
-		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
-	}, [router]);
-
-	useEffect(() => {
-		// Refetch when searchFilter changes
-		if (refetch) {
-			refetch({
-				input: {
-					page: searchFilter.page || 1,
-					limit: searchFilter.limit || 10,
-					sort: searchFilter.sort || 'createdAt',
-					direction: searchFilter.direction || Direction.DESC,
-					search: searchFilter.search || {},
-				},
-			});
-		}
-	}, [searchFilter, refetch]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [router.query.input]);
 
 	/** HANDLERS **/
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
@@ -118,40 +106,30 @@ const CityList: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
-			case 'featured':
-				setSearchFilter({ ...searchFilter, sort: 'locationLikes', direction: Direction.DESC });
-				setFilterSortName('Featured');
-				break;
-			case 'best_selling':
-				setSearchFilter({ ...searchFilter, sort: 'locationViews', direction: Direction.DESC });
-				setFilterSortName('Best selling');
-				break;
-			case 'alphabetical_az':
-				setSearchFilter({ ...searchFilter, sort: 'locationName', direction: Direction.ASC });
-				setFilterSortName('Alphabetically, A-Z');
-				break;
-			case 'alphabetical_za':
-				setSearchFilter({ ...searchFilter, sort: 'locationName', direction: Direction.DESC });
-				setFilterSortName('Alphabetically, Z-A');
-				break;
-			case 'price_low_high':
-				setSearchFilter({ ...searchFilter, sort: 'locationLikes', direction: Direction.ASC });
-				setFilterSortName('Likes, low to high');
-				break;
-			case 'price_high_low':
-				setSearchFilter({ ...searchFilter, sort: 'locationLikes', direction: Direction.DESC });
-				setFilterSortName('Likes, high to low');
-				break;
-			case 'date_old_new':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.ASC });
-				setFilterSortName('Date, old to new');
-				break;
-			case 'date_new_old':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.DESC });
-				setFilterSortName('Date, new to old');
-				break;
+		// City filter via backend text search (LocationsSearch supports only `text`)
+		const id = e.currentTarget.id;
+
+		if (id === 'all_cities') {
+			const nextFilter = {
+				...searchFilter,
+				page: 1,
+				search: { ...(searchFilter.search || {}), text: '' },
+			};
+			setSearchFilter(nextFilter);
+			setFilterSortName('All Cities');
+			router.push(`/city?input=${JSON.stringify(nextFilter)}`, `/city?input=${JSON.stringify(nextFilter)}`, { scroll: false });
+		} else {
+			const city = id as LocationCity;
+			const nextFilter = {
+				...searchFilter,
+				page: 1,
+				search: { ...(searchFilter.search || {}), text: city },
+			};
+			setSearchFilter(nextFilter);
+			setFilterSortName(city);
+			router.push(`/city?input=${JSON.stringify(nextFilter)}`, `/city?input=${JSON.stringify(nextFilter)}`, { scroll: false });
 		}
+
 		setSortingOpen(false);
 		setAnchorEl(null);
 	};
@@ -181,36 +159,20 @@ const CityList: NextPage = ({ initialInput, ...props }: any) => {
 							</Stack>
 						</Stack>
 						<Box component={'div'} className={'sort-controls'}>
-							<span>Sort by</span>
+							<span>City</span>
 							<div>
 								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
 									{filterSortName}
 								</Button>
 								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-									<MenuItem onClick={sortingHandler} id={'featured'} disableRipple>
-										Featured
+									<MenuItem onClick={sortingHandler} id={'all_cities'} disableRipple>
+										All Cities
 									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'best_selling'} disableRipple>
-										Best selling
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'alphabetical_az'} disableRipple>
-										Alphabetically, A-Z
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'alphabetical_za'} disableRipple>
-										Alphabetically, Z-A
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'price_low_high'} disableRipple>
-										Price, low to high
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'price_high_low'} disableRipple>
-										Price, high to low
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'date_old_new'} disableRipple>
-										Date, old to new
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'date_new_old'} disableRipple>
-										Date, new to old
-									</MenuItem>
+									{Object.values(LocationCity).map((city) => (
+										<MenuItem key={city} onClick={sortingHandler} id={city} disableRipple>
+											{city}
+										</MenuItem>
+									))}
 								</Menu>
 							</div>
 						</Box>

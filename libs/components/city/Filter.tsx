@@ -24,6 +24,30 @@ const Filter = (props: FilterType) => {
 	const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	/** HANDLERS **/
+	const clearCategoryHandler = useCallback(async () => {
+		try {
+			await router.push(
+				`/city?input=${JSON.stringify({
+					...searchFilter,
+					search: {
+						...searchFilter.search,
+						typeList: [],
+					},
+				})}`,
+				`/city?input=${JSON.stringify({
+					...searchFilter,
+					search: {
+						...searchFilter.search,
+						typeList: [],
+					},
+				})}`,
+				{ scroll: false },
+			);
+		} catch (err: any) {
+			console.log('ERROR, clearCategoryHandler:', err);
+		}
+	}, [searchFilter, router]);
+
 	const categorySelectHandler = useCallback(
 		async (category: PropertyType) => {
 			try {
@@ -233,6 +257,20 @@ const Filter = (props: FilterType) => {
 						<Typography style={{color: "#ffffff"}}>Category</Typography>
 					</Box>
 					<Stack className={'category-list'}>
+						{(() => {
+							const currentTypeList = (searchFilter?.search as any)?.typeList || [];
+							const isAllSelected = !currentTypeList || currentTypeList.length === 0;
+							return (
+								<Stack
+									className={`category-item ${isAllSelected ? 'selected' : ''}`}
+									key={'ALL'}
+									onClick={clearCategoryHandler}
+									sx={{ cursor: 'pointer' }}
+								>
+									<Typography>All</Typography>
+								</Stack>
+							);
+						})()}
 						{categories.map((category: PropertyType) => {
 							const currentTypeList = (searchFilter?.search as any)?.typeList || [];
 							const isSelected = currentTypeList.includes(category);
