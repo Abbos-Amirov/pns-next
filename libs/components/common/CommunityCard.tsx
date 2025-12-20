@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack, Typography } from '@mui/material';
@@ -27,33 +27,41 @@ const CommunityCard = (props: CommunityCardProps) => {
 	const user = useReactiveVar(userVar);
 	const [isLiked, setIsLiked] = useState<boolean>(false);
 	const [likesCount, setLikesCount] = useState<number>(boardArticle?.articleLikes || 0);
+	const pendingLikeRef = useRef<boolean | null>(null);
 
-	// Initialize like state from boardArticle
+	// Initialize like state from boardArticle ONLY when switching to a different article.
+	// This prevents stale parent props from resetting the optimistic UI after a re-render.
 	useEffect(() => {
-		const liked = boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite;
-		setIsLiked(liked || false);
-		
-		if (boardArticle?.articleLikes !== undefined) {
-			setLikesCount(boardArticle.articleLikes);
-		}
-	}, [boardArticle?._id, boardArticle?.meLiked, boardArticle?.articleLikes]);
+		setIsLiked(!!boardArticle?.meLiked?.[0]?.myFavorite);
+		setLikesCount(boardArticle?.articleLikes ?? 0);
+		pendingLikeRef.current = null;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [boardArticle?._id]);
 
 	/** APOLLO MUTATIONS **/
 	const [likeTargetBoardArticle, { loading: likeLoading }] = useMutation(LIKE_TARGET_BOARD_ARTICLE, {
 		onCompleted: (data) => {
 			if (data?.likeTargetBoardArticle) {
 				const updatedArticle = data.likeTargetBoardArticle;
-				const newLikedState = updatedArticle.meLiked && updatedArticle.meLiked[0]?.myFavorite;
-				
-				setIsLiked(newLikedState || false);
-				setLikesCount(updatedArticle.articleLikes || 0);
+				const serverLiked = !!updatedArticle?.meLiked?.[0]?.myFavorite;
+				const serverLikes = updatedArticle?.articleLikes ?? 0;
+
+				// Instagram-like guard:
+				// If backend returns stale liked-state, do NOT overwrite user's optimistic UI.
+				// We'll keep UI state and still sync count; next query/refetch will reconcile.
+				if (pendingLikeRef.current === null || serverLiked === pendingLikeRef.current) {
+					setIsLiked(serverLiked);
+					pendingLikeRef.current = null;
+				}
+
+				setLikesCount(serverLikes);
 				
 				// Notify parent component if callback provided
 				if (onLikeUpdate) {
 					onLikeUpdate(boardArticle._id, updatedArticle);
 				}
 				
-				const message = newLikedState ? 'Article liked successfully!' : 'Article unliked successfully!';
+				const message = serverLiked ? 'Article liked successfully!' : 'Article unliked successfully!';
 				sweetTopSmallSuccessAlert(message, 700).then();
 			}
 		},
@@ -62,9 +70,9 @@ const CommunityCard = (props: CommunityCardProps) => {
 			sweetErrorHandling(err).then();
 			
 			// Revert optimistic update on error
-			const liked = boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite;
-			setIsLiked(liked || false);
-			setLikesCount(boardArticle?.articleLikes || 0);
+			pendingLikeRef.current = null;
+			setIsLiked(!!boardArticle?.meLiked?.[0]?.myFavorite);
+			setLikesCount(boardArticle?.articleLikes ?? 0);
 		},
 	});
 	
@@ -122,10 +130,13 @@ const CommunityCard = (props: CommunityCardProps) => {
 			return;
 		}
 
-		// Optimistic update
-		const currentLikedState = isLiked;
-		setIsLiked(!currentLikedState);
-		setLikesCount(!currentLikedState ? likesCount + 1 : Math.max(0, likesCount - 1));
+		// Optimistic update (Instagram-like)
+		const prevLiked = isLiked;
+		const prevLikes = likesCount;
+		const nextLiked = !prevLiked;
+		pendingLikeRef.current = nextLiked;
+		setIsLiked(nextLiked);
+		setLikesCount(nextLiked ? prevLikes + 1 : Math.max(0, prevLikes - 1));
 
 		try {
 			await likeTargetBoardArticle({
@@ -137,8 +148,9 @@ const CommunityCard = (props: CommunityCardProps) => {
 		} catch (err: any) {
 			console.error('Error liking article:', err);
 			// Revert optimistic update on error
-			setIsLiked(currentLikedState);
-			setLikesCount(boardArticle?.articleLikes || 0);
+			pendingLikeRef.current = null;
+			setIsLiked(prevLiked);
+			setLikesCount(prevLikes);
 			sweetErrorHandling(err).then();
 		}
 	};
