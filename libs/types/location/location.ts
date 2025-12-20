@@ -1,8 +1,10 @@
 import { TotalCounter } from '../product/property';
+import { LocationCity } from '../../enums/location-city.enum';
 
 export interface Location {
 	_id: string;
 	locationName: string;
+	locationCity?: LocationCity;
 	address: string;
 	description?: string;
 	locationType?: string;

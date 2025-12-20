@@ -5,6 +5,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { REACT_APP_API_URL } from '../../config';
 import { CreateLocationInput } from '../../types/location/location.input';
 import { LocationType } from '../../enums/location.enum';
+import { LocationCity } from '../../enums/location-city.enum';
 import axios from 'axios';
 import { getJwtToken } from '../../auth';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
@@ -18,6 +19,7 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 	const inputRef = useRef<any>(null);
 	const [insertLocationData, setInsertLocationData] = useState<CreateLocationInput>(initialValues);
 	const [locationType, setLocationType] = useState<LocationType[]>(Object.values(LocationType));
+	const [locationCities] = useState<LocationCity[]>(Object.values(LocationCity));
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 
@@ -29,7 +31,8 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 				sweetTopSmallSuccessAlert('Location created successfully!', 700).then();
 				// Reset form
 				setInsertLocationData({
-					locationName: '',
+					locationName: LocationCity.SEOUL,
+					locationCity: LocationCity.SEOUL,
 					address: '',
 					description: '',
 					locationType: LocationType.OFFICE,
@@ -144,6 +147,7 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 				variables: {
 					input: {
 						locationName: insertLocationData.locationName.trim(),
+						locationCity: insertLocationData.locationCity,
 						address: insertLocationData.address.trim(),
 						description: insertLocationData.description?.trim() || '',
 						locationType: insertLocationData.locationType,
@@ -182,15 +186,23 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 						<Stack className="description-box">
 							<Stack className="config-column">
 								<Typography className="title">Location Name</Typography>
-								<input
-									type="text"
+								<select
 									className="description-input"
-									placeholder={'Location Name'}
-									value={insertLocationData.locationName}
-									onChange={({ target: { value } }) =>
-										setInsertLocationData({ ...insertLocationData, locationName: value })
-									}
-								/>
+									value={insertLocationData.locationCity || 'select'}
+									onChange={({ target: { value } }) => {
+										const city = value as LocationCity;
+										setInsertLocationData({ ...insertLocationData, locationCity: city, locationName: city });
+									}}
+								>
+									<option disabled value={'select'}>
+										Select City
+									</option>
+									{locationCities.map((city) => (
+										<option value={city} key={city}>
+											{city}
+										</option>
+									))}
+								</select>
 							</Stack>
 
 							<Stack className="config-row">
@@ -385,7 +397,8 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 
 AddLocation.defaultProps = {
 	initialValues: {
-		locationName: '',
+		locationName: LocationCity.SEOUL,
+		locationCity: LocationCity.SEOUL,
 		address: '',
 		description: '',
 		locationType: LocationType.OFFICE,
