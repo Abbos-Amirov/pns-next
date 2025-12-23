@@ -77,11 +77,10 @@ export enum ProductStatus {
 
 // === PRODUCT CATEGORY ===
 export enum ProductCategory {
-	ALUMINUM = 'ALUMINUM',  // Alyuminiy material
-	PVC = 'PVC',            // Plastik (PVC) material
-	WOOD = 'WOOD',          // Yog‘och material
-	STEEL = 'STEEL',        // Po‘lat (metall) material
-	GLASS = 'GLASS',    // Ofis yoki tijoriy joylar uchun
+	INTERIOR = 'INTERIOR',  // Ichki (xonaning ichki qismi uchun)
+	EXTERIOR = 'EXTERIOR',  // Tashqi (binoning tashqi qismi uchun)
+	BALCONY = 'BALCONY',    // Balkon yoki veranda uchun
+	OFFICE = 'OFFICE',      // Ofis yoki tijoriy joylar uchun
 }
 
 // === PRODUCT LOCATION ===

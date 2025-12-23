@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import PropertyBigCard from '../../libs/components/common/PropertyBigCard';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
+import CityCard from '../../libs/components/city/CityCard';
 import { Box, Button, Pagination, Stack, Typography, Chip } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -25,10 +26,12 @@ import { CommentGroup } from '../../libs/enums/comment.enum';
 import { Direction } from '../../libs/enums/common.enum';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { GET_MEMBER, GET_COMMENTS } from '../../apollo/user/query';
+import { GET_COMMENTS, GET_LOCATIONS, GET_MEMBER } from '../../apollo/user/query';
 import { LIKE_TARGET_MEMBER, CREATE_COMMENT } from '../../apollo/user/mutation';
 import moment from 'moment';
 import Link from 'next/link';
+import { Location } from '../../libs/types/location/location';
+import { LocationsInquiry } from '../../libs/types/location/location.input';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -46,6 +49,8 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(initialInput);
 	const [agentProperties, setAgentProperties] = useState<Product[]>([]);
 	const [propertyTotal, setPropertyTotal] = useState<number>(0);
+	const [agentLocationsPage, setAgentLocationsPage] = useState<number>(1);
+	const agentLocationsLimit = 6;
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [agentComments, setAgentComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
@@ -130,6 +135,33 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 			console.error('GetComments Query Error:', err);
 		},
 	});
+
+	// Get Locations Query (backend search doesn't support memberId, so we filter on frontend)
+	const { data: locationsData, loading: locationsLoading, error: locationsError } = useQuery(GET_LOCATIONS, {
+		variables: {
+			input: {
+				page: 1,
+				limit: 100,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				search: {},
+			} as LocationsInquiry,
+		},
+		skip: !agent?._id,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+	});
+
+	const allLocations: Location[] = locationsData?.getLocations?.list || [];
+	const agentLocationsAll: Location[] = useMemo(() => {
+		if (!agent?._id) return [];
+		return allLocations.filter((l) => l.memberId === agent._id);
+	}, [allLocations, agent?._id]);
+
+	const pagedAgentLocations: Location[] = useMemo(() => {
+		const start = (agentLocationsPage - 1) * agentLocationsLimit;
+		return agentLocationsAll.slice(start, start + agentLocationsLimit);
+	}, [agentLocationsAll, agentLocationsPage]);
 
 	// Create Comment Mutation
 	const [createComment, { loading: createCommentLoading }] = useMutation(CREATE_COMMENT, {
@@ -456,36 +488,45 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 					{/* Agent Properties Section */}
 					<Stack className={'agent-properties-section'}>
-						<Typography className={'section-title'}>working city</Typography>
-						<Stack className={'card-wrap'}>
-							{agentProperties.length > 0 ? (
-								agentProperties.map((property: Product) => {
+						<Typography className={'section-title'}> Working Locations</Typography>
+						<Stack className={'card-wrap locations-grid'}>
+							{locationsLoading ? (
+								<div className={'no-data'}>
+									<Typography>Loading locations...</Typography>
+								</div>
+							) : locationsError ? (
+								<div className={'no-data'}>
+									<img src="/img/icons/icoAlert.svg" alt="" />
+									<p>Error loading locations: {locationsError.message}</p>
+								</div>
+							) : pagedAgentLocations.length > 0 ? (
+								pagedAgentLocations.map((city: Location) => {
 									return (
-										<div className={'wrap-main'} key={property?._id}>
-											<PropertyBigCard property={property} key={property?._id} />
+										<div className={'wrap-main'} key={city?._id}>
+											<CityCard city={city} />
 										</div>
 									);
 								})
 							) : (
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No properties found!</p>
+									<p>No Locations found!</p>
 								</div>
 							)}
 						</Stack>
-						{propertyTotal > 0 && (
+						{agentLocationsAll.length > 0 && (
 							<Stack className={'pagination'}>
 								<Stack className="pagination-box">
 									<Pagination
-										page={searchFilter.page}
-										count={Math.ceil(propertyTotal / searchFilter.limit) || 1}
-										onChange={propertyPaginationChangeHandler}
+										page={agentLocationsPage}
+										count={Math.ceil(agentLocationsAll.length / agentLocationsLimit) || 1}
+										onChange={(e: ChangeEvent<unknown>, value: number) => setAgentLocationsPage(value)}
 										shape="circular"
 										color="primary"
 									/>
 								</Stack>
 								<span>
-									Total {propertyTotal} propert{propertyTotal > 1 ? 'ies' : 'y'} available
+									Total {agentLocationsAll.length} location{agentLocationsAll.length > 1 ? 's' : ''} available
 								</span>
 							</Stack>
 						)}
@@ -495,7 +536,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					<Stack className={'review-section'}>
 						<Stack className={'review-header'}>
 							<Typography className={'section-title'}>Reviews</Typography>
-							<Typography className={'section-subtitle'}>We are glad to see you again</Typography>
+							<Typography className={'section-subtitle'}>We are glad to see you Measurer</Typography>
 						</Stack>
 						
 						{commentsLoading ? (
