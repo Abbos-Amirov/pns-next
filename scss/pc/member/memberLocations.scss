@@ -1,0 +1,205 @@
+#pc-wrap {
+	#member-page {
+		#member-locations-page {
+			width: 100%;
+
+			.main-title-box {
+				width: auto;
+				height: auto;
+				flex-direction: row;
+				justify-content: space-between;
+
+				.right-box {
+					width: 315px;
+					.main-title {
+						color: #181a20;
+						font-family: $font;
+						font-size: 30px;
+						font-style: normal;
+						font-weight: 600;
+						line-height: normal;
+						letter-spacing: 0.6px;
+						text-transform: capitalize;
+					}
+				}
+			}
+
+			.locations-list-box {
+				margin-top: 45px;
+				width: 100%;
+
+				.no-data {
+					width: 100%;
+					padding: 40px 0;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					gap: 12px;
+
+					p,
+					span {
+						color: #717171;
+						font-family: $font;
+						font-size: 14px;
+						font-weight: 400;
+					}
+
+					img {
+						width: 44px;
+						height: 44px;
+						opacity: 0.85;
+					}
+				}
+
+				.locations-grid {
+					width: 100%;
+					display: grid;
+					grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+					gap: 22px;
+
+					.wrap-main {
+						margin: 0;
+						display: block;
+					}
+
+					// Compact CityCard appearance inside member page
+					.card-config {
+						width: 100%;
+						height: auto;
+						border-radius: 14px;
+						background: #ffffff;
+						border: 1px solid rgba(0, 0, 0, 0.06);
+						box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
+						overflow: hidden;
+						transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+						&:hover {
+							transform: translateY(-4px);
+							box-shadow: 0px 14px 34px rgba(0, 0, 0, 0.12);
+						}
+
+						.top {
+							width: 100%;
+							height: 180px;
+							overflow: hidden;
+							background: #f3f3f3;
+
+							img {
+								width: 100%;
+								height: 100%;
+								object-fit: cover;
+							}
+						}
+
+						.bottom {
+							padding: 14px 14px 16px;
+							display: flex;
+							flex-direction: column;
+							gap: 10px;
+
+							.name-address {
+								gap: 6px;
+								.name {
+									Typography {
+										color: #181a20;
+										font-family: $font;
+										font-size: 16px;
+										font-weight: 700;
+										line-height: 1.25;
+										text-transform: uppercase;
+										letter-spacing: 0.3px;
+									}
+								}
+								.address {
+									Typography {
+										color: #717171;
+										font-family: $font;
+										font-size: 13px;
+										font-weight: 400;
+										line-height: 1.35;
+									}
+								}
+							}
+
+							.specifications {
+								display: flex;
+								flex-direction: row;
+								align-items: center;
+								justify-content: space-between;
+								gap: 12px;
+								margin-top: 4px;
+								padding-top: 12px;
+								border-top: 1px solid #f0f0f0;
+
+								.spec-item {
+									display: inline-flex;
+									flex-direction: row;
+									align-items: center;
+									gap: 8px;
+									min-width: 0;
+
+									.MuiIconButton-root {
+										width: 28px;
+										height: 28px;
+										padding: 0;
+									}
+
+									.spec-icon {
+										color: #8B4513;
+										font-size: 20px;
+										width: 20px;
+										height: 20px;
+
+										&.liked {
+											color: #eb6753;
+											fill: #eb6753;
+										}
+									}
+
+									.spec-text {
+										color: #181a20;
+										font-family: $font;
+										font-size: 13px;
+										font-weight: 700;
+										line-height: 1;
+									}
+								}
+
+								.like-item {
+									&:hover {
+										.spec-icon {
+											color: #eb6753;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.pagination-config {
+					width: 100%;
+					height: auto;
+					justify-content: center;
+					align-items: center;
+					margin-top: 30px;
+
+					.total-result {
+						p {
+							color: #181a20;
+							text-align: center;
+							font-family: $font;
+							font-size: 14px;
+							font-style: normal;
+							font-weight: 400;
+							line-height: 26px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+

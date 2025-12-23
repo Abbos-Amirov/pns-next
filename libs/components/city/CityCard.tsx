@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -7,10 +7,11 @@ import { Location } from '../../types/location/location';
 import Link from 'next/link';
 import { REACT_APP_API_URL } from '../../config';
 import { useReactiveVar, useMutation } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
+import { isLocationLikedByUser, setLocationLikedForUser, likedLocationsVar, userVar } from '../../../apollo/store';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { LIKE_TARGET_LOCATION } from '../../../apollo/user/mutation';
 import { sweetTopSuccessAlert, sweetErrorHandling } from '../../sweetAlert';
+import IconButton from '@mui/material/IconButton';
 
 interface CityCardType {
 	city: Location;
@@ -23,49 +24,98 @@ const CityCard = (props: CityCardType) => {
 	const { city, likeCityHandler, myFavorites, recentlyVisited } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const likedLocationsByUser = useReactiveVar(likedLocationsVar);
 	const [isHovered, setIsHovered] = useState(false);
-	const [isLiked, setIsLiked] = useState(false);
-	const [likesCount, setLikesCount] = useState(city?.locationLikes || 0);
+	const pendingLikeRef = useRef<boolean | null>(null);
 
-	// Initialize isLiked and likesCount from city prop
+	// Backend-driven like state (USER ↔ LOCATION relationship)
+	// NOTE: When backend reliably returns Location.meLiked (non-null), we can read it here
+	const [isLiked, setIsLiked] = useState<boolean>(() => {
+		if (myFavorites) return true;
+		return isLocationLikedByUser(user?._id, city?._id);
+	});
+
+	const [likesCount, setLikesCount] = useState<number>(city?.locationLikes || 0);
+
+	// Update isLiked state when city changes
 	useEffect(() => {
-		if (myFavorites) {
-			setIsLiked(true);
+		// Sync with persisted likes only when there's no pending optimistic action
+		if (pendingLikeRef.current === null) {
+			const persisted = myFavorites ? true : isLocationLikedByUser(user?._id, city?._id);
+			setIsLiked(persisted);
 		}
-		if (city?.locationLikes !== undefined) {
-			setLikesCount(city.locationLikes);
-		}
-	}, [city?._id, city?.locationLikes, myFavorites]);
+		setLikesCount(city?.locationLikes ?? 0);
+		// IMPORTANT: only re-init on new city (avoid overriding optimistic updates on re-render)
+	}, [city?._id, user?._id, myFavorites, likedLocationsByUser]);
 
 	// Like Location Mutation
 	const [likeTargetLocation, { loading: likeLoading }] = useMutation(LIKE_TARGET_LOCATION, {
 		onCompleted: (data) => {
-			if (data?.likeTargetLocation && city?._id) {
-				const updatedLocation = data.likeTargetLocation;
-				
-				// Update likes count from backend response
-				if (updatedLocation.locationLikes !== undefined && updatedLocation.locationLikes !== null) {
-					setLikesCount(updatedLocation.locationLikes);
-				} else {
-					// Fallback: increment/decrement manually
-					setLikesCount((prev) => {
-						const newCount = isLiked ? Math.max(0, prev - 1) : prev + 1;
-						return newCount;
-					});
+			if (data?.likeTargetLocation) {
+				const updated = data.likeTargetLocation;
+				// Optional: if backend later returns meLiked for location, we can use it here
+				const serverLiked = updated?.meLiked?.[0]?.myFavorite;
+				const serverLikes = updated?.locationLikes;
+
+				// Instagram-like rule:
+				// If backend returns a stale liked-state, don't overwrite the user's UI decision.
+				if (typeof serverLiked === 'boolean') {
+					if (pendingLikeRef.current === null || serverLiked === pendingLikeRef.current) {
+						setIsLiked(serverLiked);
+					}
 				}
-				
-				const message = !isLiked ? 'Location liked successfully!' : 'Location unliked successfully!';
+
+				if (typeof serverLikes === 'number') {
+					setLikesCount(serverLikes);
+				}
+
+				const newLikedState = pendingLikeRef.current ?? isLiked;
+				pendingLikeRef.current = null;
+				const message = newLikedState ? 'Location liked successfully!' : 'Location unliked successfully!';
 				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
 		onError: (err) => {
 			console.error('LIKE_TARGET_LOCATION Mutation Error:', err);
+			pendingLikeRef.current = null;
 			sweetErrorHandling(err).then();
-			// Revert optimistic update on error
-			setIsLiked((prev) => !prev);
-			setLikesCount((prev) => (isLiked ? prev + 1 : Math.max(0, prev - 1)));
 		},
 	});
+
+	// Handle like button click (same structure as PropertyCard)
+	const handleLikeClick = async (e: React.MouseEvent<HTMLElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (!user?._id) {
+			sweetTopSuccessAlert('Please login first', 700);
+			return;
+		}
+
+		if (!city?._id) return;
+
+		// 🔥 OPTIMISTIC UI
+		const prevLiked = isLiked;
+		const prevLikes = likesCount;
+		const nextLiked = !prevLiked;
+
+		pendingLikeRef.current = nextLiked;
+
+		setIsLiked(nextLiked);
+		setLikesCount(nextLiked ? prevLikes + 1 : Math.max(0, prevLikes - 1));
+		setLocationLikedForUser(user._id, city._id, nextLiked);
+
+		try {
+			await likeTargetLocation({ variables: { input: city._id } });
+		} catch (err) {
+			// ❌ ERROR → ROLLBACK
+			pendingLikeRef.current = null;
+			setIsLiked(prevLiked);
+			setLikesCount(prevLikes);
+			setLocationLikedForUser(user._id, city._id, prevLiked);
+			sweetErrorHandling(err);
+		}
+	};
 
 	// Get image path - use location images or fallback
 	const getImagePath = (): string => {
@@ -125,45 +175,19 @@ const CityCard = (props: CityCardType) => {
 						</Stack>
 					</Stack>
 					<Stack className="specifications">
-						<Stack 
-							className="spec-item like-item"
-							onClick={async (e: React.MouseEvent<HTMLDivElement>) => {
-								e.preventDefault();
-								e.stopPropagation();
-								
-								if (!user?._id) {
-									sweetTopSuccessAlert('Please login to like locations', 700).then();
-									return;
-								}
-
-								if (!city?._id) {
-									return;
-								}
-
-								// Optimistic update
-								const currentLikedState = isLiked;
-								setIsLiked(!currentLikedState);
-								setLikesCount((prev) => {
-									return !currentLikedState ? prev + 1 : Math.max(0, prev - 1);
-								});
-
-								try {
-									await likeTargetLocation({
-										variables: {
-											input: city._id,
-										},
-									});
-								} catch (err) {
-									// Error handled by onError callback
-								}
-							}}
-							sx={{ cursor: 'pointer' }}
-						>
-							{isLiked ? (
-								<FavoriteIcon className={'spec-icon liked'} />
-							) : (
-								<FavoriteBorderIcon className={'spec-icon'} />
-							)}
+						<Stack className="spec-item like-item" sx={{ cursor: 'pointer' }}>
+							<IconButton
+								color={'default'}
+								onClick={handleLikeClick}
+								disabled={likeLoading}
+								sx={{ padding: 0 }}
+							>
+								{isLiked ? (
+									<FavoriteIcon className={'spec-icon liked'} />
+								) : (
+									<FavoriteBorderIcon className={'spec-icon'} />
+								)}
+							</IconButton>
 							<Typography className={'spec-text'}>{likesCount}</Typography>
 						</Stack>
 						<Stack className="spec-item">

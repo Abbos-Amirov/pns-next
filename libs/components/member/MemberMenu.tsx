@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { Member } from '../../types/member/member';
 import { REACT_APP_API_URL } from '../../config';
-import { useQuery } from '@apollo/client';
-import { GET_MEMBER } from '../../../apollo/user/query';
+import { useQuery, useReactiveVar } from '@apollo/client';
+import { GET_LOCATIONS, GET_MEMBER } from '../../../apollo/user/query';
 import { sweetErrorHandling } from '../../sweetAlert';
 import { MemberType } from '../../enums/member.enum';
+import { Direction } from '../../enums/common.enum';
+import { Location } from '../../types/location/location';
+import { LocationsInquiry } from '../../types/location/location.input';
+import { userVar } from '../../../apollo/store';
 
 interface MemberMenuProps {
 	subscribeHandler: any;
@@ -20,9 +24,12 @@ const MemberMenu = (props: MemberMenuProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const category: any = router.query?.category;
+	const me = useReactiveVar(userVar);
 	const [member, setMember] = useState<Member | null>(null);
 	const [isFollowing, setIsFollowing] = useState<boolean>(false);
 	const { memberId } = router.query;
+
+	const isSelfProfile = !!member?._id && !!me?._id && member._id === me._id;
 
 	/** APOLLO REQUESTS **/
 	const { data: memberData, loading: memberLoading, error: memberError, refetch: refetchMember } = useQuery(GET_MEMBER, {
@@ -46,6 +53,29 @@ const MemberMenu = (props: MemberMenuProps) => {
 		},
 	});
 
+	// Get Locations count for this measurer (backend search doesn't support memberId, so filter on frontend)
+	const { data: locationsData } = useQuery(GET_LOCATIONS, {
+		variables: {
+			input: {
+				page: 1,
+				limit: 200,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				search: {},
+			} as LocationsInquiry,
+		},
+		skip: !memberId,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+	});
+
+	const measurerLocationCount = useMemo(() => {
+		const list: Location[] = locationsData?.getLocations?.list || [];
+		const id = memberId as string | undefined;
+		if (!id) return 0;
+		return list.filter((l) => l.memberId === id).length;
+	}, [locationsData, memberId]);
+
 	if (device === 'mobile') {
 		return <div>MEMBER MENU MOBILE</div>;
 	} else {
@@ -67,8 +97,9 @@ const MemberMenu = (props: MemberMenuProps) => {
 						<Typography className={'view-list'}>{member?.memberType}</Typography>
 					</Stack>
 				</Stack>
-				<Stack className="follow-button-box">
-					{isFollowing ? (
+				{!isSelfProfile && (
+					<Stack className="follow-button-box">
+						{isFollowing ? (
 						<Button
 							variant="outlined"
 							sx={{ 
@@ -109,7 +140,6 @@ const MemberMenu = (props: MemberMenuProps) => {
 									background: '#6B3410',
 								},
 							}}
-							style={{coler:"white"}}
 							onClick={async () => {
 								if (member?._id) {
 									// Optimistic update - immediately change button
@@ -130,7 +160,8 @@ const MemberMenu = (props: MemberMenuProps) => {
 							Follow
 						</Button>
 					)}
-				</Stack>
+					</Stack>
+				)}
 				<Stack className={'sections'}>
 					<Stack className={'section'}>
 						<Typography className="title" variant={'h5'}>
@@ -138,26 +169,26 @@ const MemberMenu = (props: MemberMenuProps) => {
 						</Typography>
 						<List className={'sub-section'}>
 							{(member?.memberType === MemberType.MEASURER || member?.memberType === MemberType.INSTALLER) && (
-								<ListItem className={category === 'properties' ? 'focus' : ''}>
+								<ListItem className={category === 'locations' || category === 'properties' ? 'focus' : ''}>
 									<Link
 										href={{
 											pathname: '/member',
-											query: { ...router.query, category: 'properties' },
+											query: { ...router.query, category: 'locations' },
 										}}
 										scroll={false}
 										style={{ width: '100%' }}
 									>
 										<div className={'flex-box'}>
-											{category === 'properties' ? (
+											{category === 'locations' || category === 'properties' ? (
 												<img className={'com-icon'} src={'/img/icons/homeWhite.svg'} alt={'com-icon'} />
 											) : (
 												<img className={'com-icon'} src={'/img/icons/home.svg'} alt={'com-icon'} />
 											)}
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-											Citys
+												Locations
 											</Typography>
 											<Typography className="count-title" variant="subtitle1">
-												{member?.memberProperties}
+												{measurerLocationCount}
 											</Typography>
 										</div>
 									</Link>

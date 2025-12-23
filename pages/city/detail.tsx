@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
@@ -11,7 +11,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ShareIcon from '@mui/icons-material/Share';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useReactiveVar, useQuery, useMutation } from '@apollo/client';
-import { userVar } from '../../apollo/store';
+import { isLocationLikedByUser, likedLocationsVar, setLocationLikedForUser, userVar } from '../../apollo/store';
 import { Location } from '../../libs/types/location/location';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import { GET_LOCATION } from '../../apollo/user/query';
@@ -37,10 +37,12 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
+	const likedLocationsByUser = useReactiveVar(likedLocationsVar);
 	const [locationId, setLocationId] = useState<string | null>(null);
 	const [location, setLocation] = useState<Location | null>(null);
 	const [isLiked, setIsLiked] = useState<boolean>(false);
 	const [likesCount, setLikesCount] = useState<number>(0);
+	const pendingLikeRef = useRef<boolean | null>(null);
 
 	/** APOLLO REQUESTS **/
 	const { data: locationData, loading: locationLoading, error: locationError } = useQuery(GET_LOCATION, {
@@ -55,8 +57,8 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 				const loc = data.getLocation;
 				setLocation(loc);
 				setLikesCount(loc.locationLikes || 0);
-				// Check if location is liked (if meLiked field exists in future)
-				setIsLiked(false); // Will be updated when backend adds meLiked field
+				// Persisted like (fallback) by user
+				setIsLiked(isLocationLikedByUser(user?._id, loc?._id));
 			}
 		},
 		onError: (err) => {
@@ -70,21 +72,21 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 		onCompleted: (data) => {
 			if (data?.likeTargetLocation && location?._id) {
 				const updatedLocation = data.likeTargetLocation;
-				const newLikedState = updatedLocation.meLiked && updatedLocation.meLiked[0]?.myFavorite;
-				
-				setIsLiked(newLikedState || !isLiked);
-				setLikesCount(updatedLocation.locationLikes || 0);
-				
-				const message = newLikedState ? 'Location liked successfully!' : 'Location unliked successfully!';
+				const serverLikes = updatedLocation?.locationLikes ?? likesCount;
+				const finalLiked = pendingLikeRef.current ?? isLiked;
+
+				// Keep optimistic isLiked (backend doesn't reliably return Location.meLiked yet)
+				setLikesCount(serverLikes);
+				pendingLikeRef.current = null;
+
+				const message = finalLiked ? 'Location liked successfully!' : 'Location unliked successfully!';
 				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
 		onError: (err) => {
 			console.error('LIKE_TARGET_LOCATION Mutation Error:', err);
 			sweetErrorHandling(err).then();
-			// Revert optimistic update on error
-			setIsLiked((prev) => !prev);
-			setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+			pendingLikeRef.current = null;
 		},
 	});
 
@@ -94,6 +96,15 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 			setLocationId(router.query.id as string);
 		}
 	}, [router]);
+
+	// keep in sync with persisted likes (only when no pending optimistic update)
+	useEffect(() => {
+		if (pendingLikeRef.current !== null) return;
+		if (location?._id) {
+			setIsLiked(isLocationLikedByUser(user?._id, location._id));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [likedLocationsByUser, user?._id, location?._id]);
 
 	/** HANDLERS **/
 	const likeLocationHandler = async () => {
@@ -107,8 +118,14 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 		}
 
 		// Optimistic update
-		setIsLiked((prev) => !prev);
-		setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+		const prevLiked = isLiked;
+		const prevLikes = likesCount;
+		const nextLiked = !prevLiked;
+
+		setIsLiked(nextLiked);
+		setLikesCount((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)));
+		pendingLikeRef.current = nextLiked;
+		setLocationLikedForUser(user._id, location._id, nextLiked);
 
 		try {
 			await likeTargetLocation({
@@ -117,7 +134,11 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 				},
 			});
 		} catch (err) {
-			// Error handled by onError callback
+			// Rollback optimistic update
+			setIsLiked(prevLiked);
+			setLikesCount(prevLikes);
+			pendingLikeRef.current = null;
+			setLocationLikedForUser(user._id, location._id, prevLiked);
 		}
 	};
 

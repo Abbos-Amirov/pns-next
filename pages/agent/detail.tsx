@@ -231,8 +231,15 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	/** HANDLERS **/
 	const redirectToMemberPageHandler = async (memberId: string) => {
 		try {
-			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
-			else await router.push(`/member?memberId=${memberId}`);
+			// Always navigate to Member page (MemberMenu) from Agent detail
+			await router.push(
+				{
+					pathname: '/member',
+					query: { memberId, category: 'properties' },
+				},
+				undefined,
+				{ scroll: false },
+			);
 		} catch (error) {
 			await sweetErrorHandling(error);
 		}

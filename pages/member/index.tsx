@@ -8,6 +8,7 @@ import MemberProperties from '../../libs/components/member/MemberProperties';
 import { useRouter } from 'next/router';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import MemberArticles from '../../libs/components/member/MemberArticles';
+import MemberLocations from '../../libs/components/member/MemberLocations';
 import { useReactiveVar, useMutation } from '@apollo/client';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
@@ -36,7 +37,7 @@ const MemberPage: NextPage = () => {
 			router.replace(
 				{
 					pathname: router.pathname,
-					query: { ...router.query, category: 'properties' },
+					query: { ...router.query, category: 'locations' },
 				},
 				undefined,
 				{ shallow: true },
@@ -53,6 +54,10 @@ const MemberPage: NextPage = () => {
 		},
 		onError: (err) => {
 			console.error('Subscribe Mutation Error:', err);
+			const msg =
+				(err as any)?.graphQLErrors?.[0]?.message || (err as any)?.message || '';
+			// Avoid noisy popups for known backend messages
+			if (msg.includes('Self subscription is denied') || msg.includes('No data is found')) return;
 			sweetErrorHandling(err).then();
 		},
 	});
@@ -65,6 +70,10 @@ const MemberPage: NextPage = () => {
 		},
 		onError: (err) => {
 			console.error('Unsubscribe Mutation Error:', err);
+			const msg =
+				(err as any)?.graphQLErrors?.[0]?.message || (err as any)?.message || '';
+			// Avoid noisy popups for known backend messages
+			if (msg.includes('Self subscription is denied') || msg.includes('No data is found')) return;
 			sweetErrorHandling(err).then();
 		},
 	});
@@ -81,6 +90,13 @@ const MemberPage: NextPage = () => {
 			return;
 		}
 
+		// Prevent self follow (backend rejects anyway)
+		if (id === user._id) {
+			// No popup error — just a friendly info
+			sweetTopSuccessAlert('You cannot follow yourself', 700).then();
+			return;
+		}
+
 		try {
 			await subscribe({
 				variables: {
@@ -94,6 +110,8 @@ const MemberPage: NextPage = () => {
 			}
 		} catch (err: any) {
 			console.error('Error subscribing:', err);
+			const msg = err?.graphQLErrors?.[0]?.message || err?.message || '';
+			if (msg.includes('Self subscription is denied') || msg.includes('No data is found')) return;
 			sweetErrorHandling(err).then();
 		}
 	};
@@ -109,6 +127,9 @@ const MemberPage: NextPage = () => {
 			return;
 		}
 
+		// Prevent self unfollow
+		if (id === user._id) return;
+
 		try {
 			await unsubscribe({
 				variables: {
@@ -122,6 +143,9 @@ const MemberPage: NextPage = () => {
 			}
 		} catch (err: any) {
 			console.error('Error unsubscribing:', err);
+			const msg = err?.graphQLErrors?.[0]?.message || err?.message || '';
+			// Treat "No data is found" as already unfollowed, avoid popup
+			if (msg.includes('No data is found') || msg.includes('Self subscription is denied')) return;
 			sweetErrorHandling(err).then();
 		}
 	};
@@ -148,7 +172,9 @@ const MemberPage: NextPage = () => {
 							</Stack>
 							<Stack className="main-config" mb={'76px'}>
 								<Stack className={'list-config'}>
-									{category === 'properties' && <MemberProperties />}
+									{category === 'locations' && <MemberLocations />}
+									{/* Backward compatibility */}
+									{category === 'properties' && <MemberLocations />}
 									{category === 'followers' && (
 										<MemberFollowers
 											subscribeHandler={subscribeHandler}
