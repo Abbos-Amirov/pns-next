@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Box, Stack } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import Badge from '@mui/material/Badge';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
+import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
 import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
 import { RippleBadge } from '../../scss/MaterialTheme/styled';
@@ -12,6 +12,15 @@ import { socketVar, userVar } from '../../apollo/store';
 import { Member } from '../types/member/member';
 import { Messages, REACT_APP_API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
+
+const DEFAULT_AVATAR_SRC = '/img/profile/defaultUser.svg';
+
+function buildAvatarSrc(memberImage?: string): string {
+	if (!memberImage) return DEFAULT_AVATAR_SRC;
+	if (memberImage.startsWith('http://') || memberImage.startsWith('https://')) return memberImage;
+	if (memberImage.startsWith('/img/')) return memberImage;
+	return `${REACT_APP_API_URL}/${memberImage}`;
+}
 
 const NewMessage = (type: any) => {
 	if (type === 'right') {
@@ -30,7 +39,16 @@ const NewMessage = (type: any) => {
 	} else {
 		return (
 			<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-				<Avatar alt={'jonik'} src={'/img/profile/defaultUser.svg'} />
+				<Avatar
+					alt={'user'}
+					src={DEFAULT_AVATAR_SRC}
+					sx={{
+						bgcolor: '#8B4513',
+						border: '2px solid rgba(139, 69, 19, 0.25)',
+						boxShadow: '0px 6px 14px rgba(0,0,0,0.12)',
+					}}
+				/>
+				
 				<div className={'msg-left'}></div>
 			</Box>
 		);
@@ -42,6 +60,12 @@ interface MessagePayload {
 	text: string;
 	memberData: ClientUser;
   }
+
+type ChatMessage = MessagePayload & {
+	__local?: boolean; // client-side message (always mine)
+	__localId?: string;
+	__localAt?: number;
+};
   
   interface InfoPayload {
 	event: string;
@@ -53,7 +77,7 @@ interface MessagePayload {
 
 const Chat = () => {
 	const chatContentRef = useRef<HTMLDivElement>(null);
-	const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
+	const [messagesList, setMessagesList] = useState<ChatMessage[]>([]);
 	const [onlineUsers, setOnlineUsers] = useState<number>(0);
 	const [messageInput, setMessageInput] = useState<string>('');
 	const [open, setOpen] = useState(false);
@@ -61,6 +85,8 @@ const Chat = () => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const socket = useReactiveVar(socketVar);
+	const myAvatarSrc = useMemo(() => buildAvatarSrc((user as any)?.memberImage), [user]);
+	const pendingSentRef = useRef<Array<{ text: string; at: number }>>([]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -78,12 +104,26 @@ const Chat = () => {
 						break;
 					}
 					case 'getMessages': {
-						const list: MessagePayload[] = data.list || [];
+						const list: ChatMessage[] = (data.list || []).map((m: any) => ({
+							...m,
+							__local: false,
+						}));
 						setMessagesList(list);
 						break;
 					}
 					case 'message': {
-						const newMessage: MessagePayload = data;
+						const newMessage: ChatMessage = { ...data, __local: false };
+
+						// If this message was just sent by this client, we already rendered it locally on the right.
+						const now = Date.now();
+						const idx = pendingSentRef.current.findIndex(
+							(p) => p.text === newMessage.text && now - p.at < 10_000,
+						);
+						if (idx !== -1) {
+							pendingSentRef.current.splice(idx, 1);
+							return;
+						}
+
 						setMessagesList((prev) => [...prev, newMessage]);
 						break;
 					}
@@ -147,6 +187,30 @@ const Chat = () => {
 		}
 
 		try {
+			// Add message locally first so it always appears on the right for this client
+			const localAt = Date.now();
+			const localMsg: ChatMessage = {
+				event: 'message',
+				text: messageInput,
+				memberData: (user?._id
+					? ({
+							...(user as any),
+							_id: user._id,
+							memberImage: (user as any)?.memberImage,
+					  } as any)
+					: ({
+							_id: 'guest',
+							memberNick: 'Guest',
+							memberType: 'GUEST',
+							memberImage: '',
+					  } as any)) as ClientUser,
+				__local: true,
+				__localId: `${localAt}-${Math.random().toString(16).slice(2)}`,
+				__localAt: localAt,
+			};
+			pendingSentRef.current.push({ text: messageInput, at: localAt });
+			setMessagesList((prev) => [...prev, localMsg]);
+
 			socket.send(JSON.stringify({ event: 'message', data: messageInput }));
 			setMessageInput('');
 		} catch (e) {
@@ -160,7 +224,7 @@ const Chat = () => {
 		<Stack className="chatting">
 			{openButton ? (
 				<button className="chat-button" onClick={handleOpenChat}>
-					{open ? <CloseFullscreenIcon /> : <MarkChatUnreadIcon />}
+					{open ? <CloseFullscreenIcon sx={{ fontSize: 24 }} /> : <SupportAgentRoundedIcon sx={{ fontSize: 28 }} />}
 				</button>
 			) : null}
 			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
@@ -182,10 +246,20 @@ const Chat = () => {
 							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
 								<div className={'welcome'}>Welcome to Live chat!</div>
 							</Box>
-							{messagesList.map((ele: MessagePayload) => {
+							{messagesList.map((ele: ChatMessage) => {
 								const {text, memberData} = ele;
-								const memberImage = memberData?.memberImage ?  `${REACT_APP_API_URL}/${memberData.memberImage}` : '/img/profile/defaultUser.svg';
-								return memberData?._id  === user?._id ? (<Box
+								const memberImage = buildAvatarSrc(memberData?.memberImage);
+								const avatarCommonSx = {
+									bgcolor: '#8B4513',
+									border: '2px solid rgba(139, 69, 19, 0.25)',
+									boxShadow: '0px 6px 14px rgba(0,0,0,0.12)',
+									width: 34,
+									height: 34,
+								} as const;
+
+								const isMine = !!ele.__local || (memberData?._id && memberData?._id === user?._id);
+
+								return isMine ? (<Box
 									component={'div'}
 									flexDirection={'row'}
 									style={{ display: 'flex' }}
@@ -194,8 +268,9 @@ const Chat = () => {
 									sx={{ m: '10px 0px' }}
 								>
 									<div className={'msg-right'}>{text}</div>
+									<Avatar alt={'me'} src={myAvatarSrc} sx={{ ...avatarCommonSx, ml: '10px' }} />
 								</Box>) : (<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-									<Avatar alt={'jonik'} src={memberImage} />
+									<Avatar alt={'user'} src={memberImage} sx={avatarCommonSx} />
 									<div className={'msg-left'}>{text}</div>
 								</Box>)
 							})}
