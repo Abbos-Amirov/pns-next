@@ -14,7 +14,7 @@ export const userVar = makeVar<CustomJwtPayload>({
 	memberImage: '',
 	memberAddress: '',
 	memberDesc: '',
-	memberProperties: 0,
+	memberProducts: 0,
 	memberRank: 0,
 	memberArticles: 0,
 	memberPoints: 0,
@@ -23,6 +23,8 @@ export const userVar = makeVar<CustomJwtPayload>({
 	memberWarnings: 0,
 	memberBlocks: 0,
 });
+
+export const socketVar = makeVar<WebSocket | null>(null);
 
 /**
  * Fallback persistence for Location likes (until backend returns a stable per-user like relation for Location).

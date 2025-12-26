@@ -7,6 +7,7 @@ import { onError } from '@apollo/client/link/error';
 import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
+import { socketVar } from './store';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -34,7 +35,9 @@ class LoggingWebSocket {
 	private socket: WebSocket;
   
 	constructor(url: string) {
-	  this.socket = new WebSocket(url);
+	  this.socket = new WebSocket( `${url}?token=${getJwtToken()}`);
+	  socketVar(this.socket)
+	  
   
 	  this.socket.onopen = () => {
 		console.log('WebSocket connection ');
@@ -45,7 +48,7 @@ class LoggingWebSocket {
 	  };
   
 	  this.socket.onerror = (error) => {
-		console.log('WebSocket ERROR:', error);
+		console.log('WebSocket Xato:', error);
 	  };
 	}
   
@@ -139,3 +142,20 @@ export function initializeApollo(initialState = null) {
 export function useApollo(initialState: any) {
 	return useMemo(() => initializeApollo(initialState), [initialState]);
 }
+
+// /**
+// import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+
+// // No Subscription required for develop process
+
+// const httpLink = createHttpLink({
+//   uri: "http://localhost:3007/graphql",
+// });
+
+// const client = new ApolloClient({
+//   link: httpLink,
+//   cache: new InMemoryCache(),
+// });
+
+// export default client;
+// */
