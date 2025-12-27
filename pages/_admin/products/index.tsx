@@ -27,7 +27,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { useRouter } from 'next/router';
-import { PropertyPanelList } from '../../../libs/components/admin/properties/PropertyList';
+import { ProductPanelList } from '../../../libs/components/admin/properties/PropertyList';
 import { ProductsInquiry } from '../../../libs/types/product/products.input';
 import { Property } from '../../../libs/types/product/property';
 import { ProductLocation, ProductStatus } from '../../../libs/enums/property.enum';
@@ -458,13 +458,13 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 						</Box>
 					) : (
 						<>
-							<PropertyPanelList
-								properties={products}
+							<ProductPanelList
+								products={products}
 								anchorEl={anchorEl}
 								menuIconClickHandler={menuIconClickHandler}
 								menuIconCloseHandler={menuIconCloseHandler}
-								updatePropertyHandler={updateProductHandler}
-								removePropertyHandler={removeProductHandler}
+								updateProductHandler={updateProductHandler}
+								removeProductHandler={removeProductHandler}
 							/>
 
 							<Box className={'products-pagination-box'}>

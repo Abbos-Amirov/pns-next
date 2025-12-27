@@ -400,8 +400,12 @@ AdminCommunity.defaultProps = {
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {
-			articleCategory: BoardArticleCategory,
-			articalStatus:BoardArticleStatus // Default to NEWS category to match backend data
+			// IMPORTANT:
+			// GraphQL expects a single enum VALUE here (e.g. "FREE"), not the whole enum object.
+			// Also the field name is `articleStatus` (NOT `articalStatus`).
+			// This admin list uses `getBoardArticles` (user query) and does client-side status filtering,
+			// so we only set a safe default category.
+			articleCategory: BoardArticleCategory.FREE,
 		},
 	},
 };

@@ -70,7 +70,8 @@ function createIsomorphicLink() {
 					...getHeaders(),
 				},
 			}));
-			console.warn('requesting.. ', operation);
+			// Avoid logging whole operation object (can crash Next dev overlay / Apollo warnings)
+			// console.debug('requesting.. ', operation.operationName);
 			return forward(operation);
 		});
 
@@ -125,7 +126,42 @@ function createApolloClient() {
 	return new ApolloClient({
 		ssrMode: typeof window === 'undefined',
 		link: createIsomorphicLink(),
-		cache: new InMemoryCache(),
+		cache: new InMemoryCache({
+			typePolicies: {
+				Query: {
+					fields: {
+						// These endpoints return nested objects/lists; replacing them is fine for our UI.
+						// Setting merge:false prevents Apollo "warnAboutDataLoss" warnings (and avoids runtime crash in dev overlay).
+						// --- User-facing queries ---
+						getAgents: { merge: false },
+						getInstallers: { merge: false },
+						getLocations: { merge: false },
+						getLocation: { merge: false },
+						getProperties: { merge: false },
+						getProperty: { merge: false },
+						getAgentProperties: { merge: false },
+						getProducts: { merge: false },
+						getProduct: { merge: false },
+						getMeasurers: { merge: false },
+						getMember: { merge: false },
+						getMemberFollowers: { merge: false },
+						getMemberFollowings: { merge: false },
+						getBoardArticles: { merge: false },
+						getBoardArticle: { merge: false },
+						getComments: { merge: false },
+						getFavorites: { merge: false },
+						getVisited: { merge: false },
+						getNoticeList: { merge: false },
+						getCsNoticeList: { merge: false },
+
+						// --- Admin queries (also used in admin pages) ---
+						getAllMembersByAdmin: { merge: false },
+						getAllProductsByAdmin: { merge: false },
+						getAllBoardArticlesByAdmin: { merge: false },
+					},
+				},
+			},
+		}),
 		resolvers: {},
 	});
 }

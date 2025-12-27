@@ -16,11 +16,11 @@ import {
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { Stack } from '@mui/material';
-import { Property } from '../../../types/product/property';
+import { Product } from '../../../types/product/property';
 import { REACT_APP_API_URL } from '../../../config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
-import { PropertyStatus } from '../../../enums/property.enum';
+import { ProductStatus } from '../../../enums/property.enum';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { useRouter } from 'next/router';
@@ -111,36 +111,36 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 	);
 }
 
-interface PropertyPanelListType {
-	properties: Property[];
+interface ProductPanelListType {
+	products: Product[];
 	anchorEl: any;
 	menuIconClickHandler: any;
 	menuIconCloseHandler: any;
-	updatePropertyHandler: any;
-	removePropertyHandler: any;
-	editPropertyHandler?: (id: string) => void;
+	updateProductHandler: any;
+	removeProductHandler: any;
+	editProductHandler?: (id: string) => void;
 }
 
-export const PropertyPanelList = (props: PropertyPanelListType) => {
+export const ProductPanelList = (props: ProductPanelListType) => {
 	const router = useRouter();
 	const {
-		properties,
+		products,
 		anchorEl,
 		menuIconClickHandler,
 		menuIconCloseHandler,
-		updatePropertyHandler,
-		removePropertyHandler,
-		editPropertyHandler,
+		updateProductHandler,
+		removeProductHandler,
+		editProductHandler,
 	} = props;
 
 	return (
 		<Stack>
 			<TableContainer>
 				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
-					{/*@ts-ignore*/}
+					{/* @ts-ignore */}
 					<EnhancedTableHead />
 					<TableBody>
-						{properties.length === 0 && (
+						{products.length === 0 && (
 							<TableRow>
 								<TableCell align="center" colSpan={7}>
 									<span className={'no-data'}>data not found!</span>
@@ -148,32 +148,64 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 							</TableRow>
 						)}
 
-						{properties.length !== 0 &&
-							properties.map((property: any, index: number) => {
-								// Backend'dan productImages keladi, lekin Property type'ida propertyImages bor
-								const images = (property?.productImages || property?.propertyImages) || [];
-								const propertyImage = images.length > 0 
-									? `${REACT_APP_API_URL}/${images[0]}` 
-									: '/img/property/window.jpg'; // Default image
+						{products.length !== 0 &&
+							products.map((product: any, index: number) => {
+								// Backend may return images in different shapes/fields depending on old/new schemas.
+								const imagesRaw =
+									product?.productImages ??
+									product?.productImages ??
+									product?.images ??
+									product?.propertyImages ??
+									[];
+								const images: string[] = Array.isArray(imagesRaw)
+									? (imagesRaw as any[]).filter((v) => typeof v === 'string') as string[]
+									: typeof imagesRaw === 'string'
+										? (() => {
+												const trimmed = imagesRaw.trim();
+												if (!trimmed) return [];
+												// handle JSON-stringified arrays
+												if (trimmed.startsWith('[')) {
+													try {
+														const parsed = JSON.parse(trimmed);
+														return Array.isArray(parsed) ? parsed.filter((v) => typeof v === 'string') : [trimmed];
+													} catch {
+														return [trimmed];
+													}
+												}
+												return [trimmed];
+										  })()
+										: [];
+
+								const rawFirstImage = images[0];
+								const isAbsolute =
+									typeof rawFirstImage === 'string' &&
+									(rawFirstImage.startsWith('http://') ||
+										rawFirstImage.startsWith('https://') ||
+										rawFirstImage.startsWith('/img/'));
+								const productImage =
+									rawFirstImage && isAbsolute
+										? rawFirstImage
+										: rawFirstImage
+										? `${REACT_APP_API_URL}/${rawFirstImage.replace(/^\/+/, '')}`
+										: '/img/property/window.jpg'; // Default image
 								
-								// Backend'dan product field'lari keladi, lekin Property type'ida property field'lari bor
-								const productTitle = property?.productTitle || property?.propertyTitle || 'N/A';
-								const productPrice = property?.productPrice || property?.propertyPrice || 0;
-								const productLocation = property?.productLocation || property?.propertyLocation || 'N/A';
-								const productType = property?.productType || property?.propertyType || 'N/A';
-								const productStatus = property?.productStatus || property?.propertyStatus;
+								const productTitle = product?.productTitle || product?.propertyTitle || 'N/A';
+								const productPrice = product?.productPrice || product?.propertyPrice || 0;
+								const productLocation = product?.productLocation || product?.propertyLocation || 'N/A';
+								const productType = product?.productType || product?.propertyType || 'N/A';
+								const productStatus = product?.productStatus || product?.propertyStatus;
 
 								return (
-									<TableRow hover key={property?._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-										<TableCell align="left">{property._id}</TableCell>
+									<TableRow hover key={product?._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										<TableCell align="left">{product._id}</TableCell>
 										<TableCell align="left" className={'name'}>
 											<Stack direction={'row'}>
-												<Link href={`/property/detail?id=${property?._id}`}>
+												<Link href={`/property/detail?id=${product?._id}`}>
 													<div>
-														<Avatar alt="Remy Sharp" src={propertyImage} sx={{ ml: '2px', mr: '10px' }} />
+														<Avatar alt="Remy Sharp" src={productImage} sx={{ ml: '2px', mr: '10px' }} />
 													</div>
 												</Link>
-												<Link href={`/property/detail?id=${property?._id}`}>
+												<Link href={`/property/detail?id=${product?._id}`}>
 													<div>{productTitle}</div>
 												</Link>
 											</Stack>
@@ -183,7 +215,7 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 										<TableCell align="center">{productType}</TableCell>
 										<TableCell align="center">
 											<Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'center'}>
-												{productStatus === PropertyStatus.ACTIVE && (
+												{productStatus === ProductStatus.ACTIVE && (
 													<>
 														<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
 															{productStatus}
@@ -192,10 +224,10 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 														<Tooltip title="Edit">
 															<IconButton
 																onClick={() => {
-																	if (editPropertyHandler) {
-																		editPropertyHandler(property._id);
+																	if (editProductHandler) {
+																		editProductHandler(product._id);
 																	} else {
-																		router.push(`/_admin/products/product_edit?id=${property._id}`);
+																		router.push(`/_admin/products/product_edit?id=${product._id}`);
 																	}
 																}}
 																className={'product-edit-btn'}
@@ -207,7 +239,7 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 
 														<Tooltip title="Delete">
 															<IconButton
-																onClick={() => removePropertyHandler(property._id)}
+																onClick={() => removeProductHandler(product._id)}
 																className={'product-delete-btn'}
 																size="small"
 															>
@@ -226,11 +258,11 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 															TransitionComponent={Fade}
 															sx={{ p: 1 }}
 														>
-															{Object.values(PropertyStatus)
+															{Object.values(ProductStatus)
 																.filter((ele) => ele !== productStatus)
 																.map((status: string) => (
 																	<MenuItem
-																		onClick={() => updatePropertyHandler({ _id: property._id, propertyStatus: status })}
+																		onClick={() => updateProductHandler({ _id: product._id, productStatus: status })}
 																		key={status}
 																	>
 																		<Typography variant={'subtitle1'} component={'span'}>
@@ -242,15 +274,15 @@ export const PropertyPanelList = (props: PropertyPanelListType) => {
 													</>
 												)}
 
-												{productStatus === PropertyStatus.SOLD && (
+												{productStatus === ProductStatus.OUT_OF_STOCK && (
 													<Button className={'badge warning'}>{productStatus}</Button>
 												)}
 
-												{productStatus === PropertyStatus.DELETE && (
+												{productStatus === ProductStatus.DELETE && (
 													<Button
 														variant="outlined"
 														sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
-														onClick={() => removePropertyHandler(property._id)}
+														onClick={() => removeProductHandler(product._id)}
 													>
 														<DeleteIcon fontSize="small" />
 													</Button>
