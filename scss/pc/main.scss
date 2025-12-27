@@ -1659,7 +1659,7 @@ body::-webkit-scrollbar {
 		.chat-button {
 			border: none;
 			position: fixed;
-			bottom: 90px;
+			bottom: 140px;
 			right: 30px;
 			height: 54px;
 			width: 54px;
@@ -1702,7 +1702,7 @@ body::-webkit-scrollbar {
 			border: 1px solid rgba(0, 0, 0, 0.08);
 			box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.22);
 			z-index: 2000;
-			bottom: 150px;
+			bottom: 200px;
 			transition: right 0.7s ease-in-out;
 			&.open {
 				right: 10px;
@@ -1860,6 +1860,277 @@ body::-webkit-scrollbar {
 				font-size: 13px;
 				font-weight: 600;
 				line-height: 1.35;
+			}
+		}
+	}
+
+	.ai-chatting {
+		.ai-chat-button {
+			border: none;
+			position: fixed;
+			bottom: 28px;
+			right: 12px;
+			height: 54px;
+			padding: 0 14px 0 12px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			border-radius: 999px;
+			background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+			box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.20);
+			transition: transform 0.25s ease, box-shadow 0.25s ease;
+			z-index: 2100;
+			color: #ffffff;
+			cursor: pointer;
+
+			svg {
+				color: #ffffff;
+				filter: drop-shadow(0px 3px 8px rgba(0, 0, 0, 0.35));
+			}
+
+			.ai-chat-label {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				height: 28px;
+				padding: 0 10px;
+				border-radius: 999px;
+				background: rgba(255, 255, 255, 0.16);
+				border: 1px solid rgba(255, 255, 255, 0.18);
+				color: #ffffff;
+				font-family: $font;
+				font-size: 12px;
+				font-weight: 800;
+				letter-spacing: 0.6px;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			&:hover {
+				transform: translateY(-2px) scale(1.03);
+				box-shadow: 0px 16px 38px rgba(0, 0, 0, 0.26);
+			}
+		}
+
+		.ai-chat-frame {
+			position: fixed;
+			right: -392px;
+			bottom: 96px;
+			width: 380px;
+			height: 560px;
+			display: flex;
+			flex-direction: column;
+			background: #ffffff;
+			border-radius: 18px;
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.22);
+			z-index: 2200;
+			transition: right 0.55s ease-in-out;
+
+			&.open {
+				right: 12px;
+			}
+
+			.ai-chat-top {
+				width: 100%;
+				height: 72px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 14px;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+				background: linear-gradient(135deg, #181a20 0%, #1f232c 100%);
+				color: #ffffff;
+				border-radius: 18px 18px 0 0;
+
+				.ai-title {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					gap: 10px;
+				}
+
+				.ai-avatar {
+					width: 36px;
+					height: 36px;
+					background: rgba(139, 69, 19, 0.9);
+					border: 1px solid rgba(255, 255, 255, 0.16);
+					box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.22);
+				}
+
+				.ai-title-texts {
+					display: flex;
+					flex-direction: column;
+					line-height: 1.1;
+				}
+
+				.ai-title-main {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 14px;
+					font-weight: 800;
+				}
+
+				.ai-title-sub {
+					color: rgba(255, 255, 255, 0.72);
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 500;
+				}
+
+				.ai-close {
+					width: 36px;
+					height: 36px;
+					border-radius: 10px;
+					border: 1px solid rgba(255, 255, 255, 0.18);
+					background: rgba(255, 255, 255, 0.08);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					cursor: pointer;
+					transition: transform 0.2s ease, background 0.2s ease;
+
+					svg {
+						color: #ffffff;
+					}
+
+					&:hover {
+						transform: scale(1.03);
+						background: rgba(255, 255, 255, 0.12);
+					}
+				}
+			}
+
+			.ai-chat-content {
+				width: 100%;
+				height: 100%;
+				padding: 14px 14px 10px;
+				overflow: auto;
+				background: #f6f6f6;
+
+				.ai-chat-main {
+					display: flex;
+					flex-direction: column;
+					gap: 10px;
+				}
+
+				.ai-msg-row {
+					display: flex;
+					flex-direction: row;
+					align-items: flex-end;
+					gap: 10px;
+
+					&.right {
+						justify-content: flex-end;
+					}
+				}
+
+				.ai-msg-avatar {
+					width: 34px;
+					height: 34px;
+					background: #8B4513;
+					border: 2px solid rgba(139, 69, 19, 0.25);
+					box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.12);
+
+					&.left {
+						background: #ffffff;
+						border: 1px solid rgba(0, 0, 0, 0.08);
+						svg {
+							color: #8B4513;
+						}
+					}
+				}
+
+				.ai-msg-left {
+					max-width: 78%;
+					padding: 10px 12px;
+					background: #ffffff;
+					border: 1px solid rgba(0, 0, 0, 0.06);
+					border-radius: 16px 16px 16px 4px;
+					color: #181a20;
+					font-family: $font;
+					font-size: 13px;
+					font-weight: 500;
+					line-height: 1.35;
+				}
+
+				.ai-msg-right {
+					max-width: 78%;
+					padding: 10px 12px;
+					background: rgba(139, 69, 19, 0.10);
+					border: 1px solid rgba(139, 69, 19, 0.18);
+					border-radius: 16px 16px 4px 16px;
+					color: #181a20;
+					font-family: $font;
+					font-size: 13px;
+					font-weight: 700;
+					line-height: 1.35;
+				}
+
+				::-webkit-scrollbar {
+					width: 8px;
+				}
+				::-webkit-scrollbar-thumb {
+					background: rgba(0, 0, 0, 0.12);
+					border-radius: 999px;
+				}
+			}
+
+			.ai-chat-bott {
+				width: 100%;
+				height: 78px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 12px;
+				padding: 0 14px;
+				border-top: 1px solid rgba(0, 0, 0, 0.06);
+				background: #ffffff;
+				border-radius: 0 0 18px 18px;
+
+				.ai-msg-input {
+					padding: 14px 16px;
+					width: 276px;
+					height: 46px;
+					border-radius: 999px;
+					border: 1px solid rgba(0, 0, 0, 0.08);
+					outline: none;
+					font-family: $font;
+					font-weight: 600;
+					font-size: 14px;
+					line-height: 20px;
+					color: #181a20;
+					background: #f7f7f7;
+
+					&:focus {
+						border-color: rgba(139, 69, 19, 0.45);
+						box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.10);
+						background: #ffffff;
+					}
+				}
+
+				.ai-send-btn {
+					width: 46px;
+					height: 46px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					border-radius: 50%;
+					background: #8B4513;
+					border: none;
+					box-shadow: 0px 10px 22px rgba(139, 69, 19, 0.24);
+					cursor: pointer;
+					transition: transform 0.2s ease, background 0.2s ease;
+
+					&:hover {
+						transform: translateY(-1px);
+						background: #6B3410;
+					}
+
+					&:active {
+						transform: translateY(0);
+					}
+				}
 			}
 		}
 	}
