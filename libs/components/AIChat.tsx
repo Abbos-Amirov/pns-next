@@ -73,7 +73,8 @@ const AIChat = () => {
       {openButton ? (
         <button className="ai-chat-button" onClick={handleOpen} aria-label="I am IA">
           <SmartToyRoundedIcon sx={{ fontSize: 26 }} />
-          <span className="ai-chat-label">I am IA</span>
+          <span className="ai-chat-label">Hi I am IA</span>
+          
         </button>
       ) : null}
 

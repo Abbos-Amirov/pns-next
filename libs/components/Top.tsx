@@ -20,6 +20,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Menu from '@mui/material/Menu';
+import { REACT_APP_API_URL } from '../config';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -34,6 +35,13 @@ const KakaoTalkIcon = ({ className }: { className?: string }) => (
 		<path d="M12 3C6.477 3 2 6.477 2 12c0 2.237.86 4.28 2.27 5.81L2 22l4.5-2.18c1.17.35 2.4.54 3.68.54h.64c5.523 0 10-3.477 10-7.78 0-4.303-4.477-7.78-10-7.78zm0 1.56c4.695 0 8.5 2.832 8.5 6.22 0 3.388-3.805 6.22-8.5 6.22a11.62 11.62 0 0 1-3.12-.42l-.35-.1-.3.15-2.9 1.4.55-2.64-.12-.25A8.19 8.19 0 0 1 3.5 12c0-3.388 3.805-6.22 8.5-6.22z" />
 	</svg>
 );
+
+const getUserImageSrc = (img?: string) => {
+	if (!img) return '/img/profile/defaultUser.svg';
+	if (img.startsWith('http://') || img.startsWith('https://')) return img;
+	if (img.startsWith('/img/')) return img;
+	return `${REACT_APP_API_URL}/${img}`;
+};
 
 // Custom TikTok Icon
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -384,7 +392,7 @@ const Top = () => {
 									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
 										<Box className={'user-avatar-small'}>
 											<img 
-												src={user?.memberImage || '/img/profile/defaultUser.svg'} 
+												src={getUserImageSrc(user?.memberImage)} 
 												alt={user?.memberNick || 'User'} 
 												onError={(e) => {
 													(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';

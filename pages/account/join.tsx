@@ -28,7 +28,7 @@ const Join: NextPage = () => {
 	const router = useRouter();
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: 'USER' });
+	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: MemberType.USER });
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	
@@ -54,18 +54,12 @@ const Join: NextPage = () => {
 		const checked = e.target.checked;
 		if (checked) {
 			const value = e.target.name;
-			// Backend uchun to'g'ri type format
-			let backendType = 'USER';
-			if (value === 'Measurer') {
-				backendType = 'AGENT';
-			} else if (value === 'INSTALLER') {
-				backendType = 'INSTALLER';
-			} else if (value === 'USER') {
-				backendType = 'USER';
-			}
-			handleInput('type', backendType);
+			// Backend MemberType enum: USER | MEASURER | INSTALLER | ADMIN (AGENT does not exist)
+			if (value === MemberType.MEASURER) handleInput('type', MemberType.MEASURER);
+			else if (value === MemberType.INSTALLER) handleInput('type', MemberType.INSTALLER);
+			else handleInput('type', MemberType.USER);
 		} else {
-			handleInput('type', 'USER');
+			handleInput('type', MemberType.USER);
 		}
 	};
 
@@ -277,9 +271,9 @@ const Join: NextPage = () => {
 										<FormControlLabel
 											control={
 												<Checkbox
-													name={'USER'}
+													name={MemberType.USER}
 													onChange={checkUserTypeHandler}
-													checked={input?.type == 'USER'}
+													checked={input?.type == MemberType.USER}
 												/>
 											}
 											label="User"
@@ -287,9 +281,9 @@ const Join: NextPage = () => {
 										<FormControlLabel
 											control={
 												<Checkbox
-													name={'Measurer'}
+													name={MemberType.MEASURER}
 													onChange={checkUserTypeHandler}
-													checked={input?.type == 'AGENT'}
+													checked={input?.type == MemberType.MEASURER}
 												/>
 											}
 											label="Measurer"
@@ -297,9 +291,9 @@ const Join: NextPage = () => {
 										<FormControlLabel
 											control={
 												<Checkbox
-													name={'INSTALLER'}
+													name={MemberType.INSTALLER}
 													onChange={checkUserTypeHandler}
-													checked={input?.type == 'INSTALLER'}
+													checked={input?.type == MemberType.INSTALLER}
 												/>
 											}
 											label="Installer"

@@ -19,6 +19,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import TopBasic from '../TopBasic';
+import { REACT_APP_API_URL } from '../../config';
+
+const getUserImageSrc = (img?: string) => {
+	if (!img) return '/img/profile/defaultUser.svg';
+	if (img.startsWith('http://') || img.startsWith('https://')) return img;
+	if (img.startsWith('/img/')) return img;
+	return `${REACT_APP_API_URL}/${img}`;
+};
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
@@ -319,7 +327,7 @@ const withLayoutBasic = (Component: any) => {
 											<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
 												<Box className={'user-avatar-small-dark'}>
 													<img 
-														src={user?.memberImage || '/img/profile/defaultUser.svg'} 
+														src={getUserImageSrc(user?.memberImage)} 
 														alt={user?.memberNick || 'User'} 
 														onError={(e) => {
 															(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';

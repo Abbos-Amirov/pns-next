@@ -1900,9 +1900,9 @@ body::-webkit-scrollbar {
 				color: #ffffff;
 				font-family: $font;
 				font-size: 12px;
-				font-weight: 800;
-				letter-spacing: 0.6px;
-				text-transform: uppercase;
+				font-weight: 700;
+				letter-spacing: 0.2px;
+				text-transform: none; // keep "Hi I am IA" as-is (only H is uppercase)
 				white-space: nowrap;
 			}
 
