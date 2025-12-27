@@ -45,10 +45,11 @@ import { sweetErrorHandling, sweetTopSuccessAlert, sweetMixinErrorAlert } from '
 import { MemberUpdate } from '../../../libs/types/member/member.update';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ALL_MEMBERS_BY_ADMIN } from '../../../apollo/admin/query';
-import { UPDATE_MEMBER_BY_ADMIN, UPDATE_MEMBERS_BY_ADMIN } from '../../../apollo/admin/mutation';
+import { UPDATE_MEMBER_BY_ADMIN } from '../../../apollo/admin/mutation';
 
 const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
-	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
+	// Use a keyed map for menu anchors (some menus are keyed by index, others by memberId)
+	const [anchorEl, setAnchorEl] = useState<Record<string, HTMLElement | null>>({});
 	const [membersInquiry, setMembersInquiry] = useState<MembersInquiry>(initialInquiry);
 	const [members, setMembers] = useState<Member[]>([]);
 	const [membersTotal, setMembersTotal] = useState<number>(0);
@@ -104,7 +105,6 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	});
 
 	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
-	const [updateMembersByAdmin] = useMutation(UPDATE_MEMBERS_BY_ADMIN);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -135,14 +135,16 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 		setMembersInquiry({ ...membersInquiry });
 	};
 
-	const menuIconClickHandler = (e: any, index: number) => {
-		const tempAnchor = anchorEl.slice();
-		tempAnchor[index] = e.currentTarget;
-		setAnchorEl(tempAnchor);
+	const menuIconClickHandler = (e: any, key: string) => {
+		setAnchorEl((prev) => ({ ...prev, [key]: e.currentTarget }));
 	};
 
-	const menuIconCloseHandler = () => {
-		setAnchorEl([]);
+	const menuIconCloseHandler = (key?: string) => {
+		if (key) {
+			setAnchorEl((prev) => ({ ...prev, [key]: null }));
+			return;
+		}
+		setAnchorEl({});
 	};
 
 	const tabChangeHandler = async (event: any, newValue: string) => {
@@ -345,7 +347,8 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 			if (memberUpdateData.memberAddress) updateInput.memberAddress = memberUpdateData.memberAddress;
 			if (memberUpdateData.memberDesc) updateInput.memberDesc = memberUpdateData.memberDesc;
 
-			await updateMembersByAdmin({
+			// Single-member update should use the single update mutation
+			await updateMemberByAdmin({
 				variables: { input: updateInput },
 			});
 			await sweetTopSuccessAlert('Member updated successfully!');
@@ -460,7 +463,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									</Button>
 									<Button
 										variant={value === 'BLOCK' ? 'contained' : 'outlined'}
-										onClick={(e) => tabChangeHandler(e, 'BLOCK')}
+										onClick={(e: any) => tabChangeHandler(e, 'BLOCK')}
 										className={value === 'BLOCK' ? 'tab-btn active' : 'tab-btn'}
 										sx={{
 											textTransform: 'none',
@@ -1115,6 +1118,7 @@ AdminUsers.defaultProps = {
 		page: 1,
 		limit: 10,
 		sort: 'createdAt',
+		direction: 'DESC',
 		search: {},
 	},
 };

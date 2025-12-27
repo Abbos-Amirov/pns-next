@@ -11,13 +11,10 @@ import {
 	Menu,
 	Fade,
 	MenuItem,
-	IconButton,
-	Tooltip,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { Member } from '../../../types/member/member';
 import { REACT_APP_API_URL } from '../../../config';
 import { MemberStatus, MemberType } from '../../../enums/member.enum';
@@ -142,7 +139,7 @@ interface MemberPanelListType {
 }
 
 export const MemberPanelList = (props: MemberPanelListType) => {
-	const { members, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateMemberHandler, onEditClick } = props;
+	const { members, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateMemberHandler } = props;
 
 	return (
 		<Stack>
@@ -185,7 +182,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="left">{member.memberPhone}</TableCell>
 
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
+											<Button onClick={(e: any) => menuIconClickHandler(e, `type-${index}`)} className={'badge success'}>
 												{member.memberType}
 											</Button>
 
@@ -194,9 +191,9 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 												MenuListProps={{
 													'aria-labelledby': 'fade-button',
 												}}
-												anchorEl={anchorEl[index]}
-												open={Boolean(anchorEl[index])}
-												onClose={menuIconCloseHandler}
+												anchorEl={anchorEl?.[`type-${index}`]}
+												open={Boolean(anchorEl?.[`type-${index}`])}
+												onClose={() => menuIconCloseHandler(`type-${index}`)}
 												TransitionComponent={Fade}
 												sx={{ p: 1 }}
 											>
@@ -218,36 +215,21 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="center">{member.memberWarnings}</TableCell>
 										<TableCell align="center">{member.memberBlocks}</TableCell>
 										<TableCell align="center">
-											<Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'center'}>
-												<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
-													{member.memberStatus}
-												</Button>
-												{member.memberStatus === MemberStatus.ACTIVE && onEditClick && (
-													<Tooltip title="Edit Member">
-														<IconButton
-															onClick={() => onEditClick(member)}
-															className={'member-edit-btn'}
-															sx={{
-																color: '#8B4513',
-																'&:hover': {
-																	backgroundColor: 'rgba(139, 69, 19, 0.1)',
-																},
-															}}
-														>
-															<EditRoundedIcon />
-														</IconButton>
-													</Tooltip>
-												)}
-											</Stack>
+											<Button
+												onClick={(e: any) => menuIconClickHandler(e, `status-${member._id}`)}
+												className={'badge success'}
+											>
+												{member.memberStatus}
+											</Button>
 
 											<Menu
 												className={'menu-modal'}
 												MenuListProps={{
 													'aria-labelledby': 'fade-button',
 												}}
-												anchorEl={anchorEl[member._id]}
-												open={Boolean(anchorEl[member._id])}
-												onClose={menuIconCloseHandler}
+												anchorEl={anchorEl?.[`status-${member._id}`]}
+												open={Boolean(anchorEl?.[`status-${member._id}`])}
+												onClose={() => menuIconCloseHandler(`status-${member._id}`)}
 												TransitionComponent={Fade}
 												sx={{ p: 1 }}
 											>
