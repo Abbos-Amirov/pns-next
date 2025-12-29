@@ -118,6 +118,24 @@ const Filter = (props: FilterType) => {
 		[searchFilter, router],
 	);
 
+	const clearProductMaterialHandler = useCallback(async () => {
+		try {
+			await router.push(
+				`/property?input=${JSON.stringify({
+					...searchFilter,
+					search: { ...searchFilter.search, productMaterial: undefined },
+				})}`,
+				`/property?input=${JSON.stringify({
+					...searchFilter,
+					search: { ...searchFilter.search, productMaterial: undefined },
+				})}`,
+				{ scroll: false },
+			);
+		} catch (err: any) {
+			console.log('ERROR, clearProductMaterialHandler:', err);
+		}
+	}, [searchFilter, router]);
+
 	const refreshHandler = async () => {
 		try {
 			await router.push(
@@ -368,6 +386,14 @@ const Filter = (props: FilterType) => {
 						<Typography style={{color: "#ffffff"}}>Material</Typography>
 					</Box>
 					<Stack className={'category-list'}>
+						{/* All materials (clear filter) */}
+						<Stack
+							className={`category-item ${!searchFilter?.search?.productMaterial ? 'selected' : ''}`}
+							key={'ALL_MATERIALS'}
+							onClick={clearProductMaterialHandler}
+						>
+							<Typography>ALL</Typography>
+						</Stack>
 						{materials.map((material: ProductMaterial) => {
 							const isSelected = searchFilter?.search?.productMaterial === material;
 							return (

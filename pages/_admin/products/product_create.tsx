@@ -193,13 +193,53 @@ const ProductCreate: NextPage = (props: any) => {
 				imagesToSave = uploaded;
 			}
 
+			// Backend validation often requires at least 1 image
+			if (!imagesToSave || imagesToSave.length === 0) {
+				await sweetMixinErrorAlert('Please upload at least one product image!');
+				return;
+			}
+
+			// sanitize input (trim strings, ensure numbers are valid)
+			const input: any = {
+				// send only fields backend expects; extra fields can trigger BAD_REQUEST if whitelist is enabled
+				productType: productData.productType,
+				productStatus: productData.productStatus,
+				productLocation: productData.productLocation,
+				productTitle: (productData.productTitle || '').trim(),
+				productAddress: (productData.productAddress || '').trim(),
+				productHeight: Number(productData.productHeight) || 0,
+				productWidth: Number(productData.productWidth) || 0,
+				productPrice: Number(productData.productPrice) || 0,
+				productMaterial: productData.productMaterial,
+				productGlassType: productData.productGlassType,
+				productOpenType: productData.productOpenType,
+				productCategory: productData.productCategory,
+				// Backend requires productColor: String!
+				productColor: productData.productColor,
+				productImages: Array.isArray(imagesToSave) ? imagesToSave : [],
+			};
+
 			await createProduct({
-				variables: { input: { ...productData, productImages: imagesToSave } },
+				variables: { input },
 			});
 			await sweetTopSuccessAlert('Product created successfully!');
 			router.push('/_admin/products');
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message || 'Failed to create product');
+			// Try to extract NestJS validation messages from ApolloError
+			const gqlErr = err?.graphQLErrors?.[0];
+			const nested =
+				gqlErr?.extensions?.response?.message ||
+				gqlErr?.extensions?.exception?.response?.message ||
+				gqlErr?.extensions?.originalError?.response?.message ||
+				gqlErr?.extensions?.originalError?.message;
+
+			const details = Array.isArray(nested) ? nested.join(', ') : typeof nested === 'string' ? nested : null;
+			const fallbackDetails =
+				typeof gqlErr?.extensions === 'object' && gqlErr?.extensions
+					? ` (${JSON.stringify(gqlErr.extensions).slice(0, 350)})`
+					: '';
+			const message = (details || gqlErr?.message || err?.message || 'Failed to create product') + (details ? '' : fallbackDetails);
+			await sweetMixinErrorAlert(message);
 		}
 	};
 
