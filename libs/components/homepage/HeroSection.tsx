@@ -3,10 +3,12 @@ import { Stack, Box, Button } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 const HeroSection = () => {
 	const device = useDeviceDetect();
 	const { t } = useTranslation('common');
+	const router = useRouter();
 
 	if (device === 'mobile') {
 		return (
@@ -22,7 +24,7 @@ const HeroSection = () => {
 						<Box component={'p'} className={'hero-description'}>
 							{t('Hero description')}
 						</Box>
-						<Button className={'hero-cta-btn'}>
+						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
 							{t('Get in touch')} →
 						</Button>
 					</Box>
@@ -52,7 +54,7 @@ const HeroSection = () => {
 					<Box component={'p'} className={'hero-description'}>
 						{t('Hero description')}
 					</Box>
-					<Button className={'hero-cta-btn'}>
+					<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
 						{t('Get in touch')} →
 					</Button>
 					<Box component={'div'} className={'video-play-button'}>
