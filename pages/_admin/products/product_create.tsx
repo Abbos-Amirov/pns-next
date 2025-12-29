@@ -72,17 +72,26 @@ const ProductCreate: NextPage = (props: any) => {
 		setProductData({ ...productData, [field]: numValue });
 	};
 
-	async function uploadImages() {
+	async function uploadImages(): Promise<string[] | null> {
 		try {
 			const formData = new FormData();
 			const selectedFiles = inputRef.current?.files;
 
 			if (!selectedFiles || selectedFiles.length === 0) {
 				await sweetMixinErrorAlert('Please select at least one image!');
-				return false;
+				return null;
 			}
 			if (selectedFiles.length > 5) {
 				throw new Error('Cannot upload more than 5 images!');
+			}
+
+			const fileCount = selectedFiles.length;
+			const filesArray = Array.from(selectedFiles);
+
+			const variablesFiles = new Array(fileCount).fill(null);
+			const map: Record<string, string[]> = {};
+			for (let i = 0; i < fileCount; i++) {
+				map[String(i)] = [`variables.files.${i}`];
 			}
 
 			formData.append(
@@ -92,28 +101,19 @@ const ProductCreate: NextPage = (props: any) => {
 						imagesUploader(files: $files, target: $target)
 				  }`,
 					variables: {
-						files: [null, null, null, null, null],
-						target: 'property',
+						files: variablesFiles,
+						target: 'product',
 					},
 				}),
 			);
 			formData.append(
 				'map',
-				JSON.stringify({
-					'0': ['variables.files.0'],
-					'1': ['variables.files.1'],
-					'2': ['variables.files.2'],
-					'3': ['variables.files.3'],
-					'4': ['variables.files.4'],
-				}),
+				JSON.stringify(map),
 			);
-			for (const key in selectedFiles) {
-				if (/^\d+$/.test(key)) formData.append(`${key}`, selectedFiles[key]);
-			}
+			filesArray.forEach((file, idx) => formData.append(String(idx), file));
 
 			const graphqlUrl = REACT_APP_API_GRAPHQL_URL || 'http://localhost:3007/graphql';
-			console.log('Uploading images to:', graphqlUrl);
-			
+
 			const response = await axios.post(graphqlUrl, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -126,15 +126,26 @@ const ProductCreate: NextPage = (props: any) => {
 				throw new Error('Invalid response from server');
 			}
 
-			const responseImages = response.data.data.imagesUploader;
-			setProductData({ ...productData, productImages: responseImages });
+			const responseImagesRaw = response.data.data.imagesUploader;
+			const responseImages: string[] = Array.isArray(responseImagesRaw)
+				? responseImagesRaw
+				: typeof responseImagesRaw === 'string'
+					? [responseImagesRaw]
+					: [];
+
+			if (!responseImages.length) {
+				throw new Error('No images returned from server');
+			}
+
+			// Use functional setState to avoid stale closures
+			setProductData((prev) => ({ ...prev, productImages: responseImages }));
 			await sweetTopSuccessAlert('Images uploaded successfully!');
-			return true;
+			return responseImages;
 		} catch (err: any) {
 			console.error('Image upload error:', err);
 			const errorMessage = err.response?.data?.message || err.message || 'Failed to upload images';
 			await sweetMixinErrorAlert(errorMessage);
-			return false;
+			return null;
 		}
 	}
 
@@ -173,8 +184,17 @@ const ProductCreate: NextPage = (props: any) => {
 
 	const handleSubmit = async () => {
 		try {
+			// If user selected files but didn't click "Upload Images", upload automatically on submit
+			let imagesToSave = productData.productImages;
+			const hasSelectedFiles = !!inputRef.current?.files && inputRef.current.files.length > 0;
+			if (hasSelectedFiles && (!imagesToSave || imagesToSave.length === 0)) {
+				const uploaded = await uploadImages();
+				if (!uploaded) return;
+				imagesToSave = uploaded;
+			}
+
 			await createProduct({
-				variables: { input: productData },
+				variables: { input: { ...productData, productImages: imagesToSave } },
 			});
 			await sweetTopSuccessAlert('Product created successfully!');
 			router.push('/_admin/products');
