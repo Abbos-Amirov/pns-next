@@ -141,6 +141,19 @@ export const LIKE_TARGET_MEMBER = gql`
 `;
 
 /**************************
+ *         AI CHAT        *
+ *************************/
+
+export const AI_CHAT = gql`
+  mutation AiChat($input: AiChatInput!) {
+    aiChat(input: $input) {
+      ok
+      reply
+    }
+  }
+`;
+
+/**************************
  *        PROPERTY        *
  *************************/
 

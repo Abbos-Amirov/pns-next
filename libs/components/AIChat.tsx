@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
-import { useReactiveVar } from '@apollo/client';
+import { useApolloClient, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
+import { AI_CHAT } from '../../apollo/user/mutation';
 
 type AiRole = 'user' | 'ai';
 
@@ -16,24 +17,16 @@ type AiMessage = {
   at: number;
 };
 
-function aiReply(input: string): string {
-  const text = input.trim().toLowerCase();
-  if (!text) return 'Write something and I will help.';
-  if (text.includes('hello') || text.includes('hi') || text.includes('salom')) {
-    return 'Hello! Tell me what you want to do in the app.';
-  }
-  if (text.includes('like')) return 'If you tell me which page, I can help you fix the like behavior.';
-  if (text.includes('location')) return 'Locations: I can help with list, create, edit, delete, and UI.';
-  if (text.includes('chat')) return 'I can help you improve chat UI and message behavior.';
-  return `Got it. You said: "${input}". What exactly should I change?`;
-}
+type AiChatResult = { aiChat?: { ok?: boolean; reply?: string } };
 
 const AIChat = () => {
   const router = useRouter();
+  const apollo = useApolloClient();
   const user = useReactiveVar(userVar);
   const [open, setOpen] = useState(false);
   const [openButton, setOpenButton] = useState(false);
   const [messageInput, setMessageInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [messages, setMessages] = useState<AiMessage[]>(() => [
     { role: 'ai', text: 'I am IA. How can I help you today?', at: Date.now() },
   ]);
@@ -51,18 +44,72 @@ const AIChat = () => {
     setOpenButton(false);
   }, [router.pathname]);
 
-  const onSend = useCallback(() => {
+  const callAiChat = useCallback(
+    async (text: string): Promise<string> => {
+      // Backend `AiChatInput` field name may differ across implementations.
+      // We'll try a few common ones until one succeeds.
+      const candidates: any[] = [{ text }, { message: text }, { prompt: text }, { question: text }];
+
+      let lastErr: any = null;
+      for (const input of candidates) {
+        try {
+          const { data } = await apollo.mutate<AiChatResult>({
+            mutation: AI_CHAT,
+            variables: { input },
+            fetchPolicy: 'no-cache',
+          });
+
+          const ok = data?.aiChat?.ok;
+          const reply = data?.aiChat?.reply;
+          if (ok && typeof reply === 'string' && reply.trim()) return reply;
+          if (typeof reply === 'string' && reply.trim()) return reply;
+          lastErr = new Error('Empty AI reply from server.');
+        } catch (e: any) {
+          lastErr = e;
+          // If the error is about input fields, try the next candidate.
+          const msg = e?.message || '';
+          const isInputFieldErr =
+            msg.includes('AiChatInput') ||
+            msg.toLowerCase().includes('field') ||
+            msg.toLowerCase().includes('input');
+          if (isInputFieldErr) continue;
+          break;
+        }
+      }
+
+      // Format Apollo error nicely
+      const gqlErr =
+        lastErr?.graphQLErrors?.[0]?.message ||
+        lastErr?.networkError?.message ||
+        lastErr?.message ||
+        'AI request failed.';
+      throw new Error(gqlErr);
+    },
+    [apollo],
+  );
+
+  const onSend = useCallback(async () => {
     const text = messageInput.trim();
     if (!text) return;
+    if (isSending) return;
 
     const now = Date.now();
     setMessages((prev) => [...prev, { role: 'user', text, at: now }]);
     setMessageInput('');
 
-    window.setTimeout(() => {
-      setMessages((prev) => [...prev, { role: 'ai', text: aiReply(text), at: Date.now() }]);
-    }, 350);
-  }, [messageInput]);
+    try {
+      setIsSending(true);
+      const reply = await callAiChat(text);
+      setMessages((prev) => [...prev, { role: 'ai', text: reply, at: Date.now() }]);
+    } catch (e: any) {
+      setMessages((prev) => [
+        ...prev,
+        { role: 'ai', text: e?.message || 'AI request failed. Please try again.', at: Date.now() },
+      ]);
+    } finally {
+      setIsSending(false);
+    }
+  }, [messageInput, isSending, callAiChat]);
 
   const onKeyDown = (e: any) => {
     if (e.key === 'Enter') onSend();
@@ -129,8 +176,9 @@ const AIChat = () => {
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={onKeyDown}
+            disabled={isSending}
           />
-          <button className="ai-send-btn" onClick={onSend} aria-label="Send to IA">
+          <button className="ai-send-btn" onClick={onSend} aria-label="Send to IA" disabled={isSending}>
             <SendIcon sx={{ color: '#fff', fontSize: 18 }} />
           </button>
         </Box>
