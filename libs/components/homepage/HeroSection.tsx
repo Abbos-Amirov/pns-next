@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Box, Button } from '@mui/material';
+import { Stack, Box, Button, Tooltip } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useTranslation } from 'next-i18next';
@@ -9,6 +9,10 @@ const HeroSection = () => {
 	const device = useDeviceDetect();
 	const { t } = useTranslation('common');
 	const router = useRouter();
+	const tooltipText = t('Configurator tooltip', {
+		defaultValue: "Here you can choose the color that fits your home.",
+	});
+	const ctaText = t('Get in touch', { defaultValue: 'HOME COLOR' });
 
 	if (device === 'mobile') {
 		return (
@@ -24,9 +28,21 @@ const HeroSection = () => {
 						<Box component={'p'} className={'hero-description'}>
 							{t('Hero description')}
 						</Box>
-						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
-							{t('Get in touch')} →
-						</Button>
+						<Tooltip
+							title={tooltipText}
+							arrow
+							placement="top"
+							enterDelay={150}
+							PopperProps={{
+								modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+							}}
+						>
+							<span>
+								<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+									{ctaText} <span className="cta-arrow">→</span>
+								</Button>
+							</span>
+						</Tooltip>
 					</Box>
 				</Stack>
 			</Stack>
@@ -54,9 +70,21 @@ const HeroSection = () => {
 					<Box component={'p'} className={'hero-description'}>
 						{t('Hero description')}
 					</Box>
-					<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
-						{t('Get in touch')} →
-					</Button>
+					<Tooltip
+						title={tooltipText}
+						arrow
+						placement="top"
+						enterDelay={150}
+						PopperProps={{
+							modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+						}}
+					>
+						<span>
+							<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+								{ctaText} <span className="cta-arrow">→</span>
+							</Button>
+						</span>
+					</Tooltip>
 					<Box component={'div'} className={'video-play-button'}>
 						<Box component={'div'} className={'play-button-bg'}>
 							<PlayArrowIcon className={'play-icon'} />

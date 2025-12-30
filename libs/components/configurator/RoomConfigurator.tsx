@@ -259,24 +259,34 @@ function FallbackDemoScene({
   onSelectedName,
   selectedHex,
   wallHex,
+  mode,
 }: {
   onHint: (t: string) => void;
   onSelectedName: (t: string | null) => void;
   selectedHex: string | null;
   wallHex: string | null;
+  mode: 'design' | 'explore';
 }) {
-  const { camera } = useThree();
+  const { camera, raycaster } = useThree();
+  const OUTSIDE_COLOR = '#bfe3ff';
 
   const windowHitRef = useRef<THREE.Mesh>(null!);
   const doorHitRef = useRef<THREE.Mesh>(null!);
   const windowPartsRef = useRef<Array<THREE.Mesh | null>>([]);
   const doorPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const smallWindow1HitRef = useRef<THREE.Mesh>(null!);
+  const smallWindow1PartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const smallWindow2HitRef = useRef<THREE.Mesh>(null!);
+  const smallWindow2PartsRef = useRef<Array<THREE.Mesh | null>>([]);
   const backWallRef = useRef<THREE.Mesh>(null!);
   const leftWallRef = useRef<THREE.Mesh>(null!);
   const rightWallRef = useRef<THREE.Mesh>(null!);
   const room2BackWallRef = useRef<THREE.Mesh>(null!);
   const room2LeftWallRef = useRef<THREE.Mesh>(null!);
   const room2RightWallRef = useRef<THREE.Mesh>(null!);
+  const room3BackWallRef = useRef<THREE.Mesh>(null!);
+  const room3LeftWallRef = useRef<THREE.Mesh>(null!);
+  const room3RightWallRef = useRef<THREE.Mesh>(null!);
   const [hoveredName, setHoveredName] = useState<string | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<'window' | 'door' | null>(null);
   const [windowFrameHex, setWindowFrameHex] = useState<string>('#f2f2f2');
@@ -288,7 +298,7 @@ function FallbackDemoScene({
     camera.position.set(0.5, 1.7, 6.5);
     camera.lookAt(0, 1.6, 0);
     onHint(
-      'Demo mode: room.glb topilmadi. Deraza yoki eshik ROMini hover qiling (cursor pointer bo‘ladi), click qilib tanlang, keyin rang tanlang.',
+      'Demo: xonalar alohida. Deraza/eshik romini tanlang, rang bering. Oynadan tashqarida tabiat ko‘rinadi.',
     );
     onSelectedName(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -308,7 +318,17 @@ function FallbackDemoScene({
 
   useEffect(() => {
     if (!wallHex) return;
-    [backWallRef.current, leftWallRef.current, rightWallRef.current, room2BackWallRef.current, room2LeftWallRef.current, room2RightWallRef.current].forEach((m) => {
+    [
+      backWallRef.current,
+      leftWallRef.current,
+      rightWallRef.current,
+      room2BackWallRef.current,
+      room2LeftWallRef.current,
+      room2RightWallRef.current,
+      room3BackWallRef.current,
+      room3LeftWallRef.current,
+      room3RightWallRef.current,
+    ].forEach((m) => {
       if (m) setColor(m, wallHex);
     });
     onHint('Devor rangi o‘zgardi.');
@@ -323,6 +343,83 @@ function FallbackDemoScene({
     },
     [onHint, onSelectedName],
   );
+
+  // Explore mode (WASD + pointer lock)
+  const pointerRef = useRef<any>(null);
+  const keysRef = useRef({ w: false, a: false, s: false, d: false });
+  const hoveredExploreRef = useRef<'window' | 'door' | null>(null);
+  const mouseCenter = useMemo(() => new THREE.Vector2(0, 0), []);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (k in keysRef.current) (keysRef.current as any)[k] = true;
+    };
+    const up = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (k in keysRef.current) (keysRef.current as any)[k] = false;
+    };
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    return () => {
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+    };
+  }, []);
+
+  useFrame((_, delta) => {
+    if (mode !== 'explore') return;
+    const ctl = pointerRef.current;
+    if (!ctl?.isLocked) return;
+
+    // Movement
+    const keys = keysRef.current;
+    const dir = new THREE.Vector3((keys.d ? 1 : 0) + (keys.a ? -1 : 0), 0, (keys.s ? 1 : 0) + (keys.w ? -1 : 0));
+    if (dir.lengthSq() > 0) dir.normalize();
+    const speed = 2.6;
+    ctl.moveRight(dir.x * speed * delta);
+    ctl.moveForward(dir.z * speed * delta);
+
+    // Clamp inside simple bounds
+    const obj = ctl.getObject?.();
+    if (obj) {
+      obj.position.y = 1.7;
+      obj.position.x = THREE.MathUtils.clamp(obj.position.x, -8, 18);
+      obj.position.z = THREE.MathUtils.clamp(obj.position.z, -10, 14);
+    }
+
+    // Center raycast to selectables
+    raycaster.setFromCamera(mouseCenter, camera);
+    const hits = raycaster.intersectObjects(
+      [windowHitRef.current, smallWindow1HitRef.current, smallWindow2HitRef.current, doorHitRef.current].filter(Boolean) as THREE.Object3D[],
+      true,
+    );
+    const hit = hits?.[0]?.object || null;
+    let next: 'window' | 'door' | null = null;
+    if (hit === doorHitRef.current) next = 'door';
+    else if (hit) next = 'window';
+
+    if (hoveredExploreRef.current !== next) {
+      // clear
+      windowPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      setHoveredName(null);
+
+      if (next === 'door') {
+        doorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Door frame');
+      } else if (next === 'window') {
+        // We don't know which window exactly; highlight all windows in explore
+        windowPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Window frame');
+      }
+      hoveredExploreRef.current = next;
+    }
+  });
 
   return (
     <>
@@ -352,12 +449,6 @@ function FallbackDemoScene({
         <meshStandardMaterial color="#1b1b1f" />
       </mesh>
 
-      {/* Outside view behind window */}
-      <mesh position={[0, 2.2, -4.25]}>
-        <planeGeometry args={[6.2, 3.2]} />
-        <meshStandardMaterial color="#bfe3ff" />
-      </mesh>
-
       {/* WINDOW: frame bars + real glass behind */}
       {(() => {
         // Window layout constants (keep corners perfectly 90deg)
@@ -383,6 +474,12 @@ function FallbackDemoScene({
 
         return (
           <>
+            {/* Outside view (simple sky) */}
+            <mesh position={[cx, cy, cz - 0.12]}>
+              <planeGeometry args={[innerW, innerH]} />
+              <meshStandardMaterial color={OUTSIDE_COLOR} />
+            </mesh>
+
             {/* Glass */}
             <mesh position={[cx, cy, cz - 0.07]}>
               <boxGeometry args={[innerW, innerH, 0.03]} />
@@ -430,11 +527,13 @@ function FallbackDemoScene({
               ref={windowHitRef}
               position={[cx, cy, cz]}
               onPointerOver={() => {
+          if (mode === 'explore') return;
                 setHoveredName('Window frame');
                 windowPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
                 onHint('Deraza romi hover (click qilib tanlang).');
               }}
               onPointerOut={() => {
+          if (mode === 'explore') return;
                 setHoveredName(null);
                 windowPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
               }}
@@ -448,7 +547,72 @@ function FallbackDemoScene({
       })()}
 
       {/* SECOND ROOM (door is here, not next to window) */}
-      <group position={[10, 0, 0]}>
+      <group position={[22, 0, 0]}>
+        {/* Small window in Room 2 */}
+        {(() => {
+          const cx = -3.2;
+          const cy = 1.9;
+          const cz = -3.92;
+          const outerW = 3.0;
+          const outerH = 2.0;
+          const barT = 0.22;
+          const depth = 0.14;
+          const innerW = outerW - barT * 2;
+          const innerH = outerH - barT * 2;
+          const topY = cy + outerH / 2 - barT / 2;
+          const botY = cy - outerH / 2 + barT / 2;
+          const leftX = cx - outerW / 2 + barT / 2;
+          const rightX = cx + outerW / 2 - barT / 2;
+          return (
+            <>
+              <mesh position={[cx, cy, cz - 0.12]}>
+                <planeGeometry args={[innerW, innerH]} />
+                <meshStandardMaterial color={OUTSIDE_COLOR} />
+              </mesh>
+              <mesh position={[cx, cy, cz - 0.07]}>
+                <boxGeometry args={[innerW, innerH, 0.03]} />
+                <meshPhysicalMaterial color="#d6f0ff" transparent opacity={0.25} transmission={0.85} thickness={0.12} ior={1.45} roughness={0.06} />
+              </mesh>
+              {[
+                { p: [cx, topY, cz], s: [outerW, barT, depth] },
+                { p: [cx, botY, cz], s: [outerW, barT, depth] },
+                { p: [leftX, cy, cz], s: [barT, outerH, depth] },
+                { p: [rightX, cy, cz], s: [barT, outerH, depth] },
+              ].map((cfg, idx) => (
+                <mesh
+                  key={`r2w-${idx}`}
+                  ref={(el) => {
+                    smallWindow1PartsRef.current[idx] = el;
+                  }}
+                  position={cfg.p as any}
+                  castShadow
+                >
+                  <boxGeometry args={cfg.s as any} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+              <mesh
+                ref={smallWindow1HitRef}
+                position={[cx, cy, cz]}
+                onPointerOver={() => {
+                  if (mode === 'explore') return;
+                  setHoveredName('Small window (Room 2)');
+                  smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+                  onHint('Kichik deraza romi hover (click qilib tanlang).');
+                }}
+                onPointerOut={() => {
+                  if (mode === 'explore') return;
+                  setHoveredName(null);
+                  smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+                }}
+                onClick={() => select('window', 'Small window (Room 2)')}
+              >
+                <boxGeometry args={[outerW + 0.2, outerH + 0.2, 0.6]} />
+                <meshBasicMaterial transparent opacity={0} />
+              </mesh>
+            </>
+          );
+        })()}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#8d7f72" />
@@ -470,13 +634,13 @@ function FallbackDemoScene({
           <meshStandardMaterial color="#1b1b1f" />
         </mesh>
 
-        {/* Outside view behind door */}
-        <mesh position={[0, 2.2, -4.25]}>
-          <planeGeometry args={[3.2, 3.2]} />
-          <meshStandardMaterial color="#cfe9ff" />
+        {/* Outside nature behind door glass */}
+        <mesh position={[0, 1.55, -4.06]}>
+          <planeGeometry args={[1.25, 2.55]} />
+          <meshStandardMaterial color={OUTSIDE_COLOR} />
         </mesh>
 
-        {/* Door glass behind */}
+        {/* Door glass */}
         <mesh position={[0, 1.55, -3.99]}>
           <boxGeometry args={[1.25, 2.55, 0.03]} />
           <meshPhysicalMaterial
@@ -520,11 +684,13 @@ function FallbackDemoScene({
           ref={doorHitRef}
           position={[0, 1.55, -3.92]}
           onPointerOver={() => {
+            if (mode === 'explore') return;
             setHoveredName('Door frame');
             doorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
             onHint('Eshik romi hover (click qilib tanlang).');
           }}
           onPointerOut={() => {
+            if (mode === 'explore') return;
             setHoveredName(null);
             doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
           }}
@@ -535,8 +701,112 @@ function FallbackDemoScene({
         </mesh>
       </group>
 
+      {/* ROOM 3 (another small window) */}
+      <group position={[0, 0, 22]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <planeGeometry args={[18, 18]} />
+          <meshStandardMaterial color="#8d7f72" />
+        </mesh>
+        <mesh ref={room3BackWallRef} position={[0, 2.2, -4]} receiveShadow>
+          <planeGeometry args={[18, 8]} />
+          <meshStandardMaterial color="#f2f4f7" />
+        </mesh>
+        <mesh ref={room3LeftWallRef} position={[-4.5, 2.2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, 8]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh ref={room3RightWallRef} position={[4.5, 2.2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, 8]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh position={[0, 4.2, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+          <planeGeometry args={[18, 18]} />
+          <meshStandardMaterial color="#1b1b1f" />
+        </mesh>
+
+        {(() => {
+          const cx = 3.0;
+          const cy = 1.9;
+          const cz = -3.92;
+          const outerW = 2.4;
+          const outerH = 1.9;
+          const barT = 0.22;
+          const depth = 0.14;
+          const innerW = outerW - barT * 2;
+          const innerH = outerH - barT * 2;
+          const topY = cy + outerH / 2 - barT / 2;
+          const botY = cy - outerH / 2 + barT / 2;
+          const leftX = cx - outerW / 2 + barT / 2;
+          const rightX = cx + outerW / 2 - barT / 2;
+          return (
+            <>
+              <mesh position={[cx, cy, cz - 0.12]}>
+                <planeGeometry args={[innerW, innerH]} />
+                <meshStandardMaterial color={OUTSIDE_COLOR} />
+              </mesh>
+              <mesh position={[cx, cy, cz - 0.07]}>
+                <boxGeometry args={[innerW, innerH, 0.03]} />
+                <meshPhysicalMaterial color="#d6f0ff" transparent opacity={0.25} transmission={0.85} thickness={0.12} ior={1.45} roughness={0.06} />
+              </mesh>
+              {[
+                { p: [cx, topY, cz], s: [outerW, barT, depth] },
+                { p: [cx, botY, cz], s: [outerW, barT, depth] },
+                { p: [leftX, cy, cz], s: [barT, outerH, depth] },
+                { p: [rightX, cy, cz], s: [barT, outerH, depth] },
+              ].map((cfg, idx) => (
+                <mesh
+                  key={`r3w-${idx}`}
+                  ref={(el) => {
+                    smallWindow2PartsRef.current[idx] = el;
+                  }}
+                  position={cfg.p as any}
+                  castShadow
+                >
+                  <boxGeometry args={cfg.s as any} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+              <mesh
+                ref={smallWindow2HitRef}
+                position={[cx, cy, cz]}
+                onPointerOver={() => {
+                  if (mode === 'explore') return;
+                  setHoveredName('Small window (Room 3)');
+                  smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+                  onHint('Kichik deraza romi hover (click qilib tanlang).');
+                }}
+                onPointerOut={() => {
+                  if (mode === 'explore') return;
+                  setHoveredName(null);
+                  smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+                }}
+                onClick={() => select('window', 'Small window (Room 3)')}
+              >
+                <boxGeometry args={[outerW + 0.2, outerH + 0.2, 0.6]} />
+                <meshBasicMaterial transparent opacity={0} />
+              </mesh>
+            </>
+          );
+        })()}
+      </group>
+
       {/* Easier camera control in demo */}
-      <OrbitControls makeDefault enablePan enableZoom enableRotate target={[5, 1.7, -3.4]} />
+      {mode === 'design' ? (
+        <OrbitControls makeDefault enablePan enableZoom enableRotate target={[5, 1.7, -3.4]} />
+      ) : (
+        <PointerLockControls
+          ref={pointerRef}
+          makeDefault
+          onUnlock={() => {
+            setHoveredName(null);
+            windowPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+          }}
+          onLock={() => onHint('Explore: WASD bilan yuring. Hover bo‘lsa click qilib tanlang.')}
+        />
+      )}
     </>
   );
 }
@@ -547,6 +817,7 @@ export default function RoomConfigurator({ modelUrl = '/models/room.glb' }: { mo
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
   const [wallHex, setWallHex] = useState<string | null>(WALL_SWATCHES[0]?.hex || null);
   const [modelAvailable, setModelAvailable] = useState<boolean | null>(null);
+  const [mode, setMode] = useState<'design' | 'explore'>('design');
 
   useEffect(() => {
     let cancelled = false;
@@ -592,6 +863,7 @@ export default function RoomConfigurator({ modelUrl = '/models/room.glb' }: { mo
                 onSelectedName={setSelectedName}
                 selectedHex={selectedHex}
                 wallHex={wallHex}
+                mode={mode}
               />
             )}
           </Suspense>
@@ -602,6 +874,27 @@ export default function RoomConfigurator({ modelUrl = '/models/room.glb' }: { mo
       </div>
 
       <aside className="configurator-panel">
+        <div className="configurator-panel-title">Mode</div>
+        <div className="configurator-panel-sub">Design: mouse bilan aylaning. Explore: WASD bilan ichkariga kiring.</div>
+        <div className="configurator-mode">
+          <button
+            type="button"
+            className={mode === 'design' ? 'configurator-mode-btn active' : 'configurator-mode-btn'}
+            onClick={() => setMode('design')}
+          >
+            Design
+          </button>
+          <button
+            type="button"
+            className={mode === 'explore' ? 'configurator-mode-btn active' : 'configurator-mode-btn'}
+            onClick={() => setMode('explore')}
+          >
+            Explore (WASD)
+          </button>
+        </div>
+
+        <div className="configurator-panel-divider" />
+
         <div className="configurator-panel-title">Frame color</div>
         <div className="configurator-panel-sub">
           {selectedName ? `Selected: ${selectedName}` : 'Select a window/door frame first'}

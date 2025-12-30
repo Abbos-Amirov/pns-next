@@ -66,6 +66,33 @@
   margin-bottom: 12px;
 }
 
+.configurator-mode {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.configurator-mode-btn {
+  flex: 1;
+  border: 1px solid rgba(139, 69, 19, 0.18);
+  background: rgba(255, 255, 255, 0.75);
+  color: #3a3d42;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.configurator-mode-btn.active {
+  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  color: #ffffff;
+  border-color: rgba(139, 69, 19, 0.45);
+}
+
+.configurator-mode-btn:active {
+  transform: scale(0.99);
+}
+
 .configurator-panel-divider {
   height: 1px;
   width: 100%;
