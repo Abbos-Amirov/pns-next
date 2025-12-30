@@ -268,29 +268,96 @@ function FallbackDemoScene({
   mode: 'design' | 'explore';
 }) {
   const { camera, raycaster } = useThree();
+  // Outside view should be simple & clean (not affected by wall color)
   const OUTSIDE_COLOR = '#bfe3ff';
+  const ROOM_H = 4.4; // wall/ceiling height in world units (keep consistent)
+  const WALL_Y = ROOM_H / 2;
+
+  // Unlit "outside" so wall color/lighting never makes it look like the interior wall
+  const outsideTex = useMemo(() => {
+    if (typeof document === 'undefined') return null;
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 512;
+    const ctx = c.getContext('2d');
+    if (!ctx) return null;
+    // Sky gradient
+    const g = ctx.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0, '#8fd0ff');
+    g.addColorStop(0.55, '#cfeeff');
+    g.addColorStop(0.78, '#eef9ff');
+    g.addColorStop(1, '#f7fbff');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Soft horizon haze band
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillRect(0, 350, 512, 80);
+
+    // Subtle ground (very soft, not "nature")
+    const ground = ctx.createLinearGradient(0, 420, 0, 512);
+    ground.addColorStop(0, 'rgba(120,150,120,0.12)');
+    ground.addColorStop(1, 'rgba(90,110,90,0.22)');
+    ctx.fillStyle = ground;
+    ctx.fillRect(0, 420, 512, 92);
+
+    // Minimal distant hills (low-contrast)
+    ctx.beginPath();
+    ctx.moveTo(0, 430);
+    ctx.bezierCurveTo(120, 380, 220, 455, 330, 410);
+    ctx.bezierCurveTo(390, 385, 460, 435, 512, 405);
+    ctx.lineTo(512, 512);
+    ctx.lineTo(0, 512);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(80,95,110,0.10)';
+    ctx.fill();
+
+    // Soft sun glow
+    const rg = ctx.createRadialGradient(410, 130, 8, 410, 130, 170);
+    rg.addColorStop(0, 'rgba(255,255,255,0.85)');
+    rg.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, 512, 512);
+    const tex = new THREE.CanvasTexture(c);
+    // three typings differ by version; keep it compatible
+    // @ts-ignore
+    (tex as any).colorSpace = (THREE as any).SRGBColorSpace;
+    // @ts-ignore (older three)
+    (tex as any).encoding = (THREE as any).sRGBEncoding;
+    tex.needsUpdate = true;
+    return tex;
+  }, []);
 
   const windowHitRef = useRef<THREE.Mesh>(null!);
   const doorHitRef = useRef<THREE.Mesh>(null!);
   const windowPartsRef = useRef<Array<THREE.Mesh | null>>([]);
   const doorPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const sofaPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const tablePartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const tvPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const sofaHitRef = useRef<THREE.Mesh>(null!);
+  const tableHitRef = useRef<THREE.Mesh>(null!);
+  const tvHitRef = useRef<THREE.Mesh>(null!);
   const smallWindow1HitRef = useRef<THREE.Mesh>(null!);
   const smallWindow1PartsRef = useRef<Array<THREE.Mesh | null>>([]);
   const smallWindow2HitRef = useRef<THREE.Mesh>(null!);
   const smallWindow2PartsRef = useRef<Array<THREE.Mesh | null>>([]);
-  const backWallRef = useRef<THREE.Mesh>(null!);
+  const backWallRefs = useRef<Array<THREE.Mesh | null>>([]);
   const leftWallRef = useRef<THREE.Mesh>(null!);
   const rightWallRef = useRef<THREE.Mesh>(null!);
-  const room2BackWallRef = useRef<THREE.Mesh>(null!);
+  const room2BackWallRefs = useRef<Array<THREE.Mesh | null>>([]);
   const room2LeftWallRef = useRef<THREE.Mesh>(null!);
   const room2RightWallRef = useRef<THREE.Mesh>(null!);
-  const room3BackWallRef = useRef<THREE.Mesh>(null!);
+  const room3BackWallRefs = useRef<Array<THREE.Mesh | null>>([]);
   const room3LeftWallRef = useRef<THREE.Mesh>(null!);
   const room3RightWallRef = useRef<THREE.Mesh>(null!);
   const [hoveredName, setHoveredName] = useState<string | null>(null);
-  const [selectedTarget, setSelectedTarget] = useState<'window' | 'door' | null>(null);
+  const [selectedTarget, setSelectedTarget] = useState<'window' | 'door' | 'sofa' | 'table' | 'tv' | null>(null);
   const [windowFrameHex, setWindowFrameHex] = useState<string>('#f2f2f2');
   const [doorFrameHex, setDoorFrameHex] = useState<string>('#f2f2f2');
+  const [sofaHex, setSofaHex] = useState<string>('#7a5a3a');
+  const [tableHex, setTableHex] = useState<string>('#cbb79c');
+  const [tvHex, setTvHex] = useState<string>('#1b1b1f');
   useCursor(!!hoveredName);
 
   useEffect(() => {
@@ -298,7 +365,7 @@ function FallbackDemoScene({
     camera.position.set(0.5, 1.7, 6.5);
     camera.lookAt(0, 1.6, 0);
     onHint(
-      'Demo: xonalar alohida. Deraza/eshik romini tanlang, rang bering. Oynadan tashqarida tabiat ko‘rinadi.',
+      'Demo: deraza/eshik romini yoki mebelni (divan/ustol/TV) tanlab rang bering. Oynadan tashqari ko‘rinadi.',
     );
     onSelectedName(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -312,31 +379,33 @@ function FallbackDemoScene({
     }
     if (selectedTarget === 'window') setWindowFrameHex(selectedHex);
     if (selectedTarget === 'door') setDoorFrameHex(selectedHex);
+    if (selectedTarget === 'sofa') setSofaHex(selectedHex);
+    if (selectedTarget === 'table') setTableHex(selectedHex);
+    if (selectedTarget === 'tv') setTvHex(selectedHex);
     onHint('Rang romga qo‘llandi.');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHex]);
 
   useEffect(() => {
     if (!wallHex) return;
-    [
-      backWallRef.current,
+    const walls = [
+      ...(backWallRefs.current || []),
       leftWallRef.current,
       rightWallRef.current,
-      room2BackWallRef.current,
+      ...(room2BackWallRefs.current || []),
       room2LeftWallRef.current,
       room2RightWallRef.current,
-      room3BackWallRef.current,
+      ...(room3BackWallRefs.current || []),
       room3LeftWallRef.current,
       room3RightWallRef.current,
-    ].forEach((m) => {
-      if (m) setColor(m, wallHex);
-    });
+    ].filter(Boolean) as THREE.Mesh[];
+    walls.forEach((m) => setColor(m, wallHex));
     onHint('Devor rangi o‘zgardi.');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallHex]);
 
   const select = useCallback(
-    (target: 'window' | 'door', label: string) => {
+    (target: 'window' | 'door' | 'sofa' | 'table' | 'tv', label: string) => {
       setSelectedTarget(target);
       onSelectedName(label);
       onHint(`Tanlandi: ${label}. Endi rang tanlang.`);
@@ -347,7 +416,7 @@ function FallbackDemoScene({
   // Explore mode (WASD + pointer lock)
   const pointerRef = useRef<any>(null);
   const keysRef = useRef({ w: false, a: false, s: false, d: false });
-  const hoveredExploreRef = useRef<'window' | 'door' | null>(null);
+  const hoveredExploreRef = useRef<'window' | 'door' | 'sofa' | 'table' | 'tv' | null>(null);
   const mouseCenter = useMemo(() => new THREE.Vector2(0, 0), []);
 
   useEffect(() => {
@@ -391,12 +460,23 @@ function FallbackDemoScene({
     // Center raycast to selectables
     raycaster.setFromCamera(mouseCenter, camera);
     const hits = raycaster.intersectObjects(
-      [windowHitRef.current, smallWindow1HitRef.current, smallWindow2HitRef.current, doorHitRef.current].filter(Boolean) as THREE.Object3D[],
+      [
+        windowHitRef.current,
+        smallWindow1HitRef.current,
+        smallWindow2HitRef.current,
+        doorHitRef.current,
+        sofaHitRef.current,
+        tableHitRef.current,
+        tvHitRef.current,
+      ].filter(Boolean) as THREE.Object3D[],
       true,
     );
     const hit = hits?.[0]?.object || null;
-    let next: 'window' | 'door' | null = null;
+    let next: 'window' | 'door' | 'sofa' | 'table' | 'tv' | null = null;
     if (hit === doorHitRef.current) next = 'door';
+    else if (hit === sofaHitRef.current) next = 'sofa';
+    else if (hit === tableHitRef.current) next = 'table';
+    else if (hit === tvHitRef.current) next = 'tv';
     else if (hit) next = 'window';
 
     if (hoveredExploreRef.current !== next) {
@@ -405,11 +485,23 @@ function FallbackDemoScene({
       smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      sofaPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      tablePartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      tvPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       setHoveredName(null);
 
       if (next === 'door') {
         doorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
         setHoveredName('Door frame');
+      } else if (next === 'sofa') {
+        sofaPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Sofa');
+      } else if (next === 'table') {
+        tablePartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Table');
+      } else if (next === 'tv') {
+        tvPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('TV');
       } else if (next === 'window') {
         // We don't know which window exactly; highlight all windows in explore
         windowPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
@@ -425,40 +517,340 @@ function FallbackDemoScene({
     <>
       <ambientLight intensity={0.65} />
       <hemisphereLight args={[0xffffff, 0x333344, 1.0]} />
-      <directionalLight position={[3, 6, 2]} intensity={1.15} castShadow />
+      {/* Slightly more "real" lighting: warm sun from outside + soft fill */}
+      <directionalLight position={[0, 6.5, -6]} intensity={1.55} castShadow />
+      <directionalLight position={[-4, 3.5, 5]} intensity={0.35} />
 
       {/* Simple room */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[18, 18]} />
         <meshStandardMaterial color="#8d7f72" />
       </mesh>
-      <mesh ref={backWallRef} position={[0, 2.2, -4]} receiveShadow>
-        <planeGeometry args={[18, 8]} />
-        <meshStandardMaterial color="#f2f4f7" />
-      </mesh>
-      <mesh ref={leftWallRef} position={[-4.5, 2.2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
+      {/* Back wall with a "hole" for the big window so outside is actually visible */}
+      {(() => {
+        const wallW = 18;
+        const wallH = ROOM_H;
+        const wallZ = -4;
+        // Match window size (same numbers used below)
+        const winW = 6.9;
+        const winH = ROOM_H - 0.35;
+        // Keep the wall cut-out slightly SMALLER than the frame so there is no visible gap
+        const pad = -0.04;
+        const holeW = winW + pad;
+        const holeH = winH + pad;
+        const cx = 0;
+        const cy = WALL_Y;
+        const left = cx - holeW / 2;
+        const right = cx + holeW / 2;
+        const bottom = cy - holeH / 2;
+        const top = cy + holeH / 2;
+
+        const topH = Math.max(0.01, wallH - top);
+        const bottomH = Math.max(0.01, bottom);
+        const sideH = Math.max(0.01, holeH);
+        const leftW = Math.max(0.01, left + wallW / 2);
+        const rightW = Math.max(0.01, wallW / 2 - right);
+
+        return (
+          <>
+            {/* top strip */}
+            <mesh
+              ref={(el) => {
+                backWallRefs.current[0] = el;
+              }}
+              position={[0, top + topH / 2, wallZ]}
+              receiveShadow
+            >
+              <planeGeometry args={[wallW, topH]} />
+              <meshStandardMaterial color="#f2f4f7" />
+            </mesh>
+            {/* bottom strip */}
+            <mesh
+              ref={(el) => {
+                backWallRefs.current[1] = el;
+              }}
+              position={[0, bottomH / 2, wallZ]}
+              receiveShadow
+            >
+              <planeGeometry args={[wallW, bottomH]} />
+              <meshStandardMaterial color="#f2f4f7" />
+            </mesh>
+            {/* left strip */}
+            <mesh
+              ref={(el) => {
+                backWallRefs.current[2] = el;
+              }}
+              position={[-wallW / 2 + leftW / 2, cy, wallZ]}
+              receiveShadow
+            >
+              <planeGeometry args={[leftW, sideH]} />
+              <meshStandardMaterial color="#f2f4f7" />
+            </mesh>
+            {/* right strip */}
+            <mesh
+              ref={(el) => {
+                backWallRefs.current[3] = el;
+              }}
+              position={[wallW / 2 - rightW / 2, cy, wallZ]}
+              receiveShadow
+            >
+              <planeGeometry args={[rightW, sideH]} />
+              <meshStandardMaterial color="#f2f4f7" />
+            </mesh>
+          </>
+        );
+      })()}
+      <mesh ref={leftWallRef} position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+        <planeGeometry args={[8, ROOM_H]} />
         <meshStandardMaterial color="#eef1f5" />
       </mesh>
-      <mesh ref={rightWallRef} position={[4.5, 2.2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-        <planeGeometry args={[8, 8]} />
+      <mesh ref={rightWallRef} position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+        <planeGeometry args={[8, ROOM_H]} />
         <meshStandardMaterial color="#eef1f5" />
       </mesh>
-      <mesh position={[0, 4.2, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+      <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[18, 18]} />
         <meshStandardMaterial color="#1b1b1f" />
       </mesh>
+
+      {/* Simple balcony outside the big window (just to feel more real) */}
+      <group position={[0, 0, 0]}>
+        {/* balcony floor */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, -7.0]} receiveShadow>
+          <planeGeometry args={[10, 4.5]} />
+          <meshStandardMaterial color="#b9b3ab" roughness={0.95} metalness={0.02} />
+        </mesh>
+        {/* railing */}
+        <mesh position={[0, 1.05, -6.4]} castShadow>
+          <boxGeometry args={[9.6, 0.06, 0.06]} />
+          <meshStandardMaterial color="#e6e6e6" roughness={0.6} metalness={0.2} />
+        </mesh>
+        {Array.from({ length: 12 }).map((_, i) => {
+          const x = -4.6 + i * (9.2 / 11);
+          return (
+            <mesh key={`rail-${i}`} position={[x, 0.6, -6.4]} castShadow>
+              <boxGeometry args={[0.05, 0.9, 0.05]} />
+              <meshStandardMaterial color="#efefef" roughness={0.6} metalness={0.15} />
+            </mesh>
+          );
+        })}
+      </group>
+
+      {/* Furniture (doesn't block window view): sofa right, coffee table center, TV left */}
+      <group>
+        {/* Sofa-bed (two-person) - rotated to face TV (left) */}
+        <group position={[2.75, 0, 1.1]} rotation={[0, -Math.PI / 2, 0]}>
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[0] = el;
+            }}
+            position={[0, 0.55, 0.0]}
+            castShadow
+            receiveShadow
+          >
+            {/* base is deeper (bed-like) */}
+            <boxGeometry args={[2.55, 0.6, 1.35]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.75} metalness={0.02} />
+          </mesh>
+          {/* pull-out bed platform (front) */}
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[4] = el;
+            }}
+            position={[0, 0.28, 0.82]}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={[2.45, 0.18, 0.58]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.8} metalness={0.01} />
+          </mesh>
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[1] = el;
+            }}
+            position={[0, 1.05, -0.55]}
+            castShadow
+          >
+            <boxGeometry args={[2.55, 0.45, 0.28]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.8} metalness={0.02} />
+          </mesh>
+          {/* chaise extension (right) */}
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[5] = el;
+            }}
+            position={[0.72, 0.45, 0.55]}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={[1.05, 0.5, 0.7]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.8} metalness={0.01} />
+          </mesh>
+          {/* Armrests */}
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[2] = el;
+            }}
+            position={[1.1, 0.95, 0.0]}
+            castShadow
+          >
+            <boxGeometry args={[0.25, 0.8, 1.35]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.8} metalness={0.02} />
+          </mesh>
+          <mesh
+            ref={(el) => {
+              sofaPartsRef.current[3] = el;
+            }}
+            position={[-1.1, 0.95, 0.0]}
+            castShadow
+          >
+            <boxGeometry args={[0.25, 0.8, 1.35]} />
+            <meshStandardMaterial color={sofaHex} roughness={0.8} metalness={0.02} />
+          </mesh>
+          {/* Sofa hitbox */}
+          <mesh
+            ref={sofaHitRef}
+            position={[0, 0.9, 0.0]}
+            onPointerOver={() => {
+              if (mode === 'explore') return;
+              setHoveredName('Sofa');
+              sofaPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+              onHint('Divan hover (click qilib tanlang).');
+            }}
+            onPointerOut={() => {
+              if (mode === 'explore') return;
+              setHoveredName(null);
+              sofaPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            }}
+            onClick={() => select('sofa', 'Sofa')}
+          >
+            <boxGeometry args={[3.1, 1.4, 1.8]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
+        </group>
+
+        {/* Coffee table (center) */}
+        <mesh
+          ref={(el) => {
+            tablePartsRef.current[0] = el;
+          }}
+          position={[0.9, 0.42, 1.25]}
+          castShadow
+          receiveShadow
+        >
+          <boxGeometry args={[1.55, 0.08, 0.85]} />
+          <meshStandardMaterial color={tableHex} roughness={0.65} metalness={0.05} />
+        </mesh>
+        {[
+          [0.25, 0.2, 0.9],
+          [1.55, 0.2, 0.9],
+          [0.25, 0.2, 1.6],
+          [1.55, 0.2, 1.6],
+        ].map((p, i) => (
+          <mesh
+            key={`tleg-${i}`}
+            ref={(el) => {
+              tablePartsRef.current[1 + i] = el;
+            }}
+            position={p as any}
+            castShadow
+          >
+            <boxGeometry args={[0.06, 0.5, 0.06]} />
+            <meshStandardMaterial color={tableHex} roughness={0.7} metalness={0.05} />
+          </mesh>
+        ))}
+        <mesh
+          ref={tableHitRef}
+          position={[0.9, 0.35, 1.25]}
+          onPointerOver={() => {
+            if (mode === 'explore') return;
+            setHoveredName('Table');
+            tablePartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+            onHint('Ustol hover (click qilib tanlang).');
+          }}
+          onPointerOut={() => {
+            if (mode === 'explore') return;
+            setHoveredName(null);
+            tablePartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+          }}
+          onClick={() => select('table', 'Table')}
+        >
+          <boxGeometry args={[2.0, 1.0, 1.3]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+
+        {/* Rug (neutral) */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.0, 0.02, 1.25]} receiveShadow>
+          <planeGeometry args={[5.0, 3.2]} />
+          <meshStandardMaterial color="#6b6f78" roughness={0.95} metalness={0} opacity={0.9} transparent />
+        </mesh>
+
+        {/* TV (left wall) */}
+        <mesh
+          ref={(el) => {
+            tvPartsRef.current[0] = el;
+          }}
+          position={[-4.18, 1.35, 1.1]}
+          rotation={[0, Math.PI / 2, 0]}
+          castShadow
+        >
+          <boxGeometry args={[1.8, 1.05, 0.08]} />
+          <meshStandardMaterial color={tvHex} roughness={0.35} metalness={0.25} />
+        </mesh>
+        <mesh
+          ref={(el) => {
+            tvPartsRef.current[1] = el;
+          }}
+          position={[-4.14, 1.35, 1.1]}
+          rotation={[0, Math.PI / 2, 0]}
+          castShadow
+        >
+          <boxGeometry args={[1.6, 0.9, 0.02]} />
+          <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
+        </mesh>
+        <mesh
+          ref={(el) => {
+            tvPartsRef.current[2] = el;
+          }}
+          position={[-4.25, 0.45, 1.1]}
+          rotation={[0, Math.PI / 2, 0]}
+          castShadow
+        >
+          <boxGeometry args={[1.2, 0.25, 0.6]} />
+          <meshStandardMaterial color={tvHex} roughness={0.45} metalness={0.25} />
+        </mesh>
+        <mesh
+          ref={tvHitRef}
+          position={[-4.15, 1.1, 1.1]}
+          rotation={[0, Math.PI / 2, 0]}
+          onPointerOver={() => {
+            if (mode === 'explore') return;
+            setHoveredName('TV');
+            tvPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+            onHint('TV hover (click qilib tanlang).');
+          }}
+          onPointerOut={() => {
+            if (mode === 'explore') return;
+            setHoveredName(null);
+            tvPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+          }}
+          onClick={() => select('tv', 'TV')}
+        >
+          <boxGeometry args={[2.2, 1.8, 1.1]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+      </group>
 
       {/* WINDOW: frame bars + real glass behind */}
       {(() => {
         // Window layout constants (keep corners perfectly 90deg)
         const cx = 0;
-        const cy = 1.85;
+        const cy = WALL_Y;
         const cz = -3.92;
         const outerW = 6.9;
-        const outerH = 3.6;
-        const barT = 0.28;
-        const depth = 0.18;
+        const outerH = ROOM_H - 0.35; // almost full wall height
+        const barT = 0.18; // thinner frame
+        const depth = 0.14;
         const innerW = outerW - barT * 2;
         const innerH = outerH - barT * 2;
 
@@ -475,20 +867,20 @@ function FallbackDemoScene({
         return (
           <>
             {/* Outside view (simple sky) */}
-            <mesh position={[cx, cy, cz - 0.12]}>
-              <planeGeometry args={[innerW, innerH]} />
-              <meshStandardMaterial color={OUTSIDE_COLOR} />
+            <mesh position={[cx, cy, -6.2]}>
+              <planeGeometry args={[innerW * 1.35, innerH * 1.35]} />
+              <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
             </mesh>
 
             {/* Glass */}
             <mesh position={[cx, cy, cz - 0.07]}>
               <boxGeometry args={[innerW, innerH, 0.03]} />
               <meshPhysicalMaterial
-                color="#d6f0ff"
+                color="#ffffff"
                 transparent
-                opacity={0.28}
-                roughness={0.06}
-                transmission={0.85}
+                opacity={0.16}
+                roughness={0.03}
+                transmission={0.92}
                 thickness={0.15}
                 ior={1.45}
               />
@@ -516,8 +908,15 @@ function FallbackDemoScene({
 
             {/* Dividers (same color as frame) */}
             {[div1, div2, div3].map((x, i) => (
-              <mesh key={`wdiv-${i}`} position={[x, cy, cz + 0.02]} castShadow>
-                <boxGeometry args={[0.06, innerH, 0.08]} />
+              <mesh
+                key={`wdiv-${i}`}
+                ref={(el) => {
+                  windowPartsRef.current[4 + i] = el;
+                }}
+                position={[x, cy, cz + 0.02]}
+                castShadow
+              >
+                <boxGeometry args={[0.045, innerH, 0.08]} />
                 <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
               </mesh>
             ))}
@@ -551,12 +950,12 @@ function FallbackDemoScene({
         {/* Small window in Room 2 */}
         {(() => {
           const cx = -3.2;
-          const cy = 1.9;
+          const cy = WALL_Y;
           const cz = -3.92;
           const outerW = 3.0;
-          const outerH = 2.0;
-          const barT = 0.22;
-          const depth = 0.14;
+          const outerH = 2.2;
+          const barT = 0.16;
+          const depth = 0.12;
           const innerW = outerW - barT * 2;
           const innerH = outerH - barT * 2;
           const topY = cy + outerH / 2 - barT / 2;
@@ -567,11 +966,11 @@ function FallbackDemoScene({
             <>
               <mesh position={[cx, cy, cz - 0.12]}>
                 <planeGeometry args={[innerW, innerH]} />
-                <meshStandardMaterial color={OUTSIDE_COLOR} />
+                <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
               </mesh>
               <mesh position={[cx, cy, cz - 0.07]}>
                 <boxGeometry args={[innerW, innerH, 0.03]} />
-                <meshPhysicalMaterial color="#d6f0ff" transparent opacity={0.25} transmission={0.85} thickness={0.12} ior={1.45} roughness={0.06} />
+                <meshPhysicalMaterial color="#ffffff" transparent opacity={0.14} transmission={0.92} thickness={0.12} ior={1.45} roughness={0.03} />
               </mesh>
               {[
                 { p: [cx, topY, cz], s: [outerW, barT, depth] },
@@ -617,19 +1016,81 @@ function FallbackDemoScene({
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#8d7f72" />
         </mesh>
-        <mesh ref={room2BackWallRef} position={[0, 2.2, -4]} receiveShadow>
-          <planeGeometry args={[18, 8]} />
-          <meshStandardMaterial color="#f2f4f7" />
-        </mesh>
-        <mesh ref={room2LeftWallRef} position={[-4.5, 2.2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-          <planeGeometry args={[8, 8]} />
+        {/* Room2 back wall: cut-outs for small window + door, with reveals like the big window */}
+        {(() => {
+          const wallW = 18;
+          const wallH = ROOM_H;
+          const wallZ = -4;
+          const cy = WALL_Y;
+
+          // Holes (sizes match the actual frame areas with a little padding)
+          // Cut-outs slightly smaller than frame outer size to avoid visible gaps
+          const win = { cx: -3.2, cy: WALL_Y, w: 3.0 - 0.04, h: 2.2 - 0.04 };
+          // Door frame outer height is ~3.22 (3.2 bars + 0.22 top/bottom thickness)
+          const door = { cx: 0.0, cy: 1.55, w: 1.65 - 0.04, h: 3.22 - 0.04 };
+          const holes = [
+            { l: win.cx - win.w / 2, r: win.cx + win.w / 2, b: win.cy - win.h / 2, t: win.cy + win.h / 2 },
+            { l: door.cx - door.w / 2, r: door.cx + door.w / 2, b: Math.max(0, door.cy - door.h / 2), t: door.cy + door.h / 2 },
+          ];
+
+          const xs = [-wallW / 2, ...holes.flatMap((h) => [h.l, h.r]), wallW / 2]
+            .map((n) => +n.toFixed(4))
+            .sort((a, b) => a - b)
+            .filter((v, i, a) => i === 0 || Math.abs(v - a[i - 1]) > 1e-4);
+          const ys = [0, ...holes.flatMap((h) => [h.b, h.t]), wallH]
+            .map((n) => +n.toFixed(4))
+            .sort((a, b) => a - b)
+            .filter((v, i, a) => i === 0 || Math.abs(v - a[i - 1]) > 1e-4);
+
+          const cells: Array<{ x: number; y: number; w: number; h: number }> = [];
+          for (let xi = 0; xi < xs.length - 1; xi++) {
+            for (let yi = 0; yi < ys.length - 1; yi++) {
+              const x0 = xs[xi];
+              const x1 = xs[xi + 1];
+              const y0 = ys[yi];
+              const y1 = ys[yi + 1];
+              const xm = (x0 + x1) / 2;
+              const ym = (y0 + y1) / 2;
+              const insideHole = holes.some((h) => xm > h.l && xm < h.r && ym > h.b && ym < h.t);
+              if (insideHole) continue;
+              const w = Math.max(0.01, x1 - x0);
+              const h = Math.max(0.01, y1 - y0);
+              cells.push({ x: xm, y: ym, w, h });
+            }
+          }
+
+          return (
+            <>
+              {cells.map((c, idx) => (
+                <mesh
+                  key={`r2wall-${idx}`}
+                  ref={(el) => {
+                    room2BackWallRefs.current[idx] = el;
+                  }}
+                  position={[c.x, c.y, wallZ]}
+                  receiveShadow
+                >
+                  <planeGeometry args={[c.w, c.h]} />
+                  <meshStandardMaterial color="#f2f4f7" />
+                </mesh>
+              ))}
+              {/* tiny outside landing for the door (more realistic, doesn't block anything) */}
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, -6.4]} receiveShadow>
+                <planeGeometry args={[3.8, 2.2]} />
+                <meshStandardMaterial color="#b9b3ab" roughness={0.95} metalness={0.02} />
+              </mesh>
+            </>
+          );
+        })()}
+        <mesh ref={room2LeftWallRef} position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, ROOM_H]} />
           <meshStandardMaterial color="#eef1f5" />
         </mesh>
-        <mesh ref={room2RightWallRef} position={[4.5, 2.2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-          <planeGeometry args={[8, 8]} />
+        <mesh ref={room2RightWallRef} position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, ROOM_H]} />
           <meshStandardMaterial color="#eef1f5" />
         </mesh>
-        <mesh position={[0, 4.2, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#1b1b1f" />
         </mesh>
@@ -637,18 +1098,18 @@ function FallbackDemoScene({
         {/* Outside nature behind door glass */}
         <mesh position={[0, 1.55, -4.06]}>
           <planeGeometry args={[1.25, 2.55]} />
-          <meshStandardMaterial color={OUTSIDE_COLOR} />
+          <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
         </mesh>
 
         {/* Door glass */}
         <mesh position={[0, 1.55, -3.99]}>
           <boxGeometry args={[1.25, 2.55, 0.03]} />
           <meshPhysicalMaterial
-            color="#d6f0ff"
+            color="#ffffff"
             transparent
-            opacity={0.22}
-            roughness={0.06}
-            transmission={0.85}
+            opacity={0.14}
+            roughness={0.03}
+            transmission={0.92}
             thickness={0.15}
             ior={1.45}
           />
@@ -707,31 +1168,79 @@ function FallbackDemoScene({
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#8d7f72" />
         </mesh>
-        <mesh ref={room3BackWallRef} position={[0, 2.2, -4]} receiveShadow>
-          <planeGeometry args={[18, 8]} />
-          <meshStandardMaterial color="#f2f4f7" />
-        </mesh>
-        <mesh ref={room3LeftWallRef} position={[-4.5, 2.2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-          <planeGeometry args={[8, 8]} />
+        {/* Room3 back wall: cut-out for small window + reveals */}
+        {(() => {
+          const wallW = 18;
+          const wallH = ROOM_H;
+          const wallZ = -4;
+          // small window in room3 (same numbers below with small padding)
+          // Cut-out slightly smaller than the frame to avoid visible gaps
+          const win = { cx: 3.0, cy: WALL_Y, w: 2.4 - 0.04, h: 2.1 - 0.04 };
+          const hole = { l: win.cx - win.w / 2, r: win.cx + win.w / 2, b: win.cy - win.h / 2, t: win.cy + win.h / 2 };
+
+          const xs = [-wallW / 2, hole.l, hole.r, wallW / 2]
+            .map((n) => +n.toFixed(4))
+            .sort((a, b) => a - b)
+            .filter((v, i, a) => i === 0 || Math.abs(v - a[i - 1]) > 1e-4);
+          const ys = [0, hole.b, hole.t, wallH]
+            .map((n) => +n.toFixed(4))
+            .sort((a, b) => a - b)
+            .filter((v, i, a) => i === 0 || Math.abs(v - a[i - 1]) > 1e-4);
+
+          const cells: Array<{ x: number; y: number; w: number; h: number }> = [];
+          for (let xi = 0; xi < xs.length - 1; xi++) {
+            for (let yi = 0; yi < ys.length - 1; yi++) {
+              const x0 = xs[xi];
+              const x1 = xs[xi + 1];
+              const y0 = ys[yi];
+              const y1 = ys[yi + 1];
+              const xm = (x0 + x1) / 2;
+              const ym = (y0 + y1) / 2;
+              const inside = xm > hole.l && xm < hole.r && ym > hole.b && ym < hole.t;
+              if (inside) continue;
+              cells.push({ x: xm, y: ym, w: Math.max(0.01, x1 - x0), h: Math.max(0.01, y1 - y0) });
+            }
+          }
+
+          return (
+            <>
+              {cells.map((c, idx) => (
+                <mesh
+                  key={`r3wall-${idx}`}
+                  ref={(el) => {
+                    room3BackWallRefs.current[idx] = el;
+                  }}
+                  position={[c.x, c.y, wallZ]}
+                  receiveShadow
+                >
+                  <planeGeometry args={[c.w, c.h]} />
+                  <meshStandardMaterial color="#f2f4f7" />
+                </mesh>
+              ))}
+            </>
+          );
+        })()}
+        <mesh ref={room3LeftWallRef} position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, ROOM_H]} />
           <meshStandardMaterial color="#eef1f5" />
         </mesh>
-        <mesh ref={room3RightWallRef} position={[4.5, 2.2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-          <planeGeometry args={[8, 8]} />
+        <mesh ref={room3RightWallRef} position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[8, ROOM_H]} />
           <meshStandardMaterial color="#eef1f5" />
         </mesh>
-        <mesh position={[0, 4.2, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#1b1b1f" />
         </mesh>
 
         {(() => {
           const cx = 3.0;
-          const cy = 1.9;
+          const cy = WALL_Y;
           const cz = -3.92;
           const outerW = 2.4;
-          const outerH = 1.9;
-          const barT = 0.22;
-          const depth = 0.14;
+          const outerH = 2.1;
+          const barT = 0.16;
+          const depth = 0.12;
           const innerW = outerW - barT * 2;
           const innerH = outerH - barT * 2;
           const topY = cy + outerH / 2 - barT / 2;
@@ -742,11 +1251,11 @@ function FallbackDemoScene({
             <>
               <mesh position={[cx, cy, cz - 0.12]}>
                 <planeGeometry args={[innerW, innerH]} />
-                <meshStandardMaterial color={OUTSIDE_COLOR} />
+                <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
               </mesh>
               <mesh position={[cx, cy, cz - 0.07]}>
                 <boxGeometry args={[innerW, innerH, 0.03]} />
-                <meshPhysicalMaterial color="#d6f0ff" transparent opacity={0.25} transmission={0.85} thickness={0.12} ior={1.45} roughness={0.06} />
+                <meshPhysicalMaterial color="#ffffff" transparent opacity={0.14} transmission={0.92} thickness={0.12} ior={1.45} roughness={0.03} />
               </mesh>
               {[
                 { p: [cx, topY, cz], s: [outerW, barT, depth] },
@@ -792,7 +1301,7 @@ function FallbackDemoScene({
 
       {/* Easier camera control in demo */}
       {mode === 'design' ? (
-        <OrbitControls makeDefault enablePan enableZoom enableRotate target={[5, 1.7, -3.4]} />
+        <OrbitControls makeDefault enablePan enableZoom enableRotate target={[0, 1.6, -3.6]} />
       ) : (
         <PointerLockControls
           ref={pointerRef}
@@ -803,6 +1312,9 @@ function FallbackDemoScene({
             smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            sofaPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            tablePartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            tvPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
           }}
           onLock={() => onHint('Explore: WASD bilan yuring. Hover bo‘lsa click qilib tanlang.')}
         />
