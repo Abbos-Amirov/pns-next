@@ -272,6 +272,11 @@ function FallbackDemoScene({
   const OUTSIDE_COLOR = '#bfe3ff';
   const ROOM_H = 4.4; // wall/ceiling height in world units (keep consistent)
   const WALL_Y = ROOM_H / 2;
+  const FLOOR_H = ROOM_H + 0.65; // floor-to-floor distance for stacked building view
+
+  const MAIN_OFFSET: [number, number, number] = [0, 0, 0];
+  const WING_X_OFFSET: [number, number, number] = [22, 0, 0];
+  const WING_Z_OFFSET: [number, number, number] = [0, 0, 22];
 
   // Unlit "outside" so wall color/lighting never makes it look like the interior wall
   const outsideTex = useMemo(() => {
@@ -328,6 +333,166 @@ function FallbackDemoScene({
     return tex;
   }, []);
 
+  // Helper: 3-pane window dividers where center pane is larger (left/right smaller)
+  const threePaneDividerXs = useCallback((cx: number, innerW: number) => {
+    // side panes = 25% each, center = 50%
+    return [cx - innerW * 0.25, cx + innerW * 0.25];
+  }, []);
+
+  // Static furniture variants for upper floors (same idea as ground floor, but each floor different)
+  const pickHex = useCallback((seed: number, list: Swatch[]) => list[Math.abs(seed) % list.length]?.hex || '#f2f2f2', []);
+  const rand01 = useCallback((seed: number) => {
+    const x = Math.sin(seed * 999.1) * 10000;
+    return x - Math.floor(x);
+  }, []);
+  const renderStaticFurniture = useCallback(
+    (seed: number) => {
+      const variant = Math.abs(seed) % 4;
+      const sofaC = pickHex(seed + 1, SWATCHES);
+      const tableC = pickHex(seed + 2, SWATCHES);
+      const tvC = pickHex(seed + 3, SWATCHES);
+
+      // small jitter so each floor looks different
+      const jx = (rand01(seed + 11) - 0.5) * 0.4;
+      const jz = (rand01(seed + 22) - 0.5) * 0.35;
+
+      const baseZ = 1.2 + jz; // keep away from window (window is at negative z)
+      const tvZ = 1.05 + jz * 0.4;
+      const sofaX = 2.7 + jx;
+      const tableX = 0.9 + jx * 0.6;
+
+      // Variant shapes: all are simple boxes but different proportions
+      if (variant === 0) {
+        // Standard sofa + coffee table + TV
+        return (
+          <group>
+            {/* rug */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.0, 0.02, baseZ]} receiveShadow>
+              <planeGeometry args={[5.0, 3.2]} />
+              <meshStandardMaterial color="#6b6f78" roughness={0.95} metalness={0} opacity={0.9} transparent />
+            </mesh>
+            {/* sofa */}
+            <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
+              <boxGeometry args={[2.25, 0.6, 1.25]} />
+              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
+            </mesh>
+            <mesh position={[sofaX, 1.05, baseZ - 0.45]} castShadow>
+              <boxGeometry args={[2.25, 0.45, 0.28]} />
+              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.02} />
+            </mesh>
+            {/* table */}
+            <mesh position={[tableX, 0.42, baseZ]} castShadow receiveShadow>
+              <boxGeometry args={[1.55, 0.08, 0.85]} />
+              <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
+            </mesh>
+            {/* TV */}
+            <mesh position={[-4.18, 1.35, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.8, 1.05, 0.08]} />
+              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
+            </mesh>
+            <mesh position={[-4.14, 1.35, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.6, 0.9, 0.02]} />
+              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
+            </mesh>
+          </group>
+        );
+      }
+      if (variant === 1) {
+        // Sofa-bed style + larger rug + slightly bigger table
+        return (
+          <group>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.05, 0.02, baseZ]} receiveShadow>
+              <planeGeometry args={[5.6, 3.6]} />
+              <meshStandardMaterial color="#7b7f88" roughness={0.95} metalness={0} opacity={0.9} transparent />
+            </mesh>
+            <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
+              <boxGeometry args={[2.55, 0.6, 1.45]} />
+              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
+            </mesh>
+            <mesh position={[sofaX, 0.28, baseZ + 0.82]} castShadow receiveShadow>
+              <boxGeometry args={[2.45, 0.18, 0.58]} />
+              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.01} />
+            </mesh>
+            <mesh position={[tableX, 0.44, baseZ]} castShadow receiveShadow>
+              <boxGeometry args={[1.75, 0.09, 0.95]} />
+              <meshStandardMaterial color={tableC} roughness={0.6} metalness={0.06} />
+            </mesh>
+            <mesh position={[-4.18, 1.38, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.95, 1.1, 0.08]} />
+              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
+            </mesh>
+            <mesh position={[-4.14, 1.38, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.75, 0.95, 0.02]} />
+              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
+            </mesh>
+          </group>
+        );
+      }
+      if (variant === 2) {
+        // Two-seat sofa + side table (small) + TV closer
+        return (
+          <group>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.9, 0.02, baseZ]} receiveShadow>
+              <planeGeometry args={[4.6, 3.0]} />
+              <meshStandardMaterial color="#676b73" roughness={0.95} metalness={0} opacity={0.9} transparent />
+            </mesh>
+            <mesh position={[sofaX, 0.55, baseZ + 0.1]} castShadow receiveShadow>
+              <boxGeometry args={[1.85, 0.6, 1.1]} />
+              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
+            </mesh>
+            <mesh position={[sofaX, 1.05, baseZ - 0.25]} castShadow>
+              <boxGeometry args={[1.85, 0.45, 0.25]} />
+              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.02} />
+            </mesh>
+            <mesh position={[sofaX + 1.45, 0.5, baseZ + 0.35]} castShadow receiveShadow>
+              <boxGeometry args={[0.6, 0.06, 0.6]} />
+              <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
+            </mesh>
+            <mesh position={[-4.18, 1.32, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.65, 0.95, 0.08]} />
+              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
+            </mesh>
+            <mesh position={[-4.14, 1.32, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+              <boxGeometry args={[1.45, 0.8, 0.02]} />
+              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
+            </mesh>
+          </group>
+        );
+      }
+      // variant === 3
+      return (
+        <group>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.1, 0.02, baseZ]} receiveShadow>
+            <planeGeometry args={[5.3, 3.4]} />
+            <meshStandardMaterial color="#6a6e77" roughness={0.95} metalness={0} opacity={0.9} transparent />
+          </mesh>
+          {/* L-sofa hint (2 blocks) */}
+          <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
+            <boxGeometry args={[2.05, 0.6, 1.25]} />
+            <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
+          </mesh>
+          <mesh position={[sofaX + 0.7, 0.55, baseZ + 0.75]} castShadow receiveShadow>
+            <boxGeometry args={[1.25, 0.6, 1.0]} />
+            <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
+          </mesh>
+          <mesh position={[tableX, 0.42, baseZ + 0.05]} castShadow receiveShadow>
+            <boxGeometry args={[1.4, 0.08, 0.75]} />
+            <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
+          </mesh>
+          <mesh position={[-4.18, 1.36, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+            <boxGeometry args={[1.9, 1.05, 0.08]} />
+            <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
+          </mesh>
+          <mesh position={[-4.14, 1.36, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
+            <boxGeometry args={[1.7, 0.9, 0.02]} />
+            <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
+          </mesh>
+        </group>
+      );
+    },
+    [pickHex, rand01, threePaneDividerXs],
+  );
+
   const windowHitRef = useRef<THREE.Mesh>(null!);
   const doorHitRef = useRef<THREE.Mesh>(null!);
   const windowPartsRef = useRef<Array<THREE.Mesh | null>>([]);
@@ -361,9 +526,9 @@ function FallbackDemoScene({
   useCursor(!!hoveredName);
 
   useEffect(() => {
-    // Make sure camera points to the demo window
-    camera.position.set(0.5, 1.7, 6.5);
-    camera.lookAt(0, 1.6, 0);
+    // Default view: show the 5-floor building; user can still orbit/zoom in
+    camera.position.set(16, 16, 26);
+    camera.lookAt(0, ROOM_H * 2.2, -4);
     onHint(
       'Demo: deraza/eshik romini yoki mebelni (divan/ustol/TV) tanlab rang bering. Oynadan tashqari ko‘rinadi.',
     );
@@ -520,6 +685,283 @@ function FallbackDemoScene({
       {/* Slightly more "real" lighting: warm sun from outside + soft fill */}
       <directionalLight position={[0, 6.5, -6]} intensity={1.55} castShadow />
       <directionalLight position={[-4, 3.5, 5]} intensity={0.35} />
+
+      {/* 5-floor building view: add 4 static floors above the interactive ground floor */}
+      {Array.from({ length: 4 }).map((_, i) => {
+        const floorIndex = i + 1; // 1..4
+        const y0 = floorIndex * FLOOR_H;
+        const wallColor = wallHex || '#f2f4f7';
+        const sideWallColor = wallHex || '#eef1f5';
+
+        // Window constants (match the interactive big window)
+        const cx = 0;
+        const cy = WALL_Y;
+        const cz = -3.92;
+        const outerW = 6.9;
+        const outerH = ROOM_H - 0.35;
+        const barT = 0.18;
+        const depth = 0.14;
+        const innerW = outerW - barT * 2;
+        const innerH = outerH - barT * 2;
+        const topY = cy + outerH / 2 - barT / 2;
+        const botY = cy - outerH / 2 + barT / 2;
+        const leftX = cx - outerW / 2 + barT / 2;
+        const rightX = cx + outerW / 2 - barT / 2;
+        const div1 = cx - innerW / 4;
+        const div2 = cx;
+        const div3 = cx + innerW / 4;
+
+        // Back wall strips with cut-out (match current pad logic, slightly smaller than frame)
+        const wallW = 18;
+        const wallH = ROOM_H;
+        const wallZ = -4;
+        const pad = -0.04;
+        const holeW = outerW + pad;
+        const holeH = outerH + pad;
+        const left = cx - holeW / 2;
+        const right = cx + holeW / 2;
+        const bottom = cy - holeH / 2;
+        const top = cy + holeH / 2;
+        const topH = Math.max(0.01, wallH - top);
+        const bottomH = Math.max(0.01, bottom);
+        const sideH = Math.max(0.01, holeH);
+        const leftW = Math.max(0.01, left + wallW / 2);
+        const rightW = Math.max(0.01, wallW / 2 - right);
+
+        return (
+          <group key={`floor-${floorIndex}`} position={[MAIN_OFFSET[0], y0 + MAIN_OFFSET[1], MAIN_OFFSET[2]]}>
+            {/* floor */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+              <planeGeometry args={[18, 18]} />
+              <meshStandardMaterial color="#8d7f72" />
+            </mesh>
+
+            {/* back wall (4 strips) */}
+            <mesh position={[0, top + topH / 2, wallZ]} receiveShadow>
+              <planeGeometry args={[wallW, topH]} />
+              <meshStandardMaterial color={wallColor} />
+            </mesh>
+            <mesh position={[0, bottomH / 2, wallZ]} receiveShadow>
+              <planeGeometry args={[wallW, bottomH]} />
+              <meshStandardMaterial color={wallColor} />
+            </mesh>
+            <mesh position={[-wallW / 2 + leftW / 2, cy, wallZ]} receiveShadow>
+              <planeGeometry args={[leftW, sideH]} />
+              <meshStandardMaterial color={wallColor} />
+            </mesh>
+            <mesh position={[wallW / 2 - rightW / 2, cy, wallZ]} receiveShadow>
+              <planeGeometry args={[rightW, sideH]} />
+              <meshStandardMaterial color={wallColor} />
+            </mesh>
+
+            {/* side walls */}
+            <mesh position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+              <planeGeometry args={[8, ROOM_H]} />
+              <meshStandardMaterial color={sideWallColor} />
+            </mesh>
+            <mesh position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+              <planeGeometry args={[8, ROOM_H]} />
+              <meshStandardMaterial color={sideWallColor} />
+            </mesh>
+
+            {/* ceiling */}
+            <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+              <planeGeometry args={[18, 18]} />
+              <meshStandardMaterial color="#1b1b1f" />
+            </mesh>
+
+            {/* balcony facade */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, -7.0]} receiveShadow>
+              <planeGeometry args={[10, 4.5]} />
+              <meshStandardMaterial color="#b9b3ab" roughness={0.95} metalness={0.02} />
+            </mesh>
+            <mesh position={[0, 1.05, -6.4]} castShadow>
+              <boxGeometry args={[9.6, 0.06, 0.06]} />
+              <meshStandardMaterial color="#e6e6e6" roughness={0.6} metalness={0.2} />
+            </mesh>
+
+            {/* outside view */}
+            <mesh position={[cx, cy, -6.2]}>
+              <planeGeometry args={[innerW * 1.35, innerH * 1.35]} />
+              <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
+            </mesh>
+
+            {/* glass */}
+            <mesh position={[cx, cy, cz - 0.07]}>
+              <boxGeometry args={[innerW, innerH, 0.03]} />
+              <meshPhysicalMaterial
+                color="#ffffff"
+                transparent
+                opacity={0.16}
+                roughness={0.03}
+                transmission={0.92}
+                thickness={0.15}
+                ior={1.45}
+              />
+            </mesh>
+
+            {/* frame */}
+            {[
+              { p: [cx, topY, cz], s: [outerW, barT, depth] },
+              { p: [cx, botY, cz], s: [outerW, barT, depth] },
+              { p: [leftX, cy, cz], s: [barT, outerH, depth] },
+              { p: [rightX, cy, cz], s: [barT, outerH, depth] },
+            ].map((cfg, idx) => (
+              <mesh key={`sfbar-${floorIndex}-${idx}`} position={cfg.p as any} castShadow>
+                <boxGeometry args={cfg.s as any} />
+                <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+              </mesh>
+            ))}
+            {[div1, div2, div3].map((x, idx) => (
+              <mesh key={`sfdiv-${floorIndex}-${idx}`} position={[x, cy, cz + 0.02]} castShadow>
+                <boxGeometry args={[0.045, innerH, 0.08]} />
+                <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+              </mesh>
+            ))}
+
+            {/* furniture on this floor (static, but each floor different) */}
+            <group>{renderStaticFurniture(1000 + floorIndex)}</group>
+          </group>
+        );
+      })}
+
+      {/* Side buildings: stack Room2 and Room3 wings up as well (same style, different window sizes & 3-pane layout) */}
+      {Array.from({ length: 4 }).map((_, i) => {
+        const floorIndex = i + 1;
+        const y0 = floorIndex * FLOOR_H;
+        const wallColor = wallHex || '#f2f4f7';
+        const sideWallColor = wallHex || '#eef1f5';
+
+        const renderWingFloor = (key: string, base: [number, number, number], variant: 'x' | 'z') => {
+          // Window sizes differ per wing variant
+          const cx = variant === 'x' ? -3.2 : 3.0;
+          const cy = WALL_Y;
+          const cz = -3.92;
+          const outerW = variant === 'x' ? 3.15 : 2.75;
+          const outerH = variant === 'x' ? 2.25 : 2.05;
+          const barT = 0.16;
+          const depth = 0.12;
+          const innerW = outerW - barT * 2;
+          const innerH = outerH - barT * 2;
+          const topY = cy + outerH / 2 - barT / 2;
+          const botY = cy - outerH / 2 + barT / 2;
+          const leftX = cx - outerW / 2 + barT / 2;
+          const rightX = cx + outerW / 2 - barT / 2;
+          const [d1, d2] = threePaneDividerXs(cx, innerW);
+
+          // Back wall cut-out (slightly smaller than frame)
+          const wallW = 18;
+          const wallH = ROOM_H;
+          const wallZ = -4;
+          const pad = -0.04;
+          const holeW = outerW + pad;
+          const holeH = outerH + pad;
+          const left = cx - holeW / 2;
+          const right = cx + holeW / 2;
+          const bottom = cy - holeH / 2;
+          const top = cy + holeH / 2;
+          const topH = Math.max(0.01, wallH - top);
+          const bottomH = Math.max(0.01, bottom);
+          const sideH = Math.max(0.01, holeH);
+          const leftW = Math.max(0.01, left + wallW / 2);
+          const rightW = Math.max(0.01, wallW / 2 - right);
+
+          return (
+            <group key={key} position={[base[0], base[1] + y0, base[2]]}>
+              {/* floor */}
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+                <planeGeometry args={[18, 18]} />
+                <meshStandardMaterial color="#8d7f72" />
+              </mesh>
+
+              {/* back wall strips (cut-out for window) */}
+              <mesh position={[0, top + topH / 2, wallZ]} receiveShadow>
+                <planeGeometry args={[wallW, topH]} />
+                <meshStandardMaterial color={wallColor} />
+              </mesh>
+              <mesh position={[0, bottomH / 2, wallZ]} receiveShadow>
+                <planeGeometry args={[wallW, bottomH]} />
+                <meshStandardMaterial color={wallColor} />
+              </mesh>
+              <mesh position={[-wallW / 2 + leftW / 2, cy, wallZ]} receiveShadow>
+                <planeGeometry args={[leftW, sideH]} />
+                <meshStandardMaterial color={wallColor} />
+              </mesh>
+              <mesh position={[wallW / 2 - rightW / 2, cy, wallZ]} receiveShadow>
+                <planeGeometry args={[rightW, sideH]} />
+                <meshStandardMaterial color={wallColor} />
+              </mesh>
+
+              {/* side walls + ceiling */}
+              <mesh position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+                <planeGeometry args={[8, ROOM_H]} />
+                <meshStandardMaterial color={sideWallColor} />
+              </mesh>
+              <mesh position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+                <planeGeometry args={[8, ROOM_H]} />
+                <meshStandardMaterial color={sideWallColor} />
+              </mesh>
+              <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+                <planeGeometry args={[18, 18]} />
+                <meshStandardMaterial color="#1b1b1f" />
+              </mesh>
+
+              {/* outside view */}
+              <mesh position={[cx, cy, -6.2]}>
+                <planeGeometry args={[innerW * 1.35, innerH * 1.35]} />
+                <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
+              </mesh>
+
+              {/* glass */}
+              <mesh position={[cx, cy, cz - 0.07]}>
+                <boxGeometry args={[innerW, innerH, 0.03]} />
+                <meshPhysicalMaterial
+                  color="#ffffff"
+                  transparent
+                  opacity={0.14}
+                  roughness={0.03}
+                  transmission={0.92}
+                  thickness={0.12}
+                  ior={1.45}
+                />
+              </mesh>
+
+              {/* frame bars */}
+              {[
+                { p: [cx, topY, cz], s: [outerW, barT, depth] },
+                { p: [cx, botY, cz], s: [outerW, barT, depth] },
+                { p: [leftX, cy, cz], s: [barT, outerH, depth] },
+                { p: [rightX, cy, cz], s: [barT, outerH, depth] },
+              ].map((cfg, idx) => (
+                <mesh key={`${key}-bar-${idx}`} position={cfg.p as any} castShadow>
+                  <boxGeometry args={cfg.s as any} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+
+              {/* 3-pane dividers: 2 inner posts */}
+              {[d1, d2].map((x, idx) => (
+                <mesh key={`${key}-div-${idx}`} position={[x, cy, cz + 0.02]} castShadow>
+                  <boxGeometry args={[0.05, innerH, 0.08]} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+
+              {/* furniture (smaller) */}
+              <group scale={0.88} position={[0, 0, 0.1]}>
+                {renderStaticFurniture(2000 + floorIndex + (variant === 'x' ? 10 : 20))}
+              </group>
+            </group>
+          );
+        };
+
+        return (
+          <React.Fragment key={`wing-floors-${floorIndex}`}>
+            {renderWingFloor(`wingx-${floorIndex}`, WING_X_OFFSET, 'x')}
+            {renderWingFloor(`wingz-${floorIndex}`, WING_Z_OFFSET, 'z')}
+          </React.Fragment>
+        );
+      })}
 
       {/* Simple room */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
@@ -962,6 +1404,9 @@ function FallbackDemoScene({
           const botY = cy - outerH / 2 + barT / 2;
           const leftX = cx - outerW / 2 + barT / 2;
           const rightX = cx + outerW / 2 - barT / 2;
+          // 3-pane layout: center bigger, sides smaller
+          const d1 = cx - innerW * 0.25;
+          const d2 = cx + innerW * 0.25;
           return (
             <>
               <mesh position={[cx, cy, cz - 0.12]}>
@@ -987,6 +1432,20 @@ function FallbackDemoScene({
                   castShadow
                 >
                   <boxGeometry args={cfg.s as any} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+              {/* dividers (same color) */}
+              {[d1, d2].map((x, i) => (
+                <mesh
+                  key={`r2wdiv-${i}`}
+                  ref={(el) => {
+                    smallWindow1PartsRef.current[4 + i] = el;
+                  }}
+                  position={[x, cy, cz + 0.02]}
+                  castShadow
+                >
+                  <boxGeometry args={[0.05, innerH, 0.08]} />
                   <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
                 </mesh>
               ))}
@@ -1247,6 +1706,8 @@ function FallbackDemoScene({
           const botY = cy - outerH / 2 + barT / 2;
           const leftX = cx - outerW / 2 + barT / 2;
           const rightX = cx + outerW / 2 - barT / 2;
+          const d1 = cx - innerW * 0.25;
+          const d2 = cx + innerW * 0.25;
           return (
             <>
               <mesh position={[cx, cy, cz - 0.12]}>
@@ -1272,6 +1733,19 @@ function FallbackDemoScene({
                   castShadow
                 >
                   <boxGeometry args={cfg.s as any} />
+                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
+                </mesh>
+              ))}
+              {[d1, d2].map((x, i) => (
+                <mesh
+                  key={`r3wdiv-${i}`}
+                  ref={(el) => {
+                    smallWindow2PartsRef.current[4 + i] = el;
+                  }}
+                  position={[x, cy, cz + 0.02]}
+                  castShadow
+                >
+                  <boxGeometry args={[0.05, innerH, 0.08]} />
                   <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
                 </mesh>
               ))}
