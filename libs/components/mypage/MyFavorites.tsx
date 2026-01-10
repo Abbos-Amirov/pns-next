@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography, Box, Card, CardContent, Grid } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/product/property';
+import { Product } from '../../types/product/property';
 import { T } from '../../types/common';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useQuery } from '@apollo/client';
@@ -17,7 +17,7 @@ interface OrdinaryInquiry {
 
 const MyFavorites: NextPage = () => {
 	const device = useDeviceDetect();
-	const [myFavorites, setMyFavorites] = useState<Property[]>([]);
+	const [myFavorites, setMyFavorites] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchFavorites, setSearchFavorites] = useState<OrdinaryInquiry>({ page: 1, limit: 6 });
 
@@ -42,32 +42,8 @@ const MyFavorites: NextPage = () => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (favoritesData?.getFavorites) {
-			// Convert products to properties format
-			const products = favoritesData.getFavorites.list || [];
-			const convertedProperties: Property[] = products.map((product: any) => ({
-				_id: product._id,
-				propertyType: product.productType,
-				propertyStatus: product.productStatus,
-				propertyLocation: product.productLocation,
-				propertyAddress: product.productAddress,
-				propertyTitle: product.productTitle,
-				propertyPrice: product.productPrice,
-				propertySquare: product.productHeight && product.productWidth ? product.productHeight * product.productWidth : 0,
-				propertyBeds: product.propertyBeds || 0,
-				propertyRooms: product.propertyRooms || 0,
-				propertyViews: product.productViews || 0,
-				propertyLikes: product.productLikes || 0,
-				propertyImages: product.productImages || [],
-				propertyDesc: product.productDesc || '',
-				propertyBarter: product.productBarter || false,
-				propertyRent: product.productRent || false,
-				memberId: product.memberId,
-				soldAt: product.soldAt,
-				deletedAt: product.deletedAt,
-				createdAt: product.createdAt,
-				updatedAt: product.updatedAt,
-			}));
-			setMyFavorites(convertedProperties);
+			const products: Product[] = favoritesData.getFavorites.list || [];
+			setMyFavorites(products);
 			
 			const metaCounter = favoritesData.getFavorites.metaCounter;
 			const totalCount = Array.isArray(metaCounter) 
@@ -95,8 +71,8 @@ const MyFavorites: NextPage = () => {
 				<Card className={'favorites-header-card'} sx={{ mb: 3 }}>
 					<CardContent>
 						<Stack direction={'row'} alignItems={'center'} spacing={2}>
-							<Box
-								sx={{
+							<div
+								style={{
 									width: 56,
 									height: 56,
 									borderRadius: '12px',
@@ -108,18 +84,18 @@ const MyFavorites: NextPage = () => {
 								}}
 							>
 								<FavoriteIcon sx={{ fontSize: 32 }} />
-							</Box>
-							<Box>
+							</div>
+							<div>
 								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
 									My Favorites
 								</Typography>
 								<Typography variant={'body2'} sx={{ color: '#717171' }}>
 									Your saved favorite products
 								</Typography>
-							</Box>
-							<Box sx={{ flex: 1 }} />
-							<Box
-								sx={{
+							</div>
+							<div style={{ flex: 1 }} />
+							<div
+								style={{
 									padding: '8px 16px',
 									borderRadius: '12px',
 									backgroundColor: 'rgba(233, 44, 40, 0.1)',
@@ -129,7 +105,7 @@ const MyFavorites: NextPage = () => {
 								}}
 							>
 								Total: {total}
-							</Box>
+							</div>
 						</Stack>
 					</CardContent>
 				</Card>
@@ -154,9 +130,9 @@ const MyFavorites: NextPage = () => {
 				) : myFavorites?.length > 0 ? (
 					<>
 						<Grid container spacing={3} sx={{ mb: 3 }}>
-							{myFavorites.map((property: Property) => (
-								<Grid item xs={12} sm={6} md={4} lg={4} key={property._id}>
-									<PropertyCard property={property} myFavorites={true} />
+							{myFavorites.map((product: Product) => (
+								<Grid item xs={12} sm={6} md={4} lg={4} key={product._id}>
+									<PropertyCard property={product} myFavorites={true} />
 								</Grid>
 							))}
 						</Grid>
@@ -192,8 +168,8 @@ const MyFavorites: NextPage = () => {
 				) : (
 					<Card>
 						<CardContent sx={{ p: 6, textAlign: 'center' }}>
-							<Box
-								sx={{
+							<div
+								style={{
 									width: 120,
 									height: 120,
 									margin: '0 auto 24px',
@@ -205,7 +181,7 @@ const MyFavorites: NextPage = () => {
 								}}
 							>
 								<FavoriteIcon sx={{ fontSize: 60, color: '#E92C28' }} />
-							</Box>
+							</div>
 							<Typography variant={'h6'} sx={{ fontWeight: 600, mb: 1, color: '#181a20' }}>
 								No Favorites Found
 							</Typography>

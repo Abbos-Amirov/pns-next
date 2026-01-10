@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography, Box, Card, CardContent, Grid } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/product/property';
+import { Product } from '../../types/product/property';
 import { T } from '../../types/common';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useQuery } from '@apollo/client';
@@ -17,7 +17,7 @@ interface OrdinaryInquiry {
 
 const RecentlyVisited: NextPage = () => {
 	const device = useDeviceDetect();
-	const [recentlyVisited, setRecentlyVisited] = useState<Property[]>([]);
+	const [recentlyVisited, setRecentlyVisited] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchVisited, setSearchVisited] = useState<OrdinaryInquiry>({ page: 1, limit: 6 });
 
@@ -42,32 +42,8 @@ const RecentlyVisited: NextPage = () => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (visitedData?.getVisited) {
-			// Convert products to properties format
-			const products = visitedData.getVisited.list || [];
-			const convertedProperties: Property[] = products.map((product: any) => ({
-				_id: product._id,
-				propertyType: product.productType,
-				propertyStatus: product.productStatus,
-				propertyLocation: product.productLocation,
-				propertyAddress: product.productAddress,
-				propertyTitle: product.productTitle,
-				propertyPrice: product.productPrice,
-				propertySquare: product.productHeight && product.productWidth ? product.productHeight * product.productWidth : 0,
-				propertyBeds: product.propertyBeds || 0,
-				propertyRooms: product.propertyRooms || 0,
-				propertyViews: product.productViews || 0,
-				propertyLikes: product.productLikes || 0,
-				propertyImages: product.productImages || [],
-				propertyDesc: product.productDesc || '',
-				propertyBarter: product.propertyBarter || false,
-				propertyRent: product.productRent || false,
-				memberId: product.memberId,
-				soldAt: product.soldAt,
-				deletedAt: product.deletedAt,
-				createdAt: product.createdAt,
-				updatedAt: product.updatedAt,
-			}));
-			setRecentlyVisited(convertedProperties);
+			const products: Product[] = visitedData.getVisited.list || [];
+			setRecentlyVisited(products);
 			
 			const metaCounter = visitedData.getVisited.metaCounter;
 			const totalCount = Array.isArray(metaCounter) 
@@ -154,9 +130,9 @@ const RecentlyVisited: NextPage = () => {
 				) : recentlyVisited?.length > 0 ? (
 					<>
 						<Grid container spacing={3} sx={{ mb: 3 }}>
-							{recentlyVisited.map((property: Property) => (
-								<Grid item xs={12} sm={6} md={4} lg={4} key={property._id}>
-									<PropertyCard property={property} recentlyVisited={true} />
+							{recentlyVisited.map((product: Product) => (
+								<Grid item xs={12} sm={6} md={4} lg={4} key={product._id}>
+									<PropertyCard property={product} recentlyVisited={true} />
 								</Grid>
 							))}
 						</Grid>

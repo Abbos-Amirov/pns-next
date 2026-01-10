@@ -41,6 +41,10 @@ export interface Product {
 	memberData?: Member;
 }
 
+// Backward-compatible alias: UI components historically used `Property` naming.
+// Internally this domain model is `Product`.
+export type Property = Product;
+
 export interface Properties {
 	list: Product[];
 	metaCounter: TotalCounter[];

@@ -6,7 +6,7 @@ import { Autoplay, Navigation, Pagination } from 'swiper';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import PopularPropertyCard from './PopularPropertyCard';
-import { Property } from '../../types/product/property';
+import { Product } from '../../types/product/property';
 import Link from 'next/link';
 import { PropertiesInquiry } from '../../types/product/property.input';
 
@@ -17,7 +17,7 @@ interface PopularPropertiesProps {
 const PopularProperties = (props: PopularPropertiesProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const [popularProperties, setPopularProperties] = useState<Property[]>([]);
+	const [popularProperties, setPopularProperties] = useState<Product[]>([]);
 
 	/** APOLLO REQUESTS **/
 	/** HANDLERS **/
@@ -39,7 +39,7 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 							spaceBetween={25}
 							modules={[Autoplay]}
 						>
-							{popularProperties.map((property: Property) => {
+							{popularProperties.map((property: Product) => {
 								return (
 									<SwiperSlide key={property._id} className={'popular-property-slide'}>
 										<PopularPropertyCard property={property} />
@@ -83,7 +83,7 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 								el: '.swiper-popular-pagination',
 							}}
 						>
-							{popularProperties.map((property: Property) => {
+							{popularProperties.map((property: Product) => {
 								return (
 									<SwiperSlide key={property._id} className={'popular-property-slide'}>
 										<PopularPropertyCard property={property} />

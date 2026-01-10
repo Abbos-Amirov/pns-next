@@ -325,7 +325,7 @@ const withLayoutBasic = (Component: any) => {
 									{user?._id ? (
 										<Box component={'div'} className={'user-profile-section-dark'}>
 											<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-												<Box className={'user-avatar-small-dark'}>
+												<div className={'user-avatar-small-dark'}>
 													<img 
 														src={getUserImageSrc(user?.memberImage)} 
 														alt={user?.memberNick || 'User'} 
@@ -333,7 +333,7 @@ const withLayoutBasic = (Component: any) => {
 															(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 														}}
 													/>
-												</Box>
+												</div>
 												<Typography className={'user-name-text-dark'}>{user?.memberNick || 'User'}</Typography>
 											</Link>
 										</Box>

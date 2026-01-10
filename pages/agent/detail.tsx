@@ -364,9 +364,9 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 										(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 									}}
 								/>
-								{agent?.memberProperties && (
+								{agent?.memberProducts && (
 									<Chip 
-										label={`${agent.memberProperties} Products`}
+										label={`${agent.memberProducts} Products`}
 										className="agent-badge-chip"
 										sx={{
 											position: 'absolute',

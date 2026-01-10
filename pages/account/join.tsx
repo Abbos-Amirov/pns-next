@@ -149,13 +149,13 @@ const Join: NextPage = () => {
 						{/* Left Section - Form */}
 						<Stack className={'left'}>
 							{/* Logo and Tagline */}
-							<Box className={'logo-section'}>
+							<div className={'logo-section'}>
 								<Typography className={'brand-name'}>PNS DEV</Typography>
 								<Typography className={'tagline'}>Explore More. Experience Life.</Typography>
-							</Box>
+							</div>
 
 							{/* Toggle Buttons */}
-							<Box className={'toggle-buttons'}>
+							<div className={'toggle-buttons'}>
 								<Button
 									className={`toggle-btn ${!loginView ? 'active' : ''}`}
 									onClick={() => viewChangeHandler(false)}
@@ -168,7 +168,7 @@ const Join: NextPage = () => {
 								>
 									Log In
 								</Button>
-							</Box>
+							</div>
 
 							{/* Heading */}
 							<Typography className={'section-heading'}>
@@ -179,7 +179,7 @@ const Join: NextPage = () => {
 							{loginView && (
 								<>
 									<Typography className={'social-text'}>Log In with Open account</Typography>
-									<Box className={'social-buttons'}>
+									<div className={'social-buttons'}>
 										<Button className={'social-btn'}>
 											<AppleIcon />
 										</Button>
@@ -189,13 +189,13 @@ const Join: NextPage = () => {
 										<Button className={'social-btn'}>
 											<TwitterIcon />
 										</Button>
-									</Box>
+									</div>
 									<Typography className={'or-separator'}>or</Typography>
 								</>
 							)}
 
 							{/* Input Fields */}
-							<Box className={'input-wrap'}>
+							<div className={'input-wrap'}>
 								<TextField
 									fullWidth
 									label="Username"
@@ -248,11 +248,11 @@ const Join: NextPage = () => {
 										if (event.key == 'Enter' && !loginView) doSignUp();
 									}}
 								/>
-							</Box>
+							</div>
 
 							{/* Remember Me & Forgot Password (Login only) */}
 							{loginView && (
-								<Box className={'remember-forgot'}>
+								<div className={'remember-forgot'}>
 									<FormControlLabel
 										control={<Checkbox defaultChecked />}
 										label="Remember me"
@@ -260,14 +260,14 @@ const Join: NextPage = () => {
 									<Typography component="a" className={'forgot-link'}>
 										Forgot Password?
 									</Typography>
-								</Box>
+								</div>
 							)}
 
 							{/* User Type Selection (Signup only) */}
 							{!loginView && (
-								<Box className={'user-type-selection'}>
+								<div className={'user-type-selection'}>
 									<Typography className={'type-label'}>I want to be registered as:</Typography>
-									<Box className={'type-checkboxes'}>
+									<div className={'type-checkboxes'}>
 										<FormControlLabel
 											control={
 												<Checkbox
@@ -298,8 +298,8 @@ const Join: NextPage = () => {
 											}
 											label="Installer"
 										/>
-									</Box>
-								</Box>
+									</div>
+								</div>
 							)}
 
 							{/* Submit Button */}
@@ -309,7 +309,7 @@ const Join: NextPage = () => {
 									isLoading ||
 									(loginView
 										? input.nick == '' || input.password == ''
-										: input.nick == '' || input.password == '' || input.phone == '' || input.type == '')
+											: input.nick == '' || input.password == '' || input.phone == '')
 								}
 								onClick={loginView ? doLogin : doSignUp}
 							>
@@ -319,8 +319,8 @@ const Join: NextPage = () => {
 
 						{/* Right Section - Promotional Image */}
 						<Stack className={'right'}>
-							<Box className={'promo-image'}>
-								<Box className={'promo-text-top'}>
+							<div className={'promo-image'}>
+								<div className={'promo-text-top'}>
 									<Typography className={'promo-title'}>
 									Professional & Trustworth ❤️
 									</Typography>
@@ -328,16 +328,16 @@ const Join: NextPage = () => {
 									Quality You See. Comfort You Feel.
 									Experience durable, stylish, and energy-efficient doors and windows crafted for every home.
 									</Typography>
-								</Box>
-								<Box className={'promo-text-bottom'}>
+								</div>
+								<div className={'promo-text-bottom'}>
 									<Typography className={'promo-main'}>
 									Open your home the smart way.
 									</Typography>
 									<Typography className={'promo-secondary'}>
 										Experience the world your way!
 									</Typography>
-								</Box>
-							</Box>
+								</div>
+							</div>
 						</Stack>
 					</Stack>
 				</Stack>

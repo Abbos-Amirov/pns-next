@@ -1,14 +1,18 @@
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import type { HTMLAttributes, ReactNode } from 'react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
-import { Stack, Box } from '@mui/material';
 import moment from 'moment';
 import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 
-const Footer = () => {
+type DivProps = HTMLAttributes<HTMLDivElement> & { children?: ReactNode };
+const Stack = ({ children, ...props }: DivProps) => <div {...props}>{children}</div>;
+const Box = ({ children, ...props }: DivProps) => <div {...props}>{children}</div>;
+
+const Footer = (): JSX.Element => {
 	const device = useDeviceDetect();
 	const currentYear = moment().year();
 	const mapAddress = '청남도 천안시 동남구 풍세면 풍세산단5로 61';

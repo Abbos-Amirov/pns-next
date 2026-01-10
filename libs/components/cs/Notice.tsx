@@ -5,7 +5,7 @@ import EventIcon from '@mui/icons-material/Event';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useQuery } from '@apollo/client';
 import { GET_CS_NOTICE_LIST } from '../../../apollo/user/query';
-import type { Notice } from '../../types/notice/notice';
+import type { Notice as NoticeType } from '../../types/notice/notice';
 import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
 import { Direction } from '../../enums/common.enum';
 import { sweetErrorHandling } from '../../sweetAlert';
@@ -13,7 +13,7 @@ import moment from 'moment';
 
 const Notice = () => {
 	const device = useDeviceDetect();
-	const [noticeList, setNoticeList] = useState<Notice[]>([]);
+	const [noticeList, setNoticeList] = useState<NoticeType[]>([]);
 	const [total, setTotal] = useState<number>(0);
 
 	// Create notice inquiry for TERMS and INQUIRY categories
@@ -39,7 +39,7 @@ const Notice = () => {
 			if (data?.getCsNoticeList) {
 				// Filter by TERMS and INQUIRY categories
 				const filteredList = (data.getCsNoticeList.list || []).filter(
-					(notice: Notice) => notice.noticeCategory === NoticeCategory.TERMS || notice.noticeCategory === NoticeCategory.INQUIRY
+					(notice: NoticeType) => notice.noticeCategory === NoticeCategory.TERMS || notice.noticeCategory === NoticeCategory.INQUIRY
 				);
 				console.log('Filtered Notice List:', filteredList);
 				console.log('Notice Total:', filteredList.length);
@@ -93,7 +93,7 @@ const Notice = () => {
 								<Typography sx={{ color: '#717171' }}>No notices found.</Typography>
 							</Stack>
 						) : (
-							noticeList.map((notice: Notice, index: number) => (
+							noticeList.map((notice: NoticeType, index: number) => (
 								<Box
 									component={'div'}
 									className={`notice-card ${notice.noticeCategory === NoticeCategory.TERMS ? 'event' : ''}`}

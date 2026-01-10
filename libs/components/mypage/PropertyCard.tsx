@@ -4,14 +4,14 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Property } from '../../types/product/property';
+import { Product } from '../../types/product/property';
 import { formatterStr } from '../../utils';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
-import { PropertyStatus } from '../../enums/property.enum';
+import { ProductStatus } from '../../enums/property.enum';
 
 interface PropertyCardProps {
-	property: Property;
+	property: Product;
 	deletePropertyHandler?: any;
 	memberPage?: boolean;
 	updatePropertyHandler?: any;
@@ -56,13 +56,13 @@ export const PropertyCard = (props: PropertyCardProps) => {
 		return (
 			<Stack className="property-card-box">
 				<Stack className="image-box" onClick={() => pushPropertyDetail(property?._id)}>
-					<img src={`${process.env.REACT_APP_API_URL}/${property.propertyImages[0]}`} alt="" />
+					<img src={`${process.env.REACT_APP_API_URL}/${property.productImages?.[0]}`} alt="" />
 				</Stack>
 				<Stack className="information-box" onClick={() => pushPropertyDetail(property?._id)}>
-					<Typography className="name">{property.propertyTitle}</Typography>
-					<Typography className="address">{property.propertyAddress}</Typography>
+					<Typography className="name">{property.productTitle}</Typography>
+					<Typography className="address">{property.productAddress}</Typography>
 					<Typography className="price">
-						<strong>${formatterStr(property?.propertyPrice)}</strong>/ mo
+						<strong>${formatterStr(property?.productPrice)}</strong>/ mo
 					</Typography>
 				</Stack>
 				<Stack className="date-box">
@@ -73,11 +73,12 @@ export const PropertyCard = (props: PropertyCardProps) => {
 				<Stack className="status-box">
 					<Stack className="coloured-box" sx={{ background: '#E5F0FD' }} onClick={handleClick}>
 						<Typography className="status" sx={{ color: '#3554d1' }}>
-							{property.propertyStatus}
+							{property.productStatus}
 						</Typography>
 					</Stack>
 				</Stack>
-				{!memberPage && property.propertyStatus !== 'SOLD' && (
+				{/* ProductStatus’da SOLD yo‘q; OUT_OF_STOCK ni “sold” sifatida ko‘rsatamiz */}
+				{!memberPage && property.productStatus !== ProductStatus.OUT_OF_STOCK && (
 					<Menu
 						anchorEl={anchorEl}
 						open={open}
@@ -98,16 +99,16 @@ export const PropertyCard = (props: PropertyCardProps) => {
 							},
 						}}
 					>
-						{property.propertyStatus === 'ACTIVE' && (
+						{property.productStatus === ProductStatus.ACTIVE && (
 							<>
 								<MenuItem
 									disableRipple
 									onClick={() => {
 										handleClose();
-										updatePropertyHandler(PropertyStatus.SOLD, property?._id);
+										updatePropertyHandler(ProductStatus.OUT_OF_STOCK, property?._id);
 									}}
 								>
-									Sold
+									Out of stock
 								</MenuItem>
 							</>
 						)}
@@ -115,7 +116,7 @@ export const PropertyCard = (props: PropertyCardProps) => {
 				)}
 
 				<Stack className="views-box">
-					<Typography className="views">{property.propertyViews.toLocaleString()}</Typography>
+					<Typography className="views">{property.productViews.toLocaleString()}</Typography>
 				</Stack>
 				{!memberPage && (
 					<Stack className="action-box">

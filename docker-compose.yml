@@ -1,0 +1,23 @@
+services:
+  pns-next:
+    container_name: pns-next
+    restart: always
+    image: node:20.0.0
+    ports:
+      - "4000:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      - ./:/usr/src/pns-next
+      - pns_next_node_modules:/usr/src/pns-next/node_modules
+    working_dir: /usr/src/pns-next
+    networks:
+      - client_network
+    command: bash -c "yarn install && yarn build && yarn start"
+
+networks:
+  client_network:
+    driver: bridge
+
+volumes:
+  pns_next_node_modules:

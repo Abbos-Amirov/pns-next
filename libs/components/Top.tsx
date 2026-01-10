@@ -390,7 +390,7 @@ const Top = () => {
 							{user?._id ? (
 								<Box component={'div'} className={'user-profile-section'}>
 									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-										<Box className={'user-avatar-small'}>
+										<div className={'user-avatar-small'}>
 											<img 
 												src={getUserImageSrc(user?.memberImage)} 
 												alt={user?.memberNick || 'User'} 
@@ -398,7 +398,7 @@ const Top = () => {
 													(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 												}}
 											/>
-										</Box>
+										</div>
 										<Typography className={'user-name-text'}>{user?.memberNick || 'User'}</Typography>
 									</Link>
 								</Box>
