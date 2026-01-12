@@ -85,14 +85,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, type }) => {
 			<Stack className={'auth-modal-content'}>
 				<Stack className={'main-content'}>
 					<Stack className={'left-section'}>
-						<Box className={'form-container'}>
+						<div className={'form-container'}>
 							<IconButton className={'close-button'} onClick={handleClose}>
 								<CloseIcon />
 							</IconButton>
-							<Box className={'form-header'}>
+							<div className={'form-header'}>
 								<h1>Start your perfect trip</h1>
-							</Box>
-							<Box className={'input-wrap'}>
+							</div>
+							<div className={'input-wrap'}>
 								<div className={'input-box'}>
 									<input
 										type="text"
@@ -125,7 +125,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, type }) => {
 										{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
 									</IconButton>
 								</div>
-							</Box>
+							</div>
 							{currentType === 'login' ? (
 								<Button
 									className={'submit-btn'}
@@ -143,7 +143,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, type }) => {
 									Start
 								</Button>
 							)}
-							<Box className={currentType === 'login' ? 'signup-link' : 'login-link'}>
+							<div className={currentType === 'login' ? 'signup-link' : 'login-link'}>
 								{currentType === 'login' ? (
 									<p>
 										Not registered yet? <span onClick={() => openAuthModal('signup')}>Sign up</span>
@@ -153,13 +153,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, type }) => {
 										Already have an account? <span onClick={() => openAuthModal('login')}>Log in</span>
 									</p>
 								)}
-							</Box>
-						</Box>
+							</div>
+						</div>
 					</Stack>
 					<Stack className={'right-section'}>
-						<Box className={'map-visualization'}>
+						<div className={'map-visualization'}>
 							{/* Map visualization */}
-						</Box>
+						</div>
 					</Stack>
 				</Stack>
 			</Stack>
