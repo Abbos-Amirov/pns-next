@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Stack, Box, CircularProgress, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useTranslation } from 'next-i18next';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -22,6 +23,7 @@ interface TopPropertiesProps {
 const TopProperties = (props: TopPropertiesProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
+	const { t } = useTranslation('common');
 	const [topProducts, setTopProducts] = useState<Product[]>([]);
 
 	/** APOLLO REQUESTS **/
@@ -71,7 +73,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 			<Stack className={'top-properties'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top products</span>
+						<span>{t('Top products')}</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', py: 4 }}>
@@ -89,12 +91,12 @@ const TopProperties = (props: TopPropertiesProps) => {
 			<Stack className={'top-properties'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top products</span>
+						<span>{t('Top products')}</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', py: 4 }}>
 							<Typography sx={{ color: '#616161', fontSize: '16px', fontFamily: 'inherit' }}>
-								{getProductsError ? 'Error loading products' : 'No top products found'}
+								{getProductsError ? t('Error loading products') : t('No top products found')}
 							</Typography>
 						</Stack>
 					</Stack>
@@ -108,7 +110,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 			<Stack className={'top-properties'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top products</span>
+						<span>{t('Top products')}</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -136,8 +138,8 @@ const TopProperties = (props: TopPropertiesProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top products</span>
-							<p>Check out our Top Products</p>
+							<span>{t('Top products')}</span>
+							<p>{t('Check out our Top Products')}</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'pagination-box'}>

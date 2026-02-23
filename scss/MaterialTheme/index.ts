@@ -304,3 +304,34 @@ export const light = {
 	shadow,
 	typography,
 };
+
+/**
+ * DARK THEME
+ */
+export const dark = {
+	...light,
+	palette: {
+		...light.palette,
+		mode: 'dark' as const,
+		type: 'dark',
+		background: {
+			default: '#121212',
+			paper: '#1e1e1e',
+		},
+		text: {
+			primary: '#ffffff',
+			secondary: 'rgba(255, 255, 255, 0.7)',
+			dark: '#ffffff',
+		},
+	},
+	components: {
+		...light.components,
+		MuiCssBaseline: {
+			styleOverrides: {
+				html: { height: '100%' },
+				body: { background: '#121212', height: '100%', minHeight: '100%' },
+				p: { margin: '0' },
+			},
+		},
+	},
+};

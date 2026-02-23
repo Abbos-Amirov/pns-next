@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Box, CircularProgress, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useTranslation } from 'next-i18next';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
@@ -20,6 +21,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
+	const { t } = useTranslation('common');
 	const [topMeasurers, setTopMeasurers] = useState<Member[]>([]);
 
 	/** APOLLO REQUESTS **/
@@ -49,7 +51,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 			return (
 				<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '260px' }}>
 					<Typography sx={{ color: '#616161', fontSize: '14px' }}>
-						{error ? 'Error loading measurers' : 'No measurers found'}
+						{error ? t('Error loading measurers') : t('No measurers found')}
 					</Typography>
 				</Stack>
 			);
@@ -110,7 +112,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top Measurers</span>
+						<span>{t('Top Measurers')}</span>
 					</Stack>
 					{renderBody()}
 				</Stack>
@@ -124,7 +126,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 				<Stack className={'info-box'}>
 					<Box component={'div'} className={'left'}>
 						<h2 className={'main-heading'}>
-							Accurate <br /> <span className={'highlight'}>Measurement Professionals</span>
+							{t('Accurate')} <br /> <span className={'highlight'}>{t('Measurement Professionals')}</span>
 						</h2>
 					</Box>
 					<Box component={'div'} className={'right'}>
@@ -164,7 +166,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 								}
 							}}
 						>
-							<span>See All Measurers</span>
+							<span>{t('See All Measurers')}</span>
 							<img src="/img/icons/rightup.svg" alt="" />
 						</div>
 					</Box>

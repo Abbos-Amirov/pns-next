@@ -19,7 +19,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
+import { useThemeMode } from '../context/ThemeContext';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -62,6 +65,7 @@ const TopBasic = () => {
 	const [topBarVisible, setTopBarVisible] = useState(true);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
+	const { mode, toggleTheme } = useThemeMode();
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -197,6 +201,9 @@ const TopBasic = () => {
 								</Box>
 							</Box>
 							<Box component={'div'} className={'top-bar-right'}>
+								<IconButton className={'top-bar-dark-mode-btn'} size="small" onClick={toggleTheme} title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
+									{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+								</IconButton>
 								<Box component={'div'} className={'top-bar-item'}>
 									<AccessTimeIcon className={'top-bar-icon'} />
 									<span>Hours: Mon-Fri: 8.00 am - 19.30</span>

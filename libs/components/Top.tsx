@@ -16,11 +16,14 @@ import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import CloseIcon from '@mui/icons-material/Close';
-import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import { REACT_APP_API_URL } from '../config';
+import { useThemeMode } from '../context/ThemeContext';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -60,6 +63,7 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 const Top = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const { mode, toggleTheme } = useThemeMode();
 	const { t, i18n } = useTranslation('common');
 	const router = useRouter();
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
@@ -67,7 +71,7 @@ const Top = () => {
 	const drop = Boolean(anchorEl2);
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
-	const [topBarVisible, setTopBarVisible] = useState(true);
+	const [topBarVisible, setTopBarVisible] = useState(false);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
 
@@ -237,14 +241,25 @@ const Top = () => {
 
 				{/* Main Navigation */}
 				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
-					<Stack className={'container'}>
+					<Stack className={'container premium-nav-container'}>
+						<Box component={'div'} className={'logo-box premium-logo'}>
+							<Link href={'/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+								<Box component={'div'} className={'logo-icon'}>
+									<img src="/img/logo/pns-triangle.svg" alt="PNS Window" className={'logo'} />
+								</Box>
+								<Box component={'div'} className={'logo-text-block'}>
+									<span className={'logo-brand'}>PNSWINDOW</span>
+									<span className={'logo-tagline'}>{t('WINDOWS & DOORS')}</span>
+								</Box>
+							</Link>
+						</Box>
 						<Box component={'div'} className={'nav-menu'}>
 							<Link href={'/'}>
 								<span className={'nav-link'}>{t('Home')}</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/property'}>
-								<span className={'nav-link'}>{t('Products')}</span>
+								<span className={'nav-link'}>{t('Product')}</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
 							<Box 
@@ -255,8 +270,7 @@ const Top = () => {
 							>
 								<Link href={'/agent'} style={{ textDecoration: 'none' }}>
 									<span className={'nav-link measurer-link'}>
-										{t('Experts')}
-										
+										{t('Exportlar')}
 										<KeyboardArrowDownIcon className={'dropdown-icon'} />
 									</span>
 							</Link>
@@ -319,31 +333,11 @@ const Top = () => {
 							)}
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/cs'}>
-								<span className={'nav-link'}>{t('CS')}</span>
-							</Link>
-						</Box>
-
-						<Box component={'div'} className={'logo-box'}>
-							<Link href={'/'}>
-								<Box component={'div'} className={'kadhavu-logo'}>
-									<Box component={'div'} className={'logo-icon'}>
-										<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
-									</Box>
-									<span className={'logo-text'}>PNS DEV</span>
-								</Box>
+								<span className={'nav-link'}>{t('Support')}</span>
 							</Link>
 						</Box>
 
 						<Box component={'div'} className={'nav-right'}>
-							<Box 
-								component={'a'} 
-								href="tel:01082005998"
-								className={'phone-box'}
-								sx={{ textDecoration: 'none', cursor: 'pointer' }}
-							>
-								<PhoneIcon className={'phone-icon'} />
-								<span>Call +82 010 8200 5998</span>
-							</Box>
 							{/* Language Switcher */}
 							<IconButton 
 								className={'lang-switcher-btn-home'}
@@ -386,14 +380,28 @@ const Top = () => {
 								>
 									한국어
 								</MenuItem>
+								<MenuItem 
+									onClick={() => langChoice('zh')} 
+									selected={lang === 'zh'}
+									className={'lang-menu-item-home'}
+								>
+									中文
+								</MenuItem>
+								<MenuItem 
+									onClick={() => langChoice('ja')} 
+									selected={lang === 'ja'}
+									className={'lang-menu-item-home'}
+								>
+									日本語
+								</MenuItem>
 							</Menu>
 							{user?._id ? (
-								<Box component={'div'} className={'user-profile-section'}>
+								<Box component={'div'} className={'user-profile-section user-profile-with-actions'}>
 									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
 										<div className={'user-avatar-small'}>
 											<img 
 												src={getUserImageSrc(user?.memberImage)} 
-												alt={user?.memberNick || 'User'} 
+												alt={user?.memberNick || t('User')} 
 												onError={(e) => {
 													(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 												}}
@@ -401,27 +409,67 @@ const Top = () => {
 										</div>
 										<Typography className={'user-name-text'}>{user?.memberNick || 'User'}</Typography>
 									</Link>
+									<IconButton 
+										className={'profile-action-btn dark-mode-btn'} 
+										size="small" 
+										onClick={toggleTheme} 
+										title={mode === 'dark' ? 'Light mode' : 'Dark mode'} 
+										sx={{ 
+											ml: 0.5, 
+											width: 40, 
+											height: 40, 
+											minWidth: 40, 
+											borderRadius: '50%', 
+											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
+											color: '#1a5f9e !important',
+											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
+											'& svg': { fontSize: 22 }
+										}}
+									>
+										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+									</IconButton>
+									<IconButton className={'profile-action-btn gear-btn'} size="small" onClick={() => router.push('/mypage')}>
+										<SettingsIcon />
+									</IconButton>
 								</Box>
+								
 							) : (
-								<Box component={'div'} className={'auth-buttons'}>
-									<Button 
-										className={'login-btn'}
-										onClick={() => router.push('/account/join?mode=login')}
+								<Box component={'div'} className={'auth-with-dark-mode'}>
+									<IconButton 
+										className={'profile-action-btn dark-mode-btn sun-moon-toggle'} 
+										size="small" 
+										onClick={toggleTheme} 
+										title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
+										sx={{ 
+											width: 44, 
+											height: 44, 
+											minWidth: 44, 
+											borderRadius: '50%', 
+											backgroundColor: mode === 'dark' ? '#f59e0b' : '#1a5f9e',
+											color: '#ffffff !important',
+											marginRight: 1,
+											'&:hover': { 
+												backgroundColor: mode === 'dark' ? '#d97706' : '#144a7a',
+												transform: 'scale(1.08)'
+											},
+											'& svg': { fontSize: 24 }
+										}}
 									>
-										{t('Login')}
-									</Button>
-									<Button 
-										className={'signup-btn'}
-										onClick={() => router.push('/account/join?mode=signup')}
-									>
-										{t('Signup')}
+										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+									</IconButton>
+									<Button className={'login-signup-btn'} onClick={() => router.push('/account/join')}>
+										{t('Login/Signup')}
 									</Button>
 								</Box>
+
+
+								
 							)}
 						</Box>
 					</Stack>
 				</Stack>
 			</Stack>
+			
 		);
 	}
 };

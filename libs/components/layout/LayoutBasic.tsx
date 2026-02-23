@@ -15,11 +15,14 @@ import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import TopBasic from '../TopBasic';
 import { REACT_APP_API_URL } from '../../config';
+import { useThemeMode } from '../../context/ThemeContext';
 
 const getUserImageSrc = (img?: string) => {
 	if (!img) return '/img/profile/defaultUser.svg';
@@ -40,6 +43,7 @@ const withLayoutBasic = (Component: any) => {
 		const langOpen = Boolean(langAnchor);
 		const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 		const measurerOpen = Boolean(measurerAnchor);
+		const { mode, toggleTheme } = useThemeMode();
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -273,6 +277,9 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* Right Actions */}
 								<Box component={'div'} className={'nav-right-dark'}>
+									<IconButton className={'dark-mode-btn-dark'} size="small" onClick={toggleTheme} title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
+										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+									</IconButton>
 									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
 										<PhoneIcon className={'call-icon'} />
 										
@@ -320,6 +327,20 @@ const withLayoutBasic = (Component: any) => {
 										>
 											한국어
 										</MenuItem>
+										<MenuItem 
+											onClick={() => handleLangChoice('zh')} 
+											selected={lang === 'zh'}
+											className={'lang-menu-item'}
+										>
+											中文
+										</MenuItem>
+										<MenuItem 
+											onClick={() => handleLangChoice('ja')} 
+											selected={lang === 'ja'}
+											className={'lang-menu-item'}
+										>
+											日本語
+										</MenuItem>
 									</Menu>
 									{/* Auth Buttons or User Profile */}
 									{user?._id ? (
@@ -328,13 +349,13 @@ const withLayoutBasic = (Component: any) => {
 												<div className={'user-avatar-small-dark'}>
 													<img 
 														src={getUserImageSrc(user?.memberImage)} 
-														alt={user?.memberNick || 'User'} 
+														alt={user?.memberNick || t('User')} 
 														onError={(e) => {
 															(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 														}}
 													/>
 												</div>
-												<Typography className={'user-name-text-dark'}>{user?.memberNick || 'User'}</Typography>
+												<Typography className={'user-name-text-dark'}>{user?.memberNick || t('User')}</Typography>
 											</Link>
 										</Box>
 									) : (

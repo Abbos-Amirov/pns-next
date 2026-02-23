@@ -138,7 +138,19 @@ body::-webkit-scrollbar {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					gap: 20px;
+					gap: 16px;
+					.top-bar-dark-mode-btn {
+						width: 36px;
+						height: 36px;
+						border-radius: 50%;
+						background: rgba(37, 36, 32, 0.12);
+						color: #252420;
+						&:hover {
+							background: rgba(37, 36, 32, 0.22);
+							transform: scale(1.08);
+						}
+						svg { font-size: 20px; }
+					}
 					.top-bar-item {
 						display: flex;
 						flex-direction: row;
@@ -411,10 +423,10 @@ body::-webkit-scrollbar {
 					}
 				}
 
-				// Main Navigation Styles
+				// Main Navigation Styles — Premium Windows style
 				.navbar-main {
 					position: relative;
-					padding: 20px 0px;
+					padding: 16px 0;
 					width: 100%;
 					background-color: #ffffff;
 					box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
@@ -426,6 +438,61 @@ body::-webkit-scrollbar {
 						flex-direction: row;
 						align-items: center;
 						justify-content: space-between;
+						&.premium-nav-container {
+							.logo-box.premium-logo {
+								order: 0;
+								margin-right: 48px;
+								.logo-icon {
+									width: 48px;
+									height: 48px;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									.logo {
+										width: 44px;
+										height: 44px;
+										object-fit: contain;
+									}
+								}
+								.logo-text-block {
+									display: flex;
+									flex-direction: column;
+									gap: 0;
+									.logo-brand {
+										font-family: $font;
+										font-size: 24px;
+										font-weight: 700;
+										color: #1a5f9e;
+										
+										text-transform: uppercase;
+										
+									}
+									.logo-tagline {
+										font-family: $font;
+										font-size: 10px;
+										font-weight: 500;
+										color: #181a20;
+										line-height: 1.2;
+										letter-spacing: 0.8px;
+										text-transform: uppercase;
+									}
+								}
+							}
+							.nav-menu {
+								flex: 1;
+								justify-content: flex-start;
+								gap: 28px;
+								.nav-separator {
+									display: none;
+								}
+								.nav-link {
+									color: #181a20;
+									&:hover {
+										color: #1a5f9e;
+									}
+								}
+							}
+						}
 						
 						.nav-menu {
 							display: flex;
@@ -559,6 +626,42 @@ body::-webkit-scrollbar {
 									font-size: 20px;
 								}
 							}
+							.auth-with-dark-mode {
+								display: flex;
+								align-items: center;
+								gap: 12px;
+								.sun-moon-toggle,
+								.profile-action-btn.dark-mode-btn {
+									width: 44px !important;
+									height: 44px !important;
+									min-width: 44px !important;
+									flex-shrink: 0 !important;
+									border-radius: 50% !important;
+									display: flex !important;
+									opacity: 1 !important;
+									visibility: visible !important;
+									svg { font-size: 24px !important; }
+								}
+							}
+							.login-signup-btn {
+								padding: 10px 24px;
+								border-radius: 6px;
+								background-color: #1a5f9e;
+								color: #ffffff;
+								font-family: $font;
+								font-size: 14px;
+								font-weight: 600;
+								line-height: normal;
+								text-transform: none;
+								cursor: pointer;
+								transition: all 0.3s;
+								border: none;
+								&:hover {
+									background-color: #144a7a;
+									transform: translateY(-1px);
+									box-shadow: 0px 4px 12px rgba(26, 95, 158, 0.3);
+								}
+							}
 							.auth-buttons {
 								display: flex;
 								flex-direction: row;
@@ -622,6 +725,41 @@ body::-webkit-scrollbar {
 								cursor: pointer;
 								transition: all 0.3s ease;
 
+								&.user-profile-with-actions {
+									gap: 10px;
+									flex-shrink: 0;
+									.profile-action-btn {
+										width: 40px !important;
+										height: 40px !important;
+										min-width: 40px !important;
+										flex-shrink: 0 !important;
+										border-radius: 50% !important;
+										background: rgba(139, 69, 19, 0.12) !important;
+										color: #8B4513 !important;
+										transition: all 0.3s ease;
+										display: flex !important;
+										align-items: center !important;
+										justify-content: center !important;
+										&:hover {
+											background: rgba(139, 69, 19, 0.22) !important;
+											transform: scale(1.08);
+										}
+										&.dark-mode-btn {
+											background: rgba(26, 95, 158, 0.3) !important;
+											color: #1a5f9e !important;
+											border: 2px solid #1a5f9e !important;
+											opacity: 1 !important;
+											visibility: visible !important;
+											&:hover {
+												background: rgba(26, 95, 158, 0.5) !important;
+												border-color: #144a7a !important;
+											}
+											svg { font-size: 22px !important; }
+										}
+										svg { font-size: 20px !important; }
+									}
+								}
+
 								.user-avatar-small {
 									width: 40px;
 									height: 40px;
@@ -677,10 +815,106 @@ body::-webkit-scrollbar {
 		width: 100%;
 		min-height: 600px;
 		background-color: #ffffff;
-		padding: 80px 0;
+		padding: 0;
 		
-		// Hero Section Styles
-		.hero-section {
+		// Premium Hero — full-width like premiumwindows.com
+		.hero-section.premium-hero {
+			position: relative;
+			width: 100%;
+			min-height: 70vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			.hero-bg-image {
+				position: absolute;
+				inset: 0;
+				background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920') center/cover no-repeat;
+			}
+			.hero-overlay {
+				position: absolute;
+				inset: 0;
+				background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 100%);
+			}
+			.container {
+				position: relative;
+				z-index: 2;
+				width: 1300px;
+				margin: 0 auto;
+				padding: 0 40px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.hero-content {
+				text-align: center;
+				max-width: 800px;
+			}
+			.hero-title {
+				margin: 0 0 24px 0;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 56px;
+				font-weight: 700;
+				line-height: 1.15;
+				letter-spacing: -0.5px;
+				text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+			}
+			.hero-description {
+				margin: 0 0 32px 0;
+				color: rgba(255,255,255,0.95);
+				font-family: $font;
+				font-size: 18px;
+				font-weight: 400;
+				line-height: 1.5;
+			}
+			.hero-cta-block {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+				gap: 16px;
+				padding: 24px 40px;
+				background: rgba(26, 95, 158, 0.9);
+				border-radius: 12px;
+				width: fit-content;
+				margin: 0 auto;
+				box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+			}
+			.hero-cta-btn {
+				padding: 14px 28px !important;
+				border-radius: 999px !important;
+				background: #ffffff !important;
+				color: #1a5f9e !important;
+				font-family: $font !important;
+				font-size: 15px !important;
+				font-weight: 600 !important;
+				text-transform: none !important;
+				border: none !important;
+				cursor: pointer;
+				transition: all 0.3s;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				&:hover {
+					background: #f0f0f0 !important;
+					transform: translateY(-2px);
+					box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+				}
+				.cta-icon {
+					font-size: 20px !important;
+				}
+			}
+			&.mobile {
+				min-height: 50vh;
+				.hero-title { font-size: 36px; }
+				.hero-description { font-size: 15px; }
+				.hero-cta-block { flex-direction: column; padding: 20px 24px; }
+			}
+		}
+		
+		// Hero Section Styles (legacy)
+		.hero-section:not(.premium-hero) {
 			position: relative;
 			width: 100%;
 			.container {
@@ -1223,6 +1457,19 @@ body::-webkit-scrollbar {
 				flex-direction: row;
 				align-items: center;
 				gap: 12px;
+				.dark-mode-btn-dark {
+					width: 40px;
+					height: 40px;
+					border-radius: 50%;
+					background: rgba(255, 255, 255, 0.12);
+					color: #ffffff;
+					transition: all 0.3s;
+					&:hover {
+						background: rgba(255, 255, 255, 0.22);
+						transform: scale(1.08);
+					}
+					svg { font-size: 22px; }
+				}
 				.call-us-btn {
 					display: flex;
 					flex-direction: row;

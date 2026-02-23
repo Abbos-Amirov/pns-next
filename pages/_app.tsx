@@ -1,20 +1,20 @@
 import type { AppProps } from 'next/app';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { light } from '../scss/MaterialTheme';
+import { light, dark } from '../scss/MaterialTheme';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
 import Loading from '../libs/components/common/Loading';
+import { ThemeProvider, useThemeMode } from '../libs/context/ThemeContext';
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
 
-const App = ({ Component, pageProps }: AppProps) => {
-	// @ts-ignore
-	const [theme, setTheme] = useState(createTheme(light));
+const ThemedApp = ({ Component, pageProps }: AppProps) => {
+	const { mode } = useThemeMode();
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const client = useApollo(pageProps.initialApolloState);
@@ -41,15 +41,24 @@ const App = ({ Component, pageProps }: AppProps) => {
 		};
 	}, [router]);
 
+	// @ts-ignore - Material theme options compatibility
+	const muiTheme = React.useMemo(() => createTheme(mode === 'dark' ? dark : light), [mode]);
+
 	return (
 		<ApolloProvider client={client}>
-			<ThemeProvider theme={theme}>
+			<MuiThemeProvider theme={muiTheme}>
 				<CssBaseline />
 				<Loading isLoading={isLoading} />
 				<Component {...pageProps} />
-			</ThemeProvider>
+			</MuiThemeProvider>
 		</ApolloProvider>
 	);
 };
+
+const App = (props: AppProps) => (
+	<ThemeProvider>
+		<ThemedApp {...props} />
+	</ThemeProvider>
+);
 
 export default appWithTranslation(App);

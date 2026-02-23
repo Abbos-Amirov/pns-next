@@ -270,13 +270,8 @@ function FallbackDemoScene({
   const { camera, raycaster } = useThree();
   // Outside view should be simple & clean (not affected by wall color)
   const OUTSIDE_COLOR = '#bfe3ff';
-  const ROOM_H = 4.4; // wall/ceiling height in world units (keep consistent)
+  const ROOM_H = 2.8; // devor balandligi (real uy)
   const WALL_Y = ROOM_H / 2;
-  const FLOOR_H = ROOM_H + 0.65; // floor-to-floor distance for stacked building view
-
-  const MAIN_OFFSET: [number, number, number] = [0, 0, 0];
-  const WING_X_OFFSET: [number, number, number] = [22, 0, 0];
-  const WING_Z_OFFSET: [number, number, number] = [0, 0, 22];
 
   // Unlit "outside" so wall color/lighting never makes it look like the interior wall
   const outsideTex = useMemo(() => {
@@ -333,166 +328,6 @@ function FallbackDemoScene({
     return tex;
   }, []);
 
-  // Helper: 3-pane window dividers where center pane is larger (left/right smaller)
-  const threePaneDividerXs = useCallback((cx: number, innerW: number) => {
-    // side panes = 25% each, center = 50%
-    return [cx - innerW * 0.25, cx + innerW * 0.25];
-  }, []);
-
-  // Static furniture variants for upper floors (same idea as ground floor, but each floor different)
-  const pickHex = useCallback((seed: number, list: Swatch[]) => list[Math.abs(seed) % list.length]?.hex || '#f2f2f2', []);
-  const rand01 = useCallback((seed: number) => {
-    const x = Math.sin(seed * 999.1) * 10000;
-    return x - Math.floor(x);
-  }, []);
-  const renderStaticFurniture = useCallback(
-    (seed: number) => {
-      const variant = Math.abs(seed) % 4;
-      const sofaC = pickHex(seed + 1, SWATCHES);
-      const tableC = pickHex(seed + 2, SWATCHES);
-      const tvC = pickHex(seed + 3, SWATCHES);
-
-      // small jitter so each floor looks different
-      const jx = (rand01(seed + 11) - 0.5) * 0.4;
-      const jz = (rand01(seed + 22) - 0.5) * 0.35;
-
-      const baseZ = 1.2 + jz; // keep away from window (window is at negative z)
-      const tvZ = 1.05 + jz * 0.4;
-      const sofaX = 2.7 + jx;
-      const tableX = 0.9 + jx * 0.6;
-
-      // Variant shapes: all are simple boxes but different proportions
-      if (variant === 0) {
-        // Standard sofa + coffee table + TV
-        return (
-          <group>
-            {/* rug */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.0, 0.02, baseZ]} receiveShadow>
-              <planeGeometry args={[5.0, 3.2]} />
-              <meshStandardMaterial color="#6b6f78" roughness={0.95} metalness={0} opacity={0.9} transparent />
-            </mesh>
-            {/* sofa */}
-            <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
-              <boxGeometry args={[2.25, 0.6, 1.25]} />
-              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
-            </mesh>
-            <mesh position={[sofaX, 1.05, baseZ - 0.45]} castShadow>
-              <boxGeometry args={[2.25, 0.45, 0.28]} />
-              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.02} />
-            </mesh>
-            {/* table */}
-            <mesh position={[tableX, 0.42, baseZ]} castShadow receiveShadow>
-              <boxGeometry args={[1.55, 0.08, 0.85]} />
-              <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
-            </mesh>
-            {/* TV */}
-            <mesh position={[-4.18, 1.35, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.8, 1.05, 0.08]} />
-              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
-            </mesh>
-            <mesh position={[-4.14, 1.35, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.6, 0.9, 0.02]} />
-              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
-            </mesh>
-          </group>
-        );
-      }
-      if (variant === 1) {
-        // Sofa-bed style + larger rug + slightly bigger table
-        return (
-          <group>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.05, 0.02, baseZ]} receiveShadow>
-              <planeGeometry args={[5.6, 3.6]} />
-              <meshStandardMaterial color="#7b7f88" roughness={0.95} metalness={0} opacity={0.9} transparent />
-            </mesh>
-            <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
-              <boxGeometry args={[2.55, 0.6, 1.45]} />
-              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
-            </mesh>
-            <mesh position={[sofaX, 0.28, baseZ + 0.82]} castShadow receiveShadow>
-              <boxGeometry args={[2.45, 0.18, 0.58]} />
-              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.01} />
-            </mesh>
-            <mesh position={[tableX, 0.44, baseZ]} castShadow receiveShadow>
-              <boxGeometry args={[1.75, 0.09, 0.95]} />
-              <meshStandardMaterial color={tableC} roughness={0.6} metalness={0.06} />
-            </mesh>
-            <mesh position={[-4.18, 1.38, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.95, 1.1, 0.08]} />
-              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
-            </mesh>
-            <mesh position={[-4.14, 1.38, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.75, 0.95, 0.02]} />
-              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
-            </mesh>
-          </group>
-        );
-      }
-      if (variant === 2) {
-        // Two-seat sofa + side table (small) + TV closer
-        return (
-          <group>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.9, 0.02, baseZ]} receiveShadow>
-              <planeGeometry args={[4.6, 3.0]} />
-              <meshStandardMaterial color="#676b73" roughness={0.95} metalness={0} opacity={0.9} transparent />
-            </mesh>
-            <mesh position={[sofaX, 0.55, baseZ + 0.1]} castShadow receiveShadow>
-              <boxGeometry args={[1.85, 0.6, 1.1]} />
-              <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
-            </mesh>
-            <mesh position={[sofaX, 1.05, baseZ - 0.25]} castShadow>
-              <boxGeometry args={[1.85, 0.45, 0.25]} />
-              <meshStandardMaterial color={sofaC} roughness={0.82} metalness={0.02} />
-            </mesh>
-            <mesh position={[sofaX + 1.45, 0.5, baseZ + 0.35]} castShadow receiveShadow>
-              <boxGeometry args={[0.6, 0.06, 0.6]} />
-              <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
-            </mesh>
-            <mesh position={[-4.18, 1.32, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.65, 0.95, 0.08]} />
-              <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
-            </mesh>
-            <mesh position={[-4.14, 1.32, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-              <boxGeometry args={[1.45, 0.8, 0.02]} />
-              <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
-            </mesh>
-          </group>
-        );
-      }
-      // variant === 3
-      return (
-        <group>
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.1, 0.02, baseZ]} receiveShadow>
-            <planeGeometry args={[5.3, 3.4]} />
-            <meshStandardMaterial color="#6a6e77" roughness={0.95} metalness={0} opacity={0.9} transparent />
-          </mesh>
-          {/* L-sofa hint (2 blocks) */}
-          <mesh position={[sofaX, 0.55, baseZ]} castShadow receiveShadow>
-            <boxGeometry args={[2.05, 0.6, 1.25]} />
-            <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
-          </mesh>
-          <mesh position={[sofaX + 0.7, 0.55, baseZ + 0.75]} castShadow receiveShadow>
-            <boxGeometry args={[1.25, 0.6, 1.0]} />
-            <meshStandardMaterial color={sofaC} roughness={0.78} metalness={0.02} />
-          </mesh>
-          <mesh position={[tableX, 0.42, baseZ + 0.05]} castShadow receiveShadow>
-            <boxGeometry args={[1.4, 0.08, 0.75]} />
-            <meshStandardMaterial color={tableC} roughness={0.65} metalness={0.05} />
-          </mesh>
-          <mesh position={[-4.18, 1.36, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-            <boxGeometry args={[1.9, 1.05, 0.08]} />
-            <meshStandardMaterial color={tvC} roughness={0.35} metalness={0.25} />
-          </mesh>
-          <mesh position={[-4.14, 1.36, tvZ]} rotation={[0, Math.PI / 2, 0]} castShadow>
-            <boxGeometry args={[1.7, 0.9, 0.02]} />
-            <meshStandardMaterial color="#0b1a2b" emissive="#081624" emissiveIntensity={0.6} roughness={0.4} metalness={0.1} />
-          </mesh>
-        </group>
-      );
-    },
-    [pickHex, rand01, threePaneDividerXs],
-  );
-
   const windowHitRef = useRef<THREE.Mesh>(null!);
   const doorHitRef = useRef<THREE.Mesh>(null!);
   const windowPartsRef = useRef<Array<THREE.Mesh | null>>([]);
@@ -516,8 +351,18 @@ function FallbackDemoScene({
   const room3BackWallRefs = useRef<Array<THREE.Mesh | null>>([]);
   const room3LeftWallRef = useRef<THREE.Mesh>(null!);
   const room3RightWallRef = useRef<THREE.Mesh>(null!);
+  const room4BackWallRefs = useRef<Array<THREE.Mesh | null>>([]);
+  const room4LeftWallRef = useRef<THREE.Mesh>(null!);
+  const room4RightWallRef = useRef<THREE.Mesh>(null!);
+  const room5BackWallRefs = useRef<Array<THREE.Mesh | null>>([]);
+  const room5LeftWallRef = useRef<THREE.Mesh>(null!);
+  const room5RightWallRef = useRef<THREE.Mesh>(null!);
+  const bathroomDoorPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const toiletDoorPartsRef = useRef<Array<THREE.Mesh | null>>([]);
+  const bathroomDoorHitRef = useRef<THREE.Mesh>(null!);
+  const toiletDoorHitRef = useRef<THREE.Mesh>(null!);
   const [hoveredName, setHoveredName] = useState<string | null>(null);
-  const [selectedTarget, setSelectedTarget] = useState<'window' | 'door' | 'sofa' | 'table' | 'tv' | null>(null);
+  const [selectedTarget, setSelectedTarget] = useState<'window' | 'door' | 'bathroomDoor' | 'toiletDoor' | 'sofa' | 'table' | 'tv' | null>(null);
   const [windowFrameHex, setWindowFrameHex] = useState<string>('#f2f2f2');
   const [doorFrameHex, setDoorFrameHex] = useState<string>('#f2f2f2');
   const [sofaHex, setSofaHex] = useState<string>('#7a5a3a');
@@ -526,11 +371,10 @@ function FallbackDemoScene({
   useCursor(!!hoveredName);
 
   useEffect(() => {
-    // Default view: show the 5-floor building; user can still orbit/zoom in
-    camera.position.set(16, 16, 26);
-    camera.lookAt(0, ROOM_H * 2.2, -4);
+    camera.position.set(6, 4, 8);
+    camera.lookAt(0, 1.2, 0);
     onHint(
-      'Demo: deraza/eshik romini yoki mebelni (divan/ustol/TV) tanlab rang bering. Oynadan tashqari ko‘rinadi.',
+      '1 etaj, 5 xona: deraza/eshik romini tanlab rang bering. Design: aylantiring. Explore: WASD bilan yuring.',
     );
     onSelectedName(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -543,7 +387,7 @@ function FallbackDemoScene({
       return;
     }
     if (selectedTarget === 'window') setWindowFrameHex(selectedHex);
-    if (selectedTarget === 'door') setDoorFrameHex(selectedHex);
+    if (selectedTarget === 'door' || selectedTarget === 'bathroomDoor' || selectedTarget === 'toiletDoor') setDoorFrameHex(selectedHex);
     if (selectedTarget === 'sofa') setSofaHex(selectedHex);
     if (selectedTarget === 'table') setTableHex(selectedHex);
     if (selectedTarget === 'tv') setTvHex(selectedHex);
@@ -563,6 +407,12 @@ function FallbackDemoScene({
       ...(room3BackWallRefs.current || []),
       room3LeftWallRef.current,
       room3RightWallRef.current,
+      ...(room4BackWallRefs.current || []),
+      room4LeftWallRef.current,
+      room4RightWallRef.current,
+      ...(room5BackWallRefs.current || []),
+      room5LeftWallRef.current,
+      room5RightWallRef.current,
     ].filter(Boolean) as THREE.Mesh[];
     walls.forEach((m) => setColor(m, wallHex));
     onHint('Devor rangi o‘zgardi.');
@@ -570,7 +420,7 @@ function FallbackDemoScene({
   }, [wallHex]);
 
   const select = useCallback(
-    (target: 'window' | 'door' | 'sofa' | 'table' | 'tv', label: string) => {
+    (target: 'window' | 'door' | 'bathroomDoor' | 'toiletDoor' | 'sofa' | 'table' | 'tv', label: string) => {
       setSelectedTarget(target);
       onSelectedName(label);
       onHint(`Tanlandi: ${label}. Endi rang tanlang.`);
@@ -581,7 +431,7 @@ function FallbackDemoScene({
   // Explore mode (WASD + pointer lock)
   const pointerRef = useRef<any>(null);
   const keysRef = useRef({ w: false, a: false, s: false, d: false });
-  const hoveredExploreRef = useRef<'window' | 'door' | 'sofa' | 'table' | 'tv' | null>(null);
+  const hoveredExploreRef = useRef<'window' | 'door' | 'bathroomDoor' | 'toiletDoor' | 'sofa' | 'table' | 'tv' | null>(null);
   const mouseCenter = useMemo(() => new THREE.Vector2(0, 0), []);
 
   useEffect(() => {
@@ -614,12 +464,12 @@ function FallbackDemoScene({
     ctl.moveRight(dir.x * speed * delta);
     ctl.moveForward(dir.z * speed * delta);
 
-    // Clamp inside simple bounds
+    // Clamp inside simple bounds (1 etaj, 5 xona)
     const obj = ctl.getObject?.();
     if (obj) {
-      obj.position.y = 1.7;
-      obj.position.x = THREE.MathUtils.clamp(obj.position.x, -8, 18);
-      obj.position.z = THREE.MathUtils.clamp(obj.position.z, -10, 14);
+      obj.position.y = 1.4;
+      obj.position.x = THREE.MathUtils.clamp(obj.position.x, -4, 11);
+      obj.position.z = THREE.MathUtils.clamp(obj.position.z, -4, 10);
     }
 
     // Center raycast to selectables
@@ -630,6 +480,8 @@ function FallbackDemoScene({
         smallWindow1HitRef.current,
         smallWindow2HitRef.current,
         doorHitRef.current,
+        bathroomDoorHitRef.current,
+        toiletDoorHitRef.current,
         sofaHitRef.current,
         tableHitRef.current,
         tvHitRef.current,
@@ -637,8 +489,10 @@ function FallbackDemoScene({
       true,
     );
     const hit = hits?.[0]?.object || null;
-    let next: 'window' | 'door' | 'sofa' | 'table' | 'tv' | null = null;
+    let next: 'window' | 'door' | 'bathroomDoor' | 'toiletDoor' | 'sofa' | 'table' | 'tv' | null = null;
     if (hit === doorHitRef.current) next = 'door';
+    else if (hit === bathroomDoorHitRef.current) next = 'bathroomDoor';
+    else if (hit === toiletDoorHitRef.current) next = 'toiletDoor';
     else if (hit === sofaHitRef.current) next = 'sofa';
     else if (hit === tableHitRef.current) next = 'table';
     else if (hit === tvHitRef.current) next = 'tv';
@@ -650,6 +504,8 @@ function FallbackDemoScene({
       smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      bathroomDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+      toiletDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       sofaPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       tablePartsRef.current.forEach((m) => setEmissive(m, 0x000000));
       tvPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
@@ -657,7 +513,13 @@ function FallbackDemoScene({
 
       if (next === 'door') {
         doorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
-        setHoveredName('Door frame');
+        setHoveredName('Eshik romi');
+      } else if (next === 'bathroomDoor') {
+        bathroomDoorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Hammom eshigi');
+      } else if (next === 'toiletDoor') {
+        toiletDoorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+        setHoveredName('Xojatxona eshigi');
       } else if (next === 'sofa') {
         sofaPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
         setHoveredName('Sofa');
@@ -686,284 +548,8 @@ function FallbackDemoScene({
       <directionalLight position={[0, 6.5, -6]} intensity={1.55} castShadow />
       <directionalLight position={[-4, 3.5, 5]} intensity={0.35} />
 
-      {/* 5-floor building view: add 4 static floors above the interactive ground floor */}
-      {Array.from({ length: 4 }).map((_, i) => {
-        const floorIndex = i + 1; // 1..4
-        const y0 = floorIndex * FLOOR_H;
-        const wallColor = wallHex || '#f2f4f7';
-        const sideWallColor = wallHex || '#eef1f5';
-
-        // Window constants (match the interactive big window)
-        const cx = 0;
-        const cy = WALL_Y;
-        const cz = -3.92;
-        const outerW = 6.9;
-        const outerH = ROOM_H - 0.35;
-        const barT = 0.18;
-        const depth = 0.14;
-        const innerW = outerW - barT * 2;
-        const innerH = outerH - barT * 2;
-        const topY = cy + outerH / 2 - barT / 2;
-        const botY = cy - outerH / 2 + barT / 2;
-        const leftX = cx - outerW / 2 + barT / 2;
-        const rightX = cx + outerW / 2 - barT / 2;
-        const div1 = cx - innerW / 4;
-        const div2 = cx;
-        const div3 = cx + innerW / 4;
-
-        // Back wall strips with cut-out (match current pad logic, slightly smaller than frame)
-        const wallW = 18;
-        const wallH = ROOM_H;
-        const wallZ = -4;
-        const pad = -0.04;
-        const holeW = outerW + pad;
-        const holeH = outerH + pad;
-        const left = cx - holeW / 2;
-        const right = cx + holeW / 2;
-        const bottom = cy - holeH / 2;
-        const top = cy + holeH / 2;
-        const topH = Math.max(0.01, wallH - top);
-        const bottomH = Math.max(0.01, bottom);
-        const sideH = Math.max(0.01, holeH);
-        const leftW = Math.max(0.01, left + wallW / 2);
-        const rightW = Math.max(0.01, wallW / 2 - right);
-
-        return (
-          <group key={`floor-${floorIndex}`} position={[MAIN_OFFSET[0], y0 + MAIN_OFFSET[1], MAIN_OFFSET[2]]}>
-            {/* floor */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-              <planeGeometry args={[18, 18]} />
-              <meshStandardMaterial color="#8d7f72" />
-            </mesh>
-
-            {/* back wall (4 strips) */}
-            <mesh position={[0, top + topH / 2, wallZ]} receiveShadow>
-              <planeGeometry args={[wallW, topH]} />
-              <meshStandardMaterial color={wallColor} />
-            </mesh>
-            <mesh position={[0, bottomH / 2, wallZ]} receiveShadow>
-              <planeGeometry args={[wallW, bottomH]} />
-              <meshStandardMaterial color={wallColor} />
-            </mesh>
-            <mesh position={[-wallW / 2 + leftW / 2, cy, wallZ]} receiveShadow>
-              <planeGeometry args={[leftW, sideH]} />
-              <meshStandardMaterial color={wallColor} />
-            </mesh>
-            <mesh position={[wallW / 2 - rightW / 2, cy, wallZ]} receiveShadow>
-              <planeGeometry args={[rightW, sideH]} />
-              <meshStandardMaterial color={wallColor} />
-            </mesh>
-
-            {/* side walls */}
-            <mesh position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-              <planeGeometry args={[8, ROOM_H]} />
-              <meshStandardMaterial color={sideWallColor} />
-            </mesh>
-            <mesh position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-              <planeGeometry args={[8, ROOM_H]} />
-              <meshStandardMaterial color={sideWallColor} />
-            </mesh>
-
-            {/* ceiling */}
-            <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
-              <planeGeometry args={[18, 18]} />
-              <meshStandardMaterial color="#1b1b1f" />
-            </mesh>
-
-            {/* balcony facade */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, -7.0]} receiveShadow>
-              <planeGeometry args={[10, 4.5]} />
-              <meshStandardMaterial color="#b9b3ab" roughness={0.95} metalness={0.02} />
-            </mesh>
-            <mesh position={[0, 1.05, -6.4]} castShadow>
-              <boxGeometry args={[9.6, 0.06, 0.06]} />
-              <meshStandardMaterial color="#e6e6e6" roughness={0.6} metalness={0.2} />
-            </mesh>
-
-            {/* outside view */}
-            <mesh position={[cx, cy, -6.2]}>
-              <planeGeometry args={[innerW * 1.35, innerH * 1.35]} />
-              <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
-            </mesh>
-
-            {/* glass */}
-            <mesh position={[cx, cy, cz - 0.07]}>
-              <boxGeometry args={[innerW, innerH, 0.03]} />
-              <meshPhysicalMaterial
-                color="#ffffff"
-                transparent
-                opacity={0.16}
-                roughness={0.03}
-                transmission={0.92}
-                thickness={0.15}
-                ior={1.45}
-              />
-            </mesh>
-
-            {/* frame */}
-            {[
-              { p: [cx, topY, cz], s: [outerW, barT, depth] },
-              { p: [cx, botY, cz], s: [outerW, barT, depth] },
-              { p: [leftX, cy, cz], s: [barT, outerH, depth] },
-              { p: [rightX, cy, cz], s: [barT, outerH, depth] },
-            ].map((cfg, idx) => (
-              <mesh key={`sfbar-${floorIndex}-${idx}`} position={cfg.p as any} castShadow>
-                <boxGeometry args={cfg.s as any} />
-                <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
-              </mesh>
-            ))}
-            {[div1, div2, div3].map((x, idx) => (
-              <mesh key={`sfdiv-${floorIndex}-${idx}`} position={[x, cy, cz + 0.02]} castShadow>
-                <boxGeometry args={[0.045, innerH, 0.08]} />
-                <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
-              </mesh>
-            ))}
-
-            {/* furniture on this floor (static, but each floor different) */}
-            <group>{renderStaticFurniture(1000 + floorIndex)}</group>
-          </group>
-        );
-      })}
-
-      {/* Side buildings: stack Room2 and Room3 wings up as well (same style, different window sizes & 3-pane layout) */}
-      {Array.from({ length: 4 }).map((_, i) => {
-        const floorIndex = i + 1;
-        const y0 = floorIndex * FLOOR_H;
-        const wallColor = wallHex || '#f2f4f7';
-        const sideWallColor = wallHex || '#eef1f5';
-
-        const renderWingFloor = (key: string, base: [number, number, number], variant: 'x' | 'z') => {
-          // Window sizes differ per wing variant
-          const cx = variant === 'x' ? -3.2 : 3.0;
-          const cy = WALL_Y;
-          const cz = -3.92;
-          const outerW = variant === 'x' ? 3.15 : 2.75;
-          const outerH = variant === 'x' ? 2.25 : 2.05;
-          const barT = 0.16;
-          const depth = 0.12;
-          const innerW = outerW - barT * 2;
-          const innerH = outerH - barT * 2;
-          const topY = cy + outerH / 2 - barT / 2;
-          const botY = cy - outerH / 2 + barT / 2;
-          const leftX = cx - outerW / 2 + barT / 2;
-          const rightX = cx + outerW / 2 - barT / 2;
-          const [d1, d2] = threePaneDividerXs(cx, innerW);
-
-          // Back wall cut-out (slightly smaller than frame)
-          const wallW = 18;
-          const wallH = ROOM_H;
-          const wallZ = -4;
-          const pad = -0.04;
-          const holeW = outerW + pad;
-          const holeH = outerH + pad;
-          const left = cx - holeW / 2;
-          const right = cx + holeW / 2;
-          const bottom = cy - holeH / 2;
-          const top = cy + holeH / 2;
-          const topH = Math.max(0.01, wallH - top);
-          const bottomH = Math.max(0.01, bottom);
-          const sideH = Math.max(0.01, holeH);
-          const leftW = Math.max(0.01, left + wallW / 2);
-          const rightW = Math.max(0.01, wallW / 2 - right);
-
-          return (
-            <group key={key} position={[base[0], base[1] + y0, base[2]]}>
-              {/* floor */}
-              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-                <planeGeometry args={[18, 18]} />
-                <meshStandardMaterial color="#8d7f72" />
-              </mesh>
-
-              {/* back wall strips (cut-out for window) */}
-              <mesh position={[0, top + topH / 2, wallZ]} receiveShadow>
-                <planeGeometry args={[wallW, topH]} />
-                <meshStandardMaterial color={wallColor} />
-              </mesh>
-              <mesh position={[0, bottomH / 2, wallZ]} receiveShadow>
-                <planeGeometry args={[wallW, bottomH]} />
-                <meshStandardMaterial color={wallColor} />
-              </mesh>
-              <mesh position={[-wallW / 2 + leftW / 2, cy, wallZ]} receiveShadow>
-                <planeGeometry args={[leftW, sideH]} />
-                <meshStandardMaterial color={wallColor} />
-              </mesh>
-              <mesh position={[wallW / 2 - rightW / 2, cy, wallZ]} receiveShadow>
-                <planeGeometry args={[rightW, sideH]} />
-                <meshStandardMaterial color={wallColor} />
-              </mesh>
-
-              {/* side walls + ceiling */}
-              <mesh position={[-4.5, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
-                <planeGeometry args={[8, ROOM_H]} />
-                <meshStandardMaterial color={sideWallColor} />
-              </mesh>
-              <mesh position={[4.5, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
-                <planeGeometry args={[8, ROOM_H]} />
-                <meshStandardMaterial color={sideWallColor} />
-              </mesh>
-              <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
-                <planeGeometry args={[18, 18]} />
-                <meshStandardMaterial color="#1b1b1f" />
-              </mesh>
-
-              {/* outside view */}
-              <mesh position={[cx, cy, -6.2]}>
-                <planeGeometry args={[innerW * 1.35, innerH * 1.35]} />
-                <meshBasicMaterial color="#ffffff" map={outsideTex as any} />
-              </mesh>
-
-              {/* glass */}
-              <mesh position={[cx, cy, cz - 0.07]}>
-                <boxGeometry args={[innerW, innerH, 0.03]} />
-                <meshPhysicalMaterial
-                  color="#ffffff"
-                  transparent
-                  opacity={0.14}
-                  roughness={0.03}
-                  transmission={0.92}
-                  thickness={0.12}
-                  ior={1.45}
-                />
-              </mesh>
-
-              {/* frame bars */}
-              {[
-                { p: [cx, topY, cz], s: [outerW, barT, depth] },
-                { p: [cx, botY, cz], s: [outerW, barT, depth] },
-                { p: [leftX, cy, cz], s: [barT, outerH, depth] },
-                { p: [rightX, cy, cz], s: [barT, outerH, depth] },
-              ].map((cfg, idx) => (
-                <mesh key={`${key}-bar-${idx}`} position={cfg.p as any} castShadow>
-                  <boxGeometry args={cfg.s as any} />
-                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
-                </mesh>
-              ))}
-
-              {/* 3-pane dividers: 2 inner posts */}
-              {[d1, d2].map((x, idx) => (
-                <mesh key={`${key}-div-${idx}`} position={[x, cy, cz + 0.02]} castShadow>
-                  <boxGeometry args={[0.05, innerH, 0.08]} />
-                  <meshStandardMaterial color={windowFrameHex} roughness={0.55} metalness={0.08} />
-                </mesh>
-              ))}
-
-              {/* furniture (smaller) */}
-              <group scale={0.88} position={[0, 0, 0.1]}>
-                {renderStaticFurniture(2000 + floorIndex + (variant === 'x' ? 10 : 20))}
-              </group>
-            </group>
-          );
-        };
-
-        return (
-          <React.Fragment key={`wing-floors-${floorIndex}`}>
-            {renderWingFloor(`wingx-${floorIndex}`, WING_X_OFFSET, 'x')}
-            {renderWingFloor(`wingz-${floorIndex}`, WING_Z_OFFSET, 'z')}
-          </React.Fragment>
-        );
-      })}
-
-      {/* Simple room */}
+      {/* 1 etaj — 5 xonali real uy */}
+      {/* Simple room — Mehmonxona */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[18, 18]} />
         <meshStandardMaterial color="#8d7f72" />
@@ -1387,8 +973,8 @@ function FallbackDemoScene({
         );
       })()}
 
-      {/* SECOND ROOM (door is here, not next to window) */}
-      <group position={[22, 0, 0]}>
+      {/* Oshxona (Kitchen) — Room 2 */}
+      <group position={[7, 0, 0]}>
         {/* Small window in Room 2 */}
         {(() => {
           const cx = -3.2;
@@ -1454,7 +1040,7 @@ function FallbackDemoScene({
                 position={[cx, cy, cz]}
                 onPointerOver={() => {
                   if (mode === 'explore') return;
-                  setHoveredName('Small window (Room 2)');
+                  setHoveredName('Oshxona derazasi');
                   smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
                   onHint('Kichik deraza romi hover (click qilib tanlang).');
                 }}
@@ -1463,7 +1049,7 @@ function FallbackDemoScene({
                   setHoveredName(null);
                   smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
                 }}
-                onClick={() => select('window', 'Small window (Room 2)')}
+                onClick={() => select('window', 'Oshxona derazasi')}
               >
                 <boxGeometry args={[outerW + 0.2, outerH + 0.2, 0.6]} />
                 <meshBasicMaterial transparent opacity={0} />
@@ -1472,7 +1058,7 @@ function FallbackDemoScene({
           );
         })()}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-          <planeGeometry args={[18, 18]} />
+          <planeGeometry args={[6, 6]} />
           <meshStandardMaterial color="#8d7f72" />
         </mesh>
         {/* Room2 back wall: cut-outs for small window + door, with reveals like the big window */}
@@ -1621,8 +1207,8 @@ function FallbackDemoScene({
         </mesh>
       </group>
 
-      {/* ROOM 3 (another small window) */}
-      <group position={[0, 0, 22]}>
+      {/* Yotoqxona (Bedroom) — Room 3 */}
+      <group position={[0, 0, 7]}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[18, 18]} />
           <meshStandardMaterial color="#8d7f72" />
@@ -1754,7 +1340,7 @@ function FallbackDemoScene({
                 position={[cx, cy, cz]}
                 onPointerOver={() => {
                   if (mode === 'explore') return;
-                  setHoveredName('Small window (Room 3)');
+                  setHoveredName('Yotoqxona derazasi');
                   smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x111111));
                   onHint('Kichik deraza romi hover (click qilib tanlang).');
                 }}
@@ -1763,7 +1349,7 @@ function FallbackDemoScene({
                   setHoveredName(null);
                   smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
                 }}
-                onClick={() => select('window', 'Small window (Room 3)')}
+                onClick={() => select('window', 'Yotoqxona derazasi')}
               >
                 <boxGeometry args={[outerW + 0.2, outerH + 0.2, 0.6]} />
                 <meshBasicMaterial transparent opacity={0} />
@@ -1773,9 +1359,118 @@ function FallbackDemoScene({
         })()}
       </group>
 
+      {/* Hammom (Bathroom) — Room 4 */}
+      <group position={[7, 0, 7]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <planeGeometry args={[4, 4]} />
+          <meshStandardMaterial color="#8d7f72" />
+        </mesh>
+        {/* Back wall */}
+        <mesh ref={(el) => { room4BackWallRefs.current[0] = el; }} position={[0, WALL_Y, -2]} receiveShadow>
+          <planeGeometry args={[4, ROOM_H]} />
+          <meshStandardMaterial color="#f2f4f7" />
+        </mesh>
+        <mesh ref={room4LeftWallRef} position={[-2, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[4, ROOM_H]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh ref={room4RightWallRef} position={[2, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[4, ROOM_H]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+          <planeGeometry args={[4, 4]} />
+          <meshStandardMaterial color="#1b1b1f" />
+        </mesh>
+        {/* Hammom eshigi (o‘ngda, kirish) */}
+        {[
+          { p: [0.5, 2.4, -2], s: [1.0, 0.15, 0.1] },
+          { p: [0.5, 0.15, -2], s: [1.0, 0.15, 0.1] },
+          { p: [0.05, 1.2, -2], s: [0.1, 2.2, 0.1] },
+          { p: [0.95, 1.2, -2], s: [0.1, 2.2, 0.1] },
+        ].map((cfg, idx) => (
+          <mesh key={`bdoor-${idx}`} ref={(el) => { bathroomDoorPartsRef.current[idx] = el; }} position={cfg.p as any} castShadow>
+            <boxGeometry args={cfg.s as any} />
+            <meshStandardMaterial color={doorFrameHex} roughness={0.55} metalness={0.08} />
+          </mesh>
+        ))}
+        <mesh
+          ref={bathroomDoorHitRef}
+          position={[0.5, 1.2, -2]}
+          onPointerOver={() => {
+            if (mode === 'explore') return;
+            setHoveredName('Hammom eshigi');
+            bathroomDoorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+          }}
+          onPointerOut={() => {
+            if (mode === 'explore') return;
+            setHoveredName(null);
+            bathroomDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+          }}
+          onClick={() => select('bathroomDoor', 'Hammom eshigi')}
+        >
+          <boxGeometry args={[1.2, 2.6, 0.3]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+      </group>
+
+      {/* Xojatxona (Toilet) — Room 5 */}
+      <group position={[10, 0, 7]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <planeGeometry args={[2.5, 2.5]} />
+          <meshStandardMaterial color="#8d7f72" />
+        </mesh>
+        <mesh ref={(el) => { room5BackWallRefs.current[0] = el; }} position={[0, WALL_Y, -1.25]} receiveShadow>
+          <planeGeometry args={[2.5, ROOM_H]} />
+          <meshStandardMaterial color="#f2f4f7" />
+        </mesh>
+        <mesh ref={room5LeftWallRef} position={[-1.25, WALL_Y, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[2.5, ROOM_H]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh ref={room5RightWallRef} position={[1.25, WALL_Y, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[2.5, ROOM_H]} />
+          <meshStandardMaterial color="#eef1f5" />
+        </mesh>
+        <mesh position={[0, ROOM_H, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+          <planeGeometry args={[2.5, 2.5]} />
+          <meshStandardMaterial color="#1b1b1f" />
+        </mesh>
+        {/* Xojatxona eshigi */}
+        {[
+          { p: [0, 2.2, -1.25], s: [0.85, 0.12, 0.1] },
+          { p: [0, 0.12, -1.25], s: [0.85, 0.12, 0.1] },
+          { p: [-0.38, 1.1, -1.25], s: [0.08, 2.0, 0.1] },
+          { p: [0.38, 1.1, -1.25], s: [0.08, 2.0, 0.1] },
+        ].map((cfg, idx) => (
+          <mesh key={`tdoor-${idx}`} ref={(el) => { toiletDoorPartsRef.current[idx] = el; }} position={cfg.p as any} castShadow>
+            <boxGeometry args={cfg.s as any} />
+            <meshStandardMaterial color={doorFrameHex} roughness={0.55} metalness={0.08} />
+          </mesh>
+        ))}
+        <mesh
+          ref={toiletDoorHitRef}
+          position={[0, 1.1, -1.25]}
+          onPointerOver={() => {
+            if (mode === 'explore') return;
+            setHoveredName('Xojatxona eshigi');
+            toiletDoorPartsRef.current.forEach((m) => setEmissive(m, 0x111111));
+          }}
+          onPointerOut={() => {
+            if (mode === 'explore') return;
+            setHoveredName(null);
+            toiletDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+          }}
+          onClick={() => select('toiletDoor', 'Xojatxona eshigi')}
+        >
+          <boxGeometry args={[1.0, 2.4, 0.3]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+      </group>
+
       {/* Easier camera control in demo */}
       {mode === 'design' ? (
-        <OrbitControls makeDefault enablePan enableZoom enableRotate target={[0, 1.6, -3.6]} />
+        <OrbitControls makeDefault enablePan enableZoom enableRotate target={[3, 1.2, 2]} />
       ) : (
         <PointerLockControls
           ref={pointerRef}
@@ -1786,6 +1481,8 @@ function FallbackDemoScene({
             smallWindow1PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             smallWindow2PartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             doorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            bathroomDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
+            toiletDoorPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             sofaPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             tablePartsRef.current.forEach((m) => setEmissive(m, 0x000000));
             tvPartsRef.current.forEach((m) => setEmissive(m, 0x000000));
@@ -1860,8 +1557,10 @@ export default function RoomConfigurator({ modelUrl = '/models/room.glb' }: { mo
       </div>
 
       <aside className="configurator-panel">
+        <div className="configurator-panel-title">Uy dizayneri</div>
+        <div className="configurator-panel-sub">1 etaj, 5 xona: Mehmonxona, Oshxona, Yotoqxona, Hammom, Xojatxona. Deraza va eshik rangini o‘zgartiring.</div>
         <div className="configurator-panel-title">Mode</div>
-        <div className="configurator-panel-sub">Design: mouse bilan aylaning. Explore: WASD bilan ichkariga kiring.</div>
+        <div className="configurator-panel-sub">Design: mouse bilan aylaning. Explore: WASD bilan yuring.</div>
         <div className="configurator-mode">
           <button
             type="button"

@@ -1,140 +1,272 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Stack, Box } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useTranslation } from 'next-i18next';
+
+const DARK_BLUE = '#1a237e';
+const LIGHT_BLUE = '#42a5f5';
+
+const windows = [
+	{
+		nameKey: 'Picture',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="16" y="12" width="32" height="40" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Casement',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M16 12 L16 52 L32 52 L36 48 L52 48 L52 12 L16 12 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M16 32 L20 32" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M48 30 L48 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Awning',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 36 L12 20 L52 20 L52 36 L12 36 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M12 36 L16 32 L48 32 L52 36" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M32 32 L32 36" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Horizontal Sliding',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="12" y="16" width="40" height="32" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M32 16 L32 48" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M48 30 L48 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Single Hung',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="20" y="8" width="24" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M20 32 L44 32" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M32 32 L32 48" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Double Hung',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="20" y="8" width="24" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M20 24 L44 24" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M20 40 L44 40" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M32 24 L32 40" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M32 8 L32 20" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M32 44 L32 56" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+];
+
+const doors = [
+	{
+		nameKey: 'Patio Sliding',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="12" y="8" width="40" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M32 8 L32 56" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M48 28 L48 36" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'French Swing',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 8 L12 56 L28 56 L30 54 L34 54 L36 56 L52 56 L52 8 L12 8 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M32 8 L32 56" stroke={DARK_BLUE} strokeWidth="2" />
+				<path d="M28 30 L28 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M36 30 L36 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Multiple Sliding',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="8" y="16" width="48" height="32" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M14 16 L14 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M22 16 L22 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M30 16 L30 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M38 16 L38 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M46 16 L46 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M54 16 L54 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M22 24 L22 28" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+				<path d="M54 24 L54 28" stroke={LIGHT_BLUE} strokeWidth="1.5" />
+			</svg>
+		),
+	},
+	{
+		nameKey: 'Multiple Folding',
+		icon: (
+			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M8 16 L8 48 L16 48 L20 44 L24 48 L28 44 L32 48 L36 44 L40 48 L44 44 L48 48 L56 48 L56 16 L8 16 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
+				<path d="M16 16 L16 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M24 16 L24 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M32 16 L32 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M40 16 L40 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+				<path d="M48 16 L48 48" stroke={LIGHT_BLUE} strokeWidth="1" />
+			</svg>
+		),
+	},
+];
+
+interface ScrollableSectionProps {
+	titleKey: string;
+	items: { nameKey: string; icon: React.ReactNode }[];
+	showScroll?: boolean;
+}
+
+const ScrollableSection = ({ titleKey, items, showScroll = true }: ScrollableSectionProps) => {
+	const { t } = useTranslation('common');
+	const scrollRef = useRef<HTMLDivElement>(null);
+	const [scrollLeft, setScrollLeft] = useState(0);
+	const [maxScroll, setMaxScroll] = useState(0);
+
+	const updateScrollState = () => {
+		if (scrollRef.current) {
+			setScrollLeft(scrollRef.current.scrollLeft);
+			setMaxScroll(scrollRef.current.scrollWidth - scrollRef.current.clientWidth);
+		}
+	};
+
+	const handleScroll = () => updateScrollState();
+
+	useEffect(() => {
+		updateScrollState();
+		window.addEventListener('resize', updateScrollState);
+		return () => window.removeEventListener('resize', updateScrollState);
+	}, [items.length]);
+
+	const scroll = (direction: 'left' | 'right') => {
+		if (scrollRef.current) {
+			const scrollAmount = 200;
+			scrollRef.current.scrollBy({
+				left: direction === 'left' ? -scrollAmount : scrollAmount,
+				behavior: 'smooth',
+			});
+		}
+	};
+
+	return (
+		<Box className="brand-category-section">
+			<Stack direction="row" alignItems="center" className="brand-section-title">
+				<Box
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+						mr: 1.5,
+						position: 'relative',
+						width: 20,
+						height: 20,
+					}}
+				>
+					<Box
+						sx={{
+							width: 14,
+							height: 14,
+							backgroundColor: DARK_BLUE,
+							borderRadius: '2px',
+							position: 'absolute',
+							left: 0,
+							bottom: 0,
+						}}
+					/>
+					<Box
+						sx={{
+							width: 10,
+							height: 10,
+							backgroundColor: LIGHT_BLUE,
+							borderRadius: '2px',
+							position: 'absolute',
+							left: 8,
+							top: 0,
+						}}
+					/>
+				</Box>
+				<Box component="span" className="brand-section-title-text">
+					{t(titleKey)}
+				</Box>
+			</Stack>
+
+			<Box className="brand-items-scroll-wrapper">
+				<Box
+					ref={scrollRef}
+					className="brand-items-row"
+					onScroll={handleScroll}
+					sx={{ overflowX: 'auto' }}
+				>
+					{items.map((item, index) => (
+						<Box key={index} className="brand-item">
+							<Box className="brand-item-icon">{item.icon}</Box>
+							<Box className="brand-item-label">{t(item.nameKey)}</Box>
+						</Box>
+					))}
+				</Box>
+
+				{showScroll && (
+				<Stack direction="row" alignItems="center" className="brand-scroll-indicator">
+					<Box
+						component="button"
+						className="brand-scroll-btn"
+						onClick={() => scroll('left')}
+						sx={{ color: LIGHT_BLUE, cursor: 'pointer', border: 'none', background: 'none', p: 0 }}
+					>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+						</svg>
+					</Box>
+					<Box className="brand-scroll-track">
+						<Box
+							className="brand-scroll-thumb"
+							sx={{
+								width: maxScroll > 0 ? '30%' : '100%',
+								left: maxScroll > 0 ? `${(scrollLeft / maxScroll) * 70}%` : 0,
+								backgroundColor: LIGHT_BLUE,
+								height: 4,
+								borderRadius: 2,
+								minWidth: 40,
+								transition: 'left 0.1s ease',
+							}}
+						/>
+					</Box>
+					<Box
+						component="button"
+						className="brand-scroll-btn"
+						onClick={() => scroll('right')}
+						sx={{ color: LIGHT_BLUE, cursor: 'pointer', border: 'none', background: 'none', p: 0 }}
+					>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+						</svg>
+					</Box>
+				</Stack>
+				)}
+			</Box>
+		</Box>
+	);
+};
 
 const Brand = () => {
-	const device = useDeviceDetect();
-
-	// Company data with logos
-	const companies = [
-		{ 
-			name: 'WINDOWS&DOOR', 
-			slogan: '',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect x="10" y="15" width="40" height="35" rx="2" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<path d="M10 25 L50 25" stroke="#181a20" strokeWidth="2"/>
-					<path d="M30 15 L30 50" stroke="#181a20" strokeWidth="2"/>
-				</svg>
-			)
-		},
-		{ 
-			name: 'CASH BUYER NETWORK', 
-			slogan: '',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M15 20 L15 45 L25 45 L25 35 L35 35 L35 45 L45 45 L45 20 L15 20 Z" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<path d="M20 25 L20 30" stroke="#181a20" strokeWidth="2"/>
-					<path d="M25 25 L25 30" stroke="#181a20" strokeWidth="2"/>
-					<path d="M30 25 L30 30" stroke="#181a20" strokeWidth="2"/>
-					<path d="M35 25 L35 30" stroke="#181a20" strokeWidth="2"/>
-					<path d="M40 25 L40 30" stroke="#181a20" strokeWidth="2"/>
-					<circle cx="30" cy="15" r="5" stroke="#181a20" strokeWidth="2" fill="none"/>
-				</svg>
-			)
-		},
-		{ 
-			name: 'OPEN DOOR', 
-			slogan: 'YOUR SLOGAN HERE',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect x="15" y="20" width="30" height="30" rx="2" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<path d="M15 20 L15 50" stroke="#181a20" strokeWidth="2"/>
-					<circle cx="40" cy="35" r="3" stroke="#181a20" strokeWidth="2" fill="none"/>
-				</svg>
-			)
-		},
-		{ 
-			name: 'BUILDHOUSE', 
-			slogan: '',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect x="20" y="25" width="20" height="20" rx="2" stroke="#181a20" strokeWidth="2" fill="none" transform="rotate(-5 30 35)"/>
-					<rect x="22" y="27" width="16" height="16" rx="1" stroke="#181a20" strokeWidth="2" fill="none" transform="rotate(5 30 35)"/>
-				</svg>
-			)
-		},
-		{ 
-			name: 'COMPANY', 
-			slogan: 'TAG LINE HERE',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M15 30 Q20 20, 30 25 Q40 20, 45 30" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<path d="M15 35 Q20 25, 30 30 Q40 25, 45 35" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<path d="M15 40 Q20 30, 30 35 Q40 30, 45 40" stroke="#181a20" strokeWidth="2" fill="none"/>
-				</svg>
-			)
-		},
-		{ 
-			name: 'WINDOW', 
-			slogan: 'TAG LINE HERE',
-			icon: (
-				<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect x="15" y="20" width="30" height="25" rx="2" stroke="#181a20" strokeWidth="2" fill="none"/>
-					<rect x="17" y="22" width="26" height="21" rx="1" stroke="#181a20" strokeWidth="1.5" fill="none"/>
-					<path d="M30 20 L30 43" stroke="#181a20" strokeWidth="1.5"/>
-					<path d="M15 32.5 L45 32.5" stroke="#181a20" strokeWidth="1.5"/>
-				</svg>
-			)
-		},
-	];
-
-	if (device === 'mobile') {
-		return (
-			<Stack className={'brand-section'}>
-				<Stack className={'container'}>
-					<Stack className={'brand-content'}>
-						<Box component={'div'} className={'trusted-text'}>
-							<span>Trusted by</span>
-							<span className={'highlight'}>500+</span>
-							<span>companies</span>
-						</Box>
-						<Stack className={'companies-row'}>
-							{companies.map((company, index) => (
-								<Box key={index} component={'div'} className={'company-item'}>
-									<Box component={'div'} className={'company-icon'}>
-										{company.icon}
-									</Box>
-									<Box component={'div'} className={'company-name'}>{company.name}</Box>
-									{company.slogan && (
-										<Box component={'div'} className={'company-slogan'}>{company.slogan}</Box>
-									)}
-								</Box>
-							))}
-						</Stack>
-					</Stack>
-				</Stack>
+	return (
+		<Stack className="brand-section">
+			<Stack className="brand-container">
+				<ScrollableSection titleKey="Windows" items={windows} showScroll />
+				<ScrollableSection titleKey="Doors" items={doors} showScroll={false} />
 			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'brand-section'}>
-				<Stack className={'container'}>
-					<Stack className={'brand-content'}>
-						<Box component={'div'} className={'trusted-text'}>
-							<span>Trusted by</span>
-							<span className={'highlight'}>500+</span>
-							<span>companies</span>
-						</Box>
-						<Stack className={'companies-row'}>
-							{companies.map((company, index) => (
-								<Box key={index} component={'div'} className={'company-item'}>
-									<Box component={'div'} className={'company-icon'}>
-										{company.icon}
-									</Box>
-									<Box component={'div'} className={'company-name'}>{company.name}</Box>
-									{company.slogan && (
-										<Box component={'div'} className={'company-slogan'}>{company.slogan}</Box>
-									)}
-								</Box>
-							))}
-						</Stack>
-					</Stack>
-				</Stack>
-			</Stack>
-		);
-	}
+		</Stack>
+	);
 };
 
 export default Brand;
-
