@@ -143,7 +143,7 @@
 								.category-item {
 									padding: 12px 0;
 									cursor: pointer;
-									border-bottom: 1px solid #f0f0f0;
+									border-bottom: 1px solid #e0e0e0;
 									transition: all 0.2s;
 									&:last-child {
 										border-bottom: none;
@@ -154,8 +154,9 @@
 									}
 									&.selected {
 										font-weight: 600;
+										span, .MuiTypography-root { color: #8b4513 !important; }
 									}
-									span {
+									span, .MuiTypography-root, p {
 										color: #181a20;
 										font-family: $font;
 										font-size: 14px;
@@ -176,8 +177,9 @@
 									.hot-deal-image {
 										position: relative;
 										width: 100%;
-										height: 200px;
-										border-radius: 0;
+										height: 110px;
+										max-height: 110px;
+										border-radius: 8px;
 										overflow: hidden;
 										img {
 											width: 100%;
@@ -960,6 +962,241 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+/* Property Scroll-Stack Layout - HSTAFF style: Filter | CHAP ma'lumot | O'NG rasm (qo'shlib ketgan) */
+#pc-wrap #property-list-page.property-scroll-stack {
+	background: #0b0c10;
+	color: #fff;
+	padding-bottom: 60px;
+	.container.property-stack-container {
+		display: flex;
+		gap: 24px;
+		max-width: 1600px;
+		margin: 0 auto;
+		padding: 24px 20px;
+		.filter-config-stack {
+			width: 280px;
+			flex-shrink: 0;
+			position: sticky;
+			top: 24px;
+			height: fit-content;
+			align-self: flex-start;
+			.filter-main .filter-section {
+				.section-header { background: #8b4513; color: #fff; }
+				.category-list, .search-content, .price-range-content,
+				.availability-content, .hot-deals-wrapper {
+					background: rgba(255,255,255,0.06);
+					border: 1px solid rgba(255,255,255,0.1);
+					.category-item span, .category-item .MuiTypography-root, input, label, .category-item { color: #e0e0e0 !important; }
+					.MuiFormControlLabel-label { color: #e0e0e0 !important; }
+				}
+				.category-list .category-item {
+					border-bottom: 1px solid rgba(255,255,255,0.15);
+					padding: 12px 0;
+					cursor: pointer;
+					transition: all 0.2s;
+					&:last-child { border-bottom: none; }
+					&:hover { padding-left: 8px; }
+					&.selected { font-weight: 600; color: #c9a962 !important; }
+					&.selected .MuiTypography-root { color: #c9a962 !important; }
+				}
+				.hot-deals-wrapper .hot-deal-card .hot-deal-image {
+					height: 110px;
+					max-height: 110px;
+					border-radius: 8px;
+					overflow: hidden;
+					img { object-fit: cover; }
+				}
+			}
+		}
+		.property-stack-main {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+			min-width: 0;
+		}
+		/* Har bir section: ma'lumot + rasm qo'shlib ketgan, orasi ochiq emas */
+		.stack-section-unified {
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
+			gap: 0;
+			overflow: hidden;
+			border-radius: 18px;
+			.stack-section-info {
+				flex: 1 1 50%;
+				min-width: 0;
+				position: relative;
+				padding: 48px 40px 48px 48px;
+			}
+			.stack-section-image {
+				flex: 0 0 48%;
+				max-width: 520px;
+				height: 420px;
+				border-radius: 0;
+				overflow: hidden;
+				box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+				}
+			}
+		}
+		.stack-bg-number {
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 180px;
+			font-weight: 800;
+			line-height: 1;
+			opacity: 0.08;
+			color: #fff;
+			pointer-events: none;
+			user-select: none;
+		}
+		.stack-meta-cards {
+			margin-top: 32px;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+		.stack-meta-row {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			.stack-meta-label {
+				font-size: 11px;
+				opacity: 0.6;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+			}
+			.stack-meta-value {
+				font-size: 14px;
+				font-weight: 500;
+				color: #fff;
+			}
+		}
+		.stack-demo-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			margin-top: 28px;
+			padding: 14px 28px;
+			border-radius: 12px;
+			background: #fff;
+			color: #0b0c10;
+			font-weight: 700;
+			font-size: 14px;
+			letter-spacing: 0.5px;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s;
+			svg { font-size: 20px; }
+			&:hover {
+				background: #8b4513;
+				color: #fff;
+			}
+		}
+		.stack-hot-deals-row {
+			display: flex;
+			flex-direction: row;
+			gap: 12px;
+			margin-top: 20px;
+			.stack-hot-deal-thumb {
+				width: 144px;
+				height: 108px;
+				border-radius: 8px;
+				overflow: hidden;
+				flex-shrink: 0;
+				border: 2px solid rgba(255,255,255,0.2);
+				transition: all 0.2s;
+				&:hover {
+					border-color: #8b4513;
+					transform: scale(1.05);
+				}
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+				}
+			}
+		}
+		.stack-loading {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 400px;
+			font-size: 18px;
+			opacity: 0.8;
+		}
+		.stack-sort-row {
+			position: sticky;
+			top: 0;
+			z-index: 10;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 12px 0 20px;
+			background: #0b0c10;
+			span {
+				font-size: 14px;
+				opacity: 0.8;
+			}
+			.sort-btn {
+				background: #8b4513 !important;
+				color: #fff !important;
+				font-weight: 600;
+				text-transform: none;
+			}
+		}
+		.stack-section {
+			position: sticky;
+			top: 0;
+			min-height: 100vh;
+			padding: 64px 10px 64px 0;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			background: #0b0c10;
+			box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+			&.stack-section-unified {
+				flex-direction: row;
+				align-items: stretch;
+				gap: 0;
+			}
+		}
+		.stack-h2 {
+			font-size: 44px;
+			margin: 0;
+			line-height: 1.05;
+			color: #fff;
+		}
+		.stack-desc {
+			margin-top: 16px;
+			font-size: 16px;
+			opacity: 0.82;
+			max-width: 560px;
+			line-height: 1.7;
+			color: #fff;
+		}
+		.stack-pagination-row {
+			display: flex;
+			gap: 20px;
+			align-items: center;
+			padding: 40px 10px 20px;
+			.MuiTypography-root { color: rgba(255,255,255,0.8); }
+			.MuiPaginationItem-root { color: #fff; }
+			.Mui-selected { background: #8b4513 !important; color: #fff !important; }
 		}
 	}
 }

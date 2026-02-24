@@ -143,7 +143,7 @@ const PropertyCard = (props: PropertyCardType) => {
 	} else {
 		return (
 			<Stack
-				className="card-config"
+				className="card-config property-card"
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
 			>

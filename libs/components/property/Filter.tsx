@@ -1,11 +1,9 @@
 import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 'react';
-import { Stack, Typography, Box, IconButton, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
+import { Stack, Typography, Box, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductMaterial, PropertyType } from '../../enums/property.enum';
 import { PropertiesInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface FilterType {
@@ -21,7 +19,6 @@ const Filter = (props: FilterType) => {
 	const [propertyType] = useState<PropertyType[]>(Object.values(PropertyType));
 	const [productMaterials] = useState<ProductMaterial[]>(Object.values(ProductMaterial));
 	const [availabilityFilter, setAvailabilityFilter] = useState<string>('all');
-	const [hotDealsIndex, setHotDealsIndex] = useState<number>(0);
 	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text || '');
 	const [minPrice, setMinPrice] = useState<string>(searchFilter?.search?.pricesRange?.start?.toString() || '');
 	const [maxPrice, setMaxPrice] = useState<string>(searchFilter?.search?.pricesRange?.end?.toString() || '');
@@ -409,51 +406,6 @@ const Filter = (props: FilterType) => {
 							);
 						})}
 					</Stack>
-				</Stack>
-
-				{/* Hot Deals Section */}
-				<Stack className={'filter-section'} mb={'30px'}>
-					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Hot Deals</Typography>
-					</Box>
-					{hotDeals.length > 0 && (
-						<Stack className={'hot-deals-wrapper'}>
-							<Stack className={'hot-deal-card'}>
-								<Box component={'div'} className={'hot-deal-image'}>
-									<img src={hotDeals[hotDealsIndex]?.image || '/img/banner/header1.svg'} alt={hotDeals[hotDealsIndex]?.name} />
-									<Box component={'div'} className={'sale-badge-small'}>
-										<Typography>Sale</Typography>
-									</Box>
-									<Box component={'div'} className={'save-badge-small'}>
-										<Typography>Save {hotDeals[hotDealsIndex]?.savePercent}%</Typography>
-									</Box>
-								</Box>
-								<Stack className={'hot-deal-info'}>
-									<Typography className={'hot-deal-name'}>{hotDeals[hotDealsIndex]?.name}</Typography>
-									<Stack className={'hot-deal-price'}>
-										<Typography className={'current-price'}>${hotDeals[hotDealsIndex]?.price}</Typography>
-										<Typography className={'old-price'}>${hotDeals[hotDealsIndex]?.oldPrice}</Typography>
-				</Stack>
-					</Stack>
-				</Stack>
-							{hotDeals.length > 1 && (
-								<Stack className={'hot-deals-nav'}>
-									<IconButton
-										className={'nav-btn'}
-										onClick={() => setHotDealsIndex((prev) => (prev - 1 + hotDeals.length) % hotDeals.length)}
-									>
-										<ArrowBackIosNewIcon />
-									</IconButton>
-									<IconButton
-										className={'nav-btn'}
-										onClick={() => setHotDealsIndex((prev) => (prev + 1) % hotDeals.length)}
-									>
-										<ArrowForwardIosIcon />
-									</IconButton>
-								</Stack>
-							)}
-					</Stack>
-					)}
 				</Stack>
 
 				{/* Search Section */}

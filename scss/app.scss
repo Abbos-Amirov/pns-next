@@ -149,8 +149,93 @@ hr {
 		.section-header { background: #8b4513 !important; }
 		.category-list, .search-content, .price-range-content,
 		.availability-content, .hot-deals-wrapper { background: #fff !important; }
+		.category-list .category-item {
+			border-bottom: 1px solid #e0e0e0 !important;
+			padding: 12px 0 !important;
+			&:last-child { border-bottom: none !important; }
+			&.selected { font-weight: 600 !important; }
+			&.selected .MuiTypography-root, &.selected span { color: #8b4513 !important; }
+			.MuiTypography-root, span, p { color: #181a20 !important; }
+		}
+		.search-content .search-input .MuiOutlinedInput-root,
+		.price-range-content .price-input .MuiOutlinedInput-root {
+			background: #fff !important;
+			.MuiInputBase-input { color: #181a20 !important; }
+			.MuiInputAdornment-root { color: #181a20 !important; }
+			fieldset { border-color: #ddd !important; }
+			&::placeholder { color: #999 !important; }
+		}
+		.hot-deals-wrapper .hot-deal-image {
+			height: 110px !important;
+			max-height: 110px !important;
+			overflow: hidden !important;
+			img { object-fit: cover !important; }
+		}
 	}
-	.list-config .card-config { background: #fff !important; }
+	.list-config .card-config,
+	.card-config { background: #fff !important; }
+	/* Property scroll-stack (HSTAFF) - light mode */
+	#property-list-page.property-scroll-stack {
+		background: #f6f6f6 !important;
+		color: #181a20;
+		.container.property-stack-container {
+			.filter-config-stack .filter-main .filter-section {
+				.section-header { background: #8b4513 !important; color: #fff !important; }
+				.category-list, .search-content, .price-range-content,
+				.availability-content, .hot-deals-wrapper {
+					background: #fff !important;
+					border-color: #e0e0e0 !important;
+					.category-item span, .category-item .MuiTypography-root, .category-item p, input, label { color: #181a20 !important; }
+				}
+				.category-list .category-item {
+					border-bottom: 1px solid #e0e0e0 !important;
+					padding: 12px 0 !important;
+					&:last-child { border-bottom: none !important; }
+					&.selected { font-weight: 600 !important; color: #8b4513 !important; }
+					&.selected .MuiTypography-root { color: #8b4513 !important; }
+				}
+				.search-input .MuiOutlinedInput-root,
+				.price-input .MuiOutlinedInput-root {
+					background: #fff !important;
+					.MuiInputBase-input { color: #181a20 !important; }
+					.MuiInputAdornment-root { color: #181a20 !important; }
+					fieldset { border-color: #ddd !important; }
+				}
+				.hot-deals-wrapper .hot-deal-image {
+					height: 110px !important;
+					max-height: 110px !important;
+					overflow: hidden !important;
+				}
+			}
+			.stack-section {
+				background: #f6f6f6 !important;
+				border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+			}
+			.stack-bg-number {
+				color: #181a20 !important;
+				opacity: 0.6 !important;
+			}
+			.stack-h2, .stack-desc, .stack-meta-value { color: #181a20 !important; }
+			.stack-meta-label { color: #555 !important; }
+			.stack-demo-btn {
+				background: #8b4513 !important;
+				color: #fff !important;
+				&:hover { background: #6d3809 !important; }
+			}
+			.stack-hot-deals-row .stack-hot-deal-thumb {
+				border-color: rgba(0,0,0,0.12) !important;
+				&:hover { border-color: #8b4513 !important; }
+			}
+			.stack-sort-row {
+				background: #f6f6f6 !important;
+				span { color: #555 !important; }
+				.sort-btn { background: #8b4513 !important; color: #fff !important; }
+			}
+			.stack-loading { color: #555 !important; }
+			.stack-pagination-row .MuiTypography-root { color: #555 !important; }
+			.stack-pagination-row .MuiPaginationItem-root { color: #181a20 !important; }
+		}
+	}
 }
 
 /** Dark mode - qora rangda hamma narsa **/
@@ -510,29 +595,40 @@ hr {
 			.category-list {
 				background: #1e1e1e !important;
 				.category-item {
-					border-bottom-color: #333 !important;
-					.MuiTypography-root,
-					span { color: #e0e0e0 !important; }
-					&.selected { color: #c9a962 !important; }
+					border-bottom: 1px solid #333 !important;
+					padding: 12px 0 !important;
+					&:last-child { border-bottom: none !important; }
+					.MuiTypography-root, span, p { color: #e0e0e0 !important; }
+					&.selected { font-weight: 600 !important; color: #c9a962 !important; }
+					&.selected .MuiTypography-root, &.selected span { color: #c9a962 !important; }
 				}
 			}
 			.search-content {
 				background: #1e1e1e !important;
 				.search-input .MuiOutlinedInput-root {
-					background: #252525 !important;
+					background: #1a1a1a !important;
 					fieldset { border-color: #444 !important; }
 					&:hover fieldset,
 					&.Mui-focused fieldset { border-color: #8b4513 !important; }
-					.MuiInputBase-input { color: #e0e0e0 !important; }
+					.MuiInputBase-input {
+						color: #ffffff !important;
+						caret-color: #fff !important;
+						&::placeholder { color: rgba(255,255,255,0.5) !important; }
+					}
+					.MuiInputAdornment-root { color: #e0e0e0 !important; }
 				}
 			}
 			.price-range-content {
 				background: #1e1e1e !important;
 				.price-input .MuiOutlinedInput-root {
-					background: #252525 !important;
+					background: #1a1a1a !important;
 					fieldset { border-color: #444 !important; }
 					.MuiInputBase-input,
-					.MuiInputAdornment-root { color: #e0e0e0 !important; }
+					.MuiInputAdornment-root {
+						color: #ffffff !important;
+						caret-color: #fff !important;
+						&::placeholder { color: rgba(255,255,255,0.5) !important; }
+					}
 				}
 			}
 			.availability-content {
@@ -543,6 +639,12 @@ hr {
 			}
 			.hot-deals-wrapper {
 				background: #1e1e1e !important;
+				.hot-deal-image {
+					height: 110px !important;
+					max-height: 110px !important;
+					overflow: hidden !important;
+					img { object-fit: cover !important; }
+				}
 				.hot-deal-info .hot-deal-name,
 				.hot-deal-price .current-price { color: #e0e0e0 !important; }
 				.hot-deal-price .old-price { color: #999 !important; }
@@ -558,7 +660,9 @@ hr {
 			}
 		}
 	}
-	.list-config .card-config {
+	/* PropertyCard - dark mode (MyFavorites, RecentlyVisited, list-config) */
+	.list-config .card-config,
+	.card-config {
 		background: #1e1e1e !important;
 		box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.3) !important;
 		&:hover {
@@ -570,16 +674,49 @@ hr {
 			.price-section .price,
 			.price-section .current-price { color: #e0e0e0 !important; }
 			.price-section .old-price { color: #999 !important; }
+			.address p { color: #999 !important; }
+			.options .option p { color: #e0e0e0 !important; }
+			.type p { color: #e0e0e0 !important; }
 			.hover-actions .view-count,
 			.hover-actions .like-count,
 			.action-btn svg { color: #e0e0e0 !important; }
 			.hover-actions .action-btn {
 				background: rgba(255, 255, 255, 0.1) !important;
 				color: #e0e0e0 !important;
+				&:hover {
+					background: rgba(255, 255, 255, 0.2) !important;
+					svg { color: #fff !important; }
+				}
 			}
 		}
 		.save-badge,
 		.top-badge { background: #8b4513 !important; }
+	}
+	/* Property scroll-stack (HSTAFF) - dark mode */
+	#property-list-page.property-scroll-stack {
+		background: #0b0c10 !important;
+		color: #fff !important;
+		.filter-config-stack .filter-main .filter-section {
+			.search-input .MuiOutlinedInput-root,
+			.price-input .MuiOutlinedInput-root {
+				background: #1a1a1a !important;
+				.MuiInputBase-input { color: #fff !important; caret-color: #fff !important; }
+				.MuiInputAdornment-root { color: #e0e0e0 !important; }
+			}
+		}
+	}
+	/* MyFavorites, RecentlyVisited - dark mode */
+	.my-favorites-page,
+	.recently-visited-page {
+		.favorites-header-card,
+		.visited-header-card,
+		.MuiCard-root {
+			background: #1e1e1e !important;
+			border-color: #333 !important;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+			.page-title,
+			.MuiTypography-root { color: #e0e0e0 !important; }
+		}
 	}
 	.review-list .review-config,
 	.review-config {

@@ -1,19 +1,19 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState, useMemo, useCallback } from 'react';
 import { NextPage } from 'next';
-import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography, IconButton } from '@mui/material';
-import PropertyCard from '../../libs/components/property/PropertyCard';
+import { Button, Menu, MenuItem, Pagination, Typography } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Filter from '../../libs/components/property/Filter';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { PropertiesInquiry } from '../../libs/types/product/property.input';
 import { ProductsInquiry } from '../../libs/types/product/products.input';
 import { Product } from '../../libs/types/product/property';
 import { ProductMaterial, ProductStatus } from '../../libs/enums/property.enum';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import GridViewIcon from '@mui/icons-material/GridView';
-import ViewListIcon from '@mui/icons-material/ViewList';
 import { Direction } from '../../libs/enums/common.enum';
 import { sweetErrorHandling } from '../../libs/sweetAlert';
 import { getJwtToken } from '../../libs/auth';
@@ -25,6 +25,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(
@@ -35,8 +36,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
-	const [filterSortName, setFilterSortName] = useState('Featured');
-	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+	const [filterSortName, setFilterSortName] = useState('date_new_old');
 
 	// Convert PropertiesInquiry to ProductsInquiry
 	const productsInquiry: ProductsInquiry = useMemo(() => {
@@ -82,10 +82,6 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			search: search, // Always send search object, even if empty
 		};
 		
-		console.log('=== PRODUCTS INQUIRY ===');
-		console.log('SearchFilter:', searchFilter);
-		console.log('ProductsInquiry:', JSON.stringify(inquiry, null, 2));
-		
 		return inquiry;
 	}, [searchFilter]);
 
@@ -121,7 +117,6 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			setProperties(list as Product[]);
 			setTotal(totalCount);
 		} catch (err: any) {
-			console.error('Fetch products error:', err);
 			setError(err);
 			setProperties([]);
 			setTotal(0);
@@ -138,9 +133,17 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 				const inputObj = JSON.parse(router?.query?.input as string);
 				setSearchFilter(inputObj);
 				setCurrentPage(inputObj.page === undefined ? 1 : inputObj.page);
-			} catch (err) {
-				console.error('Error parsing router query input:', err);
-			}
+				const { sort, direction } = inputObj;
+				const sortId = sort === 'productRank' && direction === 'DESC' ? 'featured' :
+					sort === 'productViews' && direction === 'DESC' ? 'best_selling' :
+					sort === 'productTitle' && direction === 'ASC' ? 'alphabetical_az' :
+					sort === 'productTitle' && direction === 'DESC' ? 'alphabetical_za' :
+					sort === 'productPrice' && direction === 'ASC' ? 'price_low_high' :
+					sort === 'productPrice' && direction === 'DESC' ? 'price_high_low' :
+					sort === 'createdAt' && direction === 'ASC' ? 'date_old_new' :
+					sort === 'createdAt' && direction === 'DESC' ? 'date_new_old' : 'featured';
+				setFilterSortName(sortId);
+			} catch (err) {}
 		} else {
 			setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
 		}
@@ -173,158 +176,169 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		setAnchorEl(null);
 	};
 
+	const sortKeyToLabel: Record<string, string> = {
+		featured: 'SortFeatured',
+		best_selling: 'SortBestSelling',
+		alphabetical_az: 'SortAlphabeticalAZ',
+		alphabetical_za: 'SortAlphabeticalZA',
+		price_low_high: 'SortPriceLowHigh',
+		price_high_low: 'SortPriceHighLow',
+		date_old_new: 'SortDateOldNew',
+		date_new_old: 'SortDateNewOld',
+	};
+
 	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
+		const id = e.currentTarget.id;
+		switch (id) {
 			case 'featured':
 				setSearchFilter({ ...searchFilter, sort: 'productRank', direction: Direction.DESC });
-				setFilterSortName('Featured');
 				break;
 			case 'best_selling':
 				setSearchFilter({ ...searchFilter, sort: 'productViews', direction: Direction.DESC });
-				setFilterSortName('Best selling');
 				break;
 			case 'alphabetical_az':
 				setSearchFilter({ ...searchFilter, sort: 'productTitle', direction: Direction.ASC });
-				setFilterSortName('Alphabetically, A-Z');
 				break;
 			case 'alphabetical_za':
 				setSearchFilter({ ...searchFilter, sort: 'productTitle', direction: Direction.DESC });
-				setFilterSortName('Alphabetically, Z-A');
 				break;
 			case 'price_low_high':
 				setSearchFilter({ ...searchFilter, sort: 'productPrice', direction: Direction.ASC });
-				setFilterSortName('Price, low to high');
 				break;
 			case 'price_high_low':
 				setSearchFilter({ ...searchFilter, sort: 'productPrice', direction: Direction.DESC });
-				setFilterSortName('Price, high to low');
 				break;
 			case 'date_old_new':
 				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.ASC });
-				setFilterSortName('Date, old to new');
 				break;
 			case 'date_new_old':
 				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.DESC });
-				setFilterSortName('Date, new to old');
 				break;
 		}
+		setFilterSortName(id);
 		setSortingOpen(false);
 		setAnchorEl(null);
 	};
 
+	const getImageUrl = (p: Product) => {
+		const img = p?.productImages?.[0];
+		if (!img) return 'https://via.placeholder.com/600x400?text=No+Image';
+		if (img.startsWith('http')) return img;
+		return `/${img.replace(/^\/+/, '')}`;
+	};
+
+	const hotDealImages = [
+		'/img/property/window2.jpg',
+		'/img/property/window1.jpg',
+		'/img/property/window.jpg',
+	];
+
 	if (device === 'mobile') {
-		return <h1>PROPERTIES MOBILE</h1>;
-	} else {
-		return (
-			<div id="property-list-page" style={{ position: 'relative' }}>
-				<div className="container">
-					<Box component={'div'} className={'top-controls'}>
-						<Stack className={'view-toggle'}>
-							<span>Category</span>
-							<Stack className={'toggle-buttons'}>
-								<IconButton
-									className={viewMode === 'grid' ? 'active' : ''}
-									onClick={() => setViewMode('grid')}
-								>
-									<GridViewIcon />
-								</IconButton>
-								<IconButton
-									className={viewMode === 'list' ? 'active' : ''}
-									onClick={() => setViewMode('list')}
-								>
-									<ViewListIcon />
-								</IconButton>
-							</Stack>
-						</Stack>
-						<Box component={'div'} className={'sort-controls'}>
-							<span>Sort by</span>
-							<div>
-								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-									{filterSortName}
+		return <div style={{ padding: 20, textAlign: 'center' }}>{t('PropertiesMobile')}</div>;
+	}
+
+	return (
+		<div id="property-list-page" className="property-scroll-stack property-hstaff-style">
+			<div className="container property-stack-container">
+				<aside className="filter-config filter-config-stack">
+					{/* @ts-ignore */}
+					<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
+				</aside>
+				<div className="property-stack-main">
+					{loading ? (
+						<div className="stack-loading">{t('PropertyLoading')}</div>
+					) : error ? (
+						<div className="stack-loading" style={{ color: '#e53935' }}>
+							{t('PropertyError')}: {error?.message}
+						</div>
+					) : properties?.length === 0 ? (
+						<div className="stack-loading">{t('PropertyNoProducts')}</div>
+					) : (
+						<>
+							<div className="stack-sort-row">
+								<span>{t('SortBy')}</span>
+								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />} className="sort-btn">
+									{t(sortKeyToLabel[filterSortName] || 'SortFeatured')}
 								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-									<MenuItem onClick={sortingHandler} id={'featured'} disableRipple>
-										Featured
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'best_selling'} disableRipple>
-										Best selling
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'alphabetical_az'} disableRipple>
-										Alphabetically, A-Z
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'alphabetical_za'} disableRipple>
-										Alphabetically, Z-A
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'price_low_high'} disableRipple>
-										Price, low to high
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'price_high_low'} disableRipple>
-										Price, high to low
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'date_old_new'} disableRipple>
-										Date, old to new
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'date_new_old'} disableRipple>
-										Date, new to old
-									</MenuItem>
+								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler}>
+									<MenuItem onClick={sortingHandler} id="featured" disableRipple>{t('SortFeatured')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="best_selling" disableRipple>{t('SortBestSelling')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="alphabetical_az" disableRipple>{t('SortAlphabeticalAZ')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="alphabetical_za" disableRipple>{t('SortAlphabeticalZA')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="price_low_high" disableRipple>{t('SortPriceLowHigh')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="price_high_low" disableRipple>{t('SortPriceHighLow')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="date_old_new" disableRipple>{t('SortDateOldNew')}</MenuItem>
+									<MenuItem onClick={sortingHandler} id="date_new_old" disableRipple>{t('SortDateNewOld')}</MenuItem>
 								</Menu>
 							</div>
-						</Box>
-					</Box>
-					<Stack className={'property-page'}>
-						<Stack className={'filter-config'}>
-							{/* @ts-ignore */}
-							<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
-						</Stack>
-						<Stack className="main-config" mb={'76px'}>
-							<Stack className={`list-config ${viewMode === 'list' ? 'list-view' : 'grid-view'}`}>
-							{loading ? (
-								<Box component={'div'} className={'no-data'}>
-									<Typography component={'p'}>Loading products...</Typography>
-								</Box>
-							) : error ? (
-								<Box component={'div'} className={'no-data'}>
-									<img src="/img/icons/icoAlert.svg" alt="" />
-									<Typography component={'p'} color={'error'}>Error loading products: {error?.message}</Typography>
-								</Box>
-							) : properties?.length === 0 ? (
-								<Box component={'div'} className={'no-data'}>
-									<img src="/img/icons/icoAlert.svg" alt="" />
-									<Typography component={'p'}>No Products found!</Typography>
-								</Box>
-							) : (
-								properties.map((property: Product) => {
-									return <PropertyCard property={property} key={property?._id} />;
-								})
+							{properties.map((p, i) => (
+								<section
+									key={p._id}
+									className="stack-section stack-section-unified"
+									style={{ zIndex: i + 1 }}
+								>
+									<div className="stack-section-info">
+										<div className="stack-bg-number">{String(i + 1).padStart(2, '0')}</div>
+										<h2 className="stack-h2">{p.productTitle}</h2>
+										<p className="stack-desc">{p.productDesc || t('PropertyDescDefault')}</p>
+										<div className="stack-meta-cards">
+											<div className="stack-meta-row">
+												<span className="stack-meta-label">{t('LabelProject')}</span>
+												<span className="stack-meta-value">{p.productTitle}</span>
+											</div>
+											<div className="stack-meta-row">
+												<span className="stack-meta-label">{t('LabelCategories')}</span>
+												<span className="stack-meta-value">
+													{p.productType} / {(p as any).productMaterial || '—'} / {(p as any).productGlassType || '—'}
+												</span>
+											</div>
+											<div className="stack-meta-row">
+												<span className="stack-meta-label">{t('LabelStatus')}</span>
+												<span className="stack-meta-value">
+													{p.productStatus === 'ACTIVE' ? t('StatusReady') : p.productStatus || '—'}
+												</span>
+											</div>
+										</div>
+										<button
+											className="stack-demo-btn"
+											onClick={() => router.push(`/property/detail?id=${p._id}`)}
+										>
+											<PlayArrowIcon />
+											{t('Demo')}
+										</button>
+										<div className="stack-hot-deals-row">
+											{hotDealImages.map((src, idx) => (
+												<div key={idx} className="stack-hot-deal-thumb">
+													<img src={src} alt={`Deal ${idx + 1}`} />
+												</div>
+											))}
+										</div>
+									</div>
+									<div className="stack-section-image">
+										<Link href={`/property/detail?id=${p._id}`} style={{ display: 'block', height: '100%', cursor: 'pointer' }}>
+											<img src={getImageUrl(p)} alt={p.productTitle} />
+										</Link>
+									</div>
+								</section>
+							))}
+							{properties.length > 0 && (
+								<div className="stack-pagination-row">
+									<Pagination
+										page={currentPage}
+										count={Math.ceil(total / searchFilter.limit)}
+										onChange={handlePaginationChange}
+										shape="circular"
+										color="primary"
+									/>
+									<Typography variant="body2">{t('TotalProducts', { count: total })}</Typography>
+								</div>
 							)}
-							</Stack>
-							<Stack className="pagination-config">
-								{properties.length !== 0 && (
-									<Stack className="pagination-box">
-										<Pagination
-											page={currentPage}
-											count={Math.ceil(total / searchFilter.limit)}
-											onChange={handlePaginationChange}
-											shape="circular"
-											color="primary"
-										/>
-									</Stack>
-								)}
-
-								{properties.length !== 0 && (
-									<Stack className="total-result">
-										<Typography>
-											Total {total} propert{total > 1 ? 'ies' : 'y'} available
-										</Typography>
-									</Stack>
-								)}
-							</Stack>
-						</Stack>
-					</Stack>
+						</>
+					)}
 				</div>
 			</div>
-		);
-	}
+		</div>
+	);
 };
 
 PropertyList.defaultProps = {
