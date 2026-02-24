@@ -7,7 +7,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Product } from '../../types/product/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
-import { REACT_APP_API_URL } from '../../config';
 import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import IconButton from '@mui/material/IconButton';
@@ -107,44 +106,30 @@ const PropertyCard = (props: PropertyCardType) => {
 		  sweetErrorHandling(err);
 		}
 	  };
-	// Hard coded images array for fallback
-	const defaultImages = [
-		'/img/property/window.jpg',
-		'/img/property/window1.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/windows5.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/window4.jpg',
-		'/img/property/window5.jpg',
-		'/img/property/window2.jpg',
-		'/img/property/window1.jpg',
-		'/img/property/window2.jpg',
-	];
+	const placeholderImage = 'https://via.placeholder.com/400x300?text=No+Image';
 
-	// Get image path - use property image or fallback to hard coded images
-	const getImagePath = (): string => {
-		// First priority: Use product's own images if available
-		if (property?.productImages && property.productImages.length > 0) {
-			const imgPath = property.productImages[0];
-			if (!imgPath || imgPath.trim() === '') {
-				const index = property?._id ? parseInt(property._id.slice(-1), 16) % defaultImages.length : 0;
-				return defaultImages[index];
-			}
-			if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
-				return imgPath;
-			}
-			if (imgPath.startsWith('/img/')) {
-				return imgPath;
-			}
-			return `${REACT_APP_API_URL}/${imgPath}`;
-		}
-		
-		// Fallback: Use default images only if no product images exist
-		const index = property?._id ? parseInt(property._id.slice(-1), 16) % defaultImages.length : 0;
-		return defaultImages[index];
+	// Build image URL: /uploads/* proxied to backend via next.config rewrites
+	const buildImageUrl = (imgPath: string): string => {
+		if (!imgPath || imgPath.trim() === '') return placeholderImage;
+		if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) return imgPath;
+		if (imgPath.startsWith('/img/')) return imgPath;
+		const cleanPath = imgPath.replace(/^\/+/, '');
+		return cleanPath ? `/${cleanPath}` : placeholderImage;
 	};
 
-	const imagePath: string = getImagePath();
+	const getImagePath = (): string => {
+		if (property?.productImages && property.productImages.length > 0) {
+			return buildImageUrl(property.productImages[0]);
+		}
+		return placeholderImage;
+	};
+
+	const [imgError, setImgError] = useState(false);
+	const imagePath: string = imgError ? placeholderImage : getImagePath();
+
+	useEffect(() => {
+		setImgError(false);
+	}, [property?._id]);
 
 	// Sale calculation - check if property has sale (can use propertyRank or other flags)
 	// For now, we'll show sale badge for properties with high rank or specific conditions
@@ -169,7 +154,7 @@ const PropertyCard = (props: PropertyCardType) => {
 							query: { id: property?._id },
 						}}
 					>
-						<img src={imagePath} alt="" />
+						<img src={imagePath} alt={property?.productTitle || 'Product'} onError={() => setImgError(true)} />
 					</Link>
 					{/* Sale Badge */}
 					

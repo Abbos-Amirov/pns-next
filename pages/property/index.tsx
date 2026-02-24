@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState, useMemo } from 'react';
+import React, { ChangeEvent, MouseEvent, useEffect, useState, useMemo, useCallback } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography, IconButton } from '@mui/material';
 import PropertyCard from '../../libs/components/property/PropertyCard';
@@ -15,9 +15,8 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { Direction } from '../../libs/enums/common.enum';
-import { useQuery } from '@apollo/client';
-import { GET_PRODUCTS } from '../../apollo/user/query';
 import { sweetErrorHandling } from '../../libs/sweetAlert';
+import { getJwtToken } from '../../libs/auth';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -90,42 +89,53 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		return inquiry;
 	}, [searchFilter]);
 
-	// (removed) unused hard-coded test data; list is fully backend-driven.
+	/** Fetch products via API route (server-side proxy to backend GraphQL) */
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<Error | null>(null);
 
-	/** APOLLO REQUESTS **/
-	const { data: productsData, loading, error, refetch } = useQuery(GET_PRODUCTS, {
-		variables: {
-			input: productsInquiry,
-		},
-		fetchPolicy: 'network-only',
-		errorPolicy: 'all',
-		skip: false, // Always fetch
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data) => {
-			console.log('=== QUERY COMPLETED ===');
-			console.log('Products Query completed with data:', data);
-			console.log('getProducts exists:', !!data?.getProducts);
-			if (data?.getProducts) {
-				console.log('List length:', data.getProducts.list?.length || 0);
-				console.log('MetaCounter:', data.getProducts.metaCounter);
+	const fetchProducts = useCallback(async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const token = getJwtToken();
+			const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+			if (token) headers['Authorization'] = `Bearer ${token}`;
+
+			const res = await fetch('/api/products', {
+				method: 'POST',
+				headers,
+				body: JSON.stringify({ input: productsInquiry }),
+			});
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(data?.error || data?.message || `HTTP ${res.status}`);
 			}
-		},
-		onError: (err) => {
-			console.error('=== QUERY ERROR ===');
-			console.error('Products Query Error:', err);
-			console.error('Error message:', err.message);
-			console.error('Error graphQLErrors:', err.graphQLErrors);
-			console.error('Error networkError:', err.networkError);
+
+			const list = data?.list || [];
+			const metaCounter = data?.metaCounter;
+			const totalCount = Array.isArray(metaCounter)
+				? (metaCounter[0]?.total || 0)
+				: (metaCounter?.total || 0);
+
+			setProperties(list as Product[]);
+			setTotal(totalCount);
+		} catch (err: any) {
+			console.error('Fetch products error:', err);
+			setError(err);
+			setProperties([]);
+			setTotal(0);
 			sweetErrorHandling(err).then();
-		},
-	});
+		} finally {
+			setLoading(false);
+		}
+	}, [productsInquiry]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
 			try {
 				const inputObj = JSON.parse(router?.query?.input as string);
-				console.log('Parsed input from router:', inputObj);
 				setSearchFilter(inputObj);
 				setCurrentPage(inputObj.page === undefined ? 1 : inputObj.page);
 			} catch (err) {
@@ -136,73 +146,19 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		}
 	}, [router]);
 
+	// Fetch products when inquiry changes
 	useEffect(() => {
-		console.log('=== PRODUCTS DATA EFFECT ===');
-		console.log('Loading:', loading);
-		console.log('Error:', error);
-		console.log('ProductsData:', productsData);
-		
-		if (loading) {
-			console.log('Still loading...');
-			return;
-		}
-		
-		if (error) {
-			console.error('Query error in effect:', error);
-			setProperties([]);
-			setTotal(0);
-			return;
-		}
-		
-		if (productsData?.getProducts) {
-			const products = productsData.getProducts.list || [];
-			console.log('Products from backend:', products);
-			console.log('Products count:', products.length);
-			
-			if (products.length === 0) {
-				console.log('No products in list');
-				setProperties([]);
-				setTotal(0);
-				return;
-			}
-			
-			// We now use Product model directly (no "Property" conversion)
-			setProperties(products as Product[]);
-			
-			const metaCounter = productsData.getProducts.metaCounter;
-			const totalCount = Array.isArray(metaCounter) 
-				? (metaCounter[0]?.total || 0)
-				: (metaCounter?.total || 0);
-			console.log('MetaCounter:', metaCounter);
-			console.log('Total Count:', totalCount);
-			setTotal(totalCount);
-		} else {
-			console.log('No getProducts in response. Full data:', productsData);
-			if (productsData) {
-				console.log('Available keys in productsData:', Object.keys(productsData));
-			}
-			setProperties([]);
-			setTotal(0);
-		}
-	}, [productsData, loading, error]);
-
-	// Refetch when productsInquiry changes
-	useEffect(() => {
-		if (productsInquiry.page && productsInquiry.limit) {
-			console.log('Refetching products with inquiry:', JSON.stringify(productsInquiry, null, 2));
-			refetch();
-		}
-	}, [productsInquiry, refetch]);
+		fetchProducts();
+	}, [fetchProducts]);
 
 	/** HANDLERS **/
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
-		searchFilter.page = value;
+		const nextFilter = { ...searchFilter, page: value };
+		setSearchFilter(nextFilter);
 		await router.push(
-			`/property?input=${JSON.stringify(searchFilter)}`,
-			`/property?input=${JSON.stringify(searchFilter)}`,
-			{
-				scroll: false,
-			},
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			{ scroll: false },
 		);
 		setCurrentPage(value);
 	};
@@ -329,7 +285,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 							) : error ? (
 								<Box component={'div'} className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<Typography component={'p'} color={'error'}>Error loading products: {error.message}</Typography>
+									<Typography component={'p'} color={'error'}>Error loading products: {error?.message}</Typography>
 								</Box>
 							) : properties?.length === 0 ? (
 								<Box component={'div'} className={'no-data'}>
