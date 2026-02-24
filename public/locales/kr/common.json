@@ -12,6 +12,7 @@
   "SortDateOldNew": "날짜: 오래된 순",
   "SortDateNewOld": "날짜: 최신 순",
   "LabelProject": "프로젝트",
+  "LabelDimensions": "크기 (높이 × 너비)",
   "LabelCategories": "카테고리",
   "LabelStatus": "상태",
   "StatusReady": "사용 가능",

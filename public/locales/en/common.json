@@ -12,6 +12,7 @@
   "SortDateOldNew": "Date, old to new",
   "SortDateNewOld": "Date, new to old",
   "LabelProject": "PROJECT",
+  "LabelDimensions": "SIZE (H × W)",
   "LabelCategories": "CATEGORIES",
   "LabelStatus": "STATUS",
   "StatusReady": "READY FOR USE",

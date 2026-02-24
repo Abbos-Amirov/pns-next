@@ -1019,12 +1019,12 @@
 			gap: 0;
 			min-width: 0;
 		}
-		/* Har bir section: ma'lumot + rasm qo'shlib ketgan, orasi ochiq emas */
+		/* Har bir section: ma'lumot + rasm, orasida bo'shliq; tartib raqami asosiy rasim ostida */
 		.stack-section-unified {
 			display: flex;
 			flex-direction: row;
 			align-items: stretch;
-			gap: 0;
+			gap: 24px;
 			overflow: hidden;
 			border-radius: 18px;
 			.stack-section-info {
@@ -1036,30 +1036,37 @@
 			.stack-section-image {
 				flex: 0 0 48%;
 				max-width: 520px;
-				height: 420px;
+				display: flex;
+				flex-direction: column;
+				gap: 0;
 				border-radius: 0;
-				overflow: hidden;
+				overflow: visible;
 				box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
-				img {
-					width: 100%;
-					height: 100%;
-					object-fit: cover;
+				.stack-main-image-link {
 					display: block;
+					height: 420px;
+					overflow: hidden;
+					flex-shrink: 0;
+					img {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+						display: block;
+					}
+				}
+				.stack-bg-number {
+					flex-shrink: 0;
+					text-align: center;
+					padding: 12px 0 8px;
+					font-size: 120px;
+					font-weight: 800;
+					line-height: 1;
+					opacity: 0.08;
+					color: #fff;
+					pointer-events: none;
+					user-select: none;
 				}
 			}
-		}
-		.stack-bg-number {
-			position: absolute;
-			left: 0;
-			top: 50%;
-			transform: translateY(-50%);
-			font-size: 180px;
-			font-weight: 800;
-			line-height: 1;
-			opacity: 0.08;
-			color: #fff;
-			pointer-events: none;
-			user-select: none;
 		}
 		.stack-meta-cards {
 			margin-top: 32px;
@@ -1081,6 +1088,11 @@
 				font-size: 14px;
 				font-weight: 500;
 				color: #fff;
+			}
+			&.stack-meta-row-horizontal {
+				flex-direction: row;
+				align-items: center;
+				gap: 8px;
 			}
 		}
 		.stack-demo-btn {
@@ -1110,8 +1122,8 @@
 			gap: 12px;
 			margin-top: 20px;
 			.stack-hot-deal-thumb {
-				width: 144px;
-				height: 108px;
+				width: 72px;
+				height: 54px;
 				border-radius: 8px;
 				overflow: hidden;
 				flex-shrink: 0;

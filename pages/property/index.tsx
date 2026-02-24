@@ -278,21 +278,26 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 									style={{ zIndex: i + 1 }}
 								>
 									<div className="stack-section-info">
-										<div className="stack-bg-number">{String(i + 1).padStart(2, '0')}</div>
 										<h2 className="stack-h2">{p.productTitle}</h2>
 										<p className="stack-desc">{p.productDesc || t('PropertyDescDefault')}</p>
 										<div className="stack-meta-cards">
-											<div className="stack-meta-row">
+											<div className="stack-meta-row stack-meta-row-horizontal">
 												<span className="stack-meta-label">{t('LabelProject')}</span>
 												<span className="stack-meta-value">{p.productTitle}</span>
 											</div>
-											<div className="stack-meta-row">
+											<div className="stack-meta-row stack-meta-row-horizontal">
+												<span className="stack-meta-label">{t('LabelDimensions')}</span>
+												<span className="stack-meta-value">
+													{(p as any)?.productHeight ?? '—'} cm × {(p as any)?.productWidth ?? '—'} cm
+												</span>
+											</div>
+											<div className="stack-meta-row stack-meta-row-horizontal">
 												<span className="stack-meta-label">{t('LabelCategories')}</span>
 												<span className="stack-meta-value">
 													{p.productType} / {(p as any).productMaterial || '—'} / {(p as any).productGlassType || '—'}
 												</span>
 											</div>
-											<div className="stack-meta-row">
+											<div className="stack-meta-row stack-meta-row-horizontal">
 												<span className="stack-meta-label">{t('LabelStatus')}</span>
 												<span className="stack-meta-value">
 													{p.productStatus === 'ACTIVE' ? t('StatusReady') : p.productStatus || '—'}
@@ -315,9 +320,10 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 										</div>
 									</div>
 									<div className="stack-section-image">
-										<Link href={`/property/detail?id=${p._id}`} style={{ display: 'block', height: '100%', cursor: 'pointer' }}>
+										<Link href={`/property/detail?id=${p._id}`} className="stack-main-image-link">
 											<img src={getImageUrl(p)} alt={p.productTitle} />
 										</Link>
+										<div className="stack-bg-number">{String(i + 1).padStart(2, '0')}</div>
 									</div>
 								</section>
 							))}

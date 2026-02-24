@@ -12,6 +12,7 @@
 	"SortDateOldNew": "日付: 古い順",
 	"SortDateNewOld": "日付: 新しい順",
 	"LabelProject": "プロジェクト",
+	"LabelDimensions": "サイズ (高さ × 幅)",
 	"LabelCategories": "カテゴリー",
 	"LabelStatus": "ステータス",
 	"StatusReady": "使用可能",
