@@ -60,6 +60,12 @@ hr {
 	}
 }
 
+/** Logo brand - always uppercase **/
+.logo-brand,
+.logo-text-dark {
+	text-transform: uppercase !important;
+}
+
 /** Dark mode button - always visible next to avatar **/
 .dark-mode-btn,
 .profile-action-btn.dark-mode-btn {
@@ -113,6 +119,50 @@ hr {
 			color: #fff !important;
 		}
 	}
+	/* Top bar - sahifa qora bo'lsa top bar oq */
+	#pc-wrap .navbar .top-bar {
+		background-color: #f5f5f5 !important;
+		.top-bar-left .top-bar-item,
+		.top-bar-right .top-bar-item {
+			.top-bar-icon { color: #252420 !important; }
+			span, a { color: #252420 !important; }
+		}
+		.top-bar-left .top-bar-item:hover span { color: #1a5f9e !important; }
+		.top-bar-right .social-icons .social-icon {
+			color: #252420 !important;
+			&:hover { color: #1a5f9e !important; }
+		}
+		.top-bar-right .logout-btn-top {
+			background-color: rgba(37, 36, 32, 0.08) !important;
+			border-color: rgba(37, 36, 32, 0.2) !important;
+			color: #252420 !important;
+			.logout-icon { color: #252420 !important; }
+			span { color: #252420 !important; }
+			&:hover {
+				background-color: rgba(26, 95, 158, 0.15) !important;
+				border-color: rgba(26, 95, 158, 0.3) !important;
+				.logout-icon { color: #1a5f9e !important; }
+				span { color: #1a5f9e !important; }
+			}
+		}
+		.top-bar-right .close-icon {
+			color: #252420 !important;
+			&:hover { color: #e3360a !important; }
+		}
+	}
+	/* Measurers / Installers menu - dark mode: yozuvlar oq */
+	.measurer-menu.measurer-menu-with-images {
+		max-width: 400px;
+		max-height: 400px;
+		.measurer-menu-card-label {
+			margin-left: auto;
+			margin-right: auto;
+			background: #252422 !important;
+			color: #ffffff !important;
+
+		}
+		a.measurer-menu-card { color: #ffffff !important; }
+	}
 	.trusted-section,
 	.brand-section,
 	.heading-section {
@@ -122,10 +172,167 @@ hr {
 	.brand-section {
 		.brand-section-title-text,
 		.brand-item-label {
-			color: #90caf9 !important;
+			color: #ffffff !important;
 		}
-		.brand-scroll-track {
-			background: #37474f !important;
+		.brand-section-title > div > div {
+			background-color: #ffffff !important;
+		}
+		.brand-item-icon svg,
+		.brand-item-icon svg rect,
+		.brand-item-icon svg path {
+			stroke: #ffffff !important;
+		}
+	}
+	/* Popular Products - dark mode */
+	.popular-products {
+		background-color: #1a1a1a !important;
+		.main-heading {
+			color: #ffffff !important;
+			.highlight {
+				color: #e0e0e0 !important;
+			}
+		}
+		p {
+			color: #e0e0e0 !important;
+		}
+		.nav-arrow {
+			background: #2a2a2a !important;
+			color: #ffffff !important;
+			&:hover {
+				background: #3a3a3a !important;
+			}
+		}
+		.product-card {
+			background: #252525 !important;
+			box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4) !important;
+		}
+	}
+	/* TrendProperties - dark mode: sahifa qora bo'lsa bu oq */
+	.trend-properties {
+		background-color: #f5f5f5 !important;
+		background-image: repeating-linear-gradient(
+			90deg,
+			transparent,
+			transparent 5px,
+			rgba(0, 0, 0, 0.03) 2px,
+			rgba(0, 0, 0, 0.03) 4px
+		) !important;
+		.trusted-badge {
+			background: rgba(37, 36, 32, 0.08) !important;
+			border-color: rgba(37, 36, 32, 0.2) !important;
+			span { color: #252420 !important; }
+		}
+		.headline .text-white { color: #252420 !important; }
+		.headline .text-accent { color: #8b4513 !important; }
+		.description { color: #555 !important; }
+		.learn-more-btn {
+			background: #8b4513 !important;
+			color: #fff !important;
+			&:hover { background: #6d3809 !important; }
+		}
+		.city-overlay .city-name,
+		.city-overlay .city-description { color: #fff !important; }
+		.statistics .stat-number,
+		.statistics .stat-label { color: #252420 !important; }
+		.background-text { color: rgba(37, 36, 32, 0.08) !important; }
+		.window-overlay h3 { color: #fff !important; }
+		.arrow-box button {
+			background: #e0e0e0 !important;
+			color: #252420 !important;
+			&:hover { background: #8b4513 !important; color: #fff !important; }
+		}
+		.logo-circle svg text { fill: #252420 !important; }
+		.logo-circle svg circle { stroke: #8b4513 !important; }
+		.logo-circle svg path { fill: #8b4513 !important; }
+		p { color: #555 !important; }
+	}
+	/* TopMeasurers - dark mode */
+	.top-agents {
+		background-color: #1a1a1a !important;
+		.info-box .left .main-heading {
+			color: #ffffff !important;
+			.highlight { color: #e0e0e0 !important; }
+		}
+		.info-box .right .more-box span,
+		.info-box > span { color: #e0e0e0 !important; }
+		.info-box .more-box img { filter: invert(1); opacity: 0.9; }
+		.switch-btn {
+			background: #2a2a2a !important;
+			color: #e0e0e0 !important;
+			&:hover { background: #3a3a3a !important; }
+		}
+		.top-agent-card {
+			strong, span { color: #e0e0e0 !important; }
+			img {
+				border: 2px solid rgba(255, 255, 255, 0.2);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+			}
+		}
+		.wrapper .card-wrapper { background: transparent !important; }
+		.MuiTypography-root { color: #e0e0e0 !important; }
+	}
+	/* Events - dark mode: sahifa qora bo'lsa bu oq */
+	.events {
+		background-color: #f5f5f5 !important;
+		.info-box .left .white,
+		.info-box .left p.white { color: #252420 !important; }
+		.info-box .left .accent { color: #8b4513 !important; }
+		.event-card {
+			border-color: rgba(37, 36, 32, 0.15) !important;
+			box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.12) !important;
+			&:before {
+				background: linear-gradient(
+					180deg,
+					rgba(255, 255, 255, 0.05) 0%,
+					rgba(37, 36, 32, 0.4) 55%,
+					rgba(37, 36, 32, 0.9) 100%
+				) !important;
+			}
+			&:hover { border-color: rgba(139, 69, 19, 0.4) !important; }
+			.info strong {
+				background: rgba(139, 69, 19, 0.15) !important;
+				border-color: rgba(139, 69, 19, 0.35) !important;
+				color: #8b4513 !important;
+			}
+			.info span { color: #ffffff !important; }
+			.more span { color: rgba(255, 255, 255, 0.95) !important; }
+		}
+	}
+	/* CommunityBoards - dark mode */
+	.community-board {
+		background-color: #1a1a1a !important;
+		.community-board-heading,
+		.MuiTypography-root { color: #e0e0e0 !important; }
+		.community-board-highlight { color: #e0e0e0 !important; }
+		.community-board-subtitle { color: #b0b0b0 !important; }
+		.content-top span { color: #e0e0e0 !important; }
+		.content-top img { filter: invert(1); opacity: 0.9; }
+		.no-data p { color: #b0b0b0 !important; }
+		.vertical-card strong,
+		.vertical-card span { color: #e0e0e0 !important; }
+	}
+	/* Footer - dark mode: orqa fon oq, ustki qora, PNS DEV/DOOR qora, yozuvlar oq */
+	#footer {
+		background-color: #ffffff !important;
+		.footer-container .watermark-text { color: rgba(0, 0, 0, 0.4) !important; }
+		.footer-container .background-text { color: rgba(0, 0, 0, 0.35) !important; }
+		.footer-content-box {
+			background-color: #1a1a1a !important;
+			.blue-line {
+				background-color: #000000 !important;
+				height: 6px !important;
+			}
+			.brand-name,
+			.description,
+			.nav-column span,
+			.nav-column a,
+			.contact-item a,
+			.copyright span { color: #ffffff !important; }
+			.description { color: rgba(255, 255, 255, 0.85) !important; }
+			.nav-column a:hover,
+			.contact-item a:hover { color: #c9a962 !important; }
+			.contact-icon,
+			.social-icon { color: #ffffff !important; }
 		}
 	}
 }

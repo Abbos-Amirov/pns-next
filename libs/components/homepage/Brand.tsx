@@ -1,15 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Stack, Box } from '@mui/material';
+import React from 'react';
+import { Stack } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 
 const DARK_BLUE = '#1a237e';
 const LIGHT_BLUE = '#42a5f5';
 
+const ICON_SIZE = 96;
+
 const windows = [
 	{
 		nameKey: 'Picture',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="16" y="12" width="32" height="40" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 			</svg>
 		),
@@ -17,7 +19,7 @@ const windows = [
 	{
 		nameKey: 'Casement',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M16 12 L16 52 L32 52 L36 48 L52 48 L52 12 L16 12 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M16 32 L20 32" stroke={LIGHT_BLUE} strokeWidth="1.5" />
 				<path d="M48 30 L48 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -27,7 +29,7 @@ const windows = [
 	{
 		nameKey: 'Awning',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M12 36 L12 20 L52 20 L52 36 L12 36 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M12 36 L16 32 L48 32 L52 36" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M32 32 L32 36" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -37,7 +39,7 @@ const windows = [
 	{
 		nameKey: 'Horizontal Sliding',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="12" y="16" width="40" height="32" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M32 16 L32 48" stroke={LIGHT_BLUE} strokeWidth="1.5" />
 				<path d="M48 30 L48 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -47,7 +49,7 @@ const windows = [
 	{
 		nameKey: 'Single Hung',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="20" y="8" width="24" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M20 32 L44 32" stroke={LIGHT_BLUE} strokeWidth="1.5" />
 				<path d="M32 32 L32 48" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -57,7 +59,7 @@ const windows = [
 	{
 		nameKey: 'Double Hung',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="20" y="8" width="24" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M20 24 L44 24" stroke={LIGHT_BLUE} strokeWidth="1.5" />
 				<path d="M20 40 L44 40" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -73,7 +75,7 @@ const doors = [
 	{
 		nameKey: 'Patio Sliding',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="12" y="8" width="40" height="48" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M32 8 L32 56" stroke={LIGHT_BLUE} strokeWidth="1.5" />
 				<path d="M48 28 L48 36" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -83,7 +85,7 @@ const doors = [
 	{
 		nameKey: 'French Swing',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M12 8 L12 56 L28 56 L30 54 L34 54 L36 56 L52 56 L52 8 L12 8 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M32 8 L32 56" stroke={DARK_BLUE} strokeWidth="2" />
 				<path d="M28 30 L28 34" stroke={LIGHT_BLUE} strokeWidth="1.5" />
@@ -94,7 +96,7 @@ const doors = [
 	{
 		nameKey: 'Multiple Sliding',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="8" y="16" width="48" height="32" rx="2" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M14 16 L14 48" stroke={LIGHT_BLUE} strokeWidth="1" />
 				<path d="M22 16 L22 48" stroke={LIGHT_BLUE} strokeWidth="1" />
@@ -110,7 +112,7 @@ const doors = [
 	{
 		nameKey: 'Multiple Folding',
 		icon: (
-			<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M8 16 L8 48 L16 48 L20 44 L24 48 L28 44 L32 48 L36 44 L40 48 L44 44 L48 48 L56 48 L56 16 L8 16 Z" stroke={DARK_BLUE} strokeWidth="2" fill="none" />
 				<path d="M16 16 L16 48" stroke={LIGHT_BLUE} strokeWidth="1" />
 				<path d="M24 16 L24 48" stroke={LIGHT_BLUE} strokeWidth="1" />
@@ -122,58 +124,20 @@ const doors = [
 	},
 ];
 
-interface ScrollableSectionProps {
+interface BrandSectionProps {
 	titleKey: string;
 	items: { nameKey: string; icon: React.ReactNode }[];
-	showScroll?: boolean;
 }
 
-const ScrollableSection = ({ titleKey, items, showScroll = true }: ScrollableSectionProps) => {
+const BrandSection = ({ titleKey, items }: BrandSectionProps) => {
 	const { t } = useTranslation('common');
-	const scrollRef = useRef<HTMLDivElement>(null);
-	const [scrollLeft, setScrollLeft] = useState(0);
-	const [maxScroll, setMaxScroll] = useState(0);
-
-	const updateScrollState = () => {
-		if (scrollRef.current) {
-			setScrollLeft(scrollRef.current.scrollLeft);
-			setMaxScroll(scrollRef.current.scrollWidth - scrollRef.current.clientWidth);
-		}
-	};
-
-	const handleScroll = () => updateScrollState();
-
-	useEffect(() => {
-		updateScrollState();
-		window.addEventListener('resize', updateScrollState);
-		return () => window.removeEventListener('resize', updateScrollState);
-	}, [items.length]);
-
-	const scroll = (direction: 'left' | 'right') => {
-		if (scrollRef.current) {
-			const scrollAmount = 200;
-			scrollRef.current.scrollBy({
-				left: direction === 'left' ? -scrollAmount : scrollAmount,
-				behavior: 'smooth',
-			});
-		}
-	};
 
 	return (
-		<Box className="brand-category-section">
+		<div className="brand-category-section">
 			<Stack direction="row" alignItems="center" className="brand-section-title">
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						mr: 1.5,
-						position: 'relative',
-						width: 20,
-						height: 20,
-					}}
-				>
-					<Box
-						sx={{
+				<div style={{ display: 'flex', alignItems: 'center', marginRight: 12, position: 'relative', width: 20, height: 20 }}>
+					<div
+						style={{
 							width: 14,
 							height: 14,
 							backgroundColor: DARK_BLUE,
@@ -183,8 +147,8 @@ const ScrollableSection = ({ titleKey, items, showScroll = true }: ScrollableSec
 							bottom: 0,
 						}}
 					/>
-					<Box
-						sx={{
+					<div
+						style={{
 							width: 10,
 							height: 10,
 							backgroundColor: LIGHT_BLUE,
@@ -194,67 +158,21 @@ const ScrollableSection = ({ titleKey, items, showScroll = true }: ScrollableSec
 							top: 0,
 						}}
 					/>
-				</Box>
-				<Box component="span" className="brand-section-title-text">
-					{t(titleKey)}
-				</Box>
+				</div>
+				<span className="brand-section-title-text">{t(titleKey)}</span>
 			</Stack>
 
-			<Box className="brand-items-scroll-wrapper">
-				<Box
-					ref={scrollRef}
-					className="brand-items-row"
-					onScroll={handleScroll}
-					sx={{ overflowX: 'auto' }}
-				>
+			<div className="brand-items-scroll-wrapper">
+				<div className="brand-items-row">
 					{items.map((item, index) => (
-						<Box key={index} className="brand-item">
-							<Box className="brand-item-icon">{item.icon}</Box>
-							<Box className="brand-item-label">{t(item.nameKey)}</Box>
-						</Box>
+						<div key={index} className="brand-item">
+							<div className="brand-item-icon">{item.icon}</div>
+							<div className="brand-item-label">{t(item.nameKey)}</div>
+						</div>
 					))}
-				</Box>
-
-				{showScroll && (
-				<Stack direction="row" alignItems="center" className="brand-scroll-indicator">
-					<Box
-						component="button"
-						className="brand-scroll-btn"
-						onClick={() => scroll('left')}
-						sx={{ color: LIGHT_BLUE, cursor: 'pointer', border: 'none', background: 'none', p: 0 }}
-					>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-							<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-						</svg>
-					</Box>
-					<Box className="brand-scroll-track">
-						<Box
-							className="brand-scroll-thumb"
-							sx={{
-								width: maxScroll > 0 ? '30%' : '100%',
-								left: maxScroll > 0 ? `${(scrollLeft / maxScroll) * 70}%` : 0,
-								backgroundColor: LIGHT_BLUE,
-								height: 4,
-								borderRadius: 2,
-								minWidth: 40,
-								transition: 'left 0.1s ease',
-							}}
-						/>
-					</Box>
-					<Box
-						component="button"
-						className="brand-scroll-btn"
-						onClick={() => scroll('right')}
-						sx={{ color: LIGHT_BLUE, cursor: 'pointer', border: 'none', background: 'none', p: 0 }}
-					>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-							<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-						</svg>
-					</Box>
-				</Stack>
-				)}
-			</Box>
-		</Box>
+				</div>
+			</div>
+		</div>
 	);
 };
 
@@ -262,8 +180,8 @@ const Brand = () => {
 	return (
 		<Stack className="brand-section">
 			<Stack className="brand-container">
-				<ScrollableSection titleKey="Windows" items={windows} showScroll />
-				<ScrollableSection titleKey="Doors" items={doors} showScroll={false} />
+				<BrandSection titleKey="Windows" items={windows} />
+				<BrandSection titleKey="Doors" items={doors} />
 			</Stack>
 		</Stack>
 	);

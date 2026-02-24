@@ -71,7 +71,7 @@ const Top = () => {
 	const drop = Boolean(anchorEl2);
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
-	const [topBarVisible, setTopBarVisible] = useState(false);
+	const [topBarVisible, setTopBarVisible] = useState(true);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
 
@@ -169,22 +169,25 @@ const Top = () => {
 
 	if (device == 'mobile') {
 		return (
-			<Stack className={'top'}>
-				<Link href={'/'}>
-					<div>{t('Home')}</div>
-				</Link>
-				<Link href={'/property'}>
-					<div>{t('Products')}</div>
-				</Link>
-				<Link href={'/installer'}>
-					<div> {t('Installers')} </div>
-				</Link>
-				<Link href={'/community?articleCategory=FREE'}>
-					<div> {t('Community')} </div>
-				</Link>
-				<Link href={'/cs'}>
-					<div> {t('CS')} </div>
-				</Link>
+			<Stack className={'top'} direction="row" alignItems="center" justifyContent="space-around" flexWrap="wrap" sx={{ gap: 1, py: 1 }}>
+				<Link href={'/'}><div>{t('Home')}</div></Link>
+				<Link href={'/property'}><div>{t('Products')}</div></Link>
+				<Link href={'/installer'}><div>{t('Installers')}</div></Link>
+				<Link href={'/community?articleCategory=FREE'}><div>{t('Community')}</div></Link>
+				<Link href={'/cs'}><div>{t('CS')}</div></Link>
+				<IconButton size="small" onClick={toggleTheme} sx={{ color: '#1a5f9e', p: 0.5 }} title={mode === 'dark' ? 'Light' : 'Dark'}>
+					{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+				</IconButton>
+				<IconButton size="small" onClick={(e:any) => langClick(e)} sx={{ color: '#1a5f9e', p: 0.5 }}>
+					<LanguageIcon />
+				</IconButton>
+				<Menu anchorEl={anchorEl2} open={drop} onClose={langClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} MenuListProps={{ 'aria-labelledby': 'mobile-lang-btn' }}>
+					<MenuItem onClick={() => langChoice('en')} selected={lang === 'en'}>English</MenuItem>
+					<MenuItem onClick={() => langChoice('kr')} selected={lang === 'kr'}>한국어</MenuItem>
+					<MenuItem onClick={() => langChoice('ru')} selected={lang === 'ru'}>Русский</MenuItem>
+					<MenuItem onClick={() => langChoice('zh')} selected={lang === 'zh'}>中文</MenuItem>
+					<MenuItem onClick={() => langChoice('ja')} selected={lang === 'ja'}>日本語</MenuItem>
+				</Menu>
 			</Stack>
 		);
 	} else {
@@ -245,7 +248,7 @@ const Top = () => {
 						<Box component={'div'} className={'logo-box premium-logo'}>
 							<Link href={'/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
 								<Box component={'div'} className={'logo-icon'}>
-									<img src="/img/logo/pns-triangle.svg" alt="PNS Window" className={'logo'} />
+									<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS Window" className={'logo'} />
 								</Box>
 								<Box component={'div'} className={'logo-text-block'}>
 									<span className={'logo-brand'}>PNSWINDOW</span>
@@ -280,6 +283,7 @@ const Top = () => {
 									onClose={handleMeasurerClose}
 									MenuListProps={{
 										onMouseLeave: handleMeasurerClose,
+										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
 									}}
 									anchorOrigin={{
 										vertical: 'bottom',
@@ -289,28 +293,20 @@ const Top = () => {
 										vertical: 'top',
 										horizontal: 'left',
 									}}
-									className={'measurer-menu'}
+									className={'measurer-menu measurer-menu-with-images'}
 								>
-									<MenuItem 
-										onClick={() => {
-											handleMeasurerClose();
-											router.push('/agent');
-										}}
-										className={'measurer-menu-item'}
-									>
-										{t('Measurers')}
-
-									</MenuItem>
-									<MenuItem 
-										onClick={() => {
-											handleMeasurerClose();
-											router.push('/installer');
-										}}
-										className={'measurer-menu-item'}
-									>
-										{t('Installers')}
-
-									</MenuItem>
+									<Link href={'/agent'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
+										<span className={'measurer-menu-card-label'}>{t('Measurers')}</span>
+										<div className={'measurer-menu-card-image'}>
+											<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+										</div>
+									</Link>
+									<Link href={'/installer'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
+										<span className={'measurer-menu-card-label'}>{t('Installers')}</span>
+										<div className={'measurer-menu-card-image'}>
+											<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+										</div>
+									</Link>
 								</Menu>
 								
 							</Box>

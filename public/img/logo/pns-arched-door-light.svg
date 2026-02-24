@@ -1,0 +1,20 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Arched Double Door - Light version for dark backgrounds -->
+  <rect x="2" y="42" width="44" height="4" rx="1" fill="white"/>
+  <rect x="4" y="40" width="40" height="2" fill="white"/>
+  <rect x="4" y="8" width="7" height="32" fill="white"/>
+  <rect x="6" y="14" width="3" height="20" fill="#1a1a1a"/>
+  <rect x="37" y="8" width="7" height="32" fill="white"/>
+  <rect x="39" y="14" width="3" height="20" fill="#1a1a1a"/>
+  <rect x="13" y="10" width="11" height="30" fill="white"/>
+  <rect x="14" y="12" width="4" height="11" fill="#1a1a1a"/>
+  <rect x="14" y="25" width="4" height="11" fill="#1a1a1a"/>
+  <ellipse cx="21" cy="23" rx="1.2" ry="2.5" fill="#1a1a1a"/>
+  <rect x="24" y="10" width="11" height="30" fill="white"/>
+  <rect x="30" y="12" width="4" height="11" fill="#1a1a1a"/>
+  <rect x="30" y="25" width="4" height="11" fill="#1a1a1a"/>
+  <ellipse cx="27" cy="23" rx="1.2" ry="2.5" fill="#1a1a1a"/>
+  <path d="M11 10 L11 2 C24 -0.5 37 2 37 10 Z" fill="white"/>
+  <path d="M13 4 L24 1 L35 4 L24 7 Z" fill="#1a1a1a"/>
+  <path d="M15 5 L24 2.5 L33 5 L24 6.5 Z" fill="#2a2a2a"/>
+</svg>

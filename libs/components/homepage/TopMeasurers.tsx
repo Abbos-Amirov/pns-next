@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Stack, Box, CircularProgress, Typography } from '@mui/material';
+import { Stack, CircularProgress, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useTranslation } from 'next-i18next';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -79,10 +79,10 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 
 		return (
 			<Stack className={'wrapper'}>
-				<Box component={'div'} className={'switch-btn swiper-agents-prev'}>
+				<div className={'switch-btn swiper-agents-prev'}>
 					<ArrowBackIosNewIcon />
-				</Box>
-				<Box component={'div'} className={'card-wrapper'}>
+				</div>
+				<div className={'card-wrapper'}>
 					<Swiper
 						className={'top-agents-swiper'}
 						slidesPerView={'auto'}
@@ -99,10 +99,10 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 							</SwiperSlide>
 						))}
 					</Swiper>
-				</Box>
-				<Box component={'div'} className={'switch-btn swiper-agents-next'}>
+				</div>
+				<div className={'switch-btn swiper-agents-next'}>
 					<ArrowBackIosNewIcon />
-				</Box>
+				</div>
 			</Stack>
 		);
 	};
@@ -124,12 +124,12 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 		<Stack className={'top-agents'}>
 			<Stack className={'container'}>
 				<Stack className={'info-box'}>
-					<Box component={'div'} className={'left'}>
+					<div className={'left'}>
 						<h2 className={'main-heading'}>
 							{t('Accurate')} <br /> <span className={'highlight'}>{t('Measurement Professionals')}</span>
 						</h2>
-					</Box>
-					<Box component={'div'} className={'right'}>
+					</div>
+					<div className={'right'}>
 						<div
 							className={'more-box measurers-more'}
 							role="button"
@@ -169,7 +169,7 @@ const TopMeasurers = (props: TopMeasurersProps) => {
 							<span>{t('See All Measurers')}</span>
 							<img src="/img/icons/rightup.svg" alt="" />
 						</div>
-					</Box>
+					</div>
 				</Stack>
 				{renderBody()}
 			</Stack>

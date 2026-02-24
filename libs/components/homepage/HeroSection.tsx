@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack, Box, Button } from '@mui/material';
 import WindowIcon from '@mui/icons-material/Window';
 import DoorIcon from '@mui/icons-material/DoorFront';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -31,6 +32,9 @@ const HeroSection = () => {
 							<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
 								<DoorIcon className={'cta-icon'} /> {t('Doors')}
 							</Button>
+							<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+								<DesignServicesIcon className={'cta-icon'} /> {t('UyDizayneri')}
+							</Button>
 						</Box>
 					</Box>
 				</Stack>
@@ -56,6 +60,9 @@ const HeroSection = () => {
 						</Button>
 						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
 							<DoorIcon className={'cta-icon'} /> {t('Doors')}
+						</Button>
+						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+							<DesignServicesIcon className={'cta-icon'} /> {t('UyDizayneri')}
 						</Button>
 					</Box>
 				</Box>

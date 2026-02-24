@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Box, Button, Stack, IconButton } from '@mui/material';
+import { Button, Stack, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { logIn } from '../../libs/auth';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
@@ -47,11 +47,11 @@ const Login: NextPage = () => {
 			<Stack className={'auth-page'}>
 				<Stack className={'container'}>
 					<Stack className={'auth-form'}>
-						<Box className={'form-header'}>
+						<div className={'form-header'}>
 							<h1>Login</h1>
 							<p>Sign in to your account</p>
-						</Box>
-						<Box className={'input-wrap'}>
+						</div>
+						<div className={'input-wrap'}>
 							<div className={'input-box'}>
 								<input
 									type="text"
@@ -73,7 +73,7 @@ const Login: NextPage = () => {
 									{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
 								</IconButton>
 							</div>
-						</Box>
+						</div>
 						<Button
 							className={'submit-btn'}
 							disabled={input.memberNick === '' || input.memberPassword === ''}
@@ -81,11 +81,11 @@ const Login: NextPage = () => {
 						>
 							Login
 						</Button>
-						<Box className={'signup-link'}>
+						<div className={'signup-link'}>
 							<p>
 								Not registered yet? <span onClick={() => router.push('/auth/signup')}>Sign up</span>
 							</p>
-						</Box>
+						</div>
 					</Stack>
 				</Stack>
 			</Stack>
@@ -93,15 +93,15 @@ const Login: NextPage = () => {
 	} else {
 		return (
 			<Stack className={'auth-page login-page'}>
-				<Box className={'background-overlay'}></Box>
+				<div className={'background-overlay'}></div>
 				<Stack className={'container'}>
 					<Stack className={'main-content'}>
 						<Stack className={'left-section'}>
-							<Box className={'form-container'}>
-								<Box className={'form-header'}>
+							<div className={'form-container'}>
+								<div className={'form-header'}>
 									<h1>Start your perfect trip</h1>
-								</Box>
-								<Box className={'input-wrap'}>
+								</div>
+								<div className={'input-wrap'}>
 									<div className={'input-box'}>
 										<input
 											type="text"
@@ -123,7 +123,7 @@ const Login: NextPage = () => {
 											{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
 										</IconButton>
 									</div>
-								</Box>
+								</div>
 								<Button
 									className={'submit-btn'}
 									disabled={input.memberNick === '' || input.memberPassword === ''}
@@ -131,17 +131,17 @@ const Login: NextPage = () => {
 								>
 									Login
 								</Button>
-								<Box className={'signup-link'}>
+								<div className={'signup-link'}>
 									<p>
 										Not registered yet? <span onClick={() => router.push('/auth/signup')}>Sign up</span>
 									</p>
-								</Box>
-							</Box>
+								</div>
+							</div>
 						</Stack>
 						<Stack className={'right-section'}>
-							<Box className={'map-visualization'}>
+							<div className={'map-visualization'}>
 								{/* Map visualization will be here */}
-							</Box>
+							</div>
 						</Stack>
 					</Stack>
 				</Stack>

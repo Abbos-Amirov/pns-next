@@ -463,9 +463,8 @@ body::-webkit-scrollbar {
 										font-size: 24px;
 										font-weight: 700;
 										color: #1a5f9e;
-										
-										text-transform: uppercase;
-										
+										text-transform: uppercase !important;
+										letter-spacing: 0.5px;
 									}
 									.logo-tagline {
 										font-family: $font;
@@ -558,6 +557,57 @@ body::-webkit-scrollbar {
 											color: #8B4513;
 										}
 									}
+									&.measurer-menu-with-images {
+										padding: 0;
+										min-width: 360px;
+										ul, .MuiList-root, .MuiMenu-list {
+											display: flex !important;
+											flex-direction: row !important;
+											flex-wrap: nowrap !important;
+											padding: 12px !important;
+											gap: 12px;
+											width: 100%;
+										}
+										a.measurer-menu-card {
+											flex: 1;
+											min-width: 0;
+											display: flex;
+											flex-direction: column;
+											text-decoration: none;
+											color: #39381c;
+											transition: opacity 0.2s;
+											&:hover {
+												opacity: 0.9;
+												.measurer-menu-card-image img {
+													transform: scale(1.05);
+												}
+											}
+										}
+										.measurer-menu-card-image {
+											width: 100%;
+											height: 60px;
+											overflow: hidden;
+											padding: 0 12px 12px;
+											box-sizing: border-box;
+											img {
+												width: 100%;
+												height: 100%;
+												object-fit: cover;
+												border-radius: 4px;
+												transition: transform 0.3s ease;
+											}
+										}
+										.measurer-menu-card-label {
+											font-family: $font;
+											font-size: 16px;
+											font-weight: 700;
+											text-transform: uppercase;
+											padding: 12px 16px 6px;
+											text-align: center;
+											background: #f8f8f8;
+											display: block;
+										}
+									}
 								}
 							}
 						}
@@ -613,17 +663,18 @@ body::-webkit-scrollbar {
 								width: 44px;
 								height: 44px;
 								border-radius: 50%;
-								background-color: #8B4513;
-								color: #ffffff;
+								background-color: transparent;
+								color: #1a5f9e;
 								padding: 0;
 								transition: all 0.3s ease;
 								margin-right: 0;
 								&:hover {
-									background-color: #181a20;
+									background-color: transparent;
 									transform: scale(1.1);
+									opacity: 0.8;
 								}
 								svg {
-									font-size: 20px;
+									font-size: 28px;
 								}
 							}
 							.auth-with-dark-mode {
@@ -1375,7 +1426,7 @@ body::-webkit-scrollbar {
 						font-weight: 700;
 						line-height: normal;
 						letter-spacing: 2px;
-						text-transform: uppercase;
+						text-transform: uppercase !important;
 					}
 				}
 			}
@@ -1435,6 +1486,59 @@ body::-webkit-scrollbar {
 							&:hover {
 								background-color: #2a2a2a;
 								color: #8B4513;
+							}
+						}
+						&.measurer-menu-with-images-dark {
+							padding: 0;
+							min-width: 360px;
+							background-color: #191816;
+							ul, .MuiList-root, .MuiMenu-list {
+								display: flex !important;
+								flex-direction: row !important;
+								flex-wrap: nowrap !important;
+								padding: 12px !important;
+								gap: 12px;
+								width: 100%;
+							}
+							a.measurer-menu-card {
+								flex: 1;
+								min-width: 0;
+								display: flex;
+								flex-direction: column;
+								text-decoration: none;
+								color: #ffffff;
+								transition: opacity 0.2s;
+								&:hover {
+									opacity: 0.9;
+									.measurer-menu-card-image img {
+										transform: scale(1.05);
+									}
+								}
+							}
+							.measurer-menu-card-image {
+								width: 100%;
+								height: 60px;
+								overflow: hidden;
+								padding: 0 12px 12px;
+								box-sizing: border-box;
+								img {
+									width: 100%;
+									height: 100%;
+									object-fit: cover;
+									border-radius: 4px;
+									transition: transform 0.3s ease;
+								}
+							}
+							.measurer-menu-card-label-dark {
+								font-family: $font;
+								font-size: 16px;
+								font-weight: 700;
+								text-transform: uppercase;
+								padding: 12px 16px 6px;
+								text-align: center;
+								background: #252422;
+								color: #e0e0e0;
+								display: block;
 							}
 						}
 					}

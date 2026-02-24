@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Stack, Box, Button, CircularProgress } from '@mui/material';
+import { Stack, Button, CircularProgress } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper';
@@ -14,6 +15,7 @@ interface TrendPropertiesProps {
 }
 
 const TrendProperties = (props: TrendPropertiesProps) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 
 	// Default input for query
@@ -105,65 +107,49 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 
 	// Cities data - eng ko'p xizmatdan foydalangan shaharlar
 	const cities = [
-		{
-			id: 1,
-			name: 'SEOUL',
-			image: '/img/banner/cities/SEOUL.webp',
-		},
-		{
-			id: 2,
-			name: 'BUSAN',
-			image: '/img/banner/cities/BUSAN.webp',
-		},
-		{
-			id: 3,
-			name: 'INCHEON',
-			image: '/img/banner/cities/INCHEON.webp',
-		},
-		{
-			id: 3,
-			name: 'ULSAN',
-			image: '/img/banner/cities/INCHEON.webp',
-		},
-		{
-			id: 3,
-			name: 'CHONAN',
-			image: '/img/banner/cities/INCHEON.webp',
-		},
+		{ id: 1, name: 'SEOUL', image: '/img/banner/cities/SEOUL.webp' },
+		{ id: 2, name: 'INCHEON', image: '/img/banner/cities/INCHEON.webp' },
+		{ id: 3, name: 'ULSAN', image: '/img/banner/cities/BUSAN.webp' },
+		{ id: 4, name: 'CHEONAN', image: '/img/banner/cities/DAEJON.webp' },
+		{ id: 5, name: 'SUWON', image: '/img/banner/cities/SEOUL.webp' },
+		{ id: 6, name: 'DAEJEON', image: '/img/banner/cities/DAEJON.webp' },
+		{ id: 7, name: 'GYEONGJU', image: '/img/banner/cities/GYEONGJU.webp' },
+		{ id: 8, name: 'DAEGU', image: '/img/banner/cities/DAEGU.webp' },
+		{ id: 9, name: 'BUSAN', image: '/img/banner/cities/BUSAN.webp' },
 	];
 
 
-	if (device === 'mobile') {
+		if (device === 'mobile') {
 		return (
 			<Stack className={'trend-properties'}>
 				<Stack className={'container'}>
-					<Box className={'logo-badge'}>
-						<Box className={'logo-circle'}>
+					<div className={'logo-badge'}>
+						<div className={'logo-circle'}>
 							<svg width="50" height="100" viewBox="0 0 100 100" fill="none" xmlns="">
 								<circle cx="50" cy="50" r="48" fill="none" stroke="#D4A574" strokeWidth="2"/>
-								<text x="50" y="38" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">OUR BEST</text>
-								<text x="50" y="52" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">WINDOW</text>
+								<text x="50" y="38" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">{t('OUR BEST')}</text>
+								<text x="50" y="52" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="600" letterSpacing="0.5">{t('WINDOW')}</text>
 								<path d="M 50 50 L 62 38 L 50 26 L 38 38 Z" fill="#D4A574"/>
 							</svg>
-						</Box>
-					</Box>
+						</div>
+					</div>
 					<Stack className={'main-content'}>
-						<Box className={'trusted-badge'}>
-							<span>TRUSTED EXPERIENCE</span>
-						</Box>
-						<Box className={'headline'}>
-							<span className={'text-white'}>Every </span>
-							<span className={'text-accent'}>Window & Door</span>
-							<span className={'text-white'}> Holds A Story</span>
-						</Box>
+						<div className={'trusted-badge'}>
+							<span>{t('TRUSTED EXPERIENCE')}</span>
+						</div>
+						<div className={'headline'}>
+							<span className={'text-white'}>{t('Every')} </span>
+							<span className={'text-accent'}>{t('Windows & Door')}</span>
+							<span className={'text-white'}> {t('Holds A Story')}</span>
+						</div>
 						<p className={'description'}>
-							Lorem ipsum dolor sit amet, consectetur adipisc your vision, goals, and audience.helps us.
+							{t('TrendDescription')}
 						</p>
 						<Button className={'learn-more-btn'}>
-							LEARN MORE →
+							{t('LEARN MORE')} →
 						</Button>
 					</Stack>
-					<Box className={'cities-swiper-container'}>
+					<div className={'cities-swiper-container'}>
 						<Swiper
 							className={'cities-swiper'}
 							slidesPerView={1}
@@ -177,30 +163,30 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 						>
 							{cities.map((city) => (
 								<SwiperSlide key={city.id}>
-									<Box className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
-										<Box className={'city-overlay'}>
+									<div className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
+										<div className={'city-overlay'}>
 											<span className={'city-name'}>{city.name}</span>
-										</Box>
-									</Box>
+										</div>
+									</div>
 								</SwiperSlide>
 							))}
 						</Swiper>
-					</Box>
+					</div>
 					<Stack className={'statistics'}>
-						<Box className={'stat-item'}>
+						<div className={'stat-item'}>
 							<span className={'stat-number'}>15+</span>
-							<span className={'stat-label'}>Years Of Experience</span>
-						</Box>
-						<Box className={'stat-item'}>
+							<span className={'stat-label'}>{t('Years Of Experience')}</span>
+						</div>
+						<div className={'stat-item'}>
 							<span className={'stat-number stat-highlight'}>20k+</span>
-							<span className={'stat-label'}>Project completed</span>
-						</Box>
-						<Box className={'stat-item'}>
+							<span className={'stat-label'}>{t('Project completed')}</span>
+						</div>
+						<div className={'stat-item'}>
 							<span className={'stat-number'}>32k+</span>
-							<span className={'stat-label'}>Client satisfaction</span>
-						</Box>
+							<span className={'stat-label'}>{t('Client satisfaction')}</span>
+						</div>
 					</Stack>
-					<Box className={'background-text'}>windows and Door</Box>
+					<div className={'background-text'}>{t('Windows and Door')}</div>
 				</Stack>
 			</Stack>
 		);
@@ -208,18 +194,18 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		return (
 			<Stack className={'trend-properties'}>
 				<Stack className={'container'}>
-					<Box className={'logo-badge'}>
-						<Box className={'logo-circle'}>
+					<div className={'logo-badge'}>
+						<div className={'logo-circle'}>
 							<svg width="100" height="100" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<circle cx="80" cy="80" r="78" fill="none" stroke="#D4A574" strokeWidth="2.5"/>
-								<text x="80" y="50" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">OUR BEST</text>
-								<text x="80" y="68" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">WINDOW</text>
+								<text x="80" y="50" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">{t('OUR BEST')}</text>
+								<text x="80" y="68" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="600" letterSpacing="1">{t('WINDOW')}</text>
 								<path d="M 80 80 L 95 65 L 80 50 L 65 65 Z" fill="#D4A574"/>
 							</svg>
-						</Box>
-					</Box>
-					<Box className={'content-wrapper'}>
-						<Box className={'left-image-section'}>
+						</div>
+					</div>
+					<div className={'content-wrapper'}>
+						<div className={'left-image-section'}>
 							<Swiper
 								className={'cities-swiper'}
 								slidesPerView={1}
@@ -234,39 +220,39 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 							>
 								{cities.map((city) => (
 									<SwiperSlide key={city.id}>
-										<Box className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
-											<Box className={'city-overlay'}>
+										<div className={'city-image'} style={{ backgroundImage: `url(${city.image})` }}>
+											<div className={'city-overlay'}>
 												<span className={'city-name'}>{city.name}</span>
-												<p className={'city-description'}>Top Cities That Trust Our Doors & Windows</p>
-											</Box>
-										</Box>
+												<p className={'city-description'}>{t('Top Cities That Trust Our Doors & Windows')}</p>
+											</div>
+										</div>
 									</SwiperSlide>
 								))}
 							</Swiper>
-						</Box>
+						</div>
 						<Stack className={'main-content'}>
-							<Box className={'trusted-badge'}>
-								<span>TRUSTED EXPERIENCE</span>
-							</Box>
-							<Box className={'headline'}>
-								<span className={'text-white'}>Every </span>
-								<span className={'text-accent'}>Window & Door</span>
-								<span className={'text-white'}> Holds A Story</span>
-							</Box>
+							<div className={'trusted-badge'}>
+								<span>{t('TRUSTED EXPERIENCE')}</span>
+							</div>
+							<div className={'headline'}>
+								<span className={'text-white'}>{t('Every')} </span>
+								<span className={'text-accent'}>{t('Windows & Door')}</span>
+								<span className={'text-white'}> {t('Holds A Story')}</span>
+							</div>
 							
 							<Button className={'learn-more-btn'}>
-								LEARN MORE →
+								{t('LEARN MORE')} →
 							</Button>
 						</Stack>
-						<Box className={'window-swiper-wrapper'}>
+						<div className={'window-swiper-wrapper'}>
 							{loading ? (
-								<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+								<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
 									<CircularProgress />
-								</Box>
+								</div>
 							) : error || locations.length === 0 ? (
-								<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-									<p>No locations found</p>
-								</Box>
+								<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+									<p>{t('No locations found')}</p>
+								</div>
 							) : (
 								<>
 									<Swiper
@@ -284,42 +270,41 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 									>
 										{locations.map((location: any) => (
 											<SwiperSlide key={location.id}>
-												<Box className={'window-card'} style={{ backgroundImage: `url(${location.image})` }}>
-													<Box className={'window-overlay'}>
+												<div className={'window-card'} style={{ backgroundImage: `url(${location.image})` }}>
+													<div className={'window-overlay'}>
 														<h3>{location.name}</h3>
-													</Box>
-												</Box>
+													</div>
+												</div>
 											</SwiperSlide>
 										))}
 									</Swiper>
 
-									{/* ARROWS */}
-									<Box className={'arrow-box'}>
+									<div className={'arrow-box'}>
 										<button className={'prev-btn'}>←</button>
 										<button className={'next-btn'}>→</button>
-									</Box>
+									</div>
 								</>
 							)}
-						</Box>
+						</div>
 
-					</Box>
+					</div>
 					<Stack className={'statistics'}>
-						<Box className={'stat-item'}>
+						<div className={'stat-item'}>
 							<span className={'stat-number'}>20+</span>
-							<span className={'stat-label'}>Years Of Experience</span>
-						</Box>
-						<Box className={'stat-divider'}></Box>
-						<Box className={'stat-item'}>
+							<span className={'stat-label'}>{t('Years Of Experience')}</span>
+						</div>
+						<div className={'stat-divider'}></div>
+						<div className={'stat-item'}>
 							<span className={'stat-number stat-highlight'}>500k+</span>
-							<span className={'stat-label'}>Project completed</span>
-						</Box>
-						<Box className={'stat-divider'}></Box>
-						<Box className={'stat-item'}>
+							<span className={'stat-label'}>{t('Project completed')}</span>
+						</div>
+						<div className={'stat-divider'}></div>
+						<div className={'stat-item'}>
 							<span className={'stat-number'}>800k+</span>
-							<span className={'stat-label'}>Client satisfaction</span>
-						</Box>
+							<span className={'stat-label'}>{t('Client satisfaction')}</span>
+						</div>
 					</Stack>
-					<Box className={'background-text'}>windows and Door</Box>
+					<div className={'background-text'}>{t('Windows and Door')}</div>
 				</Stack>
 			</Stack>
 		);

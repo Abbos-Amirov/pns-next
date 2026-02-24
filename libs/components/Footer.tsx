@@ -7,12 +7,14 @@ import moment from 'moment';
 import Link from 'next/link';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
+import { useTranslation } from 'react-i18next';
 
 type DivProps = HTMLAttributes<HTMLDivElement> & { children?: ReactNode };
 const Stack = ({ children, ...props }: DivProps) => <div {...props}>{children}</div>;
 const Box = ({ children, ...props }: DivProps) => <div {...props}>{children}</div>;
 
 const Footer = (): JSX.Element => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const currentYear = moment().year();
 	const mapAddress = '청남도 천안시 동남구 풍세면 풍세산단5로 61';
@@ -28,46 +30,46 @@ const Footer = (): JSX.Element => {
 						<Stack className={'left-section'}>
 							<Box className={'logo-section'}>
 								<Box className={'logo-wrapper'}>
-									<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
+									<img src="/img/logo/pns-arched-door.svg" alt="PNS Window Logo" className={'logo'} />
 								</Box>
 								<h2 className={'brand-name'}>PNS DEV</h2>
 								<p className={'description'}>
-									We are a window studio offering high-quality window and door solutions for businesses and homes.
+									{t('FooterDesc')}
 								</p>
 							</Box>
 							<Stack className={'navigation-columns'}>
 								<Box className={'nav-column'}>
 									<Link href={'/about'}>
-										<span>About</span>
+										<span>{t('FooterAbout')}</span>
 									</Link>
 									<Link href={'/community'}>
-										<span>Journal</span>
+										<span>{t('FooterJournal')}</span>
 									</Link>
 									<Link href={'/cs'}>
-										<span>FAQ</span>
+										<span>{t('FooterFAQ')}</span>
 									</Link>
 									<Link href={'/cs'}>
-										<span>Get In Touch</span>
+										<span>{t('FooterGetInTouch')}</span>
 									</Link>
-									<span>Careers</span>
+									<span>{t('FooterCareers')}</span>
 								</Box>
 								<Box className={'nav-column'}>
-									<span>Pricing</span>
-									<span>How It Works?</span>
-									<span>Our Services</span>
+									<span>{t('FooterPricing')}</span>
+									<span>{t('FooterHowItWorks')}</span>
+									<span>{t('FooterOurServices')}</span>
 								</Box>
 								<Box className={'nav-column'}>
 									<Link href={'/property'}>
-										<span>Windows</span>
+										<span>{t('Windows')}</span>
 									</Link>
 									<Link href={'/property'}>
-										<span>Doors</span>
+										<span>{t('Doors')}</span>
 									</Link>
-									<span>Our Projects</span>
+									<span>{t('FooterOurProjects')}</span>
 									<Link href={'/cs'}>
-										<span>Terms & Conditions</span>
+										<span>{t('FooterTermsConditions')}</span>
 									</Link>
-									<span>Support Center</span>
+									<span>{t('FooterSupportCenter')}</span>
 								</Box>
 							</Stack>
 						</Stack>
@@ -102,7 +104,7 @@ const Footer = (): JSX.Element => {
 						</Stack>
 					</Stack>
 					<Box className={'copyright'}>
-						<span>©{currentYear} PNS DEV. All Rights Reserved.</span>
+						<span>{t('FooterCopyright', { year: currentYear })}</span>
 					</Box>
 				</Box>
 				<Box className={'background-text'}>Touch</Box>
@@ -118,46 +120,46 @@ const Footer = (): JSX.Element => {
 						<Stack className={'left-section'}>
 							<Box className={'logo-section'}>
 								<Box className={'logo-wrapper'}>
-									<img src="/img/logo/favicon.svg" alt="PNS DEV Logo" className={'logo'} />
+									<img src="/img/logo/pns-arched-door.svg" alt="PNS Window Logo" className={'logo'} />
 								</Box>
 								<h2 className={'brand-name'}>PNS DEV</h2>
 								<p className={'description'}>
-									We are a window studio offering high-quality window and door solutions for businesses and homes.
+									{t('FooterDesc')}
 								</p>
 							</Box>
 							<Stack className={'navigation-columns'}>
 								<Box className={'nav-column'}>
 									<Link href={'/about'}>
-										<span>About</span>
+										<span>{t('FooterAbout')}</span>
 									</Link>
 									<Link href={'/community'}>
-										<span>Journal</span>
+										<span>{t('FooterJournal')}</span>
 									</Link>
 									<Link href={'/cs'}>
-										<span>FAQ</span>
+										<span>{t('FooterFAQ')}</span>
 									</Link>
 									<Link href={'/cs'}>
-										<span>Get In Touch</span>
+										<span>{t('FooterGetInTouch')}</span>
 									</Link>
-									<span>Careers</span>
+									<span>{t('FooterCareers')}</span>
 								</Box>
 								<Box className={'nav-column'}>
-									<span>Pricing</span>
-									<span>How It Works?</span>
-									<span>Our Services</span>
+									<span>{t('FooterPricing')}</span>
+									<span>{t('FooterHowItWorks')}</span>
+									<span>{t('FooterOurServices')}</span>
 								</Box>
 								<Box className={'nav-column'}>
 									<Link href={'/property'}>
-										<span>Windows</span>
+										<span>{t('Windows')}</span>
 									</Link>
 									<Link href={'/property'}>
-										<span>Doors</span>
+										<span>{t('Doors')}</span>
 									</Link>
-									<span>Our Projects</span>
+									<span>{t('FooterOurProjects')}</span>
 									<Link href={'/cs'}>
-										<span>Terms & Conditions</span>
+										<span>{t('FooterTermsConditions')}</span>
 									</Link>
-									<span>Support Center</span>
+									<span>{t('FooterSupportCenter')}</span>
 								</Box>
 							</Stack>
 						</Stack>
@@ -192,7 +194,7 @@ const Footer = (): JSX.Element => {
 						</Stack>
 					</Stack>
 					<Box className={'copyright'}>
-						<span>©{currentYear} PNS DEV. All Rights Reserved.</span>
+						<span>{t('FooterCopyright', { year: currentYear })}</span>
 					</Box>
 				</Box>
 				<Box className={'background-text'}>Door</Box>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Stack, Box, Button, CircularProgress } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
@@ -19,6 +20,7 @@ interface PopularProductsProps {
 }
 
 const PopularProducts = (props: PopularProductsProps) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [activeIndex, setActiveIndex] = useState<number>(2); // Dastlabki markazdagi slide (2-chi, 1-based = 2)
@@ -117,7 +119,7 @@ const PopularProducts = (props: PopularProductsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
-							Unique Design <span className={'highlight'}>Windows & Door</span>
+							{t('Unique Design')} <span className={'highlight'}>{t('Windows & Door')}</span>
 						</h2>
 					</Stack>
 					<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
@@ -135,11 +137,11 @@ const PopularProducts = (props: PopularProductsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
-							Unique Design <span className={'highlight'}>Windows & Door</span>
+							{t('Unique Design')} <span className={'highlight'}>{t('Windows & Door')}</span>
 						</h2>
 					</Stack>
 					<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-						<p>No popular products found</p>
+						<p>{t('No popular products found')}</p>
 					</Stack>
 				</Stack>
 			</Stack>
@@ -153,7 +155,7 @@ const PopularProducts = (props: PopularProductsProps) => {
 					{/* Main Heading */}
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
-							Unique Design <span className={'highlight'}>Windows</span>
+							{t('Unique Design')} <span className={'highlight'}>{t('Windows & Door')}</span>
 						</h2>
 					</Stack>
 
@@ -194,7 +196,7 @@ const PopularProducts = (props: PopularProductsProps) => {
 					{/* Main Heading */}
 					<Stack className={'heading-section'}>
 						<h2 className={'main-heading'}>
-							Unique Design <span className={'highlight'}>Windows & Door</span>
+							{t('Unique Design')} <span className={'highlight'}>{t('Windows & Door')}</span>
 						</h2>
 					</Stack>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack, Typography, CircularProgress } from '@mui/material';
 import CommunityCard from './CommunityCard';
@@ -9,6 +10,7 @@ import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { sweetErrorHandling } from '../../sweetAlert';
 
 const CommunityBoards = () => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const [newsArticles, setNewsArticles] = useState<BoardArticle[]>([]);
 	const [freeArticles, setFreeArticles] = useState<BoardArticle[]>([]);
@@ -85,6 +87,7 @@ const CommunityBoards = () => {
 				<Stack className={'container'}>
 					<Stack sx={{ alignItems: 'center', textAlign: 'center' }}>
 						<Typography
+							className={'community-board-heading'}
 							sx={{
 								color: '#181a20',
 								fontSize: '42px',
@@ -93,17 +96,17 @@ const CommunityBoards = () => {
 								lineHeight: 1.2,
 							}}
 						>
-							Community <span style={{ color: '#8B4513' }}>Highlights</span>
+							{t('Community')} <span className={'community-board-highlight'} style={{ color: '#8B4513' }}>{t('Highlights')}</span>
 						</Typography>
-						<Typography sx={{ mt: 1, color: '#616161', fontSize: '14px' }}>
-							Top news and free posts—updated by views.
+						<Typography className={'community-board-subtitle'} sx={{ mt: 1, color: '#616161', fontSize: '14px' }}>
+							{t('CommunityHighlightsSubtitle')}
 						</Typography>
 					</Stack>
 					<Stack className="community-main">
 						<Stack className={'community-left'}>
 							<Stack className={'content-top'}>
 								<Link href={'/community?articleCategory=NEWS'}>
-									<span>News</span>
+									<span>{t('News')}</span>
 								</Link>
 								<img src="/img/icons/arrowBig.svg" alt="" />
 							</Stack>
@@ -115,7 +118,7 @@ const CommunityBoards = () => {
 								) : hasError || newsArticles.length === 0 ? (
 									<Stack className={'no-data'} sx={{ width: '100%', alignItems: 'center', py: 3 }}>
 										<img src="/img/icons/icoAlert.svg" alt="" />
-										<p style={{ color: '#717171', marginTop: '10px' }}>No news articles found</p>
+										<p style={{ color: '#717171', marginTop: '10px' }}>{t('No news articles found')}</p>
 									</Stack>
 								) : (
 									newsArticles.map((article, index) => {
@@ -127,7 +130,7 @@ const CommunityBoards = () => {
 						<Stack className={'community-right'}>
 							<Stack className={'content-top'}>
 								<Link href={'/community?articleCategory=FREE'}>
-									<span>Free</span>
+									<span>{t('Free')}</span>
 								</Link>
 								<img src="/img/icons/arrowBig.svg" alt="" />
 							</Stack>
@@ -139,7 +142,7 @@ const CommunityBoards = () => {
 								) : hasError || freeArticles.length === 0 ? (
 									<Stack className={'no-data'} sx={{ width: '100%', alignItems: 'center', py: 3 }}>
 										<img src="/img/icons/icoAlert.svg" alt="" />
-										<p style={{ color: '#717171', marginTop: '10px' }}>No free articles found</p>
+										<p style={{ color: '#717171', marginTop: '10px' }}>{t('No free articles found')}</p>
 									</Stack>
 								) : (
 									freeArticles.map((article, index) => {

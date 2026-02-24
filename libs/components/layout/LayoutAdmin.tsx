@@ -196,7 +196,7 @@ const withAdminLayout = (Component: ComponentType) => {
 					>
 						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flexStart', pt: 3, pb: 2 }}>
 							<Stack className={'logo-box'} sx={{ mb: 2 }}>
-								<img src={'/img/logo/favicon.svg'} alt={'PNS DEV Logo'} className={'admin-logo'} />
+								<img src={'/img/logo/pns-arched-door.svg'} alt={'PNS Window Logo'} className={'admin-logo'} />
 							</Stack>
 
 							<Box

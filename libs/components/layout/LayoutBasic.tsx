@@ -188,8 +188,8 @@ const withLayoutBasic = (Component: any) => {
 								<Box component={'div'} className={'logo-left'}>
 									<Link href={'/'}>
 										<Box component={'div'} className={'kadhavu-logo-dark'}>
-											<img src="/img/logo/favicon.svg" alt="KADHAVU Logo" className={'logo-icon-dark'} />
-											<span className={'logo-text-dark'}>PNS DEV</span>
+											<img src="/img/logo/pns-arched-door-light.svg" alt="PNS Window" className={'logo-icon-dark'} />
+											<span className={'logo-text-dark'}>PNSWINDOW</span>
 										</Box>
 									</Link>
 								</Box>
@@ -222,6 +222,7 @@ const withLayoutBasic = (Component: any) => {
 											onClose={handleMeasurerClose}
 											MenuListProps={{
 												onMouseLeave: handleMeasurerClose,
+												sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
 											}}
 											anchorOrigin={{
 												vertical: 'bottom',
@@ -231,26 +232,20 @@ const withLayoutBasic = (Component: any) => {
 												vertical: 'top',
 												horizontal: 'left',
 											}}
-											className={'measurer-menu-dark'}
+											className={'measurer-menu-dark measurer-menu-with-images-dark'}
 										>
-											<MenuItem 
-												onClick={() => {
-													handleMeasurerClose();
-													router.push('/agent');
-												}}
-												className={'measurer-menu-item-dark'}
-											>
-												{t('Measurers')}
-											</MenuItem>
-											<MenuItem 
-												onClick={() => {
-													handleMeasurerClose();
-													router.push('/installer');
-												}}
-												className={'measurer-menu-item-dark'}
-											>
-												{t('Installers')}
-											</MenuItem>
+											<Link href={'/agent'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
+												<span className={'measurer-menu-card-label measurer-menu-card-label-dark'}>{t('Measurers')}</span>
+												<div className={'measurer-menu-card-image'}>
+													<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+												</div>
+											</Link>
+											<Link href={'/installer'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
+												<span className={'measurer-menu-card-label measurer-menu-card-label-dark'}>{t('Installers')}</span>
+												<div className={'measurer-menu-card-image'}>
+													<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+												</div>
+											</Link>
 										</Menu>
 									</Box>
 									<span className={'nav-separator-dark'}>/</span>
