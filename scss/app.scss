@@ -77,7 +77,83 @@ hr {
 	height: 40px !important;
 }
 
-/** Dark mode - oq va qora almashinishi **/
+/** Light mode - oq rangda hamma narsa **/
+[data-theme="light"] {
+	body { background-color: #f5f5f5 !important; color: #181a20; }
+	#pc-wrap { background-color: #f5f5f5 !important; }
+	#pc-wrap .navbar .top-bar {
+		background-color: #ffffff !important;
+		.top-bar-left .top-bar-item,
+		.top-bar-right .top-bar-item {
+			.top-bar-icon,
+			span, a { color: #252420 !important; }
+		}
+		.top-bar-right .social-icons .social-icon { color: #252420 !important; }
+		.top-bar-right .logout-btn-top {
+			background-color: rgba(37, 36, 32, 0.08) !important;
+			color: #252420 !important;
+			span, .logout-icon { color: #252420 !important; }
+		}
+		.top-bar-right .close-icon { color: #252420 !important; }
+	}
+	.navbar-dark {
+		background-color: #ffffff !important;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+		.logo-text-dark { color: #252420 !important; }
+		.nav-link-dark,
+		.nav-separator-dark,
+		.measurer-link-dark .dropdown-icon-dark { color: #252420 !important; }
+		.nav-link-dark:hover { color: #8b4513 !important; }
+		.nav-right-dark {
+			.call-us-btn .call-icon,
+			.call-us-btn span,
+			.call-us-btn .phone-number { color: #252420 !important; }
+			.dark-mode-btn-dark {
+				background: rgba(37, 36, 32, 0.18) !important;
+				color: #252420 !important;
+				svg { color: #252420 !important; }
+				&:hover {
+					background: rgba(37, 36, 32, 0.28) !important;
+					color: #181a20 !important;
+					svg { color: #181a20 !important; }
+				}
+			}
+			.lang-switcher-btn {
+				background: rgba(37, 36, 32, 0.18) !important;
+				color: #252420 !important;
+				svg { color: #252420 !important; }
+				&:hover {
+					background: rgba(37, 36, 32, 0.28) !important;
+					color: #181a20 !important;
+					svg { color: #181a20 !important; }
+				}
+			}
+			.login-signup-btn-dark { color: #252420 !important; border-color: rgba(37, 36, 32, 0.25) !important; }
+			.user-profile-section-dark .user-name-text-dark { color: #252420 !important; }
+		}
+		.measurer-menu-card-label-dark { background: #f0f0f0 !important; color: #252420 !important; }
+	}
+	#footer {
+		background-color: #2a2d35 !important;
+		.footer-content-box {
+			background-color: #f5f5f5 !important;
+			.brand-name, .description, .nav-column span, .nav-column a,
+			.contact-item a, .copyright span { color: #252420 !important; }
+			.description { color: #555 !important; }
+			.contact-icon, .social-icon { color: #252420 !important; }
+		}
+	}
+	#property-list-page { background: #f6f6f6 !important; }
+	#property-detail-page { background: #ffffff !important; }
+	.filter-config .filter-main .filter-section {
+		.section-header { background: #8b4513 !important; }
+		.category-list, .search-content, .price-range-content,
+		.availability-content, .hot-deals-wrapper { background: #fff !important; }
+	}
+	.list-config .card-config { background: #fff !important; }
+}
+
+/** Dark mode - qora rangda hamma narsa **/
 [data-theme="dark"] {
 	body {
 		background-color: #0d0d0d !important;
@@ -110,44 +186,133 @@ hr {
 			color: #fff !important;
 		}
 	}
-	.top-bar-dark-mode-btn,
 	.dark-mode-btn-dark {
-		background: rgba(255, 213, 79, 0.2) !important;
+		background: rgba(255, 213, 79, 0.25) !important;
 		color: #ffd54f !important;
+		svg { color: #ffd54f !important; }
 		&:hover {
-			background: rgba(255, 213, 79, 0.35) !important;
+			background: rgba(255, 213, 79, 0.4) !important;
 			color: #fff !important;
+			svg { color: #fff !important; }
 		}
 	}
-	/* Top bar - sahifa qora bo'lsa top bar oq */
+	.lang-switcher-btn {
+		background-color: rgba(255, 255, 255, 0.15) !important;
+		color: #e0e0e0 !important;
+		svg { color: #e0e0e0 !important; }
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.25) !important;
+			color: #fff !important;
+			svg { color: #fff !important; }
+		}
+	}
+	/* Top bar - dark mode: qora fon, oq matn */
 	#pc-wrap .navbar .top-bar {
-		background-color: #f5f5f5 !important;
+		background-color: #1a1a1a !important;
 		.top-bar-left .top-bar-item,
 		.top-bar-right .top-bar-item {
-			.top-bar-icon { color: #252420 !important; }
-			span, a { color: #252420 !important; }
+			.top-bar-icon { color: #e0e0e0 !important; }
+			span, a { color: #e0e0e0 !important; }
 		}
-		.top-bar-left .top-bar-item:hover span { color: #1a5f9e !important; }
+		.top-bar-left .top-bar-item:hover span { color: #c9a962 !important; }
 		.top-bar-right .social-icons .social-icon {
-			color: #252420 !important;
-			&:hover { color: #1a5f9e !important; }
+			color: #e0e0e0 !important;
+			&:hover { color: #c9a962 !important; }
 		}
 		.top-bar-right .logout-btn-top {
-			background-color: rgba(37, 36, 32, 0.08) !important;
-			border-color: rgba(37, 36, 32, 0.2) !important;
-			color: #252420 !important;
-			.logout-icon { color: #252420 !important; }
-			span { color: #252420 !important; }
+			background-color: rgba(255, 255, 255, 0.1) !important;
+			border-color: rgba(255, 255, 255, 0.2) !important;
+			color: #e0e0e0 !important;
+			.logout-icon { color: #e0e0e0 !important; }
+			span { color: #e0e0e0 !important; }
 			&:hover {
-				background-color: rgba(26, 95, 158, 0.15) !important;
-				border-color: rgba(26, 95, 158, 0.3) !important;
-				.logout-icon { color: #1a5f9e !important; }
-				span { color: #1a5f9e !important; }
+				background-color: rgba(201, 169, 98, 0.2) !important;
+				border-color: rgba(201, 169, 98, 0.3) !important;
+				.logout-icon { color: #c9a962 !important; }
+				span { color: #c9a962 !important; }
 			}
 		}
 		.top-bar-right .close-icon {
-			color: #252420 !important;
+			color: #e0e0e0 !important;
 			&:hover { color: #e3360a !important; }
+		}
+	}
+	/* LayoutBasic navbar-dark - dark mode: qora fon, oq matn */
+	.navbar-dark {
+		background-color: #1a1a1a !important;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+		.logo-text-dark { color: #ffffff !important; }
+		.nav-link-dark,
+		.nav-separator-dark,
+		.measurer-link-dark .dropdown-icon-dark { color: #e0e0e0 !important; }
+		.nav-link-dark:hover { color: #c9a962 !important; }
+		.nav-right-dark {
+			.call-us-btn {
+				background-color: rgba(255, 255, 255, 0.08) !important;
+				.call-icon,
+				span,
+				.phone-number { color: #e0e0e0 !important; }
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.15) !important;
+				}
+			}
+			.dark-mode-btn-dark {
+				background: rgba(255, 213, 79, 0.25) !important;
+				color: #ffd54f !important;
+				svg { color: #ffd54f !important; }
+				&:hover {
+					background: rgba(255, 213, 79, 0.4) !important;
+					color: #fff !important;
+					svg { color: #fff !important; }
+				}
+			}
+			.lang-switcher-btn {
+				background-color: rgba(255, 255, 255, 0.15) !important;
+				color: #e0e0e0 !important;
+				svg { color: #e0e0e0 !important; }
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.25) !important;
+					color: #fff !important;
+					svg { color: #fff !important; }
+				}
+			}
+			.login-signup-btn-dark {
+				background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+				border-color: rgba(255, 255, 255, 0.25) !important;
+				color: #ffffff !important;
+				&:hover {
+					background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
+					border-color: rgba(255, 255, 255, 0.4) !important;
+					color: #ffffff !important;
+				}
+			}
+			.user-profile-section-dark {
+				.user-name-text-dark { color: #e0e0e0 !important; }
+				.user-avatar-small-dark {
+					border-color: rgba(255, 255, 255, 0.2) !important;
+				}
+			}
+		}
+		.measurer-menu-with-images-dark {
+			.measurer-menu-card-label-dark {
+				background: #252422 !important;
+				color: #e0e0e0 !important;
+			}
+			a.measurer-menu-card { color: #ffffff !important; }
+		}
+	}
+	/* Lang menu - dark mode: qora fon, oq matn */
+	.lang-menu .MuiPaper-root {
+		background-color: rgba(30, 30, 30, 0.98) !important;
+		border: 1px solid rgba(255, 255, 255, 0.1) !important;
+		box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4) !important;
+		.lang-menu-item {
+			color: #e0e0e0 !important;
+			&:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+			&.Mui-selected {
+				background-color: rgba(201, 169, 98, 0.2) !important;
+				color: #c9a962 !important;
+			}
 		}
 	}
 	/* Measurers / Installers menu - dark mode: yozuvlar oq */
@@ -311,15 +476,15 @@ hr {
 		.vertical-card strong,
 		.vertical-card span { color: #e0e0e0 !important; }
 	}
-	/* Footer - dark mode: orqa fon oq, ustki qora, PNS DEV/DOOR qora, yozuvlar oq */
+	/* Footer - dark mode: qora fon, oq matn */
 	#footer {
-		background-color: #ffffff !important;
-		.footer-container .watermark-text { color: rgba(0, 0, 0, 0.4) !important; }
-		.footer-container .background-text { color: rgba(0, 0, 0, 0.35) !important; }
+		background-color: #0d0d0d !important;
+		.footer-container .watermark-text { color: rgba(255, 255, 255, 0.08) !important; }
+		.footer-container .background-text { color: rgba(255, 255, 255, 0.06) !important; }
 		.footer-content-box {
 			background-color: #1a1a1a !important;
 			.blue-line {
-				background-color: #000000 !important;
+				background-color: #8b4513 !important;
 				height: 6px !important;
 			}
 			.brand-name,
@@ -334,5 +499,230 @@ hr {
 			.contact-icon,
 			.social-icon { color: #ffffff !important; }
 		}
+	}
+	/* Property page - Filter, PropertyCard, Review - dark mode */
+	.filter-config .filter-main {
+		.filter-section {
+			.section-header {
+				background: #2a2a2a !important;
+				.MuiTypography-root { color: #ffffff !important; }
+			}
+			.category-list {
+				background: #1e1e1e !important;
+				.category-item {
+					border-bottom-color: #333 !important;
+					.MuiTypography-root,
+					span { color: #e0e0e0 !important; }
+					&.selected { color: #c9a962 !important; }
+				}
+			}
+			.search-content {
+				background: #1e1e1e !important;
+				.search-input .MuiOutlinedInput-root {
+					background: #252525 !important;
+					fieldset { border-color: #444 !important; }
+					&:hover fieldset,
+					&.Mui-focused fieldset { border-color: #8b4513 !important; }
+					.MuiInputBase-input { color: #e0e0e0 !important; }
+				}
+			}
+			.price-range-content {
+				background: #1e1e1e !important;
+				.price-input .MuiOutlinedInput-root {
+					background: #252525 !important;
+					fieldset { border-color: #444 !important; }
+					.MuiInputBase-input,
+					.MuiInputAdornment-root { color: #e0e0e0 !important; }
+				}
+			}
+			.availability-content {
+				background: #1e1e1e !important;
+				.availability-radio-group label span { color: #e0e0e0 !important; }
+				.MuiRadio-root { color: #e0e0e0 !important; }
+				.MuiRadio-root.Mui-checked { color: #8b4513 !important; }
+			}
+			.hot-deals-wrapper {
+				background: #1e1e1e !important;
+				.hot-deal-info .hot-deal-name,
+				.hot-deal-price .current-price { color: #e0e0e0 !important; }
+				.hot-deal-price .old-price { color: #999 !important; }
+				.nav-btn {
+					background: #252525 !important;
+					border-color: #444 !important;
+					svg { color: #e0e0e0 !important; }
+					&:hover {
+						background: #333 !important;
+						border-color: #8b4513 !important;
+					}
+				}
+			}
+		}
+	}
+	.list-config .card-config {
+		background: #1e1e1e !important;
+		box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.3) !important;
+		&:hover {
+			box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.5) !important;
+		}
+		.bottom {
+			.name-address .name a,
+			.name-address .name .MuiTypography-root,
+			.price-section .price,
+			.price-section .current-price { color: #e0e0e0 !important; }
+			.price-section .old-price { color: #999 !important; }
+			.hover-actions .view-count,
+			.hover-actions .like-count,
+			.action-btn svg { color: #e0e0e0 !important; }
+			.hover-actions .action-btn {
+				background: rgba(255, 255, 255, 0.1) !important;
+				color: #e0e0e0 !important;
+			}
+		}
+		.save-badge,
+		.top-badge { background: #8b4513 !important; }
+	}
+	.review-list .review-config,
+	.review-config {
+		border-bottom-color: #444 !important;
+		.review-mb-info .img-name-box {
+			.img-box { background: #252525 !important; border-color: #444 !important; }
+			.name,
+			.date { color: #e0e0e0 !important; }
+		}
+		.desc-box .description { color: #d0d0d0 !important; }
+	}
+	/* Property index page - dark mode */
+	#property-list-page {
+		background: #0d0d0d !important;
+		.top-controls {
+			background: #1e1e1e !important;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+			.view-toggle span,
+			.sort-controls span { color: #e0e0e0 !important; }
+			.toggle-buttons {
+				border-color: #444 !important;
+				button {
+					background: #252525 !important;
+					svg { color: #e0e0e0 !important; }
+					&.active {
+						background: #8b4513 !important;
+						svg { color: #fff !important; }
+					}
+					&:hover:not(.active) { background: #333 !important; }
+				}
+			}
+			.sort-controls div button {
+				background: #8b4513 !important;
+				color: #fff !important;
+				&:hover { background: #6d3809 !important; }
+			}
+		}
+		.no-data p,
+		.no-data img { color: #b0b0b0 !important; }
+		.total-result .MuiTypography-root { color: #e0e0e0 !important; }
+		.pagination-config .MuiPagination-root {
+			.MuiPaginationItem-root { color: #e0e0e0 !important; }
+			.Mui-selected { background: #8b4513 !important; color: #fff !important; }
+		}
+	}
+	/* Property detail page - dark mode */
+	#property-detail-page {
+		background: #0d0d0d !important;
+		.property-detail-config {
+			.property-info-config {
+				.info .left-box .title-main,
+				.info .left-box .city,
+				.info .left-box .category,
+				.info .left-box .buy-rent,
+				.info .left-box .date { color: #c9a962 !important; }
+				.info .bottom-box .option p { color: #e0e0e0 !important; }
+				.info .right-box p,
+				.info .right-box span { color: #e0e0e0 !important; }
+				.info .right-box span { color: #b0b0b0 !important; }
+				.images .sub-images .sub-img-box {
+					border-color: transparent !important;
+					&:hover { border-color: #8b4513 !important; }
+				}
+				.product-specs {
+					background: #1e1e1e !important;
+					border-color: #444 !important;
+					.spec-item {
+						.spec-icon { color: #8b4513 !important; }
+						.spec-content .spec-label { color: #999 !important; }
+						.spec-content .spec-value { color: #e0e0e0 !important; }
+						&:hover {
+							background: rgba(139, 69, 19, 0.15) !important;
+							border-color: #8b4513 !important;
+						}
+					}
+				}
+			}
+			.property-desc-config {
+				.options-config .option .option-includes .title,
+				.options-config .option .option-includes .option-data,
+				.prop-desc-config .top .title,
+				.prop-desc-config .top .desc,
+				.prop-desc-config .bottom .title,
+				.prop-desc-config .bottom .info-box .info .title,
+				.prop-desc-config .bottom .info-box .info .data { color: #e0e0e0 !important; }
+				.prop-desc-config {
+					background: #1e1e1e !important;
+					border-color: #444 !important;
+				}
+				.options-config .option .svg-box {
+					background: #252525 !important;
+					border-color: #444 !important;
+				}
+				.floor-plans-config {
+					background: #1e1e1e !important;
+					border-color: #444 !important;
+					.title,
+					.plan-title { color: #c9a962 !important; }
+					.image-box {
+						background: #252525 !important;
+						border-color: #444 !important;
+					}
+				}
+			}
+		}
+		.leave-review-config {
+			background: #1e1e1e !important;
+			border-color: #444 !important;
+			.main-title,
+			.review-title { color: #c9a962 !important; }
+			textarea {
+				background: #252525 !important;
+				border-color: #444 !important;
+				color: #e0e0e0 !important;
+			}
+		}
+		.reviews-config {
+			.filter-box .review-cnt .reviews,
+			.filter-box span { color: #e0e0e0 !important; }
+		}
+		.right-config {
+			.info-box .main-title,
+			.info-box .sub-title,
+			.info-box .name,
+			.info-box .number,
+			.info-box .listings,
+			.name-phone-listings .phone-number { color: #e0e0e0 !important; }
+			.info-box {
+				background: #1e1e1e !important;
+				border-color: #444 !important;
+			}
+			.send-message {
+				background: #8b4513 !important;
+				color: #fff !important;
+				&:hover { background: #6d3809 !important; }
+			}
+		}
+		.similar-properties-config {
+			.title-box .main-title,
+			.title-box .sub-title { color: #e0e0e0 !important; }
+			.swiper-similar-prev,
+			.swiper-similar-next { color: #e0e0e0 !important; }
+		}
+		.container .MuiTypography-root { color: #e0e0e0 !important; }
 	}
 }

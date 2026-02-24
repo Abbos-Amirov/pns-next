@@ -44,6 +44,21 @@ const withLayoutBasic = (Component: any) => {
 		const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 		const measurerOpen = Boolean(measurerAnchor);
 		const { mode, toggleTheme } = useThemeMode();
+		const [headerBgIndex, setHeaderBgIndex] = useState(0);
+
+		const headerBgImages = [
+			'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80',
+			'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1920&q=80',
+			'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80',
+			'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=80',
+		];
+
+		useEffect(() => {
+			const interval = setInterval(() => {
+				setHeaderBgIndex((prev) => (prev + 1) % 5);
+			}, 5000);
+			return () => clearInterval(interval);
+		}, []);
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -188,7 +203,7 @@ const withLayoutBasic = (Component: any) => {
 								<Box component={'div'} className={'logo-left'}>
 									<Link href={'/'}>
 										<Box component={'div'} className={'kadhavu-logo-dark'}>
-											<img src="/img/logo/pns-arched-door-light.svg" alt="PNS Window" className={'logo-icon-dark'} />
+											<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS Window" className={'logo-icon-dark'} />
 											<span className={'logo-text-dark'}>PNSWINDOW</span>
 										</Box>
 									</Link>
@@ -272,21 +287,27 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* Right Actions */}
 								<Box component={'div'} className={'nav-right-dark'}>
-									<IconButton className={'dark-mode-btn-dark'} size="small" onClick={toggleTheme} title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
-										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-									</IconButton>
 									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
 										<PhoneIcon className={'call-icon'} />
-										
 										<span className={'phone-number'}>(+82) 010-8200-5998</span>
 									</Box>
-									{/* Language Switcher */}
-									<IconButton 
-										className={'lang-switcher-btn'}
-										onClick={handleLangClick}
-									>
-										<LanguageIcon />
-									</IconButton>
+									{/* Dark mode + Language - yonma-yon */}
+									<Box component={'div'} className={'lang-dark-group'}>
+										<IconButton 
+											className={'dark-mode-btn-dark'} 
+											size="small" 
+											onClick={toggleTheme} 
+											title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
+										>
+											{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+										</IconButton>
+										<IconButton 
+											className={'lang-switcher-btn'}
+											onClick={handleLangClick}
+										>
+											<LanguageIcon />
+										</IconButton>
+									</Box>
 									<Menu
 										anchorEl={langAnchor}
 										open={langOpen}
@@ -354,20 +375,12 @@ const withLayoutBasic = (Component: any) => {
 											</Link>
 										</Box>
 									) : (
-										<Box component={'div'} className={'auth-buttons-dark'}>
-											<Button 
-												className={'login-btn-dark'}
-												onClick={() => router.push('/account/join?mode=login')}
-											>
-												LOGIN
-											</Button>
-											<Button 
-												className={'signup-btn-dark'}
-												onClick={() => router.push('/account/join?mode=signup')}
-											>
-												SIGNUP
-											</Button>
-										</Box>
+										<Button 
+											className={'login-signup-btn-dark'}
+											onClick={() => router.push('/account/join')}
+										>
+											{t('Login/Signup')}
+										</Button>
 									)}
 								</Box>
 							</Stack>
@@ -375,6 +388,18 @@ const withLayoutBasic = (Component: any) => {
 
 						{/* Hero Section */}
 						<Stack className={`header-basic ${authHeader && 'auth'}`}>
+							{/* Rotating background images */}
+							{headerBgImages.map((src, i) => (
+								<Box
+									key={src}
+									component={'div'}
+									className={`header-basic-bg-slide ${i === headerBgIndex ? 'active' : ''}`}
+									sx={{
+										backgroundImage: `url(${src})`,
+									}}
+								/>
+							))}
+							<Box component={'div'} className={'header-basic-overlay'} />
 							<Stack className={'container'}>
 								{/* TRUSTED COMPANY Badge */}
 								<Box component={'div'} className={'trusted-badge'}>

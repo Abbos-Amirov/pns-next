@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter, withRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
 import { sweetConfirmAlert } from '../sweetAlert';
-import { Stack, Box, IconButton } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
+import { Stack, Box, Button } from '@mui/material';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
@@ -16,13 +14,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import CloseIcon from '@mui/icons-material/Close';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import Menu from '@mui/material/Menu';
-import { useThemeMode } from '../context/ThemeContext';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -55,28 +47,15 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 const TopBasic = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const { t, i18n } = useTranslation('common');
+	const { t } = useTranslation('common');
 	const router = useRouter();
-	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
-	const [lang, setLang] = useState<string | null>('en');
-	const drop = Boolean(anchorEl2);
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [topBarVisible, setTopBarVisible] = useState(true);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
-	const { mode, toggleTheme } = useThemeMode();
 
 	/** LIFECYCLES **/
-	useEffect(() => {
-		if (localStorage.getItem('locale') === null) {
-			localStorage.setItem('locale', 'en');
-			setLang('en');
-		} else {
-			setLang(localStorage.getItem('locale'));
-		}
-	}, [router]);
-
 	useEffect(() => {
 		switch (router.pathname) {
 			case '/property/detail':
@@ -93,24 +72,6 @@ const TopBasic = () => {
 	}, []);
 
 	/** HANDLERS **/
-	const langClick = (e: any) => {
-		setAnchorEl2(e.currentTarget);
-	};
-
-	const langClose = () => {
-		setAnchorEl2(null);
-	};
-
-	const langChoice = useCallback(
-		async (locale: string) => {
-			setLang(locale);
-			localStorage.setItem('locale', locale);
-			setAnchorEl2(null);
-			await router.push(router.asPath, router.asPath, { locale });
-		},
-		[router],
-	);
-
 	const changeNavbarColor = () => {
 		if (window.scrollY >= 50) {
 			setColorChange(true);
@@ -201,9 +162,6 @@ const TopBasic = () => {
 								</Box>
 							</Box>
 							<Box component={'div'} className={'top-bar-right'}>
-								<IconButton className={'top-bar-dark-mode-btn'} size="small" onClick={toggleTheme} title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
-									{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-								</IconButton>
 								<Box component={'div'} className={'top-bar-item'}>
 									<AccessTimeIcon className={'top-bar-icon'} />
 									<span>Hours: Mon-Fri: 8.00 am - 19.30</span>
