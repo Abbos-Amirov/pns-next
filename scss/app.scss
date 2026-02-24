@@ -862,4 +862,70 @@ hr {
 		}
 		.container .MuiTypography-root { color: #e0e0e0 !important; }
 	}
+
+	/* Agent list page - dark mode: yozuvlar oq, search input qora */
+	.agent-list-page {
+		background-color: #0d0d0d !important;
+		.filter {
+			.left input {
+				background: #252525 !important;
+				border-color: #444 !important;
+				color: #e0e0e0 !important;
+				&::placeholder {
+					color: rgba(255, 255, 255, 0.5) !important;
+				}
+				&:focus {
+					border-color: #8b4513 !important;
+					box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.25) !important;
+				}
+			}
+			.right span {
+				color: #e0e0e0 !important;
+			}
+			.right button {
+				color: #e0e0e0 !important;
+			}
+		}
+		.pagination span {
+			color: #e0e0e0 !important;
+		}
+		.no-data p {
+			color: #e0e0e0 !important;
+		}
+	}
+
+	/* AgentCard - dark mode: memberNick, span oq */
+	.agent-general-card {
+		.agent-desc .agent-info {
+			strong, span {
+				color: #e0e0e0 !important;
+			}
+		}
+	}
+
+	/* Agent detail page - dark mode */
+	.agent-detail-page {
+		background-color: #0d0d0d !important;
+	}
+
+	/* ReviewCard - dark mode: memberNick, date, content oq */
+	.review-card {
+		.info .left {
+			strong {
+				color: #e0e0e0 !important;
+			}
+			span {
+				color: rgba(255, 255, 255, 0.7) !important;
+			}
+		}
+		p {
+			color: #e0e0e0 !important;
+		}
+		.reply-button-box .reply-text {
+			color: #e0e0e0 !important;
+		}
+		.reply-button-box {
+			border-bottom-color: #444 !important;
+		}
+	}
 }
