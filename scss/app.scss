@@ -236,6 +236,33 @@ hr {
 			.stack-pagination-row .MuiPaginationItem-root { color: #181a20 !important; }
 		}
 	}
+	/* Agent scroll-stack - light mode */
+	#agent-list-page.agent-scroll-stack {
+		background: #f6f6f6 !important;
+		color: #181a20;
+		.agent-filter-stack .filter-box input {
+			background: #fff !important;
+			border-color: #e0e0e0 !important;
+			color: #181a20 !important;
+			&::placeholder { color: #555 !important; }
+		}
+		.agent-filter-stack .agent-sort-inline span { color: #555 !important; }
+		.stack-section { background: #f6f6f6 !important; }
+		.stack-section-unified,
+		.stack-section-unified .stack-section-info,
+		.stack-section-unified .stack-section-image {
+			background: #f6f6f6 !important;
+		}
+		.stack-h2, .stack-desc, .stack-meta-value { color: #181a20 !important; }
+		.stack-meta-label { color: #555 !important; opacity: 0.7 !important; }
+		.stack-hot-deals-row .stack-hot-deal-thumb {
+			border-color: rgba(0,0,0,0.12) !important;
+		}
+		.stack-like-btn .stack-like-icon { color: #8b4513 !important; }
+		.stack-like-btn .stack-like-icon.liked { color: #eb6753 !important; fill: #eb6753 !important; }
+		.stack-views-icon { color: #555 !important; }
+		.stack-image-actions .stack-action-count { color: #181a20 !important; }
+	}
 }
 
 /** Dark mode - qora rangda hamma narsa **/
@@ -863,7 +890,27 @@ hr {
 		.container .MuiTypography-root { color: #e0e0e0 !important; }
 	}
 
-	/* Agent list page - dark mode: yozuvlar oq, search input qora */
+	/* Agent scroll-stack - dark mode (already dark) */
+	#agent-list-page.agent-scroll-stack {
+		background: #0d0d0d !important;
+		.agent-filter-stack .filter-box input {
+			background: #252525 !important;
+			border-color: #444 !important;
+			color: #e0e0e0 !important;
+		}
+		.stack-section-unified,
+		.stack-section-unified .stack-section-info,
+		.stack-section-unified .stack-section-image {
+			background: #0d0d0d !important;
+		}
+		/* Labels less visible in dark mode (white text) */
+		.stack-meta-label {
+			opacity: 0.45 !important;
+			color: rgba(255,255,255,0.6) !important;
+		}
+	}
+
+	/* Agent list page (legacy) - dark mode: yozuvlar oq, search input qora */
 	.agent-list-page {
 		background-color: #0d0d0d !important;
 		.filter {

@@ -89,8 +89,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 				<Card className={'articles-header-card'} sx={{ mb: 3 }}>
 					<CardContent>
 						<Stack direction={'row'} alignItems={'center'} spacing={2}>
-							<Box
-								sx={{
+							<div
+								style={{
 									width: 56,
 									height: 56,
 									borderRadius: '12px',
@@ -102,18 +102,18 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 								}}
 							>
 								<ArticleIcon sx={{ fontSize: 32 }} />
-							</Box>
-							<Box>
+							</div>
+							<div>
 								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
 									My Articles
 								</Typography>
 								<Typography variant={'body2'} sx={{ color: '#717171' }}>
 									Your published articles
 								</Typography>
-							</Box>
-							<Box sx={{ flex: 1 }} />
-							<Box
-								sx={{
+							</div>
+							<div style={{ flex: 1 }} />
+							<div
+								style={{
 									padding: '8px 16px',
 									borderRadius: '12px',
 									backgroundColor: 'rgba(139, 69, 19, 0.1)',
@@ -123,7 +123,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 								}}
 							>
 								Total: {totalCount}
-							</Box>
+							</div>
 						</Stack>
 					</CardContent>
 				</Card>
@@ -198,8 +198,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 				) : (
 					<Card>
 						<CardContent sx={{ p: 6, textAlign: 'center' }}>
-							<Box
-								sx={{
+							<div
+								style={{
 									width: 120,
 									height: 120,
 									margin: '0 auto 24px',
@@ -211,7 +211,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 								}}
 							>
 								<ArticleIcon sx={{ fontSize: 60, color: '#8B4513' }} />
-							</Box>
+							</div>
 							<Typography variant={'h6'} sx={{ fontWeight: 600, mb: 1, color: '#181a20' }}>
 								No Articles Found
 							</Typography>

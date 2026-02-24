@@ -8,6 +8,7 @@ interface ProductsSearch {
 	pricesRange?: { start: number; end: number }; // Price range filter
 	productType?: string[]; // Product type filter (DOOR, WINDOW)
 	productMaterial?: ProductMaterial; // Product material filter (ALUMINUM, PVC, WOOD, STEEL, GLASS)
+	memberId?: string; // Filter by member/agent
 }
 
 export interface ProductsInquiry {
