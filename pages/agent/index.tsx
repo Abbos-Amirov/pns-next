@@ -16,11 +16,12 @@ import { useTranslation } from 'next-i18next';
 import { Member } from '../../libs/types/member/member';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import { GET_MEASURERS } from '../../apollo/user/query';
+import { GET_MEASURERS, GET_LOCATIONS } from '../../apollo/user/query';
 import { sweetErrorAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
 import { REACT_APP_API_URL } from '../../libs/config';
-import { Product } from '../../libs/types/product/property';
+import { Direction } from '../../libs/enums/common.enum';
+import { LocationsInquiry } from '../../libs/types/location/location.input';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -33,7 +34,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-	const [filterSortName, setFilterSortName] = useState('Recent');
+	const [filterSortName, setFilterSortName] = useState('SortRecent');
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [searchFilter, setSearchFilter] = useState<any>(
@@ -43,7 +44,38 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [searchText, setSearchText] = useState<string>('');
-	const [agentProductImages, setAgentProductImages] = useState<Record<string, string[]>>({});
+
+	// Fetch locations (Working Locations) - same data as agent detail page
+	const { data: locationsData } = useQuery(GET_LOCATIONS, {
+		variables: {
+			input: {
+				page: 1,
+				limit: 200,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				search: {},
+			} as LocationsInquiry,
+		},
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+	});
+
+	const allLocations = locationsData?.getLocations?.list || [];
+	const agentLocationImages = React.useMemo(() => {
+		const result: Record<string, string[]> = {};
+		agents.forEach((agent) => {
+			const memberLocations = allLocations.filter((l: any) => l.memberId === agent._id);
+			const images = memberLocations
+				.map((loc: any) => loc?.images?.[0])
+				.filter(Boolean)
+				.slice(0, 3)
+				.map((img: string) =>
+					img.startsWith('http') ? img : `${REACT_APP_API_URL}/${img.replace(/^\/+/, '')}`,
+				);
+			result[agent._id] = images;
+		});
+		return result;
+	}, [agents, allLocations]);
 
 	const { loading, error, refetch: getMeasurersRefetch } = useQuery(GET_MEASURERS, {
 		variables: {
@@ -99,49 +131,6 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 			getMeasurersRefetch?.({ input: searchFilter });
 		},
 	});
-
-	// Fetch product images for agents with memberProducts > 0
-	useEffect(() => {
-		const agentsWithProducts = agents.filter((a) => (a.memberProducts || 0) > 0);
-		if (agentsWithProducts.length === 0) return;
-
-		const fetchImages = async () => {
-			const result: Record<string, string[]> = {};
-			await Promise.all(
-				agentsWithProducts.map(async (agent) => {
-					try {
-						const res = await fetch('/api/products', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({
-								input: {
-									page: 1,
-									limit: 3,
-									sort: 'createdAt',
-									direction: 'DESC',
-									search: { memberId: agent._id },
-								},
-							}),
-						});
-						const data = await res.json();
-						const list = data?.list || [];
-						const images = list
-							.map((p: Product) => p?.productImages?.[0])
-							.filter(Boolean)
-							.slice(0, 3)
-							.map((img: string) =>
-								img.startsWith('http') ? img : `/${img.replace(/^\/+/, '')}`,
-							);
-						result[agent._id] = images;
-					} catch {
-						result[agent._id] = [];
-					}
-				}),
-			);
-			setAgentProductImages((prev) => ({ ...prev, ...result }));
-		};
-		fetchImages();
-	}, [agents]);
 
 	useEffect(() => {
 		if (router.query.input) {
@@ -209,11 +198,11 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 		switch (id) {
 			case 'recent':
 				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'DESC' });
-				setFilterSortName('Recent');
+				setFilterSortName('SortRecent');
 				break;
 			case 'old':
 				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'ASC' });
-				setFilterSortName('Oldest');
+				setFilterSortName('SortOldest');
 				break;
 			case 'likes':
 				setSearchFilter({ ...searchFilter, sort: 'memberLikes', direction: 'DESC' });
@@ -241,12 +230,6 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 		return img.startsWith('http') ? img : `${REACT_APP_API_URL}/${img.replace(/^\/+/, '')}`;
 	};
 
-	const placeholderProductImages = [
-		'/img/property/window2.jpg',
-		'/img/property/window1.jpg',
-		'/img/property/window.jpg',
-	];
-
 	if (device === 'mobile') {
 		return <h1>AGENTS PAGE MOBILE</h1>;
 	}
@@ -254,11 +237,11 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	return (
 		<div id="agent-list-page" className="agent-scroll-stack">
 			<div className="container agent-stack-container">
-				<aside className="agent-filter-stack">
-					<div className="filter-box agent-filter-row">
+				<div className="agent-filter-top">
+					<div className="agent-filter-left">
 						<input
 							type="text"
-							placeholder={t('Search products...') || 'Search for an agent'}
+							placeholder={t('SearchMeasurer')}
 							value={searchText}
 							onChange={(e) => setSearchText(e.target.value)}
 							onKeyDown={(e) => {
@@ -270,20 +253,20 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 								}
 							}}
 						/>
-						<div className="agent-sort-inline">
-							<span>{t('SortBy')}</span>
-							<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />} className="sort-btn">
-								{filterSortName}
-							</Button>
-							<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler}>
-								<MenuItem onClick={sortingHandler} id="recent" disableRipple>Recent</MenuItem>
-								<MenuItem onClick={sortingHandler} id="old" disableRipple>Oldest</MenuItem>
-								<MenuItem onClick={sortingHandler} id="likes" disableRipple>Likes</MenuItem>
-								<MenuItem onClick={sortingHandler} id="views" disableRipple>Views</MenuItem>
-							</Menu>
-						</div>
 					</div>
-				</aside>
+					<div className="agent-filter-right">
+						<span>{t('SortBy')}</span>
+						<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />} className="sort-btn">
+							{t(filterSortName)}
+						</Button>
+						<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler}>
+							<MenuItem onClick={sortingHandler} id="recent" disableRipple>{t('SortRecent')}</MenuItem>
+							<MenuItem onClick={sortingHandler} id="old" disableRipple>{t('SortOldest')}</MenuItem>
+							<MenuItem onClick={sortingHandler} id="likes" disableRipple>{t('Likes')}</MenuItem>
+							<MenuItem onClick={sortingHandler} id="views" disableRipple>{t('Views')}</MenuItem>
+						</Menu>
+					</div>
+				</div>
 				<div className="agent-stack-main">
 					{loading ? (
 						<div className="stack-loading">{t('PropertyLoading') || 'Loading...'}</div>
@@ -303,79 +286,85 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 								>
 									<div className="stack-section-info">
 										<h2 className="stack-h2">{agent?.memberFullName || agent?.memberNick || 'Measurer'}</h2>
-										<p className="stack-desc">{agent?.memberDesc || t('PropertyDescDefault')}</p>
-										<div className="stack-meta-cards stack-meta-vertical">
-											<div className="stack-meta-row">
-												<span className="stack-meta-label">{t('LabelProject')}</span>
-												<span className="stack-meta-value">{agent?.memberType || '—'}</span>
-											</div>
-											<div className="stack-meta-row stack-meta-row-expanded">
-												<span className="stack-meta-label">Experience</span>
-												<span className="stack-meta-value">{(agent as any)?.memberExperience || '—'}</span>
-											</div>
-											<div className="stack-meta-row stack-meta-row-expanded">
-												<span className="stack-meta-label">Education</span>
-												<span className="stack-meta-value">{(agent as any)?.memberEducation || '—'}</span>
-											</div>
-											<div className="stack-meta-row stack-meta-like-row">
-												<span className="stack-meta-label">Likes</span>
-												<div className="stack-meta-value-row">
-													<button
-														type="button"
-														className="stack-like-btn"
-														onClick={(e) => {
-															e.preventDefault();
-															e.stopPropagation();
-															likeMemberHandler(user, agent._id);
-														}}
-														aria-label={agent?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
-													>
-														{agent?.meLiked?.[0]?.myFavorite ? (
-															<FavoriteIcon className="stack-like-icon liked" />
-														) : (
-															<FavoriteBorderIcon className="stack-like-icon" />
-														)}
-													</button>
-													<span className="stack-meta-value">{agent?.memberLikes ?? 0}</span>
+										<div className="stack-desc-input-box">
+											<span className="stack-meta-label">{t('Description')}</span>
+											<span className="stack-meta-value stack-desc-value">{agent?.memberDesc || t('MeasurerDescDefault')}</span>
+										</div>
+										<div className="stack-meta-cards stack-meta-horizontal">
+											<div className="stack-meta-input-row">
+												<div className="stack-meta-input-box">
+													<span className="stack-meta-label">{t('LabelRole')}</span>
+													<span className="stack-meta-value">{agent?.memberType || '—'}</span>
+												</div>
+												<div className="stack-meta-input-box">
+													<span className="stack-meta-label">{t('Experience')}</span>
+													<span className="stack-meta-value">{(agent as any)?.memberExperience || '—'}</span>
+												</div>
+												<div className="stack-meta-input-box">
+													<span className="stack-meta-label">{t('Education')}</span>
+													<span className="stack-meta-value">{(agent as any)?.memberEducation || '—'}</span>
 												</div>
 											</div>
-											<div className="stack-meta-row stack-meta-views-row">
-												<span className="stack-meta-label">Views</span>
-												<div className="stack-meta-value-row">
-													<VisibilityIcon className="stack-views-icon" />
-													<span className="stack-meta-value">{agent?.memberViews ?? 0}</span>
+											<div className="stack-meta-input-row">
+												<div className="stack-meta-input-box stack-meta-like-box">
+													<span className="stack-meta-label">{t('Likes')}</span>
+													<div className="stack-meta-value-row">
+														<button
+															type="button"
+															className="stack-like-btn"
+															onClick={(e) => {
+																e.preventDefault();
+																e.stopPropagation();
+																likeMemberHandler(user, agent._id);
+															}}
+															aria-label={agent?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
+														>
+															{agent?.meLiked?.[0]?.myFavorite ? (
+																<FavoriteIcon className="stack-like-icon liked" />
+															) : (
+																<FavoriteBorderIcon className="stack-like-icon" />
+															)}
+														</button>
+														<span className="stack-meta-value">{agent?.memberLikes ?? 0}</span>
+													</div>
 												</div>
-											</div>
-											<div className="stack-meta-row">
-												<span className="stack-meta-label">Comments</span>
-												<span className="stack-meta-value">{agent?.memberComments ?? 0}</span>
+												<div className="stack-meta-input-box stack-meta-views-box">
+													<span className="stack-meta-label">{t('Views')}</span>
+													<div className="stack-meta-value-row">
+														<VisibilityIcon className="stack-views-icon" />
+														<span className="stack-meta-value">{agent?.memberViews ?? 0}</span>
+													</div>
+												</div>
+												<div className="stack-meta-input-box">
+													<span className="stack-meta-label">{t('Comments')}</span>
+													<span className="stack-meta-value">{agent?.memberComments ?? 0}</span>
+												</div>
 											</div>
 										</div>
-										<button
-											className="stack-demo-btn"
-											onClick={() => router.push(`/agent/detail?agentId=${agent._id}`)}
-										>
-											<PlayArrowIcon />
-											{t('Demo')}
-										</button>
-										{(agent.memberProducts || 0) > 0 && (
-											<div className="stack-hot-deals-row">
-												{(agentProductImages[agent._id]?.length
-													? agentProductImages[agent._id]
-													: placeholderProductImages
-												).slice(0, 3).map((src, idx) => (
-													<Link
-														key={idx}
-														href={`/agent/detail?agentId=${agent._id}`}
-														style={{ display: 'block' }}
-													>
-														<div className="stack-hot-deal-thumb">
-															<img src={src} alt={`Product ${idx + 1}`} />
-														</div>
-													</Link>
-												))}
-											</div>
-										)}
+										<div className="stack-demo-products-row">
+											<button
+												className="stack-demo-btn"
+												onClick={() => router.push(`/agent/detail?agentId=${agent._id}`)}
+											>
+												<PlayArrowIcon />
+												{t('Demo')}
+											</button>
+											{agentLocationImages[agent._id]?.length > 0 && (
+												<div className="stack-location-thumbs-row">
+													{agentLocationImages[agent._id].slice(0, 3).map((src, idx) => (
+														<Link
+															key={idx}
+															href={`/agent/detail?agentId=${agent._id}`}
+															style={{ display: 'block' }}
+														>
+															<div className="stack-location-thumb">
+																<img src={src} alt={`Location ${idx + 1}`} />
+															</div>
+														</Link>
+													))}
+												</div>
+											)}
+										</div>
 									</div>
 									<div className="stack-section-image">
 										<Link href={`/agent/detail?agentId=${agent._id}`} className="stack-main-image-link">

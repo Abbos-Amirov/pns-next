@@ -56,9 +56,9 @@ export const GET_MEASURERS = gql`
 				memberImage
 				memberAddress
 				memberDesc
-				memberExperience
-				memberEducation
 				memberProducts
+				memberExperience
+                memberEducation
 				memberArticles
 				memberFollowers
 				memberFollowings
