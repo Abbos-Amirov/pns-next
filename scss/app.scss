@@ -447,6 +447,14 @@ hr {
 		}
 		a.measurer-menu-card { color: #ffffff !important; }
 	}
+	/* Support menu (Our Services, About Me) - dark mode */
+	.support-menu.support-menu-with-images {
+		.support-menu-card-label {
+			background: #252422 !important;
+			color: #ffffff !important;
+		}
+		a.support-menu-card { color: #ffffff !important; }
+	}
 	.trusted-section,
 	.brand-section,
 	.heading-section {

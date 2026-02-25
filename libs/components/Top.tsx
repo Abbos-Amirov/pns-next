@@ -74,6 +74,8 @@ const Top = () => {
 	const [topBarVisible, setTopBarVisible] = useState(true);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
+	const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
+	const supportOpen = Boolean(supportAnchor);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -165,6 +167,14 @@ const Top = () => {
 
 	const handleMeasurerClose = () => {
 		setMeasurerAnchor(null);
+	};
+
+	const handleSupportClick = (event: React.MouseEvent<HTMLElement>) => {
+		setSupportAnchor(event.currentTarget);
+	};
+
+	const handleSupportClose = () => {
+		setSupportAnchor(null);
 	};
 
 	if (device == 'mobile') {
@@ -328,9 +338,56 @@ const Top = () => {
 								</>
 							)}
 							<span className={'nav-separator'}>/</span>
-							<Link href={'/cs'}>
-								<span className={'nav-link'}>{t('Support')}</span>
-							</Link>
+							<Box
+								component={'div'}
+								className={'support-dropdown'}
+								onMouseEnter={handleSupportClick}
+								onMouseLeave={handleSupportClose}
+							>
+								<Link href={'/cs'} style={{ textDecoration: 'none' }}>
+									<span className={'nav-link support-link'}>
+										<KeyboardArrowDownIcon className={'dropdown-icon'} />
+										{t('Support')}
+									</span>
+								</Link>
+								<Menu
+									anchorEl={supportAnchor}
+									open={supportOpen}
+									onClose={handleSupportClose}
+									MenuListProps={{
+										onMouseLeave: handleSupportClose,
+										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
+									}}
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'right',
+									}}
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									className={'support-menu support-menu-with-images'}
+								>
+									<Link href={'/cs'} className={'support-menu-card'} onClick={handleSupportClose}>
+										<span className={'support-menu-card-label'}>{t('Support')}</span>
+										<div className={'support-menu-card-image'}>
+											<img src={'/img/support/support.png'} alt={t('Support')} />
+										</div>
+									</Link>
+									<Link href={'/our-services'} className={'support-menu-card'} onClick={handleSupportClose}>
+										<span className={'support-menu-card-label'}>{t('OurServices')}</span>
+										<div className={'support-menu-card-image'}>
+											<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+										</div>
+									</Link>
+									<Link href={'/about-me'} className={'support-menu-card'} onClick={handleSupportClose}>
+										<span className={'support-menu-card-label'}>{t('AboutMe')}</span>
+										<div className={'support-menu-card-image'}>
+											<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+										</div>
+									</Link>
+								</Menu>
+							</Box>
 						</Box>
 
 						<Box component={'div'} className={'nav-right'}>

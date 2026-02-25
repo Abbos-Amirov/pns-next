@@ -43,6 +43,8 @@ const withLayoutBasic = (Component: any) => {
 		const langOpen = Boolean(langAnchor);
 		const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 		const measurerOpen = Boolean(measurerAnchor);
+		const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
+		const supportOpen = Boolean(supportAnchor);
 		const { mode, toggleTheme } = useThemeMode();
 		const [headerBgIndex, setHeaderBgIndex] = useState(0);
 
@@ -159,6 +161,14 @@ const withLayoutBasic = (Component: any) => {
 
 		const handleMeasurerClose = () => {
 			setMeasurerAnchor(null);
+		};
+
+		const handleSupportClick = (event: React.MouseEvent<HTMLElement>) => {
+			setSupportAnchor(event.currentTarget);
+		};
+
+		const handleSupportClose = () => {
+			setSupportAnchor(null);
 		};
 
 		/** HANDLERS **/
@@ -280,9 +290,56 @@ const withLayoutBasic = (Component: any) => {
 										</>
 									)}
 									<span className={'nav-separator-dark'}>/</span>
-									<Link href={'/cs'}>
-										<span className={'nav-link-dark'}>{t('CS')}</span>
-									</Link>
+									<Box
+										component={'div'}
+										className={'support-dropdown-dark'}
+										onMouseEnter={handleSupportClick}
+										onMouseLeave={handleSupportClose}
+									>
+										<Link href={'/cs'} style={{ textDecoration: 'none' }}>
+											<span className={'nav-link-dark support-link-dark'}>
+												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
+												{t('Support')}
+											</span>
+										</Link>
+										<Menu
+											anchorEl={supportAnchor}
+											open={supportOpen}
+											onClose={handleSupportClose}
+											MenuListProps={{
+												onMouseLeave: handleSupportClose,
+												sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
+											}}
+											anchorOrigin={{
+												vertical: 'bottom',
+												horizontal: 'right',
+											}}
+											transformOrigin={{
+												vertical: 'top',
+												horizontal: 'right',
+											}}
+											className={'support-menu-dark support-menu-with-images-dark'}
+										>
+											<Link href={'/cs'} className={'support-menu-card'} onClick={handleSupportClose}>
+												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('Support')}</span>
+												<div className={'support-menu-card-image'}>
+													<img src={'/img/support/support.png'} alt={t('Support')} />
+												</div>
+											</Link>
+											<Link href={'/our-services'} className={'support-menu-card'} onClick={handleSupportClose}>
+												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('OurServices')}</span>
+												<div className={'support-menu-card-image'}>
+													<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+												</div>
+											</Link>
+											<Link href={'/about-me'} className={'support-menu-card'} onClick={handleSupportClose}>
+												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('AboutMe')}</span>
+												<div className={'support-menu-card-image'}>
+													<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+												</div>
+											</Link>
+										</Menu>
+									</Box>
 								</Box>
 
 								{/* Right Actions */}

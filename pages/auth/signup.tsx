@@ -47,11 +47,11 @@ const Signup: NextPage = () => {
 			<Stack className={'auth-page'}>
 				<Stack className={'container'}>
 					<Stack className={'auth-form'}>
-						<Box className={'form-header'}>
+						<Box component="div" className={'form-header'}>
 							<h1>Sign Up</h1>
 							<p>Create your account</p>
 						</Box>
-						<Box className={'input-wrap'}>
+						<Box component="div" className={'input-wrap'}>
 							<div className={'input-box'}>
 								<input
 									type="text"
@@ -90,7 +90,7 @@ const Signup: NextPage = () => {
 						>
 							Start
 						</Button>
-						<Box className={'login-link'}>
+						<Box component="div" className={'login-link'}>
 							<p>
 								Already have an account? <span onClick={() => router.push('/auth/login')}>Log in</span>
 							</p>
@@ -102,15 +102,15 @@ const Signup: NextPage = () => {
 	} else {
 		return (
 			<Stack className={'auth-page signup-page'}>
-				<Box className={'background-overlay'}></Box>
+				<Box component="div" className={'background-overlay'}></Box>
 				<Stack className={'container'}>
 					<Stack className={'main-content'}>
 						<Stack className={'left-section'}>
-							<Box className={'form-container'}>
-								<Box className={'form-header'}>
+							<Box component="div" className={'form-container'}>
+								<Box component="div" className={'form-header'}>
 									<h1>Start your perfect trip</h1>
 								</Box>
-								<Box className={'input-wrap'}>
+								<Box component="div" className={'input-wrap'}>
 									<div className={'input-box'}>
 										<input
 											type="text"
@@ -149,7 +149,7 @@ const Signup: NextPage = () => {
 								>
 									Start
 								</Button>
-								<Box className={'login-link'}>
+								<Box component="div" className={'login-link'}>
 									<p>
 										Already have an account? <span onClick={() => router.push('/auth/login')}>Log in</span>
 									</p>
@@ -157,7 +157,7 @@ const Signup: NextPage = () => {
 							</Box>
 						</Stack>
 						<Stack className={'right-section'}>
-							<Box className={'map-visualization'}>
+							<Box component="div" className={'map-visualization'}>
 								{/* Map visualization will be here */}
 							</Box>
 						</Stack>

@@ -598,6 +598,71 @@ body::-webkit-scrollbar {
 									}
 								}
 							}
+							.support-dropdown {
+								position: relative;
+								display: inline-block;
+								a { text-decoration: none; display: inline-block; }
+								.support-link {
+									display: flex;
+									align-items: center;
+									gap: 6px;
+									cursor: pointer;
+									.dropdown-icon { font-size: 18px; transition: transform 0.3s ease; }
+								}
+								&:hover .support-link .dropdown-icon { transform: rotate(180deg); }
+								.support-menu.support-menu-with-images {
+									padding: 20px;
+									min-width: 420px;
+									ul, .MuiList-root, .MuiMenu-list {
+										display: flex !important;
+										flex-direction: row !important;
+										flex-wrap: nowrap !important;
+										padding: 0 !important;
+										gap: 20px !important;
+										width: 100%;
+									}
+									a.support-menu-card {
+										flex: 1;
+										min-width: 0;
+										display: flex;
+										flex-direction: column;
+										text-decoration: none;
+										color: #39381c;
+										transition: opacity 0.2s;
+										&:hover {
+											opacity: 0.9;
+											.support-menu-card-image img { transform: scale(1.05); }
+										}
+									}
+									.support-menu-card-image {
+										width: 100%;
+										height: 20px;
+										overflow: hidden;
+										padding: 0 6px 6px;
+										box-sizing: border-box;
+										img {
+											width: 100%;
+											height: 100%;
+											object-fit: contain;
+											border-radius: 4px;
+											transition: transform 0.3s ease;
+										}
+									}
+									.support-menu-card-label {
+										font-family: $font;
+										font-size: 40px;
+										font-weight: 700;
+										text-transform: uppercase;
+										padding: 10px 12px 12px;
+										text-align: center;
+										background: #f8f8f8;
+										display: block;
+										letter-spacing: 0.5px;
+										margin-left: auto;
+										margin-right: auto;
+									}
+								}
+							}
 						}
 
 						.logo-box {
@@ -1528,6 +1593,73 @@ body::-webkit-scrollbar {
 								color: #e0e0e0;
 								display: block;
 							}
+						}
+					}
+				}
+				.support-dropdown-dark {
+					position: relative;
+					display: inline-block;
+					a { text-decoration: none; display: inline-block; }
+					.support-link-dark {
+						display: flex;
+						align-items: center;
+						gap: 6px;
+						cursor: pointer;
+						.dropdown-icon-dark { font-size: 18px; color: #ffffff; transition: transform 0.3s ease; }
+					}
+					&:hover .support-link-dark .dropdown-icon-dark { transform: rotate(180deg); }
+					.support-menu-dark.support-menu-with-images-dark {
+						padding: 20px;
+						min-width: 420px;
+						background-color: #191816;
+						ul, .MuiList-root, .MuiMenu-list {
+							display: flex !important;
+							flex-direction: row !important;
+							flex-wrap: nowrap !important;
+							padding: 0 !important;
+							gap: 20px !important;
+							width: 100%;
+						}
+						a.support-menu-card {
+							flex: 1;
+							min-width: 0;
+							display: flex;
+							flex-direction: column;
+							text-decoration: none;
+							color: #ffffff;
+							transition: opacity 0.2s;
+							&:hover {
+								opacity: 0.9;
+								.support-menu-card-image img { transform: scale(1.05); }
+							}
+						}
+						.support-menu-card-image {
+							width: 100%;
+							height: 20px;
+							overflow: hidden;
+							padding: 0 6px 6px;
+							box-sizing: border-box;
+							img {
+								width: 100%;
+								height: 100%;
+								object-fit: contain;
+								border-radius: 4px;
+								transition: transform 0.3s ease;
+							}
+						}
+						.support-menu-card-label-dark {
+							font-family: $font;
+							font-size: 40px;
+							font-weight: 700;
+							text-transform: uppercase;
+							padding: 10px 12px 12px;
+							text-align: center;
+							background: #252422;
+							color: #e0e0e0;
+							display: block;
+							letter-spacing: 0.5px;
+							margin-left: auto;
+							margin-right: auto;
 						}
 					}
 				}
