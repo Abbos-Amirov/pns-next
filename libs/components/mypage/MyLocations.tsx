@@ -102,7 +102,7 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 				<Stack className="locations-list-box">
 					<Stack className="list-box">
 						{loading ? (
-							<Box className={'loading-box'}>
+							<Box component="div" className={'loading-box'}>
 								<Typography>Loading...</Typography>
 							</Box>
 						) : locations?.length === 0 ? (

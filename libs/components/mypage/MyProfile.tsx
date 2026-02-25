@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
@@ -13,6 +14,7 @@ import { GET_MEMBER } from '../../../apollo/user/query';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
@@ -33,9 +35,11 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 				memberPhone: user.memberPhone || '',
 				memberAddress: user.memberAddress || '',
 				memberImage: user.memberImage || '',
+				memberExperience: user.memberExperience || '',
+				memberEducation: user.memberEducation || '',
 			});
 		}
-	}, [user._id, user.memberNick, user.memberPhone, user.memberAddress, user.memberImage]);
+	}, [user]);
 
 	/** HANDLERS **/
 	const uploadImage = async (e: any) => {
@@ -116,6 +120,8 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						memberPhone: updateData.memberPhone?.trim() || '',
 						memberAddress: updateData.memberAddress?.trim() || '',
 						memberImage: updateData.memberImage || '',
+						memberExperience: updateData.memberExperience?.trim() || '',
+						memberEducation: updateData.memberEducation?.trim() || '',
 					},
 				},
 			});
@@ -155,7 +161,9 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								memberImage: updatedMember.memberImage || user.memberImage,
 								memberAddress: updatedMember.memberAddress || user.memberAddress,
 								memberDesc: updatedMember.memberDesc || user.memberDesc,
-													memberProducts: updatedMember.memberProducts || user.memberProducts || 0,
+								memberExperience: updatedMember.memberExperience ?? user.memberExperience,
+								memberEducation: updatedMember.memberEducation ?? user.memberEducation,
+								memberProducts: updatedMember.memberProducts || user.memberProducts || 0,
 								memberRank: updatedMember.memberRank || user.memberRank || 0,
 								memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
 								memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
@@ -179,7 +187,9 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							memberImage: updatedMember.memberImage || user.memberImage,
 							memberAddress: updatedMember.memberAddress || user.memberAddress,
 							memberDesc: updatedMember.memberDesc || user.memberDesc,
-												memberProducts: updatedMember.memberProducts || user.memberProducts || 0,
+							memberExperience: updatedMember.memberExperience ?? user.memberExperience,
+							memberEducation: updatedMember.memberEducation ?? user.memberEducation,
+							memberProducts: updatedMember.memberProducts || user.memberProducts || 0,
 							memberRank: updatedMember.memberRank || user.memberRank || 0,
 							memberArticles: updatedMember.memberArticles || user.memberArticles || 0,
 							memberPoints: updatedMember.memberPoints || user.memberPoints || 0,
@@ -232,13 +242,13 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			<div id="my-profile-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">My Profile</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
+						<Typography className="main-title">{t('MyProfile')}</Typography>
+						<Typography className="sub-title">{t('MyProfileSubtitle')}</Typography>
 					</Stack>
 				</Stack>
 				<Stack className="top-box">
 					<Stack className="photo-box">
-						<Typography className="title">Photo</Typography>
+						<Typography className="title">{t('Photo')}</Typography>
 						<Stack className="image-big-box">
 							<Stack className="image-box">
 								<img
@@ -259,40 +269,60 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 									accept="image/jpg, image/jpeg, image/png"
 								/>
 								<label htmlFor="hidden-input" className="labeler">
-									<Typography>Upload Profile Image</Typography>
+									<Typography>{t('UploadProfileImage')}</Typography>
 								</label>
-								<Typography className="upload-text">A photo must be in JPG, JPEG or PNG format!</Typography>
+								<Typography className="upload-text">{t('PhotoFormatHint')}</Typography>
 							</Stack>
 						</Stack>
 					</Stack>
 					<Stack className="small-input-box">
 						<Stack className="input-box">
-							<Typography className="title">Username</Typography>
+							<Typography className="title">{t('Username')}</Typography>
 							<input
 								type="text"
-								placeholder="Your username"
+								placeholder={t('PlaceholderUsername')}
 								value={updateData.memberNick}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
 							/>
 						</Stack>
 						<Stack className="input-box">
-							<Typography className="title">Phone</Typography>
+							<Typography className="title">{t('Phone')}</Typography>
 							<input
 								type="text"
-								placeholder="Your Phone"
+								placeholder={t('PlaceholderPhone')}
 								value={updateData.memberPhone}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
 							/>
 						</Stack>
 					</Stack>
 					<Stack className="address-box">
-						<Typography className="title">Address</Typography>
+						<Typography className="title">{t('Address')}</Typography>
 						<input
 							type="text"
-							placeholder="Your address"
+							placeholder={t('PlaceholderAddress')}
 							value={updateData.memberAddress}
 							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
 						/>
+					</Stack>
+					<Stack className="small-input-box">
+						<Stack className="input-box">
+							<Typography className="title">{t('Experience')}</Typography>
+							<input
+								type="text"
+								placeholder={t('PlaceholderExperience')}
+								value={updateData.memberExperience || ''}
+								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberExperience: value })}
+							/>
+						</Stack>
+						<Stack className="input-box">
+							<Typography className="title">{t('Education')}</Typography>
+							<input
+								type="text"
+								placeholder={t('PlaceholderEducation')}
+								value={updateData.memberEducation || ''}
+								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberEducation: value })}
+							/>
+						</Stack>
 					</Stack>
 					<Stack className="about-me-box">
 						<Button 
@@ -309,7 +339,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								opacity: doDisabledCheck() ? 0.6 : 1,
 							}}
 						>
-							<Typography>{updating ? 'Updating...' : 'Update Profile'}</Typography>
+							<Typography>{updating ? t('Updating') : t('UpdateProfile')}</Typography>
 							<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
 								<g clipPath="url(#clip0_7065_6985)">
 									<path
@@ -337,6 +367,8 @@ MyProfile.defaultProps = {
 		memberNick: '',
 		memberPhone: '',
 		memberAddress: '',
+		memberExperience: '',
+		memberEducation: '',
 	},
 };
 

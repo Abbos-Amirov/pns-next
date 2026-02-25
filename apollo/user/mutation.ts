@@ -70,7 +70,7 @@ export const LOGIN = gql`
 `;
 
 export const UPDATE_MEMBER = gql`
-	mutation UpdateMember($input: MemberUpdate!) {
+		mutation UpdateMember($input: MemberUpdate!) {
 		updateMember(input: $input) {
 			_id
 			memberType
@@ -82,6 +82,8 @@ export const UPDATE_MEMBER = gql`
 			memberImage
 			memberAddress
 			memberDesc
+			memberExperience
+			memberEducation
 			memberProducts
 			memberArticles
 			memberFollowers

@@ -236,8 +236,9 @@ hr {
 			.stack-pagination-row .MuiPaginationItem-root { color: #181a20 !important; }
 		}
 	}
-	/* Agent scroll-stack - light mode */
-	#agent-list-page.agent-scroll-stack {
+	/* Agent/Installer scroll-stack - light mode */
+	#agent-list-page.agent-scroll-stack,
+	#installer-list-page.agent-scroll-stack {
 		background: #f6f6f6 !important;
 		color: #181a20;
 		.agent-filter-top .agent-filter-left input {
@@ -594,6 +595,46 @@ hr {
 		.vertical-card strong,
 		.vertical-card span { color: #e0e0e0 !important; }
 	}
+	/* My Profile page - dark mode */
+	#my-profile-page {
+		.main-title-box .right-box {
+			.main-title,
+			.sub-title { color: #e0e0e0 !important; }
+		}
+		.top-box {
+			background: #1e1e1e !important;
+			border-color: #444 !important;
+			box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.3) !important;
+			.photo-box .title,
+			.small-input-box .input-box .title,
+			.address-box .title { color: #e0e0e0 !important; }
+			.upload-big-box {
+				.labeler {
+					border-color: #666 !important;
+					background: #252525 !important;
+					p, .MuiTypography-root { color: #e0e0e0 !important; }
+				}
+				.upload-text { color: #b0b0b0 !important; }
+			}
+			input {
+				background: #252525 !important;
+				border-color: #444 !important;
+				color: #e0e0e0 !important;
+				caret-color: #fff !important;
+				&::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
+			}
+			.update-button {
+				background-color: #8b4513 !important;
+				&:hover:not(:disabled) { background-color: #6d3809 !important; }
+				p, .MuiTypography-root { color: #fff !important; }
+			}
+			button:disabled {
+				background: #444 !important;
+				opacity: 0.6 !important;
+			}
+		}
+	}
+
 	/* Footer - dark mode: qora fon, oq matn */
 	#footer {
 		background-color: #0d0d0d !important;
@@ -896,13 +937,41 @@ hr {
 		.container .MuiTypography-root { color: #e0e0e0 !important; }
 	}
 
-	/* Agent scroll-stack - dark mode (already dark) */
-	#agent-list-page.agent-scroll-stack {
+	/* Agent/Installer scroll-stack - dark mode (already dark) */
+	#agent-list-page.agent-scroll-stack,
+	#installer-list-page.agent-scroll-stack {
 		background: #0d0d0d !important;
 		.agent-filter-top .agent-filter-left input {
 			background: #252525 !important;
 			border-color: #444 !important;
 			color: #e0e0e0 !important;
+		}
+		/* Filter section - MUI TextField & Select dark mode */
+		.agent-filter-top {
+			.agent-filter-left .MuiOutlinedInput-root {
+				background: #1a1a1a !important;
+				border-color: #444 !important;
+				&:hover, &.Mui-focused { border-color: #8b4513 !important; }
+				.MuiInputBase-input {
+					color: #e0e0e0 !important;
+					caret-color: #fff !important;
+					&::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
+				}
+				.MuiInputAdornment-root { color: #8b4513 !important; }
+			}
+			.agent-filter-right {
+				.MuiTypography-root { color: #e0e0e0 !important; }
+				.MuiOutlinedInput-root {
+					background: #1a1a1a !important;
+					border-color: #444 !important;
+					&:hover, &.Mui-focused { border-color: #8b4513 !important; }
+					.MuiSelect-select {
+						color: #e0e0e0 !important;
+					}
+					.MuiSvgIcon-root { color: #8b4513 !important; }
+				}
+			}
+			.MuiSvgIcon-root { color: #8b4513 !important; }
 		}
 		.stack-section-unified,
 		.stack-section-unified .stack-section-info,

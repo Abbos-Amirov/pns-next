@@ -101,6 +101,8 @@ export const GET_INSTALLERS = gql`
 				memberAddress
 				memberDesc
 				memberProducts
+				memberExperience
+				memberEducation
 				memberArticles
 				memberFollowers
 				memberFollowings
@@ -142,6 +144,8 @@ export const GET_MEMBER = gql`
 			memberAddress
 			memberDesc
 			memberProducts
+			memberExperience
+			memberEducation
 			memberArticles
 			memberFollowers
 			memberFollowings

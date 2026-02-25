@@ -21,10 +21,14 @@ import { CommentGroup } from '../../libs/enums/comment.enum';
 import { Direction } from '../../libs/enums/common.enum';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { GET_MEMBER, GET_COMMENTS } from '../../apollo/user/query';
+import { useTranslation } from 'next-i18next';
+import { GET_MEMBER, GET_COMMENTS, GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import { LIKE_TARGET_MEMBER, CREATE_COMMENT } from '../../apollo/user/mutation';
 import moment from 'moment';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
+import CommunityCard from '../../libs/components/common/CommunityCard';
+import { BoardArticle } from '../../libs/types/board-article/board-article';
+import { BoardArticlesInquiry } from '../../libs/types/board-article/board-article.input';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -33,6 +37,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
@@ -102,6 +107,24 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 			sweetErrorHandling(err).then();
 		},
 	});
+
+	// Get Articles Query (My Articles)
+	const { data: articlesData, loading: articlesLoading, error: articlesError } = useQuery(GET_BOARD_ARTICLES, {
+		variables: {
+			input: {
+				page: 1,
+				limit: 12,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				search: { memberId: installer?._id || '' },
+			} as BoardArticlesInquiry,
+		},
+		skip: !installer?._id,
+		fetchPolicy: 'network-only',
+		errorPolicy: 'all',
+	});
+
+	const installerArticles: BoardArticle[] = articlesData?.getBoardArticles?.list || [];
 
 	// Get Comments Query
 	const { data: commentsData, loading: commentsLoading, refetch: refetchComments } = useQuery(GET_COMMENTS, {
@@ -273,34 +296,48 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 		setCommentInquiry({ ...commentInquiry });
 	};
 
-	const imagePath: string = installer?.memberImage
-		? `${REACT_APP_API_URL}/${installer?.memberImage}`
-		: '/img/profile/defaultUser.svg';
-
 	if (device === 'mobile') {
 		return <h1>INSTALLER DETAIL PAGE MOBILE</h1>;
-	} else {
+	}
+
+	if (memberLoading) {
 		return (
 			<Stack className={'agent-detail-page'}>
 				<Stack className={'container'}>
-					{memberLoading ? (
-						<Box sx={{ padding: '40px', textAlign: 'center' }}>
-							<Typography>Loading installer information...</Typography>
-						</Box>
-					) : memberError ? (
-						<Box sx={{ padding: '40px', textAlign: 'center' }}>
-							<Typography color="error">Error loading installer: {memberError.message}</Typography>
-						</Box>
-					) : !installer ? (
-						<Box sx={{ padding: '40px', textAlign: 'center' }}>
-							<Typography>Installer not found</Typography>
-						</Box>
-					) : (
-						<>
+					<Stack sx={{ py: 5, alignItems: 'center' }}>
+						<Typography>Loading installer information...</Typography>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
+	}
+
+	if (memberError || !installer) {
+		return (
+			<Stack className={'agent-detail-page'}>
+				<Stack className={'container'}>
+					<Stack sx={{ py: 5, alignItems: 'center' }}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography color="error">
+							{memberError ? `Error loading installer: ${memberError.message}` : 'Installer not found'}
+						</Typography>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
+	}
+
+	const imagePath: string = installer.memberImage
+		? `${REACT_APP_API_URL}/${installer.memberImage}`
+		: '/img/profile/defaultUser.svg';
+
+	return (
+		<Stack className={'agent-detail-page'}>
+			<Stack className={'container'}>
 							{/* Installer Profile Card */}
 							<Stack className={'agent-info-section'}>
-								<Box className={'agent-profile-card'}>
-									<Box className={'agent-image-wrapper'}>
+								<Box component={'div'} className={'agent-profile-card'}>
+									<Box component={'div'} className={'agent-image-wrapper'}>
 										<img
 											src={imagePath}
 											alt={installer?.memberFullName || installer?.memberNick || 'Installer'}
@@ -309,9 +346,24 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 												(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
 											}}
 										/>
+										{installer?.memberArticles && (
+											<Chip
+												label={`${installer.memberArticles} Articles`}
+												className="agent-badge-chip"
+												sx={{
+													position: 'absolute',
+													top: '12px',
+													left: '12px',
+													background: 'rgba(235, 103, 83, 0.95)',
+													color: '#fff',
+													fontWeight: 600,
+													fontSize: '12px',
+												}}
+											/>
+										)}
 									</Box>
-									<Box className={'agent-info-content'}>
-										<Box className={'agent-header'}>
+									<Box component={'div'} className={'agent-info-content'}>
+										<Box component={'div'} className={'agent-header'}>
 											<Typography className={'agent-name'}>
 												{installer?.memberFullName || installer?.memberNick || 'Installer'}
 											</Typography>
@@ -327,32 +379,32 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 											/>
 										</Box>
 										
-										<Box className={'agent-stats'}>
-											<Box className={'stat-item'}>
+										<Box component={'div'} className={'agent-stats'}>
+											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberViews || 0}
 												</Typography>
 												<Typography className={'stat-label'}>Views</Typography>
 											</Box>
-											<Box className={'stat-item'}>
+											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberLikes || 0}
 												</Typography>
 												<Typography className={'stat-label'}>Likes</Typography>
 											</Box>
-											<Box className={'stat-item'}>
+											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberFollowers || 0}
 												</Typography>
 												<Typography className={'stat-label'}>Followers</Typography>
 											</Box>
-											<Box className={'stat-item'}>
+											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberFollowings || 0}
 												</Typography>
 												<Typography className={'stat-label'}>Followings</Typography>
 											</Box>
-											<Box className={'stat-item'}>
+											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberComments || 0}
 												</Typography>
@@ -360,24 +412,40 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 											</Box>
 										</Box>
 
-										<Box className={'agent-details'}>
+										<Box component={'div'} className={'agent-details'}>
 											{installer?.memberPhone && (
-												<Box className={'detail-item'}>
+												<Box component={'div'} className={'detail-item'}>
 													<PhoneIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 													<Typography className={'detail-text'}>{installer.memberPhone}</Typography>
 												</Box>
 											)}
 											{installer?.memberAddress && (
-												<Box className={'detail-item'}>
+												<Box component={'div'} className={'detail-item'}>
 													<LocationOnIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 													<Typography className={'detail-text'}>{installer.memberAddress}</Typography>
 												</Box>
 											)}
 											{installer?.memberDesc && (
-												<Box className={'detail-item'}>
+												<Box component={'div'} className={'detail-item'}>
 													<PersonIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 													<Typography className={'detail-text'}>{installer.memberDesc}</Typography>
 												</Box>
+											)}
+											{((installer as any)?.memberExperience || (installer as any)?.memberEducation) && (
+												<>
+													{(installer as any)?.memberExperience && (
+														<Box component={'div'} className={'detail-item'}>
+															<Typography className={'detail-label'}>{t('Experience')}:</Typography>
+															<Typography className={'detail-text'}>{(installer as any).memberExperience}</Typography>
+														</Box>
+													)}
+													{(installer as any)?.memberEducation && (
+														<Box component={'div'} className={'detail-item'}>
+															<Typography className={'detail-label'}>{t('Education')}:</Typography>
+															<Typography className={'detail-text'}>{(installer as any).memberEducation}</Typography>
+														</Box>
+													)}
+												</>
 											)}
 										</Box>
 
@@ -400,10 +468,49 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 											>
 												{isLiked ? 'Liked' : 'Like'}
 											</Button>
-										
+											<Button
+												className={'view-profile-button'}
+												variant="contained"
+												onClick={() => redirectToMemberPageHandler(installer._id)}
+												sx={{
+													background: '#8B4513',
+													color: '#fff',
+													'&:hover': { background: '#6B3410' },
+												}}
+											>
+												View Full Profile
+											</Button>
 										</Stack>
 									</Box>
 								</Box>
+							</Stack>
+
+							{/* My Articles Section */}
+							<Stack className={'agent-properties-section'}>
+								<Typography className={'section-title'}>My Articles</Typography>
+								<Stack className={'card-wrap locations-grid'}>
+									{articlesLoading ? (
+										<div className={'no-data'}>
+											<Typography>Loading articles...</Typography>
+										</div>
+									) : articlesError ? (
+										<div className={'no-data'}>
+											<img src="/img/icons/icoAlert.svg" alt="" />
+											<p>Error loading articles: {articlesError.message}</p>
+										</div>
+									) : installerArticles.length > 0 ? (
+										installerArticles.map((article: BoardArticle) => (
+											<div className={'wrap-main'} key={article?._id}>
+												<CommunityCard boardArticle={article} size="small" />
+											</div>
+										))
+									) : (
+										<div className={'no-data'}>
+											<img src="/img/icons/icoAlert.svg" alt="" />
+											<p>No articles yet.</p>
+										</div>
+									)}
+								</Stack>
 							</Stack>
 
 							{/* Reviews Section */}
@@ -507,12 +614,9 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 									</Stack>
 								)}
 							</Stack>
-						</>
-					)}
 				</Stack>
 			</Stack>
-		);
-	}
+	);
 };
 
 InstallerDetail.defaultProps = {

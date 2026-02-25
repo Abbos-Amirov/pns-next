@@ -77,10 +77,11 @@ const withAdminLayout = (Component: ComponentType) => {
 						}}
 					>
 						<Toolbar sx={{ justifyContent: 'space-between', px: 3, minHeight: '64px !important' }}>
-							<Box sx={{ flexGrow: 1 }} />
+							<Box component="div" sx={{ flexGrow: 1 }} />
 							<Stack direction={'row'} alignItems={'center'} spacing={2.5}>
 								{/* User Info Card */}
 								<Box
+									component="div"
 									sx={{
 										display: 'flex',
 										alignItems: 'center',
@@ -110,7 +111,7 @@ const withAdminLayout = (Component: ComponentType) => {
 											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.15)',
 										}}
 									/>
-									<Box sx={{ minWidth: 0 , }}>
+									<Box component="div" sx={{ minWidth: 0 }}>
 										<Typography
 											variant={'body2'}
 											sx={{
@@ -200,6 +201,7 @@ const withAdminLayout = (Component: ComponentType) => {
 							</Stack>
 
 							<Box
+								component="div"
 								className="user"
 								sx={{
 									width: '100%',
@@ -229,7 +231,7 @@ const withAdminLayout = (Component: ComponentType) => {
 											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.2)',
 										}}
 									/>
-									<Box sx={{ flex: 1, minWidth: 0 }}>
+									<Box component="div" sx={{ flex: 1, minWidth: 0 }}>
 										<Typography
 											variant={'body1'}
 											sx={{
@@ -259,6 +261,7 @@ const withAdminLayout = (Component: ComponentType) => {
 											{user?.memberPhone || 'No phone'}
 										</Typography>
 										<Box
+											component="div"
 											sx={{
 												mt: 1,
 												px: 1.5,
@@ -319,6 +322,7 @@ const withAdminLayout = (Component: ComponentType) => {
 						}}
 					>
 						<Box
+							component="div"
 							sx={{
 								width: 48,
 								height: 48,
