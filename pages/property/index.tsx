@@ -23,7 +23,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
+export const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
@@ -158,9 +158,10 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
 		const nextFilter = { ...searchFilter, page: value };
 		setSearchFilter(nextFilter);
+		const path = router.pathname || '/property';
 		await router.push(
-			`/property?input=${JSON.stringify(nextFilter)}`,
-			`/property?input=${JSON.stringify(nextFilter)}`,
+			`${path}?input=${JSON.stringify(nextFilter)}`,
+			`${path}?input=${JSON.stringify(nextFilter)}`,
 			{ scroll: false },
 		);
 		setCurrentPage(value);

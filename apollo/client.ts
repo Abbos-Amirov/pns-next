@@ -7,7 +7,6 @@ import { onError } from '@apollo/client/link/error';
 import { createUploadLink } from 'apollo-upload-client';
 import { Observable } from '@apollo/client/utilities';
 import { getJwtToken, setJwtToken } from '../libs/auth';
-import { sweetErrorAlert } from '../libs/sweetAlert';
 import { socketVar } from './store';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -132,12 +131,13 @@ function createIsomorphicLink() {
 
 	const errorLink = onError(({ graphQLErrors, networkError }) => {
 		if (graphQLErrors) {
-			graphQLErrors.map(({ message, locations, path }) => {
-				console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-				if (!message.includes('input')) sweetErrorAlert(message);
+			graphQLErrors.forEach(({ message, locations, path }) => {
+				console.warn(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+				// Don't show global popup - let components handle their own errors
+				// if (!message.includes('input')) sweetErrorAlert(message);
 			});
 		}
-		if (networkError) console.log(`[Network error]: ${networkError}`);
+		if (networkError) console.warn(`[Network error]: ${networkError}`);
 		// @ts-ignore
 		if (networkError?.statusCode === 401) {
 		}

@@ -473,6 +473,14 @@ hr {
 			}
 		}
 	}
+	/* Product menu (Window / Door) - dark mode */
+	.product-menu.product-menu-with-images,
+	.product-menu-dark.product-menu-with-images-dark {
+		.product-menu-card-label,
+		.measurer-menu-card-label { background: #252422 !important; color: #e0e0e0 !important; }
+		a.product-menu-card,
+		a.measurer-menu-card { color: #ffffff !important; }
+	}
 	/* Measurers / Installers menu - dark mode: yozuvlar oq */
 	.measurer-menu.measurer-menu-with-images {
 		max-width: 400px;

@@ -43,6 +43,8 @@ const withLayoutBasic = (Component: any) => {
 		const langOpen = Boolean(langAnchor);
 		const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 		const measurerOpen = Boolean(measurerAnchor);
+		const [productAnchor, setProductAnchor] = useState<null | HTMLElement>(null);
+		const productOpen = Boolean(productAnchor);
 		const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
 		const supportOpen = Boolean(supportAnchor);
 		const { mode, toggleTheme } = useThemeMode();
@@ -69,6 +71,8 @@ const withLayoutBasic = (Component: any) => {
 
 			switch (router.pathname) {
 				case '/property':
+				case '/property/window':
+				case '/property/door':
 					title = t('Product Search');
 					desc = t('We are glad to see you again!');
 					bgImage = '/img/banner/properties.png';
@@ -163,6 +167,14 @@ const withLayoutBasic = (Component: any) => {
 			setMeasurerAnchor(null);
 		};
 
+		const handleProductClick = (event: React.MouseEvent<HTMLElement>) => {
+			setProductAnchor(event.currentTarget);
+		};
+
+		const handleProductClose = () => {
+			setProductAnchor(null);
+		};
+
 		const handleSupportClick = (event: React.MouseEvent<HTMLElement>) => {
 			setSupportAnchor(event.currentTarget);
 		};
@@ -225,9 +237,128 @@ const withLayoutBasic = (Component: any) => {
 										<span className={'nav-link-dark'}>{t('Home')}</span>
 									</Link>
 									<span className={'nav-separator-dark'}>/</span>
-									<Link href={'/property'}>
-										<span className={'nav-link-dark'}>{t('Products')}</span>
-									</Link>
+									<Box
+										component={'div'}
+										className={'product-dropdown-dark measurer-dropdown-dark'}
+										onMouseEnter={handleProductClick}
+										onMouseLeave={handleProductClose}
+									>
+										<Box component={'span'} className={'nav-link-dark measurer-link-dark product-link-dark'}>
+											{t('Product')}
+											<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
+										</Box>
+										<Menu
+											anchorEl={productAnchor}
+											open={productOpen}
+											onClose={handleProductClose}
+											MenuListProps={{
+												onMouseLeave: handleProductClose,
+												sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
+											}}
+											anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+											transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+											className={'product-menu-dark product-menu-with-images-dark'}
+										>
+											<Link
+												href={'/property/window'}
+												className={'measurer-menu-card'}
+												onClick={handleProductClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'measurer-menu-card-label measurer-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('Windows')}
+												</span>
+												<div
+													className={'measurer-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/property/window1.jpg'}
+														alt={t('Windows')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
+												</div>
+											</Link>
+											<Link
+												href={'/property/door'}
+												className={'measurer-menu-card'}
+												onClick={handleProductClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'measurer-menu-card-label measurer-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('Doors')}
+												</span>
+												<div
+													className={'measurer-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/property/bigImage.png'}
+														alt={t('Doors')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
+												</div>
+											</Link>
+										</Menu>
+									</Box>
 									<span className={'nav-separator-dark'}>/</span>
 									<Box 
 										component={'div'} 

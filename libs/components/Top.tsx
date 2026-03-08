@@ -74,6 +74,8 @@ const Top = () => {
 	const [topBarVisible, setTopBarVisible] = useState(true);
 	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
 	const measurerOpen = Boolean(measurerAnchor);
+	const [productAnchor, setProductAnchor] = useState<null | HTMLElement>(null);
+	const productOpen = Boolean(productAnchor);
 	const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
 	const supportOpen = Boolean(supportAnchor);
 
@@ -167,6 +169,14 @@ const Top = () => {
 
 	const handleMeasurerClose = () => {
 		setMeasurerAnchor(null);
+	};
+
+	const handleProductClick = (event: React.MouseEvent<HTMLElement>) => {
+		setProductAnchor(event.currentTarget);
+	};
+
+	const handleProductClose = () => {
+		setProductAnchor(null);
 	};
 
 	const handleSupportClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -271,9 +281,126 @@ const Top = () => {
 								<span className={'nav-link'}>{t('Home')}</span>
 							</Link>
 							<span className={'nav-separator'}>/</span>
-							<Link href={'/property'}>
-								<span className={'nav-link'}>{t('Product')}</span>
-							</Link>
+							<Box
+								component={'div'}
+								className={'product-dropdown measurer-dropdown'}
+								onMouseEnter={handleProductClick}
+								onMouseLeave={handleProductClose}
+							>
+								<Box component={'span'} className={'nav-link measurer-link product-link'}>
+									{t('Product')}
+									<KeyboardArrowDownIcon className={'dropdown-icon'} />
+								</Box>
+								<Menu
+									anchorEl={productAnchor}
+									open={productOpen}
+									onClose={handleProductClose}
+									MenuListProps={{
+										onMouseLeave: handleProductClose,
+										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
+									}}
+									anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+									transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+									className={'product-menu product-menu-with-images'}
+								>
+									<Link
+										href={'/property/window'}
+										className={'product-menu-card'}
+										onClick={handleProductClose}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											flex: 1,
+											minWidth: 0,
+											textDecoration: 'none',
+											color: '#39381c',
+										}}
+									>
+										<span
+											className={'product-menu-card-label'}
+											style={{
+												textAlign: 'center',
+												fontWeight: 700,
+												textTransform: 'uppercase',
+												padding: '12px 16px 6px',
+												background: '#f8f8f8',
+												display: 'block',
+											}}
+										>
+											{t('Windows')}
+										</span>
+										<div
+											className={'product-menu-card-image'}
+											style={{
+												width: '100%',
+												height: 80,
+												overflow: 'hidden',
+												padding: '0 12px 12px',
+												boxSizing: 'border-box',
+											}}
+										>
+											<img
+												src={'/img/property/window1.jpg'}
+												alt={t('Windows')}
+												style={{
+													width: '100%',
+													height: '100%',
+													objectFit: 'cover',
+													borderRadius: 4,
+												}}
+											/>
+										</div>
+									</Link>
+									<Link
+										href={'/property/door'}
+										className={'product-menu-card'}
+										onClick={handleProductClose}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											flex: 1,
+											minWidth: 0,
+											textDecoration: 'none',
+											color: '#39381c',
+										}}
+									>
+										<span
+											className={'product-menu-card-label'}
+											style={{
+												textAlign: 'center',
+												fontWeight: 700,
+												textTransform: 'uppercase',
+												padding: '12px 16px 6px',
+												background: '#f8f8f8',
+												display: 'block',
+											}}
+										>
+											{t('Doors')}
+										</span>
+										<div
+											className={'product-menu-card-image'}
+											style={{
+												width: '100%',
+												height: 80,
+												overflow: 'hidden',
+												padding: '0 12px 12px',
+												boxSizing: 'border-box',
+											}}
+										>
+											<img
+												src={'/img/property/bigImage.png'}
+												alt={t('Doors')}
+												style={{
+													width: '100%',
+													height: '100%',
+													objectFit: 'cover',
+													borderRadius: 4,
+												}}
+											/>
+										</div>
+									</Link>
+								</Menu>
+							</Box>
 							<span className={'nav-separator'}>/</span>
 							<Box 
 								component={'div'} 

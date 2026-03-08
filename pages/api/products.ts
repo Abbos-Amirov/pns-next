@@ -32,11 +32,6 @@ const GET_PRODUCTS_QUERY = `
         manufacturedAt
         createdAt
         updatedAt
-        meLiked {
-          memberId
-          likeRefId
-          myFavorite
-        }
       }
       metaCounter {
         total
@@ -89,10 +84,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const json = await response.json();
 
 		if (json.errors && json.errors.length > 0) {
+			const errMsg = json.errors[0]?.message || JSON.stringify(json.errors[0]);
 			console.error('Products API: GraphQL errors', json.errors);
-			return res.status(400).json({
-				error: 'GraphQL error',
-				details: json.errors,
+			// Return 200 with empty list so UI doesn't break; log for debugging
+			return res.status(200).json({
+				list: [],
+				metaCounter: [{ total: 0 }],
+				_error: errMsg,
 			});
 		}
 

@@ -43,14 +43,14 @@ const Filter = (props: FilterType) => {
 				const isSelected = (searchFilter?.search?.typeList || []).includes(type as PropertyType);
 				if (isSelected) {
 					await router.push(
-						`/property?input=${JSON.stringify({
+						`${router.pathname}?input=${JSON.stringify({
 							...searchFilter,
 							search: {
 								...searchFilter.search,
 								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== type),
 							},
 						})}`,
-						`/property?input=${JSON.stringify({
+						`${router.pathname}?input=${JSON.stringify({
 							...searchFilter,
 							search: {
 								...searchFilter.search,
@@ -61,11 +61,11 @@ const Filter = (props: FilterType) => {
 					);
 				} else {
 					await router.push(
-						`/property?input=${JSON.stringify({
+						`${router.pathname}?input=${JSON.stringify({
 							...searchFilter,
 							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), type] },
 						})}`,
-						`/property?input=${JSON.stringify({
+						`${router.pathname}?input=${JSON.stringify({
 							...searchFilter,
 							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), type] },
 						})}`,
@@ -84,11 +84,11 @@ const Filter = (props: FilterType) => {
 			try {
 				setAvailabilityFilter(value);
 				await router.push(
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, availability: value },
 					})}`,
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, availability: value },
 					})}`,
@@ -109,11 +109,11 @@ const Filter = (props: FilterType) => {
 				const next = current === material ? undefined : material;
 
 				await router.push(
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, productMaterial: next },
 					})}`,
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, productMaterial: next },
 					})}`,
@@ -129,11 +129,11 @@ const Filter = (props: FilterType) => {
 	const clearProductMaterialHandler = useCallback(async () => {
 		try {
 			await router.push(
-				`/property?input=${JSON.stringify({
+				`${router.pathname}?input=${JSON.stringify({
 					...searchFilter,
 					search: { ...searchFilter.search, productMaterial: undefined },
 				})}`,
-				`/property?input=${JSON.stringify({
+				`${router.pathname}?input=${JSON.stringify({
 					...searchFilter,
 					search: { ...searchFilter.search, productMaterial: undefined },
 				})}`,
@@ -147,8 +147,8 @@ const Filter = (props: FilterType) => {
 	const refreshHandler = async () => {
 		try {
 			await router.push(
-				`/property?input=${JSON.stringify(initialInput)}`,
-				`/property?input=${JSON.stringify(initialInput)}`,
+				`${router.pathname}?input=${JSON.stringify(initialInput)}`,
+				`${router.pathname}?input=${JSON.stringify(initialInput)}`,
 				{ scroll: false },
 			);
 			setAvailabilityFilter('all');
@@ -164,11 +164,11 @@ const Filter = (props: FilterType) => {
 		async (text: string) => {
 			try {
 				await router.push(
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, text },
 					})}`,
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: { ...searchFilter.search, text },
 					})}`,
@@ -231,14 +231,14 @@ const Filter = (props: FilterType) => {
 				const maxNum = max === '' ? 2000000 : parseInt(max) || 2000000;
 				
 				await router.push(
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: {
 							...searchFilter.search,
 							pricesRange: { start: minNum, end: maxNum },
 						},
 					})}`,
-					`/property?input=${JSON.stringify({
+					`${router.pathname}?input=${JSON.stringify({
 						...searchFilter,
 						search: {
 							...searchFilter.search,
