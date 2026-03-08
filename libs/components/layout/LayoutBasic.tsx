@@ -259,16 +259,102 @@ const withLayoutBasic = (Component: any) => {
 											}}
 											className={'measurer-menu-dark measurer-menu-with-images-dark'}
 										>
-											<Link href={'/agent'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
-												<span className={'measurer-menu-card-label measurer-menu-card-label-dark'}>{t('Measurers')}</span>
-												<div className={'measurer-menu-card-image'}>
-													<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+											<Link
+												href={'/agent'}
+												className={'measurer-menu-card'}
+												onClick={handleMeasurerClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'measurer-menu-card-label measurer-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('Measurers')}
+												</span>
+												<div
+													className={'measurer-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/experts/measurers.png'}
+														alt={t('Measurers')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
 												</div>
 											</Link>
-											<Link href={'/installer'} className={'measurer-menu-card'} onClick={handleMeasurerClose}>
-												<span className={'measurer-menu-card-label measurer-menu-card-label-dark'}>{t('Installers')}</span>
-												<div className={'measurer-menu-card-image'}>
-													<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+											<Link
+												href={'/installer'}
+												className={'measurer-menu-card'}
+												onClick={handleMeasurerClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'measurer-menu-card-label measurer-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('Installers')}
+												</span>
+												<div
+													className={'measurer-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/experts/installers.png'}
+														alt={t('Installers')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
 												</div>
 											</Link>
 										</Menu>
@@ -320,22 +406,151 @@ const withLayoutBasic = (Component: any) => {
 											}}
 											className={'support-menu-dark support-menu-with-images-dark'}
 										>
-											<Link href={'/cs'} className={'support-menu-card'} onClick={handleSupportClose}>
-												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('Support')}</span>
-												<div className={'support-menu-card-image'}>
-													<img src={'/img/support/support.png'} alt={t('Support')} />
+											<Link
+												href={'/cs'}
+												className={'support-menu-card'}
+												onClick={handleSupportClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'support-menu-card-label support-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('Support')}
+												</span>
+												<div
+													className={'support-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/support/support.png'}
+														alt={t('Support')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
 												</div>
 											</Link>
-											<Link href={'/our-services'} className={'support-menu-card'} onClick={handleSupportClose}>
-												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('OurServices')}</span>
-												<div className={'support-menu-card-image'}>
-													<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+											<Link
+												href={'/our-services'}
+												className={'support-menu-card'}
+												onClick={handleSupportClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'support-menu-card-label support-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('OurServices')}
+												</span>
+												<div
+													className={'support-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/support/our-services.png'}
+														alt={t('OurServices')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
 												</div>
 											</Link>
-											<Link href={'/about-me'} className={'support-menu-card'} onClick={handleSupportClose}>
-												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('AboutMe')}</span>
-												<div className={'support-menu-card-image'}>
-													<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+											<Link
+												href={'/about-me'}
+												className={'support-menu-card'}
+												onClick={handleSupportClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'support-menu-card-label support-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('AboutMe')}
+												</span>
+												<div
+													className={'support-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/support/about-me.png'}
+														alt={t('AboutMe')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
 												</div>
 											</Link>
 										</Menu>

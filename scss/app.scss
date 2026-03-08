@@ -102,7 +102,8 @@ hr {
 		.logo-text-dark { color: #252420 !important; }
 		.nav-link-dark,
 		.nav-separator-dark,
-		.measurer-link-dark .dropdown-icon-dark { color: #252420 !important; }
+		.measurer-link-dark .dropdown-icon-dark,
+		.support-link-dark .dropdown-icon-dark { color: #252420 !important; }
 		.nav-link-dark:hover { color: #8b4513 !important; }
 		.nav-right-dark {
 			.call-us-btn .call-icon,
@@ -179,32 +180,53 @@ hr {
 		background: #f6f6f6 !important;
 		color: #181a20;
 		.container.property-stack-container {
-			.filter-config-stack .filter-main .filter-section {
-				.section-header { background: #8b4513 !important; color: #fff !important; }
-				.category-list, .search-content, .price-range-content,
-				.availability-content, .hot-deals-wrapper {
-					background: #fff !important;
-					border-color: #e0e0e0 !important;
-					.category-item span, .category-item .MuiTypography-root, .category-item p, input, label { color: #181a20 !important; }
-				}
-				.category-list .category-item {
-					border-bottom: 1px solid #e0e0e0 !important;
-					padding: 12px 0 !important;
-					&:last-child { border-bottom: none !important; }
-					&.selected { font-weight: 600 !important; color: #8b4513 !important; }
-					&.selected .MuiTypography-root { color: #8b4513 !important; }
-				}
-				.search-input .MuiOutlinedInput-root,
-				.price-input .MuiOutlinedInput-root {
-					background: #fff !important;
-					.MuiInputBase-input { color: #181a20 !important; }
-					.MuiInputAdornment-root { color: #181a20 !important; }
-					fieldset { border-color: #ddd !important; }
-				}
-				.hot-deals-wrapper .hot-deal-image {
-					height: 110px !important;
-					max-height: 110px !important;
-					overflow: hidden !important;
+			.filter-config-stack {
+				padding: 20px !important;
+				border-radius: 14px !important;
+				background: #fff !important;
+				border: 1px solid #e5e5e5 !important;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+				.filter-main .filter-section {
+					padding: 14px 0 0 !important;
+					.section-header { background: #8b4513 !important; color: #fff !important; }
+					.category-list, .search-content, .price-range-content,
+					.availability-content, .hot-deals-wrapper {
+						background: #fff !important;
+						border-color: #e0e0e0 !important;
+						padding: 14px 16px !important;
+						border-radius: 8px !important;
+						margin-top: 10px !important;
+						.category-item span, .category-item .MuiTypography-root, .category-item p, input, label { color: #1a1c21 !important; }
+						.MuiFormControlLabel-label { color: #1a1c21 !important; }
+					}
+					.category-list .category-item {
+						border-bottom: 1px solid #e8e8e8 !important;
+						padding: 14px 0 !important;
+						&:last-child { border-bottom: none !important; }
+						&.selected { font-weight: 600 !important; color: #8b4513 !important; }
+						&.selected .MuiTypography-root { color: #8b4513 !important; }
+					}
+					.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+					.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+						color: #1a1c21 !important;
+						opacity: 1;
+					}
+					.search-input .MuiOutlinedInput-root,
+					.price-input .MuiOutlinedInput-root {
+						background: #fff !important;
+						.MuiInputBase-input { color: #1a1c21 !important; }
+						.MuiInputAdornment-root { color: #1a1c21 !important; }
+						fieldset { border-color: #ddd !important; }
+					}
+					.filter-sort-search-row .filter-sort-block {
+						.filter-sort-label { color: #1a1c21 !important; }
+						.filter-sort-btn { background: #8b4513 !important; color: #fff !important; }
+					}
+					.hot-deals-wrapper .hot-deal-image {
+						height: 110px !important;
+						max-height: 110px !important;
+						overflow: hidden !important;
+					}
 				}
 			}
 			.stack-section {
@@ -217,6 +239,14 @@ hr {
 			}
 			.stack-h2, .stack-desc, .stack-meta-value { color: #181a20 !important; }
 			.stack-meta-label { color: #555 !important; }
+			.stack-meta-cards {
+				border-color: rgba(0, 0, 0, 0.12) !important;
+				background: rgba(255, 255, 255, 0.8) !important;
+			}
+			.stack-meta-row {
+				border-color: rgba(0, 0, 0, 0.1) !important;
+				background: #fff !important;
+			}
 			.stack-demo-btn {
 				background: #8b4513 !important;
 				color: #fff !important;
@@ -256,6 +286,14 @@ hr {
 		}
 		.stack-h2, .stack-desc, .stack-meta-value { color: #181a20 !important; }
 		.stack-meta-label { color: #333 !important; opacity: 0.85 !important; }
+		.stack-meta-cards {
+			border-color: rgba(0, 0, 0, 0.12) !important;
+			background: rgba(255, 255, 255, 0.8) !important;
+		}
+		.stack-meta-row {
+			border-color: rgba(0, 0, 0, 0.1) !important;
+			background: #fff !important;
+		}
 		.stack-meta-input-box,
 		.stack-desc-input-box {
 			border-color: #e0e0e0 !important;
@@ -363,7 +401,8 @@ hr {
 		.logo-text-dark { color: #ffffff !important; }
 		.nav-link-dark,
 		.nav-separator-dark,
-		.measurer-link-dark .dropdown-icon-dark { color: #e0e0e0 !important; }
+		.measurer-link-dark .dropdown-icon-dark,
+		.support-link-dark .dropdown-icon-dark { color: #e0e0e0 !important; }
 		.nav-link-dark:hover { color: #c9a962 !important; }
 		.nav-right-dark {
 			.call-us-btn {
@@ -778,12 +817,29 @@ hr {
 	#property-list-page.property-scroll-stack {
 		background: #0b0c10 !important;
 		color: #fff !important;
-		.filter-config-stack .filter-main .filter-section {
-			.search-input .MuiOutlinedInput-root,
-			.price-input .MuiOutlinedInput-root {
-				background: #1a1a1a !important;
-				.MuiInputBase-input { color: #fff !important; caret-color: #fff !important; }
-				.MuiInputAdornment-root { color: #e0e0e0 !important; }
+		.stack-meta-cards {
+			border-color: rgba(255, 255, 255, 0.2) !important;
+			background: rgba(0, 0, 0, 0.2) !important;
+		}
+		.stack-meta-row {
+			border-color: rgba(255, 255, 255, 0.15) !important;
+			background: rgba(255, 255, 255, 0.04) !important;
+		}
+		.filter-config-stack {
+			background: rgba(0, 0, 0, 0.25) !important;
+			border-color: rgba(255, 255, 255, 0.18) !important;
+			.filter-main .filter-section {
+				.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+				.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+					color: rgba(255, 255, 255, 0.65) !important;
+				}
+				.search-input .MuiOutlinedInput-root,
+				.price-input .MuiOutlinedInput-root {
+					background: #1a1a1a !important;
+					.MuiInputBase-input { color: #fff !important; caret-color: #fff !important; }
+					.MuiInputAdornment-root { color: #e0e0e0 !important; }
+				}
+				.filter-sort-label { color: #e0e0e0 !important; }
 			}
 		}
 	}

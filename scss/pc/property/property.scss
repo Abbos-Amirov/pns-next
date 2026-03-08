@@ -984,31 +984,72 @@
 			top: 24px;
 			height: fit-content;
 			align-self: flex-start;
-			.filter-main .filter-section {
-				.section-header { background: #8b4513; color: #fff; }
-				.category-list, .search-content, .price-range-content,
-				.availability-content, .hot-deals-wrapper {
-					background: rgba(255,255,255,0.06);
-					border: 1px solid rgba(255,255,255,0.1);
-					.category-item span, .category-item .MuiTypography-root, input, label, .category-item { color: #e0e0e0 !important; }
-					.MuiFormControlLabel-label { color: #e0e0e0 !important; }
+			padding: 20px;
+			border-radius: 14px;
+			background: rgba(0, 0, 0, 0.25);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+			.filter-main {
+				.filter-sort-search-row {
+					padding: 0;
+					.filter-sort-block {
+						.filter-sort-label {
+							font-size: 14px;
+							font-weight: 500;
+							color: #e0e0e0;
+							opacity: 0.95;
+						}
+						.filter-sort-btn {
+							background: #8b4513 !important;
+							color: #fff !important;
+							font-weight: 600;
+							text-transform: none;
+							padding: 10px 14px;
+						}
+					}
 				}
-				.category-list .category-item {
-					border-bottom: 1px solid rgba(255,255,255,0.15);
-					padding: 12px 0;
-					cursor: pointer;
-					transition: all 0.2s;
-					&:last-child { border-bottom: none; }
-					&:hover { padding-left: 8px; }
-					&.selected { font-weight: 600; color: #c9a962 !important; }
-					&.selected .MuiTypography-root { color: #c9a962 !important; }
-				}
-				.hot-deals-wrapper .hot-deal-card .hot-deal-image {
-					height: 110px;
-					max-height: 110px;
-					border-radius: 8px;
-					overflow: hidden;
-					img { object-fit: cover; }
+				.filter-section {
+					padding: 14px 0 0;
+					&:first-of-type { padding-top: 0; }
+					.section-header { background: #8b4513; color: #fff; }
+					.category-list, .search-content, .price-range-content,
+					.availability-content, .hot-deals-wrapper {
+						background: rgba(255,255,255,0.06);
+						border: 1px solid rgba(255,255,255,0.1);
+						padding: 14px 16px;
+						border-radius: 8px;
+						margin-top: 10px;
+						.category-item span, .category-item .MuiTypography-root, input, label, .category-item { color: #e8e6e3 !important; }
+						.MuiFormControlLabel-label { color: #e8e6e3 !important; opacity: 0.95; }
+					}
+					.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+					.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+						color: rgba(255,255,255,0.65) !important;
+						opacity: 1;
+					}
+					.category-list .category-item {
+						border-bottom: 1px solid rgba(255,255,255,0.15);
+						padding: 14px 0;
+						cursor: pointer;
+						transition: all 0.2s;
+						&:last-child { border-bottom: none; }
+						&:hover { padding-left: 8px; }
+						&.selected { font-weight: 600; color: #c9a962 !important; }
+						&.selected .MuiTypography-root { color: #c9a962 !important; }
+					}
+					.availability-content .availability-radio-group {
+						display: flex;
+						flex-direction: column;
+						gap: 10px;
+					}
+					.price-range-content .price-inputs { gap: 12px; }
+					.hot-deals-wrapper .hot-deal-card .hot-deal-image {
+						height: 110px;
+						max-height: 110px;
+						border-radius: 8px;
+						overflow: hidden;
+						img { object-fit: cover; }
+					}
 				}
 			}
 		}
@@ -1073,11 +1114,19 @@
 			display: flex;
 			flex-direction: column;
 			gap: 12px;
+			padding: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			border-radius: 12px;
+			background: rgba(0, 0, 0, 0.15);
 		}
 		.stack-meta-row {
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
+			padding: 12px 14px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.06);
 			.stack-meta-label {
 				font-size: 11px;
 				opacity: 0.6;
@@ -1095,11 +1144,17 @@
 				gap: 8px;
 			}
 		}
+		.stack-demo-and-hot-deals {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 16px;
+			margin-top: 28px;
+		}
 		.stack-demo-btn {
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
-			margin-top: 28px;
 			padding: 14px 28px;
 			border-radius: 12px;
 			background: #fff;
@@ -1110,6 +1165,7 @@
 			border: none;
 			cursor: pointer;
 			transition: all 0.2s;
+			flex-shrink: 0;
 			svg { font-size: 20px; }
 			&:hover {
 				background: #8b4513;
@@ -1119,8 +1175,9 @@
 		.stack-hot-deals-row {
 			display: flex;
 			flex-direction: row;
+			align-items: center;
 			gap: 12px;
-			margin-top: 20px;
+			margin-top: 0;
 			.stack-hot-deal-thumb {
 				width: 72px;
 				height: 54px;

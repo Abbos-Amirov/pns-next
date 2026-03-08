@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState, useMemo, useCallback } from 'react';
 import { NextPage } from 'next';
-import { Button, Menu, MenuItem, Pagination, Typography } from '@mui/material';
+import { Pagination, Typography } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -8,7 +8,6 @@ import Filter from '../../libs/components/property/Filter';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { PropertiesInquiry } from '../../libs/types/product/property.input';
 import { ProductsInquiry } from '../../libs/types/product/products.input';
 import { Product } from '../../libs/types/product/property';
@@ -42,10 +41,11 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const productsInquiry: ProductsInquiry = useMemo(() => {
 		const search: any = {};
 		
-		// Convert availability to ProductStatus enum
-		if ((searchFilter.search?.availability as any) === 'ACTIVE') {
+		// Convert availability to ProductStatus enum (Filter uses in_stock/out_of_stock)
+		const av = searchFilter.search?.availability as any;
+		if (av === 'ACTIVE' || av === 'in_stock') {
 			search.productStatus = ProductStatus.ACTIVE;
-		} else if ((searchFilter.search?.availability as any) === 'OUT_OF_STOCK') {
+		} else if (av === 'OUT_OF_STOCK' || av === 'out_of_stock') {
 			search.productStatus = ProductStatus.OUT_OF_STOCK;
 		}
 		
@@ -242,7 +242,18 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			<div className="container property-stack-container">
 				<aside className="filter-config filter-config-stack">
 					{/* @ts-ignore */}
-					<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
+					<Filter
+						searchFilter={searchFilter}
+						setSearchFilter={setSearchFilter}
+						initialInput={initialInput}
+						anchorEl={anchorEl}
+						sortingOpen={sortingOpen}
+						filterSortName={filterSortName}
+						sortKeyToLabel={sortKeyToLabel}
+						onSortClick={sortingClickHandler}
+						onSortClose={sortingCloseHandler}
+						onSortSelect={sortingHandler}
+					/>
 				</aside>
 				<div className="property-stack-main">
 					{loading ? (
@@ -255,22 +266,6 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 						<div className="stack-loading">{t('PropertyNoProducts')}</div>
 					) : (
 						<>
-							<div className="stack-sort-row">
-								<span>{t('SortBy')}</span>
-								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />} className="sort-btn">
-									{t(sortKeyToLabel[filterSortName] || 'SortFeatured')}
-								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler}>
-									<MenuItem onClick={sortingHandler} id="featured" disableRipple>{t('SortFeatured')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="best_selling" disableRipple>{t('SortBestSelling')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="alphabetical_az" disableRipple>{t('SortAlphabeticalAZ')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="alphabetical_za" disableRipple>{t('SortAlphabeticalZA')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="price_low_high" disableRipple>{t('SortPriceLowHigh')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="price_high_low" disableRipple>{t('SortPriceHighLow')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="date_old_new" disableRipple>{t('SortDateOldNew')}</MenuItem>
-									<MenuItem onClick={sortingHandler} id="date_new_old" disableRipple>{t('SortDateNewOld')}</MenuItem>
-								</Menu>
-							</div>
 							{properties.map((p, i) => (
 								<section
 									key={p._id}
@@ -304,19 +299,21 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 												</span>
 											</div>
 										</div>
-										<button
-											className="stack-demo-btn"
-											onClick={() => router.push(`/property/detail?id=${p._id}`)}
-										>
-											<PlayArrowIcon />
-											{t('Demo')}
-										</button>
-										<div className="stack-hot-deals-row">
-											{hotDealImages.map((src, idx) => (
-												<div key={idx} className="stack-hot-deal-thumb">
-													<img src={src} alt={`Deal ${idx + 1}`} />
-												</div>
-											))}
+										<div className="stack-demo-and-hot-deals">
+											<button
+												className="stack-demo-btn"
+												onClick={() => router.push(`/property/detail?id=${p._id}`)}
+											>
+												<PlayArrowIcon />
+												{t('Demo')}
+											</button>
+											<div className="stack-hot-deals-row">
+												{hotDealImages.map((src, idx) => (
+													<div key={idx} className="stack-hot-deal-thumb">
+														<img src={src} alt={`Deal ${idx + 1}`} />
+													</div>
+												))}
+											</div>
 										</div>
 									</div>
 									<div className="stack-section-image">

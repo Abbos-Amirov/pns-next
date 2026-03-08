@@ -1,19 +1,30 @@
 import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 'react';
-import { Stack, Typography, Box, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
+import { Stack, Typography, Box, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment, Button, Menu, MenuItem } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductMaterial, PropertyType } from '../../enums/property.enum';
 import { PropertiesInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import SearchIcon from '@mui/icons-material/Search';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
 interface FilterType {
 	searchFilter: PropertiesInquiry;
 	setSearchFilter: any;
 	initialInput: PropertiesInquiry;
+	/** Sort by - left sidebar (parallel to Search) */
+	anchorEl?: HTMLElement | null;
+	sortingOpen?: boolean;
+	filterSortName?: string;
+	sortKeyToLabel?: Record<string, string>;
+	onSortClick?: (e: React.MouseEvent<HTMLElement>) => void;
+	onSortClose?: () => void;
+	onSortSelect?: (e: React.MouseEvent<HTMLLIElement>) => void;
 }
 
 const Filter = (props: FilterType) => {
-	const { searchFilter, setSearchFilter, initialInput } = props;
+	const { searchFilter, setSearchFilter, initialInput, anchorEl, sortingOpen, filterSortName, sortKeyToLabel, onSortClick, onSortClose, onSortSelect } = props;
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [propertyType] = useState<PropertyType[]>(Object.values(PropertyType));
@@ -311,12 +322,33 @@ const Filter = (props: FilterType) => {
 	} else {
 		return (
 			<Stack className={'filter-main'}>
+				{/* Sort by + Search - parallel row */}
+				<Stack className={'filter-section filter-sort-search-row'} mb={'24px'}>
+					<Stack direction={'row'} alignItems={'center'} gap={'12px'} flexWrap={'wrap'}>
+						{onSortClick && sortKeyToLabel && (
+							<Stack direction={'row'} alignItems={'center'} gap={'10px'} className={'filter-sort-block'}>
+								<span className={'filter-sort-label'}>{t('SortBy')}</span>
+								<Button onClick={onSortClick} endIcon={<KeyboardArrowDownRoundedIcon />} className={'filter-sort-btn'}>
+									{t(sortKeyToLabel[filterSortName || 'date_new_old'] || 'SortDateNewOld')}
+								</Button>
+								<Menu anchorEl={anchorEl || null} open={!!sortingOpen} onClose={onSortClose}>
+									<MenuItem onClick={onSortSelect} id="featured" disableRipple>{t('SortFeatured')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="best_selling" disableRipple>{t('SortBestSelling')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="alphabetical_az" disableRipple>{t('SortAlphabeticalAZ')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="alphabetical_za" disableRipple>{t('SortAlphabeticalZA')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="price_low_high" disableRipple>{t('SortPriceLowHigh')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="price_high_low" disableRipple>{t('SortPriceHighLow')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="date_old_new" disableRipple>{t('SortDateOldNew')}</MenuItem>
+									<MenuItem onClick={onSortSelect} id="date_new_old" disableRipple>{t('SortDateNewOld')}</MenuItem>
+								</Menu>
+							</Stack>
+						)}
+					</Stack>
+				</Stack>
 
-<Stack className={'filter-section'} mb={'30px'}>
-
-	{/* Search Section */}
+				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Search</Typography>
+						<Typography style={{ color: '#ffffff' }}>Search</Typography>
 					</Box>
 					<Stack className={'search-content'}>
 						<TextField
@@ -334,15 +366,11 @@ const Filter = (props: FilterType) => {
 							className={'search-input'}
 						/>
 					</Stack>
-
-
-
-					{/* Price Range Section */}
 				</Stack>
 
-				<Stack className={'filter-section'} mb={'30px'}>
+				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Price Range</Typography>
+						<Typography style={{ color: '#ffffff' }}>Price Range</Typography>
 					</Box>
 					<Stack className={'price-range-content'}>
 						<Stack className={'price-inputs'} direction={'row'} gap={'12px'}>
@@ -377,10 +405,9 @@ const Filter = (props: FilterType) => {
 						</Stack>
 					</Stack>
 				</Stack>
-				{/* Material Section */}
-				<Stack className={'filter-section'} mb={'30px'}>
+				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Material</Typography>
+						<Typography style={{ color: '#ffffff' }}>Material</Typography>
 					</Box>
 					<Stack className={'category-list'}>
 						{/* All materials (clear filter) */}
@@ -408,15 +435,9 @@ const Filter = (props: FilterType) => {
 					</Stack>
 				</Stack>
 
-				{/* Search Section */}
-				
-				{/* Price Range Section */}
-				
-
-				{/* Availability Filter */}
 				<Stack className={'filter-section'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Availability</Typography>
+						<Typography style={{ color: '#ffffff' }}>Availability</Typography>
 					</Box>
 					<Stack className={'availability-content'}>
 						<RadioGroup
