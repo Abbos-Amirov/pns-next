@@ -117,6 +117,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = t('RepairMaintenanceSubtitle');
 					bgImage = '/img/banner/header2.svg';
 					break;
+				case '/about-me':
+					title = t('AboutMe');
+					desc = t('AboutHeroSubtitle');
+					bgImage = '/img/banner/header2.svg';
+					break;
 				case '/account/join':
 					title = t('Login/Signup');
 					desc = t('Authentication Process');
@@ -883,11 +888,11 @@ const withLayoutBasic = (Component: any) => {
 								</Box>
 
 								{/* Description */}
-								<Box component={'div'} className={'hero-description'}>
+								{/* <Box component={'div'} className={'hero-description'}>
 									<Typography component={'p'} className={'description-text'}>
 										{memoizedValues.desc}
 									</Typography>
-								</Box>
+								</Box> */}
 
 								{/* NEXT PROJECT Button */}
 								<Button className={'next-project-btn'}>

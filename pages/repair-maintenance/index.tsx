@@ -13,7 +13,7 @@ type PropertyType = 'apartment' | 'house';
 
 const RepairMaintenance: NextPage = () => {
 	const { t } = useTranslation('common');
-	const [propertyType, setPropertyType] = useState<PropertyType | null>(null);
+	const [propertyType, setPropertyType] = useState<PropertyType | null>('apartment');
 	const [address, setAddress] = useState('');
 	const [buildingNumber, setBuildingNumber] = useState('');
 	const [floorNumber, setFloorNumber] = useState('');
@@ -125,6 +125,7 @@ const RepairMaintenance: NextPage = () => {
 								<label className="our-services-label">{t('LabelProblemDescription')}</label>
 								<TextField
 									fullWidth
+									rows={4}
 									variant="outlined"
 									placeholder={t('PlaceholderProblemDescription')}
 									value={problemDesc}
