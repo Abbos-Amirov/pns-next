@@ -1,214 +1,165 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ImageUploadArea from '../../libs/components/our-services/ImageUploadArea';
+import { SERVICES_DATA } from '../../libs/components/our-services/servicesData';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import HomeIcon from '@mui/icons-material/Home';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import BuildIcon from '@mui/icons-material/Build';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
-type ServiceType = 'apartment' | 'house';
+type PropertyType = 'apartment' | 'house';
 
 const OurServices: NextPage = () => {
 	const { t } = useTranslation('common');
-	const [serviceType, setServiceType] = useState<ServiceType | null>(null);
-
-	// Apartment form state
-	const [apartmentAddress, setApartmentAddress] = useState('');
-	const [apartmentBuilding, setApartmentBuilding] = useState('');
-	const [apartmentFloor, setApartmentFloor] = useState('');
-	const [apartmentNumber, setApartmentNumber] = useState('');
-	const [apartmentProblemDescription, setApartmentProblemDescription] = useState('');
-	const [apartmentImages, setApartmentImages] = useState<File[]>([]);
-
-	// House form state
-	const [houseAddress, setHouseAddress] = useState('');
-	const [houseNumber, setHouseNumber] = useState('');
-	const [houseProblemDescription, setHouseProblemDescription] = useState('');
-	const [houseImages, setHouseImages] = useState<File[]>([]);
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// TODO: integrate with API when backend is ready
-		console.log({ serviceType, apartment: { apartmentAddress, apartmentBuilding, apartmentFloor, apartmentNumber, apartmentProblemDescription, apartmentImages }, house: { houseAddress, houseNumber, houseProblemDescription, houseImages } });
-	};
+	const [propertyType, setPropertyType] = useState<PropertyType | null>(null);
 
 	return (
-		<div className="our-services-page">
-			<div className="our-services-container">
-				{/* Header */}
-				<header className="our-services-header">
-					<Typography component="h1" className="our-services-title">
-						{t('RepairMaintenanceService')}
-					</Typography>
-					<Typography component="p" className="our-services-subtitle">
-						{t('OurServicesSubtitle')}
-					</Typography>
-				</header>
+		<div className="our-services-full-page">
+			{/* 1. HERO SECTION */}
+			<section className="os-hero">
+				<div className="os-hero-inner">
+					<div className="os-hero-badge">{t('OurServicesHeroBadge')}</div>
+					<h1 className="os-hero-title">{t('OurServicesHeroTitle')}</h1>
+					<p className="os-hero-subtitle">{t('OurServicesHeroSubtitle')}</p>
+					<p className="os-hero-support">{t('OurServicesHeroSupport')}</p>
+				</div>
+			</section>
 
-				{/* Service Type Selector */}
-				<div className="our-services-selector">
-					<div className="our-services-selector-grid">
+			{/* 2. SERVICE CATEGORY SECTION */}
+			<section className="os-section os-services">
+				<div className="os-container">
+					<h2 className="os-section-title">{t('OurServicesSectionServices')}</h2>
+					<div className="os-service-grid">
+						{SERVICES_DATA.map((item) => (
+							<div key={item.id} className="os-service-card">
+								<div className="os-service-card-icon">
+									<item.Icon />
+								</div>
+								<h3 className="os-service-card-title">{t(item.titleKey)}</h3>
+								<p className="os-service-card-desc">{t(item.descKey)}</p>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* 3. PROPERTY TYPE SELECTION */}
+			<section className="os-section os-property">
+				<div className="os-container">
+					<h2 className="os-section-title">{t('OurServicesSectionProperty')}</h2>
+					<div className="os-property-grid">
 						<button
 							type="button"
-							className={`our-services-option-card ${serviceType === 'apartment' ? 'selected' : ''}`}
-							onClick={() => setServiceType('apartment')}
+							className={`os-property-card ${propertyType === 'apartment' ? 'selected' : ''}`}
+							onClick={() => setPropertyType('apartment')}
 						>
-							<div className="our-services-option-icon">
+							<div className="os-property-icon">
 								<ApartmentIcon />
 							</div>
-							<span className="our-services-option-label">{t('ServiceTypeApartment')}</span>
+							<span>{t('ServiceTypeApartment')}</span>
 						</button>
 						<button
 							type="button"
-							className={`our-services-option-card ${serviceType === 'house' ? 'selected' : ''}`}
-							onClick={() => setServiceType('house')}
+							className={`os-property-card ${propertyType === 'house' ? 'selected' : ''}`}
+							onClick={() => setPropertyType('house')}
 						>
-							<div className="our-services-option-icon">
+							<div className="os-property-icon">
 								<HomeIcon />
 							</div>
-							<span className="our-services-option-label">{t('ServiceTypeHouse')}</span>
+							<span>{t('ServiceTypeHouse')}</span>
 						</button>
 					</div>
-					{!serviceType && (
-						<p className="our-services-select-hint">{t('ServiceSelectHint')}</p>
+					{!propertyType && <p className="os-property-hint">{t('ServiceSelectHint')}</p>}
+					{propertyType && (
+						<div className="os-cta-box">
+							<Link href="/repair-maintenance/">
+								<Button variant="contained" className="os-cta-btn">
+									{t('OurServicesRequestCTA')} <ArrowForwardIcon fontSize="small" sx={{ ml: 0.5 }} />
+								</Button>
+							</Link>
+						</div>
 					)}
 				</div>
+			</section>
 
-				{/* Form Card */}
-				{serviceType && (
-					<div className="our-services-form-wrapper">
-						<form className="our-services-form" onSubmit={handleSubmit}>
-							{serviceType === 'apartment' && (
-								<>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('LabelAddress')}</label>
-										<TextField
-											fullWidth
-											variant="outlined"
-											placeholder={t('PlaceholderOurServicesAddress')}
-											value={apartmentAddress}
-											onChange={(e) => setApartmentAddress(e.target.value)}
-											className="our-services-input"
-										/>
-									</div>
-									<div className="our-services-field-row">
-										<div className="our-services-field">
-											<label className="our-services-label">{t('LabelBuildingNumber')}</label>
-											<TextField
-												fullWidth
-												variant="outlined"
-												placeholder={t('PlaceholderBuildingNumber')}
-												value={apartmentBuilding}
-												onChange={(e) => setApartmentBuilding(e.target.value)}
-												className="our-services-input"
-											/>
-										</div>
-										<div className="our-services-field">
-											<label className="our-services-label">{t('LabelFloorNumber')}</label>
-											<TextField
-												fullWidth
-												variant="outlined"
-												placeholder={t('PlaceholderFloorNumber')}
-												value={apartmentFloor}
-												onChange={(e) => setApartmentFloor(e.target.value)}
-												className="our-services-input"
-											/>
-										</div>
-										<div className="our-services-field">
-											<label className="our-services-label">{t('LabelApartmentNumber')}</label>
-											<TextField
-												fullWidth
-												variant="outlined"
-												placeholder={t('PlaceholderApartmentNumber')}
-												value={apartmentNumber}
-												onChange={(e) => setApartmentNumber(e.target.value)}
-												className="our-services-input"
-											/>
-										</div>
-									</div>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('LabelProblemDescription')}</label>
-										<TextField
-											fullWidth
-											variant="outlined"
-											placeholder={t('PlaceholderProblemDescription')}
-											value={apartmentProblemDescription}
-											onChange={(e) => setApartmentProblemDescription(e.target.value)}
-											className="our-services-textarea"
-										/>
-									</div>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('ImageUploadLabel')}</label>
-										<ImageUploadArea
-											files={apartmentImages}
-											onChange={setApartmentImages}
-											maxFiles={4}
-										/>
-									</div>
-								</>
-							)}
-
-							{serviceType === 'house' && (
-								<>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('LabelAddress')}</label>
-										<TextField
-											fullWidth
-											variant="outlined"
-											placeholder={t('PlaceholderOurServicesAddress')}
-											value={houseAddress}
-											onChange={(e) => setHouseAddress(e.target.value)}
-											className="our-services-input"
-										/>
-									</div>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('LabelHouseNumber')}</label>
-										<TextField
-											fullWidth
-											variant="outlined"
-											placeholder={t('PlaceholderHouseNumber')}
-											value={houseNumber}
-											onChange={(e) => setHouseNumber(e.target.value)}
-											className="our-services-input"
-										/>
-									</div>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('LabelProblemDescription')}</label>
-										<TextField
-											fullWidth
-											minRows={5}
-											maxRows={10}
-											variant="outlined"
-											placeholder={t('PlaceholderProblemDescription')}
-											value={houseProblemDescription}
-											onChange={(e) => setHouseProblemDescription(e.target.value)}
-											className="our-services-textarea"
-										/>
-									</div>
-									<div className="our-services-field">
-										<label className="our-services-label">{t('ImageUploadLabel')}</label>
-										<ImageUploadArea
-											files={houseImages}
-											onChange={setHouseImages}
-											maxFiles={4}
-										/>
-									</div>
-								</>
-							)}
-
-							<div className="our-services-cta">
-								<Button type="submit" variant="contained" className="our-services-submit-btn">
-									{t('SubmitServiceRequest')}
+			{/* 4. REPAIR / ISSUE SUPPORT SECTION */}
+			<section className="os-section os-repair">
+				<div className="os-container">
+					<div className="os-repair-block">
+						<div className="os-repair-icon">
+							<BuildIcon />
+						</div>
+						<div className="os-repair-content">
+							<h3 className="os-repair-title">{t('OurServicesRepairTitle')}</h3>
+							<p className="os-repair-desc">{t('OurServicesRepairDesc')}</p>
+							<ul className="os-repair-list">
+								<li>{t('OurServicesRepairEx1')}</li>
+								<li>{t('OurServicesRepairEx2')}</li>
+								<li>{t('OurServicesRepairEx3')}</li>
+								<li>{t('OurServicesRepairEx4')}</li>
+								<li>{t('OurServicesRepairEx5')}</li>
+								<li>{t('OurServicesRepairEx6')}</li>
+								<li>{t('OurServicesRepairEx7')}</li>
+							</ul>
+							<Link href="/repair-maintenance/">
+								<Button variant="outlined" className="os-repair-btn">
+									{t('OurServicesRepairCTA')}
 								</Button>
-							</div>
-						</form>
+							</Link>
+						</div>
 					</div>
-				)}
-			</div>
+				</div>
+			</section>
+
+			{/* 5. WHY CHOOSE US SECTION */}
+			<section className="os-section os-why">
+				<div className="os-container">
+					<h2 className="os-section-title">{t('OurServicesWhyTitle')}</h2>
+					<div className="os-why-grid">
+						<div className="os-why-item">
+							<CheckCircleIcon className="os-why-icon" />
+							<span>{t('OurServicesWhy1')}</span>
+						</div>
+						<div className="os-why-item">
+							<CheckCircleIcon className="os-why-icon" />
+							<span>{t('OurServicesWhy2')}</span>
+						</div>
+						<div className="os-why-item">
+							<CheckCircleIcon className="os-why-icon" />
+							<span>{t('OurServicesWhy3')}</span>
+						</div>
+						<div className="os-why-item">
+							<CheckCircleIcon className="os-why-icon" />
+							<span>{t('OurServicesWhy4')}</span>
+						</div>
+						<div className="os-why-item">
+							<CheckCircleIcon className="os-why-icon" />
+							<span>{t('OurServicesWhy5')}</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* 6. FINAL CTA SECTION */}
+			<section className="os-section os-cta-final">
+				<div className="os-container">
+					<div className="os-cta-card">
+						<h2 className="os-cta-title">{t('OurServicesCTATitle')}</h2>
+						<p className="os-cta-subtitle">{t('OurServicesCTASubtitle')}</p>
+						<Link href="/repair-maintenance/">
+							<Button variant="contained" size="large" className="os-cta-main-btn">
+								{t('OurServicesCTABtn')}
+							</Button>
+						</Link>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 };

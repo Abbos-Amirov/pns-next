@@ -176,24 +176,32 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 
 	if (device === 'mobile') {
 		return <h1>LOCATION DETAIL MOBILE</h1>;
-	} else {
+	}
+
+	const renderContent = (): React.ReactNode => {
+		if (locationLoading) {
+			return (
+				<div className="loading-container">
+					<Typography>Loading location...</Typography>
+				</div>
+			);
+		}
+		if (locationError) {
+			return (
+				<div className="error-container">
+					<Typography color="error">Error loading location: {locationError.message}</Typography>
+				</div>
+			);
+		}
+		if (!location) {
+			return (
+				<div className="no-data-container">
+					<Typography>Location not found</Typography>
+				</div>
+			);
+		}
 		return (
-			<div id="location-detail-page">
-				<div className="container">
-					{locationLoading ? (
-						<Box className="loading-container">
-							<Typography>Loading location...</Typography>
-						</Box>
-					) : locationError ? (
-						<Box className="error-container">
-							<Typography color="error">Error loading location: {locationError.message}</Typography>
-						</Box>
-					) : !location ? (
-						<Box className="no-data-container">
-							<Typography>Location not found</Typography>
-						</Box>
-					) : (
-						<>
+			<>
 							{/* Header with back button */}
 							<Stack className="detail-header" direction="row" alignItems="center" spacing={2}>
 								<IconButton onClick={goBackHandler} className="back-button">
@@ -207,7 +215,7 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 							{/* Main Content */}
 							<Stack className="detail-content" spacing={4}>
 								{/* Image Gallery */}
-								<Box className="image-gallery">
+								<div className="image-gallery">
 									{location.images && location.images.length > 0 ? (
 										<Swiper
 											spaceBetween={10}
@@ -227,11 +235,11 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 											))}
 										</Swiper>
 									) : (
-										<Box className="no-image">
+										<div className="no-image">
 											<img src="/img/property/window.jpg" alt={location.locationName} />
-										</Box>
+										</div>
 									)}
-								</Box>
+								</div>
 
 								{/* Location Info */}
 								<Stack className="location-info" spacing={3}>
@@ -284,16 +292,16 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 
 									{/* Description */}
 									{location.description && (
-										<Box className="description-section">
+										<div className="description-section">
 											<Typography variant="h6" className="section-title">
 												Description
 											</Typography>
 											<Typography className="description-text">{location.description}</Typography>
-										</Box>
+										</div>
 									)}
 
 									{/* Location Details */}
-									<Box className="details-section">
+									<div className="details-section">
 										<Typography variant="h6" className="section-title">
 											Location Details
 										</Typography>
@@ -321,15 +329,20 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 												</Stack>
 											)}
 										</Stack>
-									</Box>
+									</div>
 								</Stack>
 							</Stack>
 						</>
-					)}
-				</div>
-			</div>
-		);
+		) as React.ReactNode;
 	}
+
+	return (
+		<div id="location-detail-page">
+			<div className="container">
+				{renderContent()}
+			</div>
+		</div>
+	);
 };
 
 export default withLayoutBasic(LocationDetail);

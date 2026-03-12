@@ -580,54 +580,6 @@ const Top = () => {
 									className={'support-menu support-menu-with-images'}
 								>
 									<Link
-									href={'/cs'}
-									className={'support-menu-card'}
-									onClick={handleSupportClose}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										flex: 1,
-										minWidth: 0,
-										textDecoration: 'none',
-										color: '#39381c',
-									}}
-								>
-										<span
-											className={'support-menu-card-label'}
-											style={{
-												textAlign: 'center',
-												fontWeight: 700,
-												textTransform: 'uppercase',
-												padding: '12px 16px 6px',
-												background: '#f8f8f8',
-												display: 'block',
-											}}
-										>
-											{t('Support')}
-										</span>
-										<div
-											className={'support-menu-card-image'}
-											style={{
-												width: '100%',
-												height: 100,
-												overflow: 'hidden',
-												padding: '0 12px 12px',
-												boxSizing: 'border-box',
-											}}
-										>
-											<img
-												src={'/img/support/support.png'}
-												alt={t('Support')}
-												style={{
-													width: '100%',
-													height: '100%',
-													objectFit: 'cover',
-													borderRadius: 4,
-												}}
-											/>
-										</div>
-									</Link>
-									<Link
 										href={'/our-services'}
 										className={'support-menu-card'}
 										onClick={handleSupportClose}
@@ -666,6 +618,102 @@ const Top = () => {
 											<img
 												src={'/img/support/our-services.png'}
 												alt={t('OurServices')}
+												style={{
+													width: '100%',
+													height: '100%',
+													objectFit: 'cover',
+													borderRadius: 4,
+												}}
+											/>
+										</div>
+									</Link>
+									<Link
+										href={'/cs'}
+										className={'support-menu-card'}
+										onClick={handleSupportClose}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											flex: 1,
+											minWidth: 0,
+											textDecoration: 'none',
+											color: '#39381c',
+										}}
+									>
+										<span
+											className={'support-menu-card-label'}
+											style={{
+												textAlign: 'center',
+												fontWeight: 700,
+												textTransform: 'uppercase',
+												padding: '12px 16px 6px',
+												background: '#f8f8f8',
+												display: 'block',
+											}}
+										>
+											{t('Support')}
+										</span>
+										<div
+											className={'support-menu-card-image'}
+											style={{
+												width: '100%',
+												height: 100,
+												overflow: 'hidden',
+												padding: '0 12px 12px',
+												boxSizing: 'border-box',
+											}}
+										>
+											<img
+												src={'/img/support/support.png'}
+												alt={t('Support')}
+												style={{
+													width: '100%',
+													height: '100%',
+													objectFit: 'cover',
+													borderRadius: 4,
+												}}
+											/>
+										</div>
+									</Link>
+									<Link
+										href={'/repair-maintenance'}
+										className={'support-menu-card'}
+										onClick={handleSupportClose}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											flex: 1,
+											minWidth: 0,
+											textDecoration: 'none',
+											color: '#39381c',
+										}}
+									>
+										<span
+											className={'support-menu-card-label'}
+											style={{
+												textAlign: 'center',
+												fontWeight: 700,
+												textTransform: 'uppercase',
+												padding: '12px 16px 6px',
+												background: '#f8f8f8',
+												display: 'block',
+											}}
+										>
+											{t('RepairMaintenanceService')}
+										</span>
+										<div
+											className={'support-menu-card-image'}
+											style={{
+												width: '100%',
+												height: 100,
+												overflow: 'hidden',
+												padding: '0 12px 12px',
+												boxSizing: 'border-box',
+											}}
+										>
+											<img
+												src={'/img/support/our-services.png'}
+												alt={t('RepairMaintenanceService')}
 												style={{
 													width: '100%',
 													height: '100%',

@@ -112,6 +112,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = t('OurServicesSubtitle');
 					bgImage = '/img/banner/header2.svg';
 					break;
+				case '/repair-maintenance':
+					title = t('RepairMaintenanceService');
+					desc = t('RepairMaintenanceSubtitle');
+					bgImage = '/img/banner/header2.svg';
+					break;
 				case '/account/join':
 					title = t('Login/Signup');
 					desc = t('Authentication Process');
@@ -631,6 +636,55 @@ const withLayoutBasic = (Component: any) => {
 													<img
 														src={'/img/support/our-services.png'}
 														alt={t('OurServices')}
+														style={{
+															width: '100%',
+															height: '100%',
+															objectFit: 'cover',
+															borderRadius: 4,
+														}}
+													/>
+												</div>
+											</Link>
+											<Link
+												href={'/repair-maintenance'}
+												className={'support-menu-card'}
+												onClick={handleSupportClose}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													flex: 1,
+													minWidth: 0,
+													textDecoration: 'none',
+													color: '#ffffff',
+												}}
+											>
+												<span
+													className={'support-menu-card-label support-menu-card-label-dark'}
+													style={{
+														textAlign: 'center',
+														fontWeight: 700,
+														textTransform: 'uppercase',
+														padding: '12px 16px 6px',
+														background: '#252422',
+														color: '#e0e0e0',
+														display: 'block',
+													}}
+												>
+													{t('RepairMaintenanceService')}
+												</span>
+												<div
+													className={'support-menu-card-image'}
+													style={{
+														width: '100%',
+														height: 100,
+														overflow: 'hidden',
+														padding: '0 12px 12px',
+														boxSizing: 'border-box',
+													}}
+												>
+													<img
+														src={'/img/support/our-services.png'}
+														alt={t('RepairMaintenanceService')}
 														style={{
 															width: '100%',
 															height: '100%',
