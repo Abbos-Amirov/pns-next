@@ -107,6 +107,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = t('We are glad to see you again!');
 					bgImage = '/img/banner/header2.svg';
 					break;
+				case '/our-services':
+					title = t('OurServices');
+					desc = t('OurServicesSubtitle');
+					bgImage = '/img/banner/header2.svg';
+					break;
 				case '/account/join':
 					title = t('Login/Signup');
 					desc = t('Authentication Process');
