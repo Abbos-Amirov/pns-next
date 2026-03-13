@@ -1,0 +1,248 @@
+@import '/scss/variables.scss';
+
+/* ========== Premium Nav Trigger Links ========== */
+.nav-link.product-link,
+.nav-link.measurer-link,
+.nav-link.support-link {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 6px;
+	font-weight: 600 !important;
+	letter-spacing: 0.4px;
+	transition: color 0.25s ease, opacity 0.25s ease;
+
+	&:hover {
+		opacity: 0.9;
+	}
+}
+
+.product-dropdown .dropdown-icon,
+.measurer-dropdown .dropdown-icon,
+.support-dropdown .dropdown-icon {
+	transition: transform 0.3s ease;
+	font-size: 18px !important;
+}
+
+.product-dropdown:hover .dropdown-icon,
+.measurer-dropdown:hover .dropdown-icon,
+.support-dropdown:hover .dropdown-icon,
+.product-link.is-open .dropdown-icon,
+.measurer-link.is-open .dropdown-icon,
+.support-link.is-open .dropdown-icon {
+	transform: rotate(180deg);
+}
+
+.product-link.is-open,
+.measurer-link.is-open,
+.support-link.is-open {
+	color: #8B4513 !important;
+	[data-theme='dark'] & {
+		color: #c9a962 !important;
+	}
+}
+
+/* ========== Premium Mega Menu Panel (MUI Paper override) ========== */
+.product-menu.premium-mega-menu .MuiPaper-root,
+.measurer-menu.premium-mega-menu .MuiPaper-root,
+.support-menu.premium-mega-menu .MuiPaper-root,
+.product-menu-dark.premium-mega-menu .MuiPaper-root,
+.measurer-menu-dark.premium-mega-menu .MuiPaper-root,
+.support-menu-dark.premium-mega-menu .MuiPaper-root {
+	background: rgba(41, 125, 222, 0.04) !important;
+	border-radius: 16px !important;
+	box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+	border: 1px solid rgba(41, 125, 222, 0.12) !important;
+	padding: 20px !important;
+	min-width: 380px !important;
+}
+
+.product-menu.premium-mega-menu,
+.measurer-menu.premium-mega-menu,
+.support-menu.premium-mega-menu,
+.product-menu-dark.premium-mega-menu,
+.measurer-menu-dark.premium-mega-menu,
+.support-menu-dark.premium-mega-menu {
+	ul, .MuiList-root, .MuiMenu-list {
+		display: flex !important;
+		flex-direction: row !important;
+		flex-wrap: wrap !important;
+		padding: 0 !important;
+		gap: 16px !important;
+		width: 100%;
+		background: transparent !important;
+	}
+}
+
+/* Product & Experts: 2 cards */
+.product-menu.premium-mega-menu .MuiMenu-list,
+.measurer-menu.premium-mega-menu .MuiMenu-list {
+	gap: 20px !important;
+}
+
+/* Support: 4 cards */
+.support-menu.premium-mega-menu .MuiPaper-root,
+.support-menu-dark.premium-mega-menu .MuiPaper-root {
+	min-width: 520px !important;
+}
+
+.support-menu.premium-mega-menu,
+.support-menu-dark.premium-mega-menu {
+	.MuiMenu-list {
+		gap: 14px !important;
+	}
+}
+
+/* ========== Premium Menu Card ========== */
+a.product-menu-card,
+a.measurer-menu-card,
+a.support-menu-card {
+	flex: 1 !important;
+	min-width: 120px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	text-decoration: none !important;
+	color: #ffffff !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	border-radius: 12px !important;
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+		border-color: rgba(201, 169, 98, 0.35);
+		background: rgba(255, 255, 255, 0.06) !important;
+
+		.product-menu-card-image img,
+		.measurer-menu-card-image img,
+		.support-menu-card-image img {
+			transform: scale(1.08);
+		}
+	}
+}
+
+/* Card label (title) */
+.product-menu-card-label,
+.measurer-menu-card-label,
+.support-menu-card-label,
+.measurer-menu-card-label-dark,
+.support-menu-card-label-dark {
+	background: rgba(0, 0, 0, 0.25) !important;
+	color: #ffffff !important;
+	font-family: $font !important;
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 1px !important;
+	padding: 14px 16px !important;
+	text-align: center !important;
+	display: block !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Card image container */
+.product-menu-card-image,
+.measurer-menu-card-image,
+.support-menu-card-image {
+	width: 100% !important;
+	height: 140px !important;
+	overflow: hidden !important;
+	box-sizing: border-box !important;
+	padding: 12px !important;
+
+	img {
+		width: 100% !important;
+		height: 100% !important;
+		object-fit: cover !important;
+		border-radius: 8px !important;
+		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+	}
+}
+
+/* Support cards slightly smaller height */
+.support-menu-card-image {
+	height: 110px !important;
+}
+
+/* ========== Dark theme variant (LayoutBasic) ========== */
+.product-menu-dark.premium-mega-menu .MuiPaper-root,
+.measurer-menu-dark.premium-mega-menu .MuiPaper-root,
+.support-menu-dark.premium-mega-menu .MuiPaper-root {
+	background: rgba(41, 125, 222, 0.04) !important;
+	border-color: rgba(41, 125, 222, 0.15) !important;
+}
+
+.product-menu-dark.premium-mega-menu,
+.measurer-menu-dark.premium-mega-menu,
+.support-menu-dark.premium-mega-menu {
+
+	a.product-menu-card,
+	a.measurer-menu-card,
+	a.support-menu-card {
+		background: rgba(255, 255, 255, 0.03) !important;
+		border-color: rgba(255, 255, 255, 0.06);
+
+		&:hover {
+			border-color: rgba(201, 169, 98, 0.4);
+			background: rgba(255, 255, 255, 0.06) !important;
+		}
+	}
+
+	.product-menu-card-label,
+	.measurer-menu-card-label,
+	.support-menu-card-label,
+	.measurer-menu-card-label-dark,
+	.support-menu-card-label-dark {
+		background: rgba(0, 0, 0, 0.35) !important;
+		color: #e8e6e3 !important;
+	}
+}
+
+/* ========== Light theme (Top.tsx – when not dark mode) ========== */
+.navbar-main:not([data-theme='dark']) {
+	.product-menu.premium-mega-menu .MuiPaper-root,
+	.measurer-menu.premium-mega-menu .MuiPaper-root,
+	.support-menu.premium-mega-menu .MuiPaper-root {
+		background: rgba(41, 125, 222, 0.04) !important;
+	}
+}
+
+/* Dark theme nav triggers (LayoutBasic) */
+.product-dropdown-dark .product-link-dark,
+.measurer-dropdown-dark .measurer-link-dark,
+.support-dropdown-dark .support-link-dark {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 6px !important;
+}
+
+.product-dropdown-dark .dropdown-icon-dark,
+.measurer-dropdown-dark .dropdown-icon-dark,
+.support-dropdown-dark .dropdown-icon-dark {
+	transition: transform 0.3s ease;
+	flex-shrink: 0;
+}
+
+.product-dropdown-dark:hover .dropdown-icon-dark,
+.measurer-dropdown-dark:hover .dropdown-icon-dark,
+.support-dropdown-dark:hover .dropdown-icon-dark,
+.product-link-dark.is-open .dropdown-icon-dark,
+.measurer-link-dark.is-open .dropdown-icon-dark,
+.support-link-dark.is-open .dropdown-icon-dark {
+	transform: rotate(180deg);
+}
+
+/* Product, Experts, Support – ajralib turishi (Home pagedagi kabi) */
+.product-link-dark,
+.measurer-link-dark,
+.support-link-dark {
+	color: rgba(201, 169, 98, 0.95) !important;
+	font-weight: 600 !important;
+}
+
+.product-link-dark.is-open,
+.measurer-link-dark.is-open,
+.support-link-dark.is-open {
+	color: #c9a962 !important;
+}
