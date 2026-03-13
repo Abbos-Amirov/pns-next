@@ -5,6 +5,9 @@ import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
 import { Stack, Box, Typography, IconButton, Button, Menu, MenuItem } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import AIChat from '../AIChat';
@@ -47,7 +50,11 @@ const withLayoutBasic = (Component: any) => {
 		const productOpen = Boolean(productAnchor);
 		const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
 		const supportOpen = Boolean(supportAnchor);
+		const [navOverlayOpen, setNavOverlayOpen] = useState(false);
 		const { mode, toggleTheme } = useThemeMode();
+
+		const openNavOverlay = () => setNavOverlayOpen(true);
+		const closeNavOverlay = () => setNavOverlayOpen(false);
 		const [headerBgIndex, setHeaderBgIndex] = useState(0);
 
 		const headerBgImages = [
@@ -500,9 +507,138 @@ const withLayoutBasic = (Component: any) => {
 											{t('Login/Signup')}
 										</Button>
 									)}
+									{/* Hamburger - oxirida, yaqqol ko'rinadi */}
+									<IconButton 
+										className={'profile-action-btn hamburger-btn hamburger-btn-dark'}
+										size="small" 
+										onClick={openNavOverlay}
+										title={t('Menu')}
+										sx={{ 
+											ml: 0.5,
+											width: 40,
+											height: 40,
+											minWidth: 40,
+											borderRadius: '50%',
+											backgroundColor: 'rgba(201, 169, 98, 0.4) !important',
+											color: '#c9a962 !important',
+											'&:hover': { backgroundColor: 'rgba(201, 169, 98, 0.6) !important', color: '#e8dcc8 !important' },
+											'& svg': { fontSize: 22 }
+										}}
+									>
+										<MenuIcon />
+									</IconButton>
 								</Box>
 							</Stack>
 						</Stack>
+
+						{/* Full-screen Nav Overlay (hamburger menu) */}
+						<Drawer
+							anchor="top"
+							open={navOverlayOpen}
+							onClose={closeNavOverlay}
+							className={'nav-overlay-drawer'}
+							sx={{
+								'& .MuiDrawer-paper': {
+									width: '100%',
+									maxWidth: '100%',
+									height: 'auto',
+									maxHeight: '50vh',
+									background: 'rgba(41, 125, 222, 0.04)',
+									backdropFilter: 'blur(12px)',
+									boxSizing: 'border-box',
+								},
+							}}
+						>
+							<div className={'nav-overlay-panel'} data-theme={mode}>
+								<div className={'nav-overlay-header'}>
+									<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS" className={'nav-overlay-logo'} />
+									<IconButton className={'nav-overlay-close'} onClick={closeNavOverlay} size="large">
+										<CloseIcon />
+									</IconButton>
+								</div>
+								<div className={'nav-overlay-content'}>
+									<div className={'nav-overlay-grid'}>
+										<Link href={'/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/nav-overlay/home.png'} alt={t('Home')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Home')}</span>
+										</Link>
+										<Link href={'/property/window'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/property/window1.jpg'} alt={t('Windows')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Windows')}</span>
+										</Link>
+										<Link href={'/property/door'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/nav-overlay/doors.png'} alt={t('Doors')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Doors')}</span>
+										</Link>
+										<Link href={'/agent'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Measurers')}</span>
+										</Link>
+										<Link href={'/installer'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Installers')}</span>
+										</Link>
+										<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/banner/properties.png'} alt={t('City')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('City')}</span>
+										</Link>
+										<Link href={'/community'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/nav-overlay/community.png'} alt={t('Community')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Community')}</span>
+										</Link>
+										{user?._id && (
+											<Link href={'/mypage'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+												<div className={'nav-overlay-card-image'}>
+													<img src={getUserImageSrc(user?.memberImage)} alt={t('My Page')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} />
+												</div>
+												<span className={'nav-overlay-card-label'}>{t('My Page')}</span>
+											</Link>
+										)}
+										<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('OurServices')}</span>
+										</Link>
+										<Link href={'/cs'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/support/support.png'} alt={t('Support')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('Support')}</span>
+										</Link>
+										<Link href={'/repair-maintenance'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/support/our-services.png'} alt={t('RepairMaintenanceService')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('RepairMaintenanceService')}</span>
+										</Link>
+										<Link href={'/about-me'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('AboutMe')}</span>
+										</Link>
+									</div>
+								</div>
+								<div className={'nav-overlay-footer'}>
+									<span className={'nav-overlay-tagline'}>{t('Live your view')}</span>
+								</div>
+							</div>
+						</Drawer>
 
 						{/* Hero Section */}
 						<Stack className={`header-basic ${authHeader && 'auth'}`}>

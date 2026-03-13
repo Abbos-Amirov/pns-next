@@ -18,7 +18,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import CloseIcon from '@mui/icons-material/Close';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu';
+import Drawer from '@mui/material/Drawer';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
@@ -78,6 +79,10 @@ const Top = () => {
 	const productOpen = Boolean(productAnchor);
 	const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
 	const supportOpen = Boolean(supportAnchor);
+	const [navOverlayOpen, setNavOverlayOpen] = useState(false);
+
+	const openNavOverlay = () => setNavOverlayOpen(true);
+	const closeNavOverlay = () => setNavOverlayOpen(false);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -212,6 +217,7 @@ const Top = () => {
 		);
 	} else {
 		return (
+			<>
 			<Stack className={'navbar kadhavu-navbar'}>
 				{/* Show Top Bar Button - when hidden */}
 				{!topBarVisible && (
@@ -455,13 +461,102 @@ const Top = () => {
 						</Box>
 
 						<Box component={'div'} className={'nav-right'}>
-							{/* Language Switcher */}
-							<IconButton 
-								className={'lang-switcher-btn-home'}
-								onClick={langClick}
-							>
-								<LanguageIcon />
-							</IconButton>
+							{user?._id ? (
+								<>
+									{/* Tartib: Dark mode, Language, Avatar+Name, Hamburger */}
+									<IconButton 
+										className={'profile-action-btn dark-mode-btn'} 
+										size="small" 
+										onClick={toggleTheme} 
+										title={mode === 'dark' ? 'Light mode' : 'Dark mode'} 
+										sx={{ 
+											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
+											color: '#1a5f9e !important',
+											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
+											'& svg': { fontSize: 18 }
+										}}
+									>
+										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+									</IconButton>
+									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 44, height: 44, minWidth: 44, '& svg': { fontSize: 18 } }}>
+										<LanguageIcon />
+									</IconButton>
+									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
+										<div
+											className={'user-avatar-small'}
+											style={{
+												width: 24,
+												height: 24,
+												minWidth: 24,
+												borderRadius: '50%',
+												overflow: 'hidden',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+											}}
+										>
+											<img src={getUserImageSrc(user?.memberImage)} alt={user?.memberNick || t('User')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+										</div>
+										<Typography className={'user-name-text'} sx={{ fontSize: 12, fontWeight: 600 }}>{user?.memberNick || 'User'}</Typography>
+									</Link>
+									<IconButton 
+										className={'profile-action-btn hamburger-btn'} 
+										size="small" 
+										onClick={openNavOverlay} 
+										title="Menu"
+										sx={{ 
+											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
+											color: '#1a5f9e !important',
+											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
+											'& svg': { fontSize: 18 }
+										}}
+									>
+										<MenuIcon />
+									</IconButton>
+								</>
+							) : (
+								<>
+									<IconButton 
+										className={'profile-action-btn dark-mode-btn'} 
+										size="small" 
+										onClick={toggleTheme} 
+										title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
+										sx={{ 
+											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
+											color: '#1a5f9e !important',
+											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
+											'& svg': { fontSize: 18 }
+										}}
+									>
+										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+									</IconButton>
+									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 44, height: 44, minWidth: 44, '& svg': { fontSize: 18 } }}>
+										<LanguageIcon />
+									</IconButton>
+									<Button className={'login-signup-btn'} onClick={() => router.push('/account/join')} sx={{ py: 0.5, px: 1.5, fontSize: 13 }}>
+										{t('Login/Signup')}
+									</Button>
+									<IconButton 
+										className={'profile-action-btn hamburger-btn'} 
+										size="small" 
+										onClick={openNavOverlay} 
+										title="Menu"
+										sx={{ 
+											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
+											color: '#1a5f9e !important',
+											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
+											'& svg': { fontSize: 18 }
+										}}
+									>
+										<MenuIcon />
+									</IconButton>
+								</>
+							)}
 							<Menu
 								anchorEl={anchorEl2}
 								open={drop}
@@ -512,81 +607,123 @@ const Top = () => {
 									日本語
 								</MenuItem>
 							</Menu>
-							{user?._id ? (
-								<Box component={'div'} className={'user-profile-section user-profile-with-actions'}>
-									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-										<div className={'user-avatar-small'}>
-											<img 
-												src={getUserImageSrc(user?.memberImage)} 
-												alt={user?.memberNick || t('User')} 
-												onError={(e) => {
-													(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
-												}}
-											/>
-										</div>
-										<Typography className={'user-name-text'}>{user?.memberNick || 'User'}</Typography>
-									</Link>
-									<IconButton 
-										className={'profile-action-btn dark-mode-btn'} 
-										size="small" 
-										onClick={toggleTheme} 
-										title={mode === 'dark' ? 'Light mode' : 'Dark mode'} 
-										sx={{ 
-											ml: 0.5, 
-											width: 40, 
-											height: 40, 
-											minWidth: 40, 
-											borderRadius: '50%', 
-											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
-											color: '#1a5f9e !important',
-											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
-											'& svg': { fontSize: 22 }
-										}}
-									>
-										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-									</IconButton>
-									<IconButton className={'profile-action-btn gear-btn'} size="small" onClick={() => router.push('/mypage')}>
-										<SettingsIcon />
-									</IconButton>
-								</Box>
-								
-							) : (
-								<Box component={'div'} className={'auth-with-dark-mode'}>
-									<IconButton 
-										className={'profile-action-btn dark-mode-btn sun-moon-toggle'} 
-										size="small" 
-										onClick={toggleTheme} 
-										title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
-										sx={{ 
-											width: 44, 
-											height: 44, 
-											minWidth: 44, 
-											borderRadius: '50%', 
-											backgroundColor: mode === 'dark' ? '#f59e0b' : '#1a5f9e',
-											color: '#ffffff !important',
-											marginRight: 1,
-											'&:hover': { 
-												backgroundColor: mode === 'dark' ? '#d97706' : '#144a7a',
-												transform: 'scale(1.08)'
-											},
-											'& svg': { fontSize: 24 }
-										}}
-									>
-										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-									</IconButton>
-									<Button className={'login-signup-btn'} onClick={() => router.push('/account/join')}>
-										{t('Login/Signup')}
-									</Button>
-								</Box>
-
-
-								
-							)}
 						</Box>
 					</Stack>
 				</Stack>
 			</Stack>
-			
+
+			{/* Full-screen Nav Overlay (hamburger menu) - drops from top, ~50% height */}
+			<Drawer
+				anchor="top"
+				open={navOverlayOpen}
+				onClose={closeNavOverlay}
+				className={'nav-overlay-drawer nav-overlay-top'}
+				sx={{
+					'& .MuiDrawer-paper': {
+						width: '100%',
+						maxWidth: '100%',
+						height: 'auto',
+						maxHeight: '50vh',
+						top: 0,
+						left: 0,
+						right: 0,
+						background: 'rgba(41, 125, 222, 0.04)',
+						backdropFilter: 'blur(12px)',
+						boxSizing: 'border-box',
+					},
+				}}
+			>
+				<div className={'nav-overlay-panel'} data-theme={mode}>
+					<div className={'nav-overlay-header'}>
+						<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS" className={'nav-overlay-logo'} />
+						<IconButton className={'nav-overlay-close'} onClick={closeNavOverlay} size="large">
+							<CloseIcon />
+						</IconButton>
+					</div>
+					<div className={'nav-overlay-content'}>
+						<div className={'nav-overlay-grid'}>
+							<Link href={'/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/nav-overlay/home.png'} alt={t('Home')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Home')}</span>
+							</Link>
+							<Link href={'/property/window'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/property/window1.jpg'} alt={t('Windows')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Windows')}</span>
+							</Link>
+							<Link href={'/property/door'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/nav-overlay/doors.png'} alt={t('Doors')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Doors')}</span>
+							</Link>
+							<Link href={'/agent'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Measurers')}</span>
+							</Link>
+							<Link href={'/installer'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Installers')}</span>
+							</Link>
+							<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/banner/properties.png'} alt={t('City')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('City')}</span>
+							</Link>
+							<Link href={'/community'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/nav-overlay/community.png'} alt={t('Community')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Community')}</span>
+							</Link>
+							{user?._id && (
+								<Link href={'/mypage'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={getUserImageSrc(user?.memberImage)} alt={t('My Page')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('My Page')}</span>
+								</Link>
+							)}
+							<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('OurServices')}</span>
+							</Link>
+							<Link href={'/cs'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/support/support.png'} alt={t('Support')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('Support')}</span>
+							</Link>
+							<Link href={'/repair-maintenance'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/support/our-services.png'} alt={t('RepairMaintenanceService')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('RepairMaintenanceService')}</span>
+							</Link>
+							<Link href={'/about-me'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('AboutMe')}</span>
+							</Link>
+						</div>
+					</div>
+					<div className={'nav-overlay-footer'}>
+						<span className={'nav-overlay-tagline'}>{t('Live your view')}</span>
+					</div>
+				</div>
+			</Drawer>
+			</>
 		);
 	}
 };
