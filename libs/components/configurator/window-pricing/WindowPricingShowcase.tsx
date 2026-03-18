@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import {
   APARTMENT_SIZE_DATA,
-  BOTTOM_NOTE,
   COLOR_OPTIONS,
   DOOR_OPTIONS,
   EXTRA_OPTIONS,
@@ -10,10 +10,6 @@ import {
   HANDLE_OPTIONS,
   HANDLE_SPEC,
   MOSQUITO_SCREEN,
-  PRICE_NOTICE,
-  VAT_NOTE,
-  WINDOW_PRICING_SUBTITLE,
-  WINDOW_PRICING_TITLE,
 } from './data/windowPricingData';
 import type { ApartmentSizeData, ApartmentSizeKey, DoorOption, WindowProduct } from './data/windowPricingData';
 
@@ -24,23 +20,75 @@ const NO_COLORS = [
   '#2ecc71', '#27ae60', '#1abc9c', '#16a085', '#2980b9', '#8e44ad',
 ];
 
-const TABLE_COLS = [
-  { key: 'index', label: 'NO' },
-  { key: 'location', label: '위치' },
-  { key: 'productName', label: '제품명' },
-  { key: 'frame', label: '창짝' },
-  { key: 'type', label: '종류' },
-  { key: 'glassThickness', label: '유리두께' },
-  { key: 'glassSpec', label: '기본유리사양' },
-  { key: 'w', label: 'W' },
-  { key: 'h', label: 'H' },
-  { key: 'form', label: '형태' },
-  { key: 'mosquitoScreen', label: '방충망' },
-  { key: 'handle', label: '핸들' },
+const TABLE_COLS: { key: string; tKey: string }[] = [
+  { key: 'index', tKey: 'tableNo' },
+  { key: 'location', tKey: 'tableLocation' },
+  { key: 'productName', tKey: 'tableProduct' },
+  { key: 'frame', tKey: 'tableFrame' },
+  { key: 'type', tKey: 'tableType' },
+  { key: 'glassThickness', tKey: 'tableGlassThick' },
+  { key: 'glassSpec', tKey: 'tableGlassSpec' },
+  { key: 'w', tKey: 'tableW' },
+  { key: 'h', tKey: 'tableH' },
+  { key: 'form', tKey: 'tableForm' },
+  { key: 'mosquitoScreen', tKey: 'tableScreen' },
+  { key: 'handle', tKey: 'tableHandle' },
 ];
+
+const GALLERY_LABEL_KEYS: Record<string, string> = {
+  '일반형': 'galleryStandard',
+  '고시형': 'galleryLowPanel',
+  '스틱바형': 'galleryStickBar',
+};
+
+type TFunc = (key: string, options?: Record<string, string | number>) => string;
+
+const getOptionLabel = (t: TFunc, name: string): string =>
+  t(OPTION_TRANSLATION_KEYS[name] || name);
+
+const getPriceModifierLabel = (t: TFunc, modifier: string): string => {
+  if (modifier === '기본') return t('default');
+  if (modifier === '상담시문의') return t('inquire');
+  return modifier;
+};
 
 const formatPrice = (n: number): string => {
   return Math.round(n).toLocaleString('ko-KR');
+};
+
+const OPTION_TRANSLATION_KEYS: Record<string, string> = {
+  White: 'colorWhite',
+  US201: 'colorUS201',
+  MQ808: 'colorMQ808',
+  '없음': 'doorNone',
+  '3연동 중문 블랙': 'door3SlideBlack',
+  '3연동 중문 화이트': 'door3SlideWhite',
+  '3연동 중문 그레이': 'door3SlideGray',
+  '3연동 중문 ㄱ자 파티션 블랙': 'door3PartitionBlack',
+  '3연동 중문 ㄱ자 파티션 화이트': 'door3PartitionWhite',
+  '3연동 중문 ㄱ자 파티션 그레이': 'door3PartitionGray',
+  '원슬라이딩 블랙': 'doorOneSlideBlack',
+  '원슬라이딩 화이트': 'doorOneSlideWhite',
+  '원슬라이딩 그레이': 'doorOneSlideGray',
+  '리네아핸들': 'handleLinea',
+  '블랙핸들': 'handleBlack',
+  '스테인리스핸들': 'handleStainless',
+  '도무스핸들': 'handleDomus',
+  '그립핸들': 'handleGrip',
+  '실버핸들': 'handleSilver',
+  '화이트핸들': 'handleWhite',
+  '클래식핸들': 'handleClassic',
+  '클린범퍼': 'funcCleanBumper',
+  '소프트클로저': 'funcSoftCloser',
+  '창개방제한기': 'funcWindowLimiter',
+  '루버창': 'extraLouver',
+  '윈드클로저': 'extraWindCloser',
+  '방충망 그립핸들': 'extraScreenGrip',
+  '타일': 'extraTile',
+  '단열재(아이소핑크)마감': 'extraInsulation',
+  '사춤(조적미장)': 'extraGrout',
+  '몰딩(틀 당)': 'extraMolding',
+  '보양(주거세대)': 'extraProtection',
 };
 
 // --- AnimatedNumber (counting up/down when value changes) ---
@@ -82,18 +130,19 @@ const FLOOR_PLAN_IMAGES: Record<ApartmentSizeKey, string> = {
 };
 
 // --- HeroBadge (animated prices) ---
-function HeroBadge({ externalTotal, fullTotal }: { externalTotal: number; fullTotal: number }) {
+function HeroBadge({ externalTotal, fullTotal, t }: { externalTotal: number; fullTotal: number; t: TFunc }) {
   const animExternal = useAnimatedNumber(externalTotal);
   const animFull = useAnimatedNumber(fullTotal);
+  const currency = t('currency');
   return (
     <div className="window-pricing-hero-badge">
       <div className="window-pricing-hero-badge-row">
-        <span>외부창 기준</span>
-        <strong>{formatPrice(animExternal)} 원</strong>
+        <span>{t('externalWindow')}</span>
+        <strong>{formatPrice(animExternal)} {currency}</strong>
       </div>
       <div className="window-pricing-hero-badge-row">
-        <span>전체창 기준</span>
-        <strong>{formatPrice(animFull)} 원</strong>
+        <span>{t('totalWindow')}</span>
+        <strong>{formatPrice(animFull)} {currency}</strong>
       </div>
     </div>
   );
@@ -104,10 +153,12 @@ function SizeTabs({
   sizes,
   selectedKey,
   onSelect,
+  t,
 }: {
   sizes: ApartmentSizeData[];
   selectedKey: ApartmentSizeKey;
   onSelect: (k: ApartmentSizeKey) => void;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-size-tabs">
@@ -118,7 +169,7 @@ function SizeTabs({
           className={`window-pricing-size-tab ${s.key === selectedKey ? 'active' : ''}`}
           onClick={() => onSelect(s.key)}
         >
-          {s.label}
+          {t(`size${s.key}`)}
         </button>
       ))}
     </div>
@@ -129,34 +180,37 @@ function SizeTabs({
 function PricingSummary({
   externalPrice,
   fullPrice,
+  t,
 }: {
   externalPrice: number;
   fullPrice: number;
+  t: TFunc;
 }) {
   const animExternal = useAnimatedNumber(externalPrice);
   const animFull = useAnimatedNumber(fullPrice);
+  const currency = t('currency');
   return (
     <div className="window-pricing-summary">
       <div className="window-pricing-price-row">
-        <span className="label">외부창 기준</span>
-        <span className="value">{formatPrice(animExternal)} 원</span>
+        <span className="label">{t('externalWindow')}</span>
+        <span className="value">{formatPrice(animExternal)} {currency}</span>
       </div>
       <div className="window-pricing-price-row">
-        <span className="label">전체창 기준</span>
-        <span className="value">{formatPrice(animFull)} 원</span>
+        <span className="label">{t('totalWindow')}</span>
+        <span className="value">{formatPrice(animFull)} {currency}</span>
       </div>
       <div className="window-pricing-price-row">
-        <span className="label">기준</span>
-        <span className="value">원</span>
+        <span className="label">{t('base')}</span>
+        <span className="value">{currency}</span>
       </div>
-      <div className="window-pricing-vat">{VAT_NOTE}</div>
-      <div className="window-pricing-notice">{PRICE_NOTICE}</div>
+      <div className="window-pricing-vat">{t('vatNote')}</div>
+      <div className="window-pricing-notice">{t('priceNotice')}</div>
     </div>
   );
 }
 
 // --- ProductTable ---
-function ProductTable({ products, title }: { products: WindowProduct[]; title: string }) {
+function ProductTable({ products, title, t }: { products: WindowProduct[]; title: string; t: TFunc }) {
   return (
     <div className="window-pricing-table-section">
       <h4 className="window-pricing-table-title">{title}</h4>
@@ -165,7 +219,7 @@ function ProductTable({ products, title }: { products: WindowProduct[]; title: s
           <thead>
             <tr>
               {TABLE_COLS.map((c) => (
-                <th key={c.key}>{c.label}</th>
+                <th key={c.key}>{t(c.tKey)}</th>
               ))}
             </tr>
           </thead>
@@ -205,10 +259,12 @@ function OptionCard<T extends { name: string; priceModifier: string; hex?: strin
   item,
   isSelected,
   onClick,
+  t,
 }: {
   item: T;
   isSelected: boolean;
   onClick: () => void;
+  t: TFunc;
 }) {
   const bg = item.hex || '#f0f2f5';
   return (
@@ -218,10 +274,10 @@ function OptionCard<T extends { name: string; priceModifier: string; hex?: strin
       onClick={onClick}
     >
       <div className="window-pricing-opt-card-swatch" style={{ background: bg }}>
-        {item.isDefault && <span className="window-pricing-opt-badge">기본</span>}
+        {item.isDefault && <span className="window-pricing-opt-badge">{t('default')}</span>}
       </div>
-      <div className="window-pricing-opt-card-label">{item.name}</div>
-      <div className="window-pricing-opt-card-price">{item.priceModifier}</div>
+      <div className="window-pricing-opt-card-label">{getOptionLabel(t, item.name)}</div>
+      <div className="window-pricing-opt-card-price">{getPriceModifierLabel(t, item.priceModifier)}</div>
     </button>
   );
 }
@@ -231,10 +287,12 @@ function ColorOptionsSection({
   items,
   selectedName,
   onSelect,
+  t,
 }: {
   items: typeof COLOR_OPTIONS;
   selectedName: string | null;
   onSelect: (name: string | null) => void;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-opt-section">
@@ -245,25 +303,25 @@ function ColorOptionsSection({
             item={opt}
             isSelected={selectedName === opt.name}
             onClick={() => onSelect(selectedName === opt.name ? null : opt.name)}
+            t={t}
           />
         ))}
       </div>
-      <p className="window-pricing-opt-footnote">
-        *이해를 돕기 위한 이미지 자료로 실제 환경과 다를 수 있습니다.
-      </p>
+      <p className="window-pricing-opt-footnote">{t('colorFootnote')}</p>
     </div>
   );
 }
 
 // --- GlassSpecSection ---
 function GlassSpecSection({
-  default: def,
   hex,
   note,
+  t,
 }: {
   default: string;
   hex?: string;
   note?: string;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-opt-section">
@@ -273,15 +331,13 @@ function GlassSpecSection({
             className="window-pricing-opt-card-swatch"
             style={{ background: hex || '#b8dce8' }}
           >
-            <span className="window-pricing-opt-badge">기본</span>
+            <span className="window-pricing-opt-badge">{t('default')}</span>
           </div>
-          <div className="window-pricing-opt-card-label">{def}</div>
+          <div className="window-pricing-opt-card-label">{t('glassDefault')}</div>
         </div>
       </div>
       {note && (
-        <p className="window-pricing-opt-footnote">
-          * {note}
-        </p>
+        <p className="window-pricing-opt-footnote">* {t('glassNote')}</p>
       )}
     </div>
   );
@@ -292,13 +348,17 @@ function DoorDetailModal({
   option,
   isOpen,
   onClose,
+  t,
 }: {
   option: DoorOption | null;
   isOpen: boolean;
   onClose: () => void;
+  t: TFunc;
 }) {
   if (!isOpen || !option?.modal) return null;
   const { title, subtitle, heroImage, description, gallery } = option.modal;
+  const optionLabel = getOptionLabel(t, option.name);
+  const galleryLabel = (l: string) => t(GALLERY_LABEL_KEYS[l] || l);
   return (
     <div className="window-pricing-door-modal-overlay" onClick={onClose}>
       <div
@@ -316,7 +376,7 @@ function DoorDetailModal({
         <h2 className="window-pricing-door-modal-title">{title}</h2>
         <div className="window-pricing-door-modal-body">
           <div className="window-pricing-door-modal-hero">
-            <img src={heroImage} alt={option.name} />
+            <img src={heroImage} alt={optionLabel} />
           </div>
           <div className="window-pricing-door-modal-content">
             {subtitle && (
@@ -331,8 +391,8 @@ function DoorDetailModal({
           <div className="window-pricing-door-modal-gallery">
             {gallery.map((item, idx) => (
               <div key={idx} className="window-pricing-door-modal-gallery-item">
-                <img src={item.image} alt={item.label} />
-                <span>{item.label}</span>
+                <img src={item.image} alt={galleryLabel(item.label)} />
+                <span>{galleryLabel(item.label)}</span>
               </div>
             ))}
           </div>
@@ -348,11 +408,13 @@ function DoorOptionCard({
   isSelected,
   onSelect,
   onViewMore,
+  t,
 }: {
   item: DoorOption;
   isSelected: boolean;
   onSelect: () => void;
   onViewMore: () => void;
+  t: TFunc;
 }) {
   const hasModal = !!item.modal;
   return (
@@ -365,7 +427,7 @@ function DoorOptionCard({
         {item.thumbnail ? (
           <img
             src={item.thumbnail}
-            alt={item.name}
+            alt={getOptionLabel(t, item.name)}
             className="window-pricing-door-card-thumb"
           />
         ) : (
@@ -375,10 +437,10 @@ function DoorOptionCard({
           />
         )}
         {item.isDefault && (
-          <span className="window-pricing-opt-badge">기본</span>
+          <span className="window-pricing-opt-badge">{t('default')}</span>
         )}
       </button>
-      <div className="window-pricing-door-card-label">{item.name}</div>
+      <div className="window-pricing-door-card-label">{getOptionLabel(t, item.name)}</div>
       {hasModal && (
         <button
           type="button"
@@ -388,10 +450,10 @@ function DoorOptionCard({
             onViewMore();
           }}
         >
-          더보기
+          {t('ctaViewMore')}
         </button>
       )}
-      <div className="window-pricing-door-card-price">{item.priceModifier}</div>
+      <div className="window-pricing-door-card-price">{getPriceModifierLabel(t, item.priceModifier)}</div>
     </div>
   );
 }
@@ -401,20 +463,18 @@ function DoorOptionsSection({
   items,
   selectedName,
   onSelect,
-  subHeader,
   onViewMore,
+  t,
 }: {
   items: typeof DOOR_OPTIONS;
   selectedName: string | null;
   onSelect: (name: string | null) => void;
-  subHeader?: string;
   onViewMore: (option: DoorOption) => void;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-opt-section">
-      {subHeader && (
-        <p className="window-pricing-opt-subheader">{subHeader}</p>
-      )}
+      <p className="window-pricing-opt-subheader">{t('doorSubheader')}</p>
       <div className="window-pricing-door-grid">
         {items.map((opt) => (
           <DoorOptionCard
@@ -423,6 +483,7 @@ function DoorOptionsSection({
             isSelected={selectedName === opt.name}
             onSelect={() => onSelect(selectedName === opt.name ? null : opt.name)}
             onViewMore={() => onViewMore(opt)}
+            t={t}
           />
         ))}
       </div>
@@ -435,10 +496,12 @@ function HandleOptionsSection({
   items,
   selectedName,
   onSelect,
+  t,
 }: {
   items: typeof HANDLE_OPTIONS;
   selectedName: string | null;
   onSelect: (name: string) => void;
+  t: TFunc;
 }) {
   const [expanded, setExpanded] = useState(false);
   const initialCount = 3;
@@ -456,12 +519,12 @@ function HandleOptionsSection({
             onClick={() => onSelect(opt.name)}
           >
             <div className="window-pricing-handle-card-thumb-wrap">
-              <img src={opt.thumbnail} alt={opt.name} />
+              <img src={opt.thumbnail} alt={getOptionLabel(t, opt.name)} />
               {opt.isDefault && (
-                <span className="window-pricing-opt-badge">기본</span>
+                <span className="window-pricing-opt-badge">{t('default')}</span>
               )}
             </div>
-            <span className="window-pricing-handle-card-label">{opt.name}</span>
+            <span className="window-pricing-handle-card-label">{getOptionLabel(t, opt.name)}</span>
           </button>
         ))}
       </div>
@@ -471,10 +534,10 @@ function HandleOptionsSection({
           className="window-pricing-handle-more"
           onClick={() => setExpanded(true)}
         >
-          더보기
+          {t('ctaViewMore')}
         </button>
       )}
-      <p className="window-pricing-opt-footnote">{HANDLE_SPEC.note}</p>
+      <p className="window-pricing-opt-footnote">{t('handleNote')}</p>
     </div>
   );
 }
@@ -484,10 +547,12 @@ function FunctionalOptionsSection({
   items,
   selectedName,
   onSelect,
+  t,
 }: {
   items: typeof FUNCTIONAL_OPTIONS;
   selectedName: string | null;
   onSelect: (name: string) => void;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-opt-section">
@@ -500,12 +565,12 @@ function FunctionalOptionsSection({
             onClick={() => onSelect(opt.name)}
           >
             <div className="window-pricing-handle-card-thumb-wrap">
-              <img src={opt.thumbnail} alt={opt.name} />
+              <img src={opt.thumbnail} alt={getOptionLabel(t, opt.name)} />
               {opt.isDefault && (
-                <span className="window-pricing-opt-badge">기본</span>
+                <span className="window-pricing-opt-badge">{t('default')}</span>
               )}
             </div>
-            <span className="window-pricing-handle-card-label">{opt.name}</span>
+            <span className="window-pricing-handle-card-label">{getOptionLabel(t, opt.name)}</span>
           </button>
         ))}
       </div>
@@ -518,14 +583,16 @@ function ExtraOptionsSection({
   items,
   selectedNames,
   onToggle,
+  t,
 }: {
   items: typeof EXTRA_OPTIONS;
   selectedNames: string[];
   onToggle: (name: string) => void;
+  t: TFunc;
 }) {
   return (
     <div className="window-pricing-opt-section">
-      <p className="window-pricing-opt-subheader">현장 상황에 따라 필요 시 추가</p>
+      <p className="window-pricing-opt-subheader">{t('extraSubheader')}</p>
       <div className="window-pricing-extra-grid">
         {items.map((opt) => (
           <button
@@ -535,8 +602,8 @@ function ExtraOptionsSection({
             onClick={() => onToggle(opt.name)}
           >
             <div className="window-pricing-extra-card-thumb" />
-            <span className="window-pricing-extra-card-label">{opt.name}</span>
-            <span className="window-pricing-extra-card-price">{opt.priceModifier}</span>
+            <span className="window-pricing-extra-card-label">{getOptionLabel(t, opt.name)}</span>
+            <span className="window-pricing-extra-card-price">{getPriceModifierLabel(t, opt.priceModifier)}</span>
           </button>
         ))}
       </div>
@@ -555,7 +622,7 @@ function SpecBlock({ default: def, note }: { default: string; note?: string }) {
 }
 
 // --- ModalDetailTable (for overlay) ---
-function ModalDetailTable({ products, title }: { products: WindowProduct[]; title: string }) {
+function ModalDetailTable({ products, title, t }: { products: WindowProduct[]; title: string; t: TFunc }) {
   return (
     <div className="window-pricing-modal-table-section">
       <h4 className="window-pricing-modal-table-title">{title}</h4>
@@ -564,7 +631,7 @@ function ModalDetailTable({ products, title }: { products: WindowProduct[]; titl
           <thead>
             <tr>
               {TABLE_COLS.map((c) => (
-                <th key={c.key}>{c.label}</th>
+                <th key={c.key}>{t(c.tKey)}</th>
               ))}
             </tr>
           </thead>
@@ -606,15 +673,18 @@ function DetailModal({
   sizes,
   selectedKey,
   onSizeChange,
+  t,
 }: {
   isOpen: boolean;
   onClose: () => void;
   sizes: ApartmentSizeData[];
   selectedKey: ApartmentSizeKey;
   onSizeChange: (k: ApartmentSizeKey) => void;
+  t: TFunc;
 }) {
   if (!isOpen) return null;
   const data = sizes.find((d) => d.key === selectedKey) ?? sizes[0];
+  const sizeLabel = t(`size${data.key}`);
   return (
     <div className="window-pricing-modal-overlay" onClick={onClose}>
       <div className="window-pricing-modal" onClick={(e) => e.stopPropagation()}>
@@ -622,7 +692,7 @@ function DetailModal({
           ×
         </button>
         <div className="window-pricing-modal-header">
-          <h2 className="window-pricing-modal-title">상세 창호표</h2>
+          <h2 className="window-pricing-modal-title">{t('modalDetailTitle')}</h2>
           <div className="window-pricing-modal-size-tabs">
             {sizes.map((s) => (
               <button
@@ -631,17 +701,17 @@ function DetailModal({
                 className={`window-pricing-modal-size-tab ${s.key === selectedKey ? 'active' : ''}`}
                 onClick={() => onSizeChange(s.key)}
               >
-                {s.label}
+                {t(`size${s.key}`)}
               </button>
             ))}
           </div>
         </div>
         <div className="window-pricing-modal-body">
           <div className="window-pricing-modal-composition">
-            <img src={FLOOR_PLAN_IMAGES[data.key]} alt={`아파트 평면도 (${data.label})`} />
+            <img src={FLOOR_PLAN_IMAGES[data.key]} alt={t('floorPlanAlt', { size: sizeLabel })} />
           </div>
-          <ModalDetailTable products={data.fullWindowProducts} title={`${data.label} 전체창`} />
-          <ModalDetailTable products={data.externalWindowProducts} title={`${data.label} 외부창`} />
+          <ModalDetailTable products={data.fullWindowProducts} title={t('fullWindow', { size: sizeLabel })} t={t} />
+          <ModalDetailTable products={data.externalWindowProducts} title={t('externalWindowOnly', { size: sizeLabel })} t={t} />
         </div>
       </div>
     </div>
@@ -650,6 +720,7 @@ function DetailModal({
 
 // --- Main component ---
 export default function WindowPricingShowcase() {
+  const { t } = useTranslation('configurator');
   const [selectedSize, setSelectedSize] = useState<ApartmentSizeKey>('40');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSize, setModalSize] = useState<ApartmentSizeKey>('40');
@@ -705,7 +776,7 @@ export default function WindowPricingShowcase() {
         onClick={panelExpanded ? () => setPanelExpanded(false) : undefined}
       >
         <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_IMAGE})` }} />
-        <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} />
+        <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
         {panelExpanded && <div className="window-pricing-hero-backdrop" aria-hidden />}
       </div>
 
@@ -715,105 +786,112 @@ export default function WindowPricingShowcase() {
           type="button"
           className="window-pricing-panel-grip"
           onClick={() => setPanelExpanded(true)}
-          aria-label="패널 확장"
-          title="당기면 패널 확장"
+          aria-label={t('panelExpand')}
+          title={t('panelExpandTitle')}
         >
           <span className="window-pricing-panel-grip-icon">⋯</span>
         </button>
         <div className="window-pricing-panel-scroll">
-          <h1 className="window-pricing-title">{WINDOW_PRICING_TITLE}</h1>
-          <p className="window-pricing-subtitle">{WINDOW_PRICING_SUBTITLE}</p>
+          <h1 className="window-pricing-title">{t('title')}</h1>
+          <p className="window-pricing-subtitle">{t('subtitle')}</p>
 
           <PricingSummary
             externalPrice={externalTotal}
             fullPrice={fullTotal}
+            t={t}
           />
 
-          <SizeTabs sizes={APARTMENT_SIZE_DATA} selectedKey={selectedSize} onSelect={onSizeSelect} />
+          <SizeTabs sizes={APARTMENT_SIZE_DATA} selectedKey={selectedSize} onSelect={onSizeSelect} t={t} />
 
           {/* Product composition */}
           <div className="window-pricing-composition">
-            <h4 className="window-pricing-section-title">제품구성</h4>
+            <h4 className="window-pricing-section-title">{t('productComposition')}</h4>
             <div className="window-pricing-composition-image">
-              <img src={FLOOR_PLAN_IMAGES[selectedSize]} alt={`아파트 평면도 (${currentData.label})`} />
+              <img src={FLOOR_PLAN_IMAGES[selectedSize]} alt={t('floorPlanAlt', { size: t(`size${selectedSize}`) })} />
             </div>
           </div>
 
-          <ProductTable products={currentData.fullWindowProducts} title={`${currentData.label} 전체창`} />
-          <ProductTable products={currentData.externalWindowProducts} title={`${currentData.label} 외부창`} />
+          <ProductTable products={currentData.fullWindowProducts} title={t('fullWindow', { size: t(`size${selectedSize}`) })} t={t} />
+          <ProductTable products={currentData.externalWindowProducts} title={t('externalWindowOnly', { size: t(`size${selectedSize}`) })} t={t} />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">컬러 옵션</h4>
+          <h4 className="window-pricing-section-title centered">{t('colorOption')}</h4>
           <ColorOptionsSection
             items={COLOR_OPTIONS}
             selectedName={selectedColor}
             onSelect={setSelectedColor}
+            t={t}
           />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">유리 사양</h4>
+          <h4 className="window-pricing-section-title centered">{t('glassSpec')}</h4>
           <GlassSpecSection
             default={GLASS_SPEC.default}
             hex={GLASS_SPEC.hex}
             note={GLASS_SPEC.note}
+            t={t}
           />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">도어 옵션</h4>
+          <h4 className="window-pricing-section-title centered">{t('doorOption')}</h4>
           <DoorOptionsSection
             items={DOOR_OPTIONS}
             selectedName={selectedDoor}
             onSelect={setSelectedDoor}
-            subHeader="프레임 두께 22mm, 강화유리 5T"
             onViewMore={setDoorModalOption}
+            t={t}
           />
           <DoorDetailModal
             option={doorModalOption}
             isOpen={!!doorModalOption}
             onClose={() => setDoorModalOption(null)}
+            t={t}
           />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">핸들</h4>
+          <h4 className="window-pricing-section-title centered">{t('handleOption')}</h4>
           <HandleOptionsSection
             items={HANDLE_OPTIONS}
             selectedName={selectedHandle}
             onSelect={setSelectedHandle}
+            t={t}
           />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title">방충망</h4>
+          <h4 className="window-pricing-section-title">{t('mosquitoScreen')}</h4>
           <div className="window-pricing-spec">
-            <span className="spec-default">{MOSQUITO_SCREEN.join(' / ')}</span>
+            <span className="spec-default">{t('mosquitoSpecSUS')} / {t('mosquitoSpecAntiFall')}</span>
           </div>
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">기능성 부자재</h4>
+          <h4 className="window-pricing-section-title centered">{t('functionalAccessory')}</h4>
           <FunctionalOptionsSection
             items={FUNCTIONAL_OPTIONS}
             selectedName={selectedFunctional}
             onSelect={setSelectedFunctional}
+            t={t}
           />
 
           <div className="window-pricing-divider" />
 
-          <h4 className="window-pricing-section-title centered">추가 옵션</h4>
+          <h4 className="window-pricing-section-title centered">{t('extraOption')}</h4>
           <ExtraOptionsSection
             items={EXTRA_OPTIONS}
             selectedNames={selectedExtras}
             onToggle={onExtraToggle}
+            t={t}
           />
 
-          <p className="window-pricing-bottom-note">{BOTTOM_NOTE}</p>
+          <p className="window-pricing-bottom-note">{t('bottomNote')}</p>
 
           <button type="button" className="window-pricing-cta window-pricing-cta-primary">
-            최종 견적 보기
+            {t('ctaFinalEstimate')}
           </button>
 
           <a
@@ -823,11 +901,11 @@ export default function WindowPricingShowcase() {
             className="window-pricing-cta window-pricing-cta-kakao"
           >
             <span className="window-pricing-kakao-icon" aria-hidden>💬</span>
-            카카오 상담
+            {t('ctaKakao')}
           </a>
 
           <button type="button" className="window-pricing-detail-btn" onClick={openModal}>
-            상세 창호표 보기
+            {t('ctaDetailTable')}
           </button>
         </div>
       </aside>
@@ -838,6 +916,7 @@ export default function WindowPricingShowcase() {
         sizes={APARTMENT_SIZE_DATA}
         selectedKey={modalSize}
         onSizeChange={setModalSize}
+        t={t}
       />
     </div>
   );
