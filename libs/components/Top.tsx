@@ -497,7 +497,7 @@ const Top = () => {
 												flexShrink: 0,
 											}}
 										>
-											<img src={getUserImageSrc(user?.memberImage)} alt={user?.memberNick || t('User')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+											<img src={getUserImageSrc(user?.memberImage)} alt={user?.memberNick || t('User')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} style={{ width: '120%', height: '120%', objectFit: 'cover' }} />
 										</div>
 										<Typography className={'user-name-text'} sx={{ fontSize: 12, fontWeight: 600 }}>{user?.memberNick || 'User'}</Typography>
 									</Link>

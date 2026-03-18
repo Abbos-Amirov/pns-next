@@ -2,6 +2,11 @@
   padding: 24px;
 }
 
+.configurator-page.window-pricing-page {
+  padding: 0;
+  min-height: 100vh;
+}
+
 .configurator {
   display: grid;
   grid-template-columns: 1fr 340px;

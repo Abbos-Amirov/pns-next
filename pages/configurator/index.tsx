@@ -1,13 +1,11 @@
 import type { NextPage } from 'next';
-import dynamic from 'next/dynamic';
 import React from 'react';
-
-const RoomConfigurator = dynamic(() => import('../../libs/components/configurator/RoomConfigurator'), { ssr: false });
+import WindowPricingShowcase from '../../libs/components/configurator/window-pricing/WindowPricingShowcase';
 
 const ConfiguratorPage: NextPage = () => {
   return (
-    <div className="configurator-page">
-      <RoomConfigurator modelUrl="/models/room.glb" />
+    <div className="configurator-page window-pricing-page">
+      <WindowPricingShowcase />
     </div>
   );
 };
