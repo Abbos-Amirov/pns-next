@@ -6,12 +6,35 @@
   grid-template-columns: 1fr 420px;
   min-height: 100vh;
   background: #f5f5f7;
+  font-size: 1.1em;
+  transition: grid-template-columns 0.3s ease;
+
+  &.panel-expanded {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.window-pricing-showcase img {
+  max-width: 100%;
+  height: auto;
 }
 
 .window-pricing-hero {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+
+  .window-pricing-showcase.panel-expanded & {
+    cursor: pointer;
+  }
+}
+
+.window-pricing-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .window-pricing-hero-image {
@@ -27,25 +50,28 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 12px 20px;
+  padding: 16px 28px;
   background: rgba(0, 0, 0, 0.55);
   border-radius: 12px;
   backdrop-filter: blur(8px);
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
 .window-pricing-hero-badge-row {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
+  align-items: baseline;
+  gap: 32px;
   span {
-    opacity: 0.9;
+    font-size: 1.5em;
+    opacity: 0.95;
   }
   strong {
+    font-size: 2em;
     font-weight: 700;
-    margin-left: 16px;
+    margin-left: 20px;
   }
 }
 
@@ -57,12 +83,46 @@
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
+  overflow: visible;
+}
+
+.window-pricing-panel-grip {
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 48px;
+  background: #ffffff;
+  border: 1px solid #e0e2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f8f9fb;
+    border-color: #c0c4c8;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.window-pricing-panel-grip-icon {
+  font-size: 14px;
+  color: #6b6f76;
+  letter-spacing: 2px;
+  user-select: none;
 }
 
 .window-pricing-panel-scroll {
   flex: 1;
   overflow-y: auto;
   padding: 32px 28px 40px;
+  zoom: 1.42;
 }
 
 .window-pricing-title {
@@ -123,9 +183,9 @@
 }
 
 .window-pricing-size-tab {
-  padding: 12px 16px;
+  padding: 10px 12px;
   font-family: $font;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #6b6f76;
   background: transparent;
@@ -133,6 +193,8 @@
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.25s ease;
+  white-space: nowrap;
+  text-align: center;
 
   &:hover {
     color: #3a3d42;
@@ -157,6 +219,12 @@
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 12px 0;
+
+  &.centered {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
 }
 
 .window-pricing-composition-image {
@@ -292,6 +360,387 @@
   }
 }
 
+/** Option cards (컬러/유리/도어) - rasimdagi uslub **/
+.window-pricing-opt-section {
+  margin-bottom: 4px;
+}
+
+.window-pricing-opt-subheader {
+  font-size: 13px;
+  color: #6b6f76;
+  margin: -6px 0 14px 0;
+  line-height: 1.4;
+}
+
+.window-pricing-opt-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 20px;
+  margin-bottom: 12px;
+
+  &.door-options {
+    gap: 12px 16px;
+  }
+}
+
+/** Handle options: 3 circular thumbs, 더보기 reveals 4+ **/
+.window-pricing-handle-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.window-pricing-handle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  .window-pricing-handle-card-thumb-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #f0f2f5;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .window-pricing-opt-badge {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+    }
+  }
+
+  &.selected .window-pricing-handle-card-thumb-wrap {
+    border-color: #3a3d42;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .window-pricing-handle-card-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.3;
+  }
+}
+
+.window-pricing-handle-more {
+  display: block;
+  margin: 0 auto 12px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: #2a2c31;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1a1a1d;
+  }
+}
+
+/** Door options: circular images + 더보기 **/
+.window-pricing-door-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 16px;
+  margin-bottom: 12px;
+}
+
+.window-pricing-door-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  .window-pricing-door-card-thumb-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    padding: 0;
+    border: 3px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #f0f2f5;
+
+    &:hover {
+      border-color: #c0c4c8;
+    }
+
+    &.selected {
+      border-color: #3a3d42;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .window-pricing-door-card-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+
+    &.window-pricing-door-card-placeholder {
+      object-fit: none;
+    }
+  }
+
+  .window-pricing-opt-badge {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+  }
+
+  .window-pricing-door-card-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-top: 8px;
+    line-height: 1.35;
+    min-height: 32px;
+  }
+
+  .window-pricing-door-card-more {
+    margin-top: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: #2a2c31;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #1a1a1d;
+    }
+
+    &.selected {
+      outline: 2px solid #3498db;
+      outline-offset: 2px;
+    }
+  }
+
+  .window-pricing-door-card-price {
+    font-size: 12px;
+    color: #8b8f94;
+    margin-top: 4px;
+  }
+}
+
+/** Door detail modal **/
+.window-pricing-door-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.window-pricing-door-modal {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  padding: 24px 28px 28px;
+}
+
+.window-pricing-door-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  font-size: 24px;
+  line-height: 1;
+  color: #6b6f76;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #1a1a1a;
+  }
+}
+
+.window-pricing-door-modal-title {
+  font-family: $font;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.window-pricing-door-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.window-pricing-door-modal-hero {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f9fb;
+  aspect-ratio: 4/3;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.window-pricing-door-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.window-pricing-door-modal-subtitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.window-pricing-door-modal-desc {
+  font-size: 14px;
+  color: #4a4d52;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.window-pricing-door-modal-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #e8eaed;
+}
+
+.window-pricing-door-modal-gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e8eaed;
+  }
+
+  span {
+    font-size: 13px;
+    color: #8b8f94;
+  }
+}
+
+.window-pricing-opt-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  .window-pricing-opt-card-swatch {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  &.selected .window-pricing-opt-card-swatch {
+    border-color: #3a3d42;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .window-pricing-opt-card-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 80px;
+  }
+
+  .window-pricing-opt-card-price {
+    font-size: 12px;
+    color: #8b8f94;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .window-pricing-opt-badge {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #6b6f76;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+}
+
+.window-pricing-opt-footnote {
+  font-size: 12px;
+  color: #8b8f94;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
 .window-pricing-options-inner {
   .window-pricing-opt-row {
     display: flex;
@@ -315,24 +764,101 @@
   margin: 20px 0 24px 0;
 }
 
+/** 추가 옵션 - circular grid (rasimdagi uslub) **/
+.window-pricing-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 12px;
+  margin-bottom: 12px;
+}
+
+.window-pricing-extra-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  .window-pricing-extra-card-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8eaed 0%, #d0d4d8 100%);
+    border: 3px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  &.selected .window-pricing-extra-card-thumb {
+    border-color: #3a3d42;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .window-pricing-extra-card-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .window-pricing-extra-card-price {
+    font-size: 12px;
+    color: #8b8f94;
+    margin-top: 2px;
+  }
+}
+
 .window-pricing-cta {
+  display: block;
   width: 100%;
   padding: 16px 24px;
   font-family: $font;
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
-  background: #2a2c31;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(42, 44, 49, 0.2);
+  text-align: center;
+  text-decoration: none;
 
-  &:hover {
-    background: #1a1a1d;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(42, 44, 49, 0.25);
+  &:focus {
+    outline: 2px solid #2a2c31;
+    outline-offset: 2px;
+  }
+
+  &.window-pricing-cta-primary {
+    color: #ffffff;
+    background: #2a2c31;
+    box-shadow: 0 4px 12px rgba(42, 44, 49, 0.2);
+
+    &:hover {
+      background: #1a1a1d;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(42, 44, 49, 0.25);
+    }
+  }
+
+  &.window-pricing-cta-kakao {
+    margin-top: 12px;
+    color: #1a1a1a;
+    background: #fee500;
+
+    &:hover {
+      background: #f5dc00;
+    }
+
+    .window-pricing-kakao-icon {
+      margin-right: 6px;
+    }
   }
 }
 
@@ -537,6 +1063,18 @@
 @media (max-width: 1100px) {
   .window-pricing-showcase {
     grid-template-columns: 1fr;
+
+    &.panel-expanded .window-pricing-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 50%;
+      max-width: 100%;
+      height: 100vh;
+      z-index: 100;
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.2);
+    }
   }
 
   .window-pricing-hero {
@@ -546,6 +1084,19 @@
   .window-pricing-panel {
     position: relative;
     height: auto;
+  }
+
+  .window-pricing-panel-grip {
+    left: 12px;
+    top: -24px;
+    transform: translateY(0);
+    width: 40px;
+    height: 20px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .window-pricing-panel-grip-icon {
+    transform: rotate(-90deg);
   }
 }
 
@@ -559,6 +1110,22 @@
   }
 
   .window-pricing-size-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .window-pricing-door-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .window-pricing-door-modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .window-pricing-door-modal-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .window-pricing-extra-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
