@@ -13,7 +13,22 @@ import {
 } from './data/windowPricingData';
 import type { ApartmentSizeData, ApartmentSizeKey, DoorOption, WindowProduct } from './data/windowPricingData';
 
-const HERO_IMAGE = 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80';
+/** Hero images: White = 2-rasm, US201 = bej ramka, MQ808 = 3-rasm */
+const HERO_IMAGE_WHITE = '/img/configurator/hero-white.png';
+const HERO_IMAGE_US201 = '/img/configurator/hero-us201.png';
+const HERO_IMAGE_MQ808 = '/img/configurator/hero-mq808.png';
+
+const HERO_OPTIONS = [
+  { src: HERO_IMAGE_WHITE, colorName: 'White' as const },
+  { src: HERO_IMAGE_US201, colorName: 'US201' as const },
+  { src: HERO_IMAGE_MQ808, colorName: 'MQ808' as const },
+];
+
+const HERO_COLOR_TO_IMAGE: Record<string, string> = {
+  White: HERO_IMAGE_WHITE,
+  US201: HERO_IMAGE_US201,
+  MQ808: HERO_IMAGE_MQ808,
+};
 
 const NO_COLORS = [
   '#e74c3c', '#e67e22', '#e91e63', '#f1c40f', '#9b59b6', '#3498db',
@@ -775,7 +790,7 @@ export default function WindowPricingShowcase() {
         className="window-pricing-hero"
         onClick={panelExpanded ? () => setPanelExpanded(false) : undefined}
       >
-        <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_IMAGE})` }} />
+        <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_COLOR_TO_IMAGE[selectedColor ?? 'White']})` }} />
         <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
         {panelExpanded && <div className="window-pricing-hero-backdrop" aria-hidden />}
       </div>

@@ -32,7 +32,7 @@
 .window-pricing-hero-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(229, 217, 199, 0.25);
   pointer-events: auto;
   z-index: 1;
 }
@@ -43,6 +43,47 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.window-pricing-hero-thumbnails {
+  position: absolute;
+  bottom: 90px;
+  left: 24px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+}
+
+.window-pricing-hero-thumb {
+  width: 80px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+  flex-shrink: 0;
+  background: #111;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &:hover {
+    opacity: 0.95;
+  }
+
+  &.active {
+    border-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .window-pricing-hero-badge {
@@ -407,8 +448,8 @@
 
   .window-pricing-handle-card-thumb-wrap {
     position: relative;
-    width: 56px;
-    height: 56px;
+    width: 39px;  /* 56 * 0.7 */
+    height: 39px;
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid transparent;
@@ -447,8 +488,8 @@
 .window-pricing-handle-more {
   display: block;
   margin: 0 auto 12px;
-  padding: 8px 20px;
-  font-size: 13px;
+  padding: 6px 14px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
   background: #2a2c31;
@@ -478,8 +519,8 @@
 
   .window-pricing-door-card-thumb-wrap {
     position: relative;
-    width: 72px;
-    height: 72px;
+    width: 50px;  /* 72 * 0.7 */
+    height: 50px;
     border-radius: 50%;
     padding: 0;
     border: 3px solid transparent;
@@ -525,9 +566,9 @@
   }
 
   .window-pricing-door-card-more {
-    margin-top: 6px;
-    padding: 6px 14px;
-    font-size: 12px;
+    margin-top: 4px;
+    padding: 4px 10px;
+    font-size: 10px;
     font-weight: 600;
     color: #fff;
     background: #2a2c31;
@@ -688,8 +729,8 @@
 
   .window-pricing-opt-card-swatch {
     position: relative;
-    width: 56px;
-    height: 56px;
+    width: 39px;  /* 56 * 0.7 */
+    height: 39px;
     border-radius: 50%;
     border: 3px solid transparent;
     flex-shrink: 0;
@@ -787,8 +828,8 @@
   }
 
   .window-pricing-extra-card-thumb {
-    width: 56px;
-    height: 56px;
+    width: 39px;  /* 56 * 0.7 */
+    height: 39px;
     border-radius: 50%;
     background: linear-gradient(135deg, #e8eaed 0%, #d0d4d8 100%);
     border: 3px solid transparent;
