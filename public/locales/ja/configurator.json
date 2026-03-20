@@ -86,5 +86,22 @@
   "tableH": "H",
   "tableForm": "形態",
   "tableScreen": "防虫網",
-  "tableHandle": "ハンドル"
+  "tableHandle": "ハンドル",
+  "apartment3DTitle": "3Dアパート コンフィギュレーター",
+  "apartment3DSubtitle": "部屋を探索し、窓枠の色を変更できます。",
+  "windowFrameColor": "窓枠の色",
+  "colorDarkGray": "ダークグレー",
+  "colorWarmBeige": "ウォームベージュ",
+  "room1": "リビングバルコニー",
+  "room2": "主寝室バルコニー",
+  "room3": "寝室2バルコニー",
+  "room4": "多目的室バルコニー",
+  "room5": "キッチン/サービス",
+  "room6": "寝室3",
+  "room7": "リビング内窓",
+  "room8": "主寝室内窓",
+  "room9": "寝室2内窓",
+  "viewMode": "表示モード",
+  "viewInside": "室内",
+  "viewOutside": "室外"
 }

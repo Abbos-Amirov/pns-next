@@ -232,7 +232,7 @@ const AdminHome: NextPage = (props: any) => {
 						>
 							<CardContent>
 								<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
-									<Box>
+									<Box component="div">
 										<Typography variant={'body2'} className={'stat-label'} sx={{ color: '#717171', mb: 1 }}>
 											{card.title}
 										</Typography>
@@ -241,6 +241,7 @@ const AdminHome: NextPage = (props: any) => {
 										</Typography>
 									</Box>
 									<Box
+										component="div"
 										sx={{
 											width: 64,
 											height: 64,
@@ -278,7 +279,7 @@ const AdminHome: NextPage = (props: any) => {
 									variant={'outlined'}
 									className={'quick-link-btn'}
 									onClick={() => handleNavigate(link.path)}
-									startIcon={<Box sx={{ color: link.color }}>{link.icon}</Box>}
+									startIcon={<Box component="span" sx={{ color: link.color }}>{link.icon}</Box>}
 									endIcon={<ArrowForwardIcon sx={{ fontSize: 20, color: '#bdbdbd' }} />}
 									sx={{
 										p: 2,

@@ -5,6 +5,7 @@
 @import '/scss/pc/homepage/homepage';
 @import '/scss/pc/configurator/configurator.scss';
 @import '/scss/pc/configurator/window-pricing.scss';
+@import '/scss/pc/configurator/apartment-3d.scss';
 
 @import '/scss/pc/property/property';
 @import '/scss/pc/property/detail.scss';
@@ -127,7 +128,7 @@ body::-webkit-scrollbar {
 			animation: slideDownBtn 0.3s ease-out;
 			.info-icon {
 				color:  rgba(0, 0, 0, 0.2);
-				font-size: 16px;
+				font-size: 19px;
 				transition: all 0.3s;
 			}
 			span {
@@ -178,7 +179,7 @@ body::-webkit-scrollbar {
 						gap: 6px;
 						.top-bar-icon {
 							color:  #252420;
-							font-size: 14px;
+							font-size: 17px;
 						}
 						span {
 							color:  #252420;
@@ -202,7 +203,7 @@ body::-webkit-scrollbar {
 						gap: 6px;
 						.top-bar-icon {
 							color:  #252420;
-							font-size: 14px;
+							font-size: 17px;
 						}
 						span {
 							color:  #252420;
@@ -220,7 +221,7 @@ body::-webkit-scrollbar {
 						margin-left: 10px;
 						.social-icon {
 							color:  #252420;
-							font-size: 18px;
+							font-size: 22px;
 							cursor: pointer;
 							transition: color 0.3s;
 							&:hover {
@@ -249,7 +250,7 @@ body::-webkit-scrollbar {
 						margin-left: 10px;
 						margin-right: 10px;
 						.logout-icon {
-							font-size: 18px;
+							font-size: 22px;
 							color:  #252420;
 						}
 						span {
@@ -274,7 +275,7 @@ body::-webkit-scrollbar {
 					}
 					.close-icon {
 						color:  #252420;
-						font-size: 18px;
+						font-size: 22px;
 						cursor: pointer;
 						margin-left: 15px;
 						transition: color 0.3s;
@@ -308,7 +309,7 @@ body::-webkit-scrollbar {
 					animation: slideDownBtn 0.3s ease-out;
 					.info-icon {
 						color:  #ffffff;
-						font-size: 16px;
+						font-size: 19px;
 						transition: all 0.3s;
 					}
 					span {
@@ -359,7 +360,7 @@ body::-webkit-scrollbar {
 								gap: 6px;
 								.top-bar-icon {
 									color: #bebdbd;
-									font-size: 14px;
+									font-size: 17px;
 								}
 								span {
 									color: #bebdbd;
@@ -383,7 +384,7 @@ body::-webkit-scrollbar {
 								gap: 8px;
 								.top-bar-icon {
 									color: #bebdbd;
-									font-size: 16px;
+									font-size: 19px;
 								}
 								span {
 									color: #bebdbd;
@@ -401,7 +402,7 @@ body::-webkit-scrollbar {
 								margin-left: 10px;
 								.social-icon {
 									color: #bebdbd;
-									font-size: 18px;
+									font-size: 22px;
 									cursor: pointer;
 									transition: color 0.3s;
 									&:hover {
@@ -430,7 +431,7 @@ body::-webkit-scrollbar {
 								margin-left: 10px;
 								margin-right: 10px;
 								.logout-icon {
-									font-size: 18px;
+									font-size: 22px;
 									color: #bebdbd;
 								}
 								span {
@@ -455,7 +456,7 @@ body::-webkit-scrollbar {
 							}
 							.close-icon {
 								color: #bebdbd;
-								font-size: 18px;
+								font-size: 22px;
 								cursor: pointer;
 								margin-left: 15px;
 								transition: color 0.3s;
@@ -487,14 +488,14 @@ body::-webkit-scrollbar {
 								order: 0;
 								margin-right: 32px;
 								.logo-icon {
-									width: 32px;
-									height: 32px;
+									width: 38px;
+									height: 38px;
 									display: flex;
 									align-items: center;
 									justify-content: center;
 									.logo {
-										width: 32px;
-										height: 32px;
+										width: 38px;
+										height: 38px;
 										object-fit: contain;
 									}
 								}
@@ -504,7 +505,7 @@ body::-webkit-scrollbar {
 									gap: 0;
 									.logo-brand {
 										font-family: $font;
-										font-size: 16px;
+										font-size: 19px;
 										font-weight: 700;
 										color: #1a5f9e;
 										text-transform: uppercase !important;
@@ -512,7 +513,7 @@ body::-webkit-scrollbar {
 									}
 									.logo-tagline {
 										font-family: $font;
-										font-size: 8px;
+										font-size: 10px;
 										font-weight: 500;
 										color: #181a20;
 										line-height: 1.2;
@@ -523,7 +524,7 @@ body::-webkit-scrollbar {
 							}
 							.nav-menu {
 								flex: 1;
-								justify-content: flex-start;
+								justify-content: center;
 								gap: 20px;
 								.nav-separator {
 									display: none;
@@ -545,7 +546,7 @@ body::-webkit-scrollbar {
 							.nav-link {
 								color:#39381c;;
 								font-family: $font;
-								font-size: 12px;
+								font-size: 14px;
 								font-style: normal;
 								font-weight: 500;
 								line-height: normal;
@@ -560,7 +561,7 @@ body::-webkit-scrollbar {
 							.nav-separator {
 								color: #7a6759;
 								font-family: $font;
-								font-size: 14px;
+								font-size: 17px;
 								font-weight: 500;
 							}
 							.measurer-dropdown {
@@ -576,7 +577,7 @@ body::-webkit-scrollbar {
 									gap: 4px;
 									cursor: pointer;
 									.dropdown-icon {
-										font-size: 16px;
+										font-size: 19px;
 										transition: transform 0.3s ease;
 									}
 								}
@@ -595,7 +596,7 @@ body::-webkit-scrollbar {
 										align-items: center;
 										gap: 4px;
 										cursor: pointer;
-										.dropdown-icon { font-size: 16px; transition: transform 0.3s ease; }
+										.dropdown-icon { font-size: 19px; transition: transform 0.3s ease; }
 									}
 									&:hover .product-link .dropdown-icon { transform: rotate(180deg); }
 								}
@@ -675,7 +676,9 @@ body::-webkit-scrollbar {
 									align-items: center;
 									gap: 6px;
 									cursor: pointer;
-									.dropdown-icon { font-size: 18px; transition: transform 0.3s ease; }
+									line-height: 1;
+									vertical-align: middle;
+									.dropdown-icon { font-size: 19px; transition: transform 0.3s ease; }
 								}
 								&:hover .support-link .dropdown-icon { transform: rotate(180deg); }
 								.support-menu.support-menu-with-images {
@@ -1528,11 +1531,12 @@ body::-webkit-scrollbar {
 			justify-content: space-between;
 			
 			.logo-left {
+				margin-right: 24px;
 				.kadhavu-logo-dark {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					gap: 12px;
+					gap: 16px;
 					cursor: pointer;
 					.logo-icon-dark {
 						width: 40px;
@@ -1552,9 +1556,11 @@ body::-webkit-scrollbar {
 			}
 
 			.nav-menu-dark {
+				flex: 1;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
+				justify-content: center;
 				gap: 8px;
 				.nav-link-dark {
 					color: #ffffff;
@@ -1665,14 +1671,17 @@ body::-webkit-scrollbar {
 				}
 				.support-dropdown-dark {
 					position: relative;
-					display: inline-block;
-					a { text-decoration: none; display: inline-block; }
+					display: inline-flex;
+					align-items: center;
+					vertical-align: middle;
+					a { text-decoration: none; display: inline-flex; align-items: center; }
 					.support-link-dark {
-						display: flex;
-						align-items: center;
+						display: inline-flex !important;
+						align-items: center !important;
 						gap: 6px;
 						cursor: pointer;
-						.dropdown-icon-dark { font-size: 18px; color: #ffffff; transition: transform 0.3s ease; }
+						line-height: 1;
+						.dropdown-icon-dark { font-size: 16px; color: #ffffff; transition: transform 0.3s ease; }
 					}
 					&:hover .support-link-dark .dropdown-icon-dark { transform: rotate(180deg); }
 					.support-menu-dark.support-menu-with-images-dark {
@@ -1766,36 +1775,6 @@ body::-webkit-scrollbar {
 						transform: scale(1.08);
 					}
 					svg { font-size: 22px; }
-				}
-				.call-us-btn {
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					gap: 8px;
-					padding: 10px 16px;
-					background-color: rgba(255, 255, 255, 0.01);
-					border-radius: 50px;
-					text-decoration: none;
-					cursor: pointer;
-					transition: all 0.3s;
-					.call-icon {
-						color: #ffffff;
-						font-size: 18px;
-					}
-					span {
-						color: #ffffff;
-						font-family: $font;
-						font-size: 13px;
-						font-style: normal;
-						font-weight: 500;
-						line-height: normal;
-					}
-					.phone-number {
-						margin-left: 4px;
-					}
-					&:hover {
-						background-color: rgba(255, 255, 255, 0.2);
-					}
 				}
 				.lang-switcher-btn {
 					width: 40px;
@@ -2321,7 +2300,7 @@ body::-webkit-scrollbar {
 			align-items: center;
 			justify-content: center;
 			border-radius: 50%;
-			background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+			background: #1a5f9e;
 			box-shadow: 0px 10px 26px rgba(0, 0, 0, 0.18);
 			transition: transform 0.25s ease, box-shadow 0.25s ease;
 			z-index: 999;
@@ -2518,6 +2497,51 @@ body::-webkit-scrollbar {
 		}
 	}
 
+	.social-links-floating {
+		position: fixed;
+		bottom: 28px;
+		left: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		z-index: 2099;
+
+		.social-floating-btn {
+			width: 54px;
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			border: none;
+			box-shadow: 0px 10px 26px rgba(0, 0, 0, 0.18);
+			transition: transform 0.25s ease, box-shadow 0.25s ease;
+			cursor: pointer;
+			text-decoration: none;
+
+			svg {
+				width: 26px;
+				height: 26px;
+			}
+
+			&:hover {
+				transform: translateY(-2px) scale(1.06);
+				box-shadow: 0px 14px 32px rgba(0, 0, 0, 0.24);
+			}
+		}
+
+		.social-floating-pns,
+		.social-floating-youtube,
+		.social-floating-kakao,
+		.social-floating-naver {
+			background: #1a5f9e;
+
+			svg {
+				filter: drop-shadow(0px 3px 8px rgba(0, 0, 0, 0.35));
+			}
+		}
+	}
+
 	.ai-chatting {
 		.ai-chat-button {
 			border: none;
@@ -2530,7 +2554,7 @@ body::-webkit-scrollbar {
 			align-items: center;
 			gap: 10px;
 			border-radius: 999px;
-			background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+			background: #1a5f9e;
 			box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.20);
 			transition: transform 0.25s ease, box-shadow 0.25s ease;
 			z-index: 2100;
@@ -2556,7 +2580,7 @@ body::-webkit-scrollbar {
 				font-size: 12px;
 				font-weight: 700;
 				letter-spacing: 0.2px;
-				text-transform: none; // keep "Hi I am IA" as-is (only H is uppercase)
+				text-transform: none; // keep "I am PNS AI" as-is
 				white-space: nowrap;
 			}
 

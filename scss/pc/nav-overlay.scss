@@ -24,13 +24,18 @@
 	flex-shrink: 0;
 
 	.nav-overlay-logo {
-		height: 48px;
+		height: 58px;
 		width: auto;
 		object-fit: contain;
 	}
 
 	.nav-overlay-close {
 		color: #252420 !important;
+		width: 48px !important;
+		height: 48px !important;
+		& svg {
+			font-size: 28px !important;
+		}
 		[data-theme='dark'] & {
 			color: #e8e6e3 !important;
 		}

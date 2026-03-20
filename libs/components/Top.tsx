@@ -272,7 +272,7 @@ const Top = () => {
 				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`} data-theme={mode}>
 					<Stack className={'container premium-nav-container'}>
 						<Box component={'div'} className={'logo-box premium-logo'}>
-							<Link href={'/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+							<Link href={'/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }}>
 								<Box component={'div'} className={'logo-icon'}>
 									<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS Window" className={'logo'} />
 								</Box>
@@ -470,25 +470,25 @@ const Top = () => {
 										onClick={toggleTheme} 
 										title={mode === 'dark' ? 'Light mode' : 'Dark mode'} 
 										sx={{ 
-											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											width: 53, height: 53, minWidth: 53, borderRadius: '50%', 
 											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
 											color: '#1a5f9e !important',
 											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
-											'& svg': { fontSize: 18 }
+											'& svg': { fontSize: 22 }
 										}}
 									>
 										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
 									</IconButton>
-									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 44, height: 44, minWidth: 44, '& svg': { fontSize: 18 } }}>
+									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 53, height: 53, minWidth: 53, '& svg': { fontSize: 22 } }}>
 										<LanguageIcon />
 									</IconButton>
 									<Link href={'/mypage'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
 										<div
 											className={'user-avatar-small'}
 											style={{
-												width: 24,
-												height: 24,
-												minWidth: 24,
+												width: 29,
+												height: 29,
+												minWidth: 29,
 												borderRadius: '50%',
 												overflow: 'hidden',
 												display: 'flex',
@@ -507,11 +507,11 @@ const Top = () => {
 										onClick={openNavOverlay} 
 										title="Menu"
 										sx={{ 
-											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											width: 53, height: 53, minWidth: 53, borderRadius: '50%', 
 											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
 											color: '#1a5f9e !important',
 											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
-											'& svg': { fontSize: 18 }
+											'& svg': { fontSize: 22 }
 										}}
 									>
 										<MenuIcon />
@@ -525,16 +525,16 @@ const Top = () => {
 										onClick={toggleTheme} 
 										title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
 										sx={{ 
-											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											width: 53, height: 53, minWidth: 53, borderRadius: '50%', 
 											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
 											color: '#1a5f9e !important',
 											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
-											'& svg': { fontSize: 18 }
+											'& svg': { fontSize: 22 }
 										}}
 									>
 										{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
 									</IconButton>
-									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 44, height: 44, minWidth: 44, '& svg': { fontSize: 18 } }}>
+									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 53, height: 53, minWidth: 53, '& svg': { fontSize: 22 } }}>
 										<LanguageIcon />
 									</IconButton>
 									<Button className={'login-signup-btn'} onClick={() => router.push('/account/join')} sx={{ py: 0.5, px: 1.5, fontSize: 13 }}>
@@ -546,11 +546,11 @@ const Top = () => {
 										onClick={openNavOverlay} 
 										title="Menu"
 										sx={{ 
-											width: 44, height: 44, minWidth: 44, borderRadius: '50%', 
+											width: 53, height: 53, minWidth: 53, borderRadius: '50%', 
 											backgroundColor: 'rgba(26, 95, 158, 0.25) !important', 
 											color: '#1a5f9e !important',
 											'&:hover': { backgroundColor: 'rgba(26, 95, 158, 0.4) !important' },
-											'& svg': { fontSize: 18 }
+											'& svg': { fontSize: 22 }
 										}}
 									>
 										<MenuIcon />

@@ -5,10 +5,11 @@
 .nav-link.measurer-link,
 .nav-link.support-link {
 	display: inline-flex !important;
-	align-items: center;
+	align-items: center !important;
 	gap: 6px;
 	font-weight: 600 !important;
 	letter-spacing: 0.4px;
+	line-height: 1 !important;
 	transition: color 0.25s ease, opacity 0.25s ease;
 
 	&:hover {
@@ -20,7 +21,7 @@
 .measurer-dropdown .dropdown-icon,
 .support-dropdown .dropdown-icon {
 	transition: transform 0.3s ease;
-	font-size: 18px !important;
+	font-size: 19px !important;
 }
 
 .product-dropdown:hover .dropdown-icon,
@@ -215,6 +216,7 @@ a.support-menu-card {
 	display: inline-flex !important;
 	align-items: center !important;
 	gap: 6px !important;
+	line-height: 1 !important;
 }
 
 .product-dropdown-dark .dropdown-icon-dark,

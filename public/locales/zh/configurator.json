@@ -86,5 +86,22 @@
   "tableH": "H",
   "tableForm": "形态",
   "tableScreen": "防虫网",
-  "tableHandle": "把手"
+  "tableHandle": "把手",
+  "apartment3DTitle": "3D公寓配置器",
+  "apartment3DSubtitle": "浏览房间并更改窗框颜色。",
+  "windowFrameColor": "窗框颜色",
+  "colorDarkGray": "深灰色",
+  "colorWarmBeige": "暖米色",
+  "room1": "客厅阳台",
+  "room2": "主卧阳台",
+  "room3": "次卧2阳台",
+  "room4": "多功能室阳台",
+  "room5": "厨房/服务",
+  "room6": "次卧3",
+  "room7": "客厅内窗",
+  "room8": "主卧内窗",
+  "room9": "次卧2内窗",
+  "viewMode": "查看模式",
+  "viewInside": "室内",
+  "viewOutside": "室外"
 }

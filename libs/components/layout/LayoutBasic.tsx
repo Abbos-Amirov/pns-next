@@ -11,11 +11,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import AIChat from '../AIChat';
+import SocialLinksFloating from '../SocialLinksFloating';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import PhoneIcon from '@mui/icons-material/Phone';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -360,8 +360,8 @@ const withLayoutBasic = (Component: any) => {
 									>
 										<Link href={'/cs'} style={{ textDecoration: 'none' }}>
 											<span className={`nav-link-dark support-link-dark ${supportOpen ? 'is-open' : ''}`}>
-												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
 												{t('Support')}
+												<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
 											</span>
 										</Link>
 										<Menu
@@ -412,10 +412,6 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* Right Actions */}
 								<Box component={'div'} className={'nav-right-dark'}>
-									<Box component={'a'} href="tel:+91170123023" className={'call-us-btn'}>
-										<PhoneIcon className={'call-icon'} />
-										<span className={'phone-number'}>(+82) 010-8200-5998</span>
-									</Box>
 									{/* Dark mode + Language - yonma-yon */}
 									<Box component={'div'} className={'lang-dark-group'}>
 										<IconButton 
@@ -695,6 +691,7 @@ const withLayoutBasic = (Component: any) => {
 
 						 <Chat />
 						 <AIChat />
+						 <SocialLinksFloating />
 
 						<Stack id={'footer'}>
 							<Footer />

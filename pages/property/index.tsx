@@ -64,9 +64,10 @@ export const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			search.pricesRange = searchFilter.search.pricesRange;
 		}
 		
-		// Add productType if exists
+		// Add productType va typeList (backend ikkalasidan birini qabul qilishi mumkin)
 		if (searchFilter.search?.typeList && searchFilter.search.typeList.length > 0) {
 			search.productType = searchFilter.search.typeList;
+			search.typeList = searchFilter.search.typeList;
 		}
 
 		// Add productMaterial if exists (single enum)

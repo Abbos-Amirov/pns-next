@@ -12,6 +12,7 @@ import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import AIChat from '../AIChat';
+import SocialLinksFloating from '../SocialLinksFloating';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -73,6 +74,7 @@ const withLayoutMain = (Component: any) => {
 
 						 <Chat />
 						 <AIChat />
+						 <SocialLinksFloating />
 
 						<Stack id={'footer'}>
 							<Footer />

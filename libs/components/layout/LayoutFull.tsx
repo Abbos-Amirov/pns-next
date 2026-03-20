@@ -8,6 +8,7 @@ import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import AIChat from '../AIChat';
+import SocialLinksFloating from '../SocialLinksFloating';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import 'swiper/css';
@@ -69,6 +70,7 @@ const withLayoutFull = (Component: any) => {
 
 						<Chat />
 						<AIChat />
+						<SocialLinksFloating />
 
 						<Stack id={'footer'}>
 							<Footer />
