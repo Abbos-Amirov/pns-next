@@ -499,3 +499,98 @@
     }
   }
 }
+
+/* ========== Support (CS) Page - Dark Mode ========== */
+[data-theme='dark'] {
+  #pc-wrap .cs-page {
+    background: #0d1117 !important;
+    .cs-header {
+      background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      .header-icon { color: #fff !important; }
+      .header-title, .header-subtitle { color: #fff !important; }
+    }
+    .cs-tabs {
+      background: #161b22 !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      .tab-button {
+        .tab-icon, .tab-text { color: rgba(255, 255, 255, 0.8) !important; }
+        &:hover {
+          background: rgba(139, 69, 19, 0.2) !important;
+          .tab-icon, .tab-text { color: #8B4513 !important; }
+        }
+        &.active {
+          background: #8B4513 !important;
+          .tab-icon, .tab-text { color: #fff !important; }
+        }
+      }
+    }
+    .cs-content {
+      background: #161b22 !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      .title { color: #e6edf3 !important; }
+      .notice-content {
+        .title {
+          color: #e6edf3 !important;
+          border-bottom-color: #30363d !important;
+        }
+        .main {
+          background: #21262d !important;
+          border-color: #30363d !important;
+          .notice-header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+          }
+          .notice-list .notice-card {
+            background: #21262d !important;
+            border-bottom-color: #30363d !important;
+            &:hover { background: rgba(139, 69, 19, 0.15) !important; }
+            &.event {
+              background: linear-gradient(90deg, rgba(139, 69, 19, 0.2) 0%, rgba(139, 69, 19, 0.08) 100%) !important;
+            }
+            .notice-number { color: #e6edf3 !important; background: #161b22 !important; }
+            .notice-title { color: #e6edf3 !important; }
+            .notice-date { color: rgba(255, 255, 255, 0.6) !important; }
+            .date-icon { color: #8B4513 !important; }
+            &:hover .notice-title { color: #8B4513 !important; }
+          }
+        }
+      }
+      .faq-content {
+        .categories {
+          border-bottom-color: #30363d !important;
+          div {
+            background: #21262d !important;
+            color: rgba(255, 255, 255, 0.8);
+            &:hover {
+              background: rgba(139, 69, 19, 0.2) !important;
+              color: #8B4513;
+              border-color: rgba(139, 69, 19, 0.4);
+            }
+            &.active {
+              background: #8B4513 !important;
+              color: #fff !important;
+            }
+          }
+        }
+        .wrap .MuiAccordion-root {
+          border-color: #30363d !important;
+          background: #21262d !important;
+          &:hover, &.Mui-expanded { border-color: #8B4513 !important; }
+          .MuiAccordionSummary-root {
+            background: #21262d !important;
+            &.Mui-expanded {
+              background: rgba(139, 69, 19, 0.15) !important;
+              border-bottom-color: #30363d !important;
+            }
+          }
+          .MuiAccordionDetails-root {
+            background: #161b22 !important;
+          }
+          .question .MuiTypography-root { color: #e6edf3 !important; }
+          .answer .MuiTypography-root { color: rgba(255, 255, 255, 0.75) !important; }
+        }
+      }
+    }
+  }
+}

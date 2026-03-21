@@ -271,3 +271,67 @@
 		}
 	}
 }
+
+/* ========== Community List - Dark Mode ========== */
+[data-theme='dark'] {
+	#community-list-page {
+		background: #0d1117 !important;
+		.left-config {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+			.image-info {
+				border-bottom-color: #30363d !important;
+				.community-name .name { color: #e6edf3 !important; }
+			}
+			.tab-button {
+				background: #21262d !important;
+				border-color: #30363d !important;
+				color: rgba(255, 255, 255, 0.8);
+				&:hover {
+					border-color: #8B4513;
+					background: rgba(139, 69, 19, 0.2);
+					color: #8B4513;
+				}
+			}
+			.tab-button.active {
+				background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+				border-color: #8B4513;
+				color: #fff;
+			}
+		}
+		.right-config .panel-config {
+			.title-box {
+				background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+				.left .title { color: #fff !important; }
+				.left .sub-title { color: rgba(255, 255, 255, 0.9) !important; }
+				.right {
+					background: #21262d !important;
+					color: #e6edf3 !important;
+					&:hover { background: #30363d !important; }
+				}
+			}
+			.list-box {
+				.no-data {
+					background: #161b22 !important;
+					p, .MuiTypography-root { color: rgba(255, 255, 255, 0.7) !important; }
+				}
+				.community-general-card-config {
+					background: #161b22 !important;
+					border: 1px solid #30363d;
+					.desc-box .title { color: rgba(255, 255, 255, 0.6) !important; }
+					.desc-box .desc, .desc-box .view-cnt { color: #e6edf3 !important; }
+					.date-box {
+						background: #21262d !important;
+						.month, .day { color: #e6edf3 !important; }
+					}
+					.desc-box .buttons svg { color: #e6edf3; }
+				}
+			}
+		}
+		.pagination-config {
+			background: #161b22 !important;
+			.total-result .MuiTypography-root { color: rgba(255, 255, 255, 0.7) !important; }
+		}
+	}
+}

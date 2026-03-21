@@ -439,3 +439,66 @@
 		}
 	}
 }
+
+/* ========== Community Detail - Dark Mode ========== */
+[data-theme='dark'] {
+	#community-detail-page {
+		background: #0d1117;
+		.left-config {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			.image-info .community-name .name { color: #e6edf3 !important; }
+			.tab-button {
+				background: #21262d !important;
+				border-color: #30363d !important;
+				color: #e6edf3;
+			}
+			.tab-button.active {
+				background-color: #8B4513 !important;
+				border-color: #8B4513 !important;
+				color: #fff !important;
+			}
+		}
+		.community-detail-config .title-box {
+			.left .title { color: #e6edf3 !important; }
+			.left .sub-title { color: rgba(255, 255, 255, 0.65) !important; }
+		}
+		.config .first-box-config {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			.content-and-info {
+				border-color: #30363d !important;
+				.content-data, .member-nick, .info .icon-info .text { color: #e6edf3 !important; }
+				.time-added { color: rgba(255, 255, 255, 0.5) !important; }
+				.divider { background: #30363d !important; }
+			}
+		}
+		.config .second-box-config {
+			background: #161b22 !important;
+			.title-text { color: #e6edf3 !important; }
+			.leave-comment input {
+				background: #21262d !important;
+				border-color: #30363d !important;
+				color: #e6edf3;
+				&::placeholder { color: rgba(255, 255, 255, 0.4); }
+			}
+			.button-box {
+				border-color: #30363d !important;
+				p { color: #e6edf3 !important; }
+			}
+		}
+		.comments .comments-title { color: #eb6753 !important; }
+		.comments-box .main-comment {
+			border-color: #30363d !important;
+			background: #21262d !important;
+			.name-date-column .name { color: #e6edf3 !important; }
+			.name-date-column .date { color: rgba(255, 255, 255, 0.6) !important; }
+			.content p { color: #e6edf3 !important; }
+		}
+		.similar-articles-config {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			.similar-articles-title { color: #e6edf3 !important; }
+		}
+	}
+}
