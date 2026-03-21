@@ -101,6 +101,8 @@
         .headline {
           margin-bottom: 16px;
           line-height: 1.2;
+          writing-mode: horizontal-tb;
+          direction: ltr;
 
           .text-white {
             font-family: $font;
@@ -144,6 +146,7 @@
           cursor: pointer;
           transition: all 0.3s;
           border: none;
+          white-space: nowrap;
 
           &:hover {
             background: #B8956A;
