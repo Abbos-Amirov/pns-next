@@ -13,22 +13,19 @@ import {
 } from './data/windowPricingData';
 import type { ApartmentSizeData, ApartmentSizeKey, DoorOption, WindowProduct } from './data/windowPricingData';
 
-/** Hero images: White = 2-rasm, US201 = bej ramka, MQ808 = 3-rasm */
-const HERO_IMAGE_WHITE = '/img/configurator/hero-white.png';
-const HERO_IMAGE_US201 = '/img/configurator/hero-us201.png';
-const HERO_IMAGE_MQ808 = '/img/configurator/hero-mq808.png';
-
-const HERO_OPTIONS = [
-  { src: HERO_IMAGE_WHITE, colorName: 'White' as const },
-  { src: HERO_IMAGE_US201, colorName: 'US201' as const },
-  { src: HERO_IMAGE_MQ808, colorName: 'MQ808' as const },
+/** 10 hero lifestyle images - default 1st */
+const HERO_IMAGES = [
+  '/img/configurator/hero-1.png',
+  '/img/configurator/hero-2.png',
+  '/img/configurator/hero-3.png',
+  '/img/configurator/hero-4.png',
+  '/img/configurator/hero-5.png',
+  '/img/configurator/hero-6.png',
+  '/img/configurator/hero-7.png',
+  '/img/configurator/hero-8.png',
+  '/img/configurator/hero-9.png',
+  '/img/configurator/hero-10.png',
 ];
-
-const HERO_COLOR_TO_IMAGE: Record<string, string> = {
-  White: HERO_IMAGE_WHITE,
-  US201: HERO_IMAGE_US201,
-  MQ808: HERO_IMAGE_MQ808,
-};
 
 const NO_COLORS = [
   '#e74c3c', '#e67e22', '#e91e63', '#f1c40f', '#9b59b6', '#3498db',
@@ -746,6 +743,7 @@ export default function WindowPricingShowcase() {
   const [selectedFunctional, setSelectedFunctional] = useState<string | null>('클린범퍼');
   const [doorModalOption, setDoorModalOption] = useState<DoorOption | null>(null);
   const [panelExpanded, setPanelExpanded] = useState(false);
+  const [selectedHeroIndex, setSelectedHeroIndex] = useState(0);
 
   const currentData = useMemo(
     () => APARTMENT_SIZE_DATA.find((d) => d.key === selectedSize) ?? APARTMENT_SIZE_DATA[2],
@@ -785,13 +783,31 @@ export default function WindowPricingShowcase() {
 
   return (
     <div className={`window-pricing-showcase ${panelExpanded ? 'panel-expanded' : ''}`}>
-      {/* Left: Hero image + backdrop when expanded */}
+      {/* Left: Hero image + thumbnails + backdrop when expanded */}
       <div
         className="window-pricing-hero"
         onClick={panelExpanded ? () => setPanelExpanded(false) : undefined}
       >
-        <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_COLOR_TO_IMAGE[selectedColor ?? 'White']})` }} />
-        <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
+        <div className="window-pricing-hero-main">
+          <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_IMAGES[selectedHeroIndex]})` }} />
+          <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
+        </div>
+        <div className="window-pricing-hero-thumbnails">
+          {HERO_IMAGES.map((src, idx) => (
+            <button
+              key={idx}
+              type="button"
+              className={`window-pricing-hero-thumb ${idx === selectedHeroIndex ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedHeroIndex(idx);
+              }}
+              aria-label={`Hero ${idx + 1}`}
+            >
+              <img src={src} alt="" />
+            </button>
+          ))}
+        </div>
         {panelExpanded && <div className="window-pricing-hero-backdrop" aria-hidden />}
       </div>
 

@@ -27,9 +27,16 @@ const AboutMe: NextPage = () => {
 	if (device === 'mobile') {
 		return (
 			<div className="about-me-page about-me-mobile">
-				<section className="amu-hero">
-					<h1>{t('AboutHeroTitle')}</h1>
-					<p>{t('AboutHeroSubtitle')}</p>
+				<section className="amu-section amu-hero-section">
+					<div className="amu-container">
+						<h2 className="amu-hero-title">{t('AboutHeroTitle')}</h2>
+						{(t('AboutHeroText') as string).split('\n\n').map((para, i) => (
+							<p key={i}>{para}</p>
+						))}
+						<div className="amu-img-wrap">
+							<img src={ABOUT_IMAGES.hero} alt={t('AboutHeroTitle')} />
+						</div>
+					</div>
 				</section>
 				<section className="amu-section">
 					<p>{t('AboutExperienceText1')}</p>
@@ -47,14 +54,20 @@ const AboutMe: NextPage = () => {
 
 	return (
 		<div className="about-me-page">
-			{/* 1. HERO */}
-			<section className="amu-hero">
-				<div className="amu-hero-bg" style={{ backgroundImage: `url(${ABOUT_IMAGES.hero})` }} />
-				<div className="amu-hero-overlay" />
-				<div className="amu-hero-content">
-					<h1 className="amu-hero-title">{t('AboutHeroTitle')}</h1>
-					<p className="amu-hero-subtitle">{t('AboutHeroSubtitle')}</p>
-					<p className="amu-hero-desc">{t('AboutHeroDesc')}</p>
+			{/* 1. HERO - two-column like sections below (text left, image right) */}
+			<section className="amu-section amu-hero-section">
+				<div className="amu-container">
+					<div className="amu-row">
+						<div className="amu-text amu-hero-text">
+							<h2 className="amu-hero-title">{t('AboutHeroTitle')}</h2>
+							{(t('AboutHeroText') as string).split('\n\n').map((para, i) => (
+								<p key={i}>{para}</p>
+							))}
+						</div>
+						<div className="amu-img-wrap">
+							<img src={ABOUT_IMAGES.hero} alt={t('AboutHeroTitle')} />
+						</div>
+					</div>
 				</div>
 			</section>
 
