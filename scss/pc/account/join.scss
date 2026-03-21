@@ -421,3 +421,61 @@
 		}
 	}
 }
+
+/* ========== Login/Signup Page - Dark Mode ========== */
+[data-theme='dark'] {
+	#pc-wrap .join-page {
+		background: #0d1117 !important;
+		.main {
+			background: #161b22 !important;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+			.left {
+				.brand-name { color: #c9a962 !important; }
+				.tagline { color: rgba(255, 255, 255, 0.65) !important; }
+				.toggle-btn {
+					background: #21262d !important;
+					border-color: #30363d !important;
+					color: rgba(255, 255, 255, 0.8);
+					&.active {
+						background: #8B4513 !important;
+						color: #fff !important;
+					}
+					&:hover:not(.active) {
+						border-color: #8B4513;
+						background: rgba(139, 69, 19, 0.2);
+					}
+				}
+				.section-heading { color: #e6edf3 !important; }
+				.social-text, .or-separator { color: rgba(255, 255, 255, 0.6) !important; }
+				.or-separator::before, .or-separator::after { background: #30363d !important; }
+				.social-btn {
+					background: #21262d !important;
+					border-color: #30363d !important;
+					svg { color: #e6edf3 !important; }
+					&:hover { border-color: #8B4513; background: rgba(139, 69, 19, 0.2) !important; }
+				}
+				.input-field {
+					.MuiOutlinedInput-root {
+						background: #21262d !important;
+						fieldset { border-color: #30363d !important; }
+						&.Mui-focused { background: #21262d !important; fieldset { border-color: #8B4513 !important; } }
+					}
+					.MuiInputLabel-root { color: rgba(255, 255, 255, 0.7) !important; &.Mui-focused { color: #8B4513 !important; } }
+					input { color: #e6edf3 !important; }
+				}
+				.remember-forgot .MuiFormControlLabel-label { color: rgba(255, 255, 255, 0.7) !important; }
+				.forgot-link { color: #c9a962 !important; }
+				.user-type-selection {
+					background: #21262d !important;
+					border-color: #30363d !important;
+					.type-label { color: #e6edf3 !important; }
+					.MuiFormControlLabel-label { color: rgba(255, 255, 255, 0.8) !important; }
+				}
+			}
+			.right .promo-image {
+				.promo-title { color: #e6edf3 !important; }
+				.promo-subtitle { color: rgba(255, 255, 255, 0.75) !important; }
+			}
+		}
+	}
+}

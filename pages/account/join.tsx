@@ -12,6 +12,7 @@ import { MemberType } from '../../libs/enums/member.enum';
 import decodeJWT from 'jwt-decode';
 import { CustomJwtPayload } from '../../libs/types/customJwtPayload';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import AppleIcon from '@mui/icons-material/Apple';
@@ -25,6 +26,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const Join: NextPage = () => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
@@ -72,7 +74,7 @@ const Join: NextPage = () => {
 	const doLogin = useCallback(async () => {
 		try {
 			if (!input.nick || !input.password) {
-				await sweetMixinErrorAlert('Please fill in all required fields');
+				await sweetMixinErrorAlert(t('JoinFillRequiredFields'));
 				return;
 			}
 			setIsLoading(true);
@@ -102,12 +104,12 @@ const Join: NextPage = () => {
 			// Bu yerda faqat console ga yozamiz
 			console.error('Login error:', err);
 		}
-	}, [input, router]);
+	}, [input, router, t]);
 
 	const doSignUp = useCallback(async () => {
 		try {
 			if (!input.nick || !input.password || !input.phone || !input.type) {
-				await sweetMixinErrorAlert('Please fill in all required fields');
+				await sweetMixinErrorAlert(t('JoinFillRequiredFields'));
 				return;
 			}
 			setIsLoading(true);
@@ -137,7 +139,7 @@ const Join: NextPage = () => {
 			// Bu yerda faqat console ga yozamiz
 			console.error('Signup error:', err);
 		}
-	}, [input, router]);
+	}, [input, router, t]);
 
 	if (device === 'mobile') {
 		return <div>LOGIN MOBILE</div>;
@@ -151,7 +153,7 @@ const Join: NextPage = () => {
 							{/* Logo and Tagline */}
 							<div className={'logo-section'}>
 								<Typography className={'brand-name'}>PNS DEV</Typography>
-								<Typography className={'tagline'}>Explore More. Experience Life.</Typography>
+								<Typography className={'tagline'}>{t('JoinBrandTagline')}</Typography>
 							</div>
 
 							{/* Toggle Buttons */}
@@ -160,25 +162,25 @@ const Join: NextPage = () => {
 									className={`toggle-btn ${!loginView ? 'active' : ''}`}
 									onClick={() => viewChangeHandler(false)}
 								>
-									Sign Up
+									{t('JoinSignUp')}
 								</Button>
 								<Button
 									className={`toggle-btn ${loginView ? 'active' : ''}`}
 									onClick={() => viewChangeHandler(true)}
 								>
-									Log In
+									{t('JoinLogIn')}
 								</Button>
 							</div>
 
 							{/* Heading */}
 							<Typography className={'section-heading'}>
-								{loginView ? 'Journey Begins' : 'Start Your Journey'}
+								{loginView ? t('JoinJourneyBegins') : t('JoinStartYourJourney')}
 							</Typography>
 
 							{/* Social Login */}
 							{loginView && (
 								<>
-									<Typography className={'social-text'}>Log In with Open account</Typography>
+									<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
 									<div className={'social-buttons'}>
 										<Button className={'social-btn'}>
 											<AppleIcon />
@@ -190,7 +192,7 @@ const Join: NextPage = () => {
 											<TwitterIcon />
 										</Button>
 									</div>
-									<Typography className={'or-separator'}>or</Typography>
+									<Typography className={'or-separator'}>{t('JoinOr')}</Typography>
 								</>
 							)}
 
@@ -198,10 +200,10 @@ const Join: NextPage = () => {
 							<div className={'input-wrap'}>
 								<TextField
 									fullWidth
-									label="Username"
+									label={t('Username')}
 									value={input.nick}
 									onChange={(e) => handleInput('nick', e.target.value)}
-									placeholder={loginView ? 'eli_trekker' : 'Enter Username'}
+									placeholder={loginView ? t('JoinPlaceholderUsernameLogin') : t('JoinPlaceholderUsername')}
 									className={'input-field'}
 									onKeyDown={(event) => {
 										if (event.key == 'Enter' && loginView) doLogin();
@@ -212,10 +214,10 @@ const Join: NextPage = () => {
 								{!loginView && (
 									<TextField
 										fullWidth
-										label="Phone"
+										label={t('Phone')}
 										value={input.phone}
 										onChange={(e) => handleInput('phone', e.target.value)}
-										placeholder={'Enter Phone'}
+										placeholder={t('JoinPlaceholderPhone')}
 										className={'input-field'}
 										onKeyDown={(event) => {
 											if (event.key == 'Enter') doSignUp();
@@ -226,10 +228,10 @@ const Join: NextPage = () => {
 								<TextField
 									fullWidth
 									type={showPassword ? 'text' : 'password'}
-									label="Password"
+									label={t('Password')}
 									value={input.password}
 									onChange={(e) => handleInput('password', e.target.value)}
-									placeholder={'Enter Password'}
+									placeholder={t('JoinPlaceholderPassword')}
 									className={'input-field'}
 									InputProps={{
 										endAdornment: (
@@ -255,10 +257,10 @@ const Join: NextPage = () => {
 								<div className={'remember-forgot'}>
 									<FormControlLabel
 										control={<Checkbox defaultChecked />}
-										label="Remember me"
+										label={t('JoinRememberMe')}
 									/>
 									<Typography component="a" className={'forgot-link'}>
-										Forgot Password?
+										{t('JoinForgotPassword')}
 									</Typography>
 								</div>
 							)}
@@ -266,7 +268,7 @@ const Join: NextPage = () => {
 							{/* User Type Selection (Signup only) */}
 							{!loginView && (
 								<div className={'user-type-selection'}>
-									<Typography className={'type-label'}>I want to be registered as:</Typography>
+									<Typography className={'type-label'}>{t('JoinRegisterAs')}</Typography>
 									<div className={'type-checkboxes'}>
 										<FormControlLabel
 											control={
@@ -276,7 +278,7 @@ const Join: NextPage = () => {
 													checked={input?.type == MemberType.USER}
 												/>
 											}
-											label="User"
+											label={t('User')}
 										/>
 										<FormControlLabel
 											control={
@@ -286,7 +288,7 @@ const Join: NextPage = () => {
 													checked={input?.type == MemberType.MEASURER}
 												/>
 											}
-											label="Measurer"
+											label={t('JoinMeasurer')}
 										/>
 										<FormControlLabel
 											control={
@@ -296,7 +298,7 @@ const Join: NextPage = () => {
 													checked={input?.type == MemberType.INSTALLER}
 												/>
 											}
-											label="Installer"
+											label={t('JoinInstaller')}
 										/>
 									</div>
 								</div>
@@ -313,7 +315,7 @@ const Join: NextPage = () => {
 								}
 								onClick={loginView ? doLogin : doSignUp}
 							>
-								{isLoading ? 'Loading...' : loginView ? 'Log In' : 'Sign Up'}
+								{isLoading ? t('JoinLoading') : loginView ? t('JoinLogIn') : t('JoinSignUp')}
 							</Button>
 						</Stack>
 
@@ -322,19 +324,18 @@ const Join: NextPage = () => {
 							<div className={'promo-image'}>
 								<div className={'promo-text-top'}>
 									<Typography className={'promo-title'}>
-									Professional & Trustworth ❤️
+									{t('JoinPromoTitle')}
 									</Typography>
 									<Typography className={'promo-subtitle'}>
-									Quality You See. Comfort You Feel.
-									Experience durable, stylish, and energy-efficient doors and windows crafted for every home.
+									{t('JoinPromoSubtitle')}
 									</Typography>
 								</div>
 								<div className={'promo-text-bottom'}>
 									<Typography className={'promo-main'}>
-									Open your home the smart way.
+									{t('JoinPromoMain')}
 									</Typography>
 									<Typography className={'promo-secondary'}>
-										Experience the world your way!
+										{t('JoinPromoSecondary')}
 									</Typography>
 								</div>
 							</div>

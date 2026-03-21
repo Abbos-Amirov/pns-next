@@ -58,7 +58,6 @@ const withLayoutBasic = (Component: any) => {
 		const [headerBgIndex, setHeaderBgIndex] = useState(0);
 
 		const headerBgImages = [
-			'/img/nav-overlay/home.png',
 			'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80',
 			'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1920&q=80',
 			'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80',

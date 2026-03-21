@@ -46,6 +46,7 @@
   "MyProfileSubtitle": "We are glad to see you again!",
   "Photo": "Photo",
   "Username": "Username",
+  "Password": "Password",
   "Phone": "Phone",
   "Address": "Address",
   "PlaceholderUsername": "Your username",
@@ -275,7 +276,29 @@
   "AboutAdvantages4": "Professional installation team",
   "AboutAdvantages5": "Reliable maintenance service",
   "AboutTrustTitle": "Why Choose PNS Window",
-  "AboutTrustDesc": "Our mission is simple: deliver dependable window and door solutions with professional installation and long-term support. Every project we complete reflects our commitment to quality and customer satisfaction."
+  "AboutTrustDesc": "Our mission is simple: deliver dependable window and door solutions with professional installation and long-term support. Every project we complete reflects our commitment to quality and customer satisfaction.",
+  "JoinBrandTagline": "Explore More. Experience Life.",
+  "JoinJourneyBegins": "Journey Begins",
+  "JoinStartYourJourney": "Start Your Journey",
+  "JoinLogInWithOpen": "Log In with Open account",
+  "JoinOr": "or",
+  "JoinPlaceholderUsernameLogin": "eli_trekker",
+  "JoinPlaceholderUsername": "Enter Username",
+  "JoinPlaceholderPhone": "Enter Phone",
+  "JoinPlaceholderPassword": "Enter Password",
+  "JoinRememberMe": "Remember me",
+  "JoinForgotPassword": "Forgot Password?",
+  "JoinRegisterAs": "I want to be registered as:",
+  "JoinMeasurer": "Measurer",
+  "JoinInstaller": "Installer",
+  "JoinLoading": "Loading...",
+  "JoinLogIn": "Log In",
+  "JoinSignUp": "Sign Up",
+  "JoinFillRequiredFields": "Please fill in all required fields",
+  "JoinPromoTitle": "Professional & Trustworthy ❤️",
+  "JoinPromoSubtitle": "Quality You See. Comfort You Feel. Experience durable, stylish, and energy-efficient doors and windows crafted for every home.",
+  "JoinPromoMain": "Open your home the smart way.",
+  "JoinPromoSecondary": "Experience the world your way!"
 }
 
 
