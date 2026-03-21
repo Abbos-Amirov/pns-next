@@ -1,11 +1,12 @@
 import type { ComponentType } from 'react';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import MenuList from '../admin/AdminMenuList';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -13,16 +14,21 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import { getJwtToken, logOut, updateUserInfo } from '../../auth';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL } from '../../config';
 import { MemberType } from '../../enums/member.enum';
+import { useThemeMode } from '../../context/ThemeContext';
 const drawerWidth = 280;
 
 const withAdminLayout = (Component: ComponentType) => {
 	return (props: object) => {
 		const router = useRouter();
+		const { t } = useTranslation('common');
+		const { mode, toggleTheme } = useThemeMode();
 		const user = useReactiveVar(userVar);
 		const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 		const [title, setTitle] = useState('admin');
@@ -79,6 +85,9 @@ const withAdminLayout = (Component: ComponentType) => {
 						<Toolbar sx={{ justifyContent: 'space-between', px: 3, minHeight: '64px !important' }}>
 							<Box component="div" sx={{ flexGrow: 1 }} />
 							<Stack direction={'row'} alignItems={'center'} spacing={2.5}>
+								<IconButton onClick={toggleTheme} size="medium" aria-label="toggle theme" sx={{ color: 'inherit' }}>
+									{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+								</IconButton>
 								{/* User Info Card */}
 								<Box
 									component="div"
@@ -176,7 +185,7 @@ const withAdminLayout = (Component: ComponentType) => {
 										},
 									}}
 								>
-									Logout
+									{t('AdminLogout')}
 								</Button>
 							</Stack>
 						</Toolbar>
@@ -258,7 +267,7 @@ const withAdminLayout = (Component: ComponentType) => {
 												gap: 0.5,
 											}}
 										>
-											{user?.memberPhone || 'No phone'}
+											{user?.memberPhone || t('AdminNoPhone')}
 										</Typography>
 										<Box
 											component="div"
@@ -281,7 +290,7 @@ const withAdminLayout = (Component: ComponentType) => {
 													letterSpacing: '0.5px',
 												}}
 											>
-												Administrator
+												{t('AdminAdministrator')}
 											</Typography>
 										</Box>
 									</Box>
@@ -337,7 +346,7 @@ const withAdminLayout = (Component: ComponentType) => {
 							<WarningAmberIcon sx={{ fontSize: 28 }} />
 						</Box>
 						<Typography variant={'h6'} sx={{ fontWeight: 700, color: '#181a20' }}>
-							Confirm Logout
+							{t('AdminConfirmLogout')}
 						</Typography>
 					</DialogTitle>
 					<DialogContent sx={{ pt: 3, pb: 2 }}>
@@ -349,7 +358,7 @@ const withAdminLayout = (Component: ComponentType) => {
 								mb: 1,
 							}}
 						>
-							Are you sure you want to logout from your account?
+							{t('AdminLogoutMessage')}
 						</DialogContentText>
 						<DialogContentText
 							sx={{
@@ -358,7 +367,7 @@ const withAdminLayout = (Component: ComponentType) => {
 								lineHeight: 1.5,
 							}}
 						>
-							You will need to login again to access the admin panel.
+							{t('AdminLogoutSubMessage')}
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions sx={{ px: 3, pb: 3, gap: 1.5 }}>
@@ -379,7 +388,7 @@ const withAdminLayout = (Component: ComponentType) => {
 								},
 							}}
 						>
-							Cancel
+							{t('AdminCancel')}
 						</Button>
 						<Button
 							onClick={handleLogoutConfirm}
@@ -400,7 +409,7 @@ const withAdminLayout = (Component: ComponentType) => {
 								},
 							}}
 						>
-							Logout
+							{t('AdminLogout')}
 						</Button>
 					</DialogActions>
 				</Dialog>

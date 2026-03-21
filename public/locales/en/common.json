@@ -298,7 +298,35 @@
   "JoinPromoTitle": "Professional & Trustworthy ❤️",
   "JoinPromoSubtitle": "Quality You See. Comfort You Feel. Experience durable, stylish, and energy-efficient doors and windows crafted for every home.",
   "JoinPromoMain": "Open your home the smart way.",
-  "JoinPromoSecondary": "Experience the world your way!"
+  "JoinPromoSecondary": "Experience the world your way!",
+
+  "AdminWelcomeBack": "Welcome back, {{name}}! 👋",
+  "AdminHereIsWhatsHappening": "Here's what's happening with your platform today.",
+  "AdminTotalUsers": "Total Users",
+  "AdminProducts": "Products",
+  "AdminCommunityArticles": "Community Articles",
+  "AdminCSInquiries": "CS Inquiries",
+  "AdminQuickLinks": "Quick Links",
+  "AdminUserManagement": "User Management",
+  "AdminProductManagement": "Product Management",
+  "AdminCommunityManagement": "Community Management",
+  "AdminFAQManagement": "FAQ Management",
+  "AdminNoticeManagement": "Notice Management",
+  "AdminInquiryManagement": "Inquiry Management",
+  "AdminLogout": "Logout",
+  "AdminAdministrator": "Administrator",
+  "AdminConfirmLogout": "Confirm Logout",
+  "AdminLogoutMessage": "Are you sure you want to logout from your account?",
+  "AdminLogoutSubMessage": "You will need to login again to access the admin panel.",
+  "AdminCancel": "Cancel",
+  "AdminCommunity": "Community",
+  "AdminUsers": "Users",
+  "AdminList": "List",
+  "AdminFAQ": "FAQ",
+  "AdminNotice": "Notice",
+  "Admin1to1Inquiry": "1:1 Inquiry",
+  "AdminCs": "Support",
+  "AdminNoPhone": "No phone"
 }
 
 

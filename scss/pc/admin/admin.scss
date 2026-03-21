@@ -3394,3 +3394,153 @@
     }
   }
 }
+
+// Admin Dark Mode
+[data-theme='dark'] {
+  #pc-wrap.admin {
+    .MuiAppBar-root {
+      background: #0d1117 !important;
+      border-bottom: 1px solid #30363d !important;
+      .settings-icon-admin {
+        color: #e6edf3;
+      }
+    }
+    .aside {
+      background: #161b22 !important;
+      .MuiDrawer-paper {
+        background: #161b22 !important;
+        border-right: 1px solid #30363d !important;
+      }
+      .logo-box .admin-logo {
+        filter: brightness(1.1);
+      }
+      hr {
+        border-color: #30363d;
+      }
+      .MuiListItemIcon-root,
+      .MuiListItemText-root {
+        color: #e6edf3 !important;
+      }
+      .user {
+        background: #21262d !important;
+        border-color: #30363d !important;
+      }
+      .menu-list li {
+        color: #c9d1d9;
+        &:hover {
+          background: #21262d;
+        }
+        &.on {
+          background: rgba(245, 77, 86, 0.15) !important;
+          color: #f54d56;
+          span { color: #e6edf3 !important; }
+        }
+      }
+    }
+    #bunker {
+      background: #0d1117 !important;
+      color: #e6edf3;
+      .title,
+      .page-title,
+      h1, h2, h3, h4, h5, h6 {
+        color: #e6edf3 !important;
+      }
+      .admin-dashboard {
+        .welcome-section {
+          background: linear-gradient(135deg, #21262d 0%, #30363d 100%) !important;
+          border: 1px solid #30363d;
+        }
+        .stat-card,
+        .quick-links-card,
+        .page-header-card {
+          background: #161b22 !important;
+          border-color: #30363d !important;
+          box-shadow: none !important;
+        }
+        .stat-label,
+        .section-title {
+          color: #8b949e !important;
+        }
+        .stat-value,
+        .quick-link-btn,
+        .MuiButton-root {
+          color: #e6edf3 !important;
+        }
+        .quick-link-btn {
+          border-color: #30363d !important;
+          &:hover {
+            background: #21262d !important;
+            border-color: #8B4513 !important;
+          }
+        }
+      }
+      .content.users-page,
+      .content.products-page,
+      .content.community-page,
+      .content.notice-page,
+      .content.inquiry-page {
+        .page-header-card {
+          background: #161b22 !important;
+          border-color: #30363d;
+        }
+        .page-title,
+        .products-total-chip {
+          color: #e6edf3 !important;
+        }
+        .products-icon-box {
+          background: #21262d !important;
+          color: #8B4513 !important;
+        }
+      }
+      .MuiTable-root,
+      .MuiTableContainer-root {
+        background: #161b22 !important;
+        color: #e6edf3;
+        .MuiTableHead-root th {
+          color: #8b949e !important;
+          border-color: #30363d !important;
+        }
+        .MuiTableBody-root td {
+          border-color: #30363d !important;
+          color: #e6edf3 !important;
+        }
+      }
+      .MuiPaper-root {
+        background: #161b22 !important;
+        border-color: #30363d !important;
+        color: #e6edf3;
+      }
+      .MuiInputBase-root,
+      .MuiOutlinedInput-root {
+        background: #21262d !important;
+        color: #e6edf3 !important;
+        .MuiOutlinedInput-notchedOutline {
+          border-color: #30363d !important;
+        }
+      }
+      .no-data,
+      .MuiTypography-root {
+        color: #8b949e !important;
+      }
+    }
+    .MuiDialog-paper {
+      background: #161b22 !important;
+      border: 1px solid #30363d;
+      .MuiDialogTitle-root,
+      .MuiDialogContentText-root {
+        color: #e6edf3 !important;
+      }
+      .MuiButton-outlined {
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+      }
+    }
+  }
+  .right-dashboard-settings {
+    .top {
+      border-color: #30363d !important;
+      h5, p { color: #e6edf3 !important; }
+    }
+    .main h6 { color: #e6edf3 !important; }
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
@@ -11,6 +12,7 @@ import cookies from 'js-cookie';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 const AdminMenuList = (props: any) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const device = useDeviceDetect();
 	const [mobileLayout, setMobileLayout] = useState(false);
@@ -81,34 +83,38 @@ const AdminMenuList = (props: any) => {
 	const menu_set = [
 		{
 			title: 'Users',
+			labelKey: 'AdminUsers',
 			icon: <User size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Users'),
 		},
 		{
 			title: 'Products',
+			labelKey: 'AdminProducts',
 			icon: <UserCircleGear size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Products'),
 		},
 		{
 			title: 'Community',
+			labelKey: 'AdminCommunity',
 			icon: <ChatsCircle size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Community'),
 		},
 		{
 			title: 'Cs',
+			labelKey: 'AdminCs',
 			icon: <Headset size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Cs'),
 		},
 	];
 
 	const sub_menu_set: any = {
-		Users: [{ title: 'List', url: '/_admin/users' }],
-		Products: [{ title: 'List', url: '/_admin/products' }],
-		Community: [{ title: 'List', url: '/_admin/community' }],
+		Users: [{ title: 'List', labelKey: 'AdminList', url: '/_admin/users' }],
+		Products: [{ title: 'List', labelKey: 'AdminList', url: '/_admin/products' }],
+		Community: [{ title: 'List', labelKey: 'AdminList', url: '/_admin/community' }],
 		Cs: [
-			{ title: 'FAQ', url: '/_admin/cs/faq' },
-			{ title: 'Notice', url: '/_admin/cs/notice' },
-			{ title: '1:1 Inquiry', url: '/_admin/cs/inquiry' },
+			{ title: 'FAQ', labelKey: 'AdminFAQ', url: '/_admin/cs/faq' },
+			{ title: 'Notice', labelKey: 'AdminNotice', url: '/_admin/cs/notice' },
+			{ title: '1:1 Inquiry', labelKey: 'Admin1to1Inquiry', url: '/_admin/cs/inquiry' },
 		],
 	};
 
@@ -135,7 +141,7 @@ const AdminMenuList = (props: any) => {
 						>
 							{item.icon}
 						</ListItemIcon>
-						<ListItemText>{item.title}</ListItemText>
+						<ListItemText>{t(item.labelKey)}</ListItemText>
 						{clickMenu.find((menu: string) => item.title === menu) ? <ExpandLess /> : <ExpandMore />}
 					</ListItemButton>
 					<Collapse
@@ -154,7 +160,7 @@ const AdminMenuList = (props: any) => {
 											className={clickMenu[0] === item.title && clickSubMenu === sub.title ? 'li on' : 'li'}
 										>
 											<Typography variant={sub.title} component={'span'}>
-												{sub.title}
+												{t(sub.labelKey)}
 											</Typography>
 										</ListItemButton>
 									</Link>

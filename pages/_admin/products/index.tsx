@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { 
 	Box, 
@@ -591,5 +592,18 @@ AdminProperties.defaultProps = {
 		search: {},
 	},
 };
+
+export const getStaticProps = async ({ locale }: { locale?: string }) => ({
+	props: {
+		...(await serverSideTranslations(locale || 'en', ['common'])),
+		initialInquiry: {
+			page: 1,
+			limit: 10,
+			sort: 'createdAt',
+			direction: 'DESC',
+			search: {},
+		},
+	},
+});
 
 export default withAdminLayout(AdminProperties);

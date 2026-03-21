@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withAdminLayout from '../../libs/components/layout/LayoutAdmin';
 import { useRouter } from 'next/router';
 import { Box, Stack, Card, CardContent, Typography, Button, Grid, IconButton } from '@mui/material';
@@ -24,6 +26,7 @@ import { Direction } from '../../libs/enums/common.enum';
 import { NoticeCategory } from '../../libs/enums/notice.enum';
 
 const AdminHome: NextPage = (props: any) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [stats, setStats] = useState({
@@ -157,7 +160,7 @@ const AdminHome: NextPage = (props: any) => {
 
 	const statCards = [
 		{
-			title: 'Total Users',
+			titleKey: 'AdminTotalUsers',
 			value: stats.totalUsers,
 			icon: <PeopleIcon sx={{ fontSize: 40 }} />,
 			color: '#8B4513',
@@ -165,7 +168,7 @@ const AdminHome: NextPage = (props: any) => {
 			path: '/_admin/users',
 		},
 		{
-			title: 'Products',
+			titleKey: 'AdminProducts',
 			value: stats.totalProperties,
 			icon: <HomeWorkIcon sx={{ fontSize: 40 }} />,
 			color: '#1646C1',
@@ -173,7 +176,7 @@ const AdminHome: NextPage = (props: any) => {
 			path: '/_admin/products',
 		},
 		{
-			title: 'Community Articles',
+			titleKey: 'AdminCommunityArticles',
 			value: stats.totalArticles,
 			icon: <ArticleIcon sx={{ fontSize: 40 }} />,
 			color: '#E92C28',
@@ -181,7 +184,7 @@ const AdminHome: NextPage = (props: any) => {
 			path: '/_admin/community',
 		},
 		{
-			title: 'CS Inquiries',
+			titleKey: 'AdminCSInquiries',
 			value: stats.totalInquiries,
 			icon: <SupportAgentIcon sx={{ fontSize: 40 }} />,
 			color: '#229a16',
@@ -191,12 +194,12 @@ const AdminHome: NextPage = (props: any) => {
 	];
 
 	const quickLinks = [
-		{ title: 'User Management', path: '/_admin/users', icon: <PeopleIcon />, color: '#8B4513' },
-		{ title: 'Product Management', path: '/_admin/products', icon: <HomeWorkIcon />, color: '#1646C1' },
-		{ title: 'Community Management', path: '/_admin/community', icon: <ArticleIcon />, color: '#E92C28' },
-		{ title: 'FAQ Management', path: '/_admin/cs/faq', icon: <SupportAgentIcon />, color: '#229a16' },
-		{ title: 'Notice Management', path: '/_admin/cs/notice', icon: <ArticleIcon />, color: '#8B4513' },
-		{ title: 'Inquiry Management', path: '/_admin/cs/inquiry', icon: <SupportAgentIcon />, color: '#1646C1' },
+		{ titleKey: 'AdminUserManagement', path: '/_admin/users', icon: <PeopleIcon />, color: '#8B4513' },
+		{ titleKey: 'AdminProductManagement', path: '/_admin/products', icon: <HomeWorkIcon />, color: '#1646C1' },
+		{ titleKey: 'AdminCommunityManagement', path: '/_admin/community', icon: <ArticleIcon />, color: '#E92C28' },
+		{ titleKey: 'AdminFAQManagement', path: '/_admin/cs/faq', icon: <SupportAgentIcon />, color: '#229a16' },
+		{ titleKey: 'AdminNoticeManagement', path: '/_admin/cs/notice', icon: <ArticleIcon />, color: '#8B4513' },
+		{ titleKey: 'AdminInquiryManagement', path: '/_admin/cs/inquiry', icon: <SupportAgentIcon />, color: '#1646C1' },
 	];
 
 	return (
@@ -205,10 +208,10 @@ const AdminHome: NextPage = (props: any) => {
 			<Box component={'div'} className={'welcome-section'}>
 				<Box component={'div'} className={'welcome-content'}>
 					<Typography variant={'h2'} className={'welcome-title'}>
-						Welcome back, {user?.memberNick || 'Admin'}! 👋
+						{t('AdminWelcomeBack', { name: user?.memberNick || 'Admin' })}
 					</Typography>
 					<Typography variant={'body1'} className={'welcome-subtitle'}>
-						Here's what's happening with your platform today.
+						{t('AdminHereIsWhatsHappening')}
 					</Typography>
 				</Box>
 				
@@ -230,11 +233,11 @@ const AdminHome: NextPage = (props: any) => {
 							}}
 							onClick={() => handleNavigate(card.path)}
 						>
-							<CardContent>
+									<CardContent>
 								<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
 									<Box component="div">
 										<Typography variant={'body2'} className={'stat-label'} sx={{ color: '#717171', mb: 1 }}>
-											{card.title}
+											{t(card.titleKey)}
 										</Typography>
 										<Typography variant={'h4'} className={'stat-value'} sx={{ color: card.color, fontWeight: 700 }}>
 											{card.value.toLocaleString()}
@@ -267,7 +270,7 @@ const AdminHome: NextPage = (props: any) => {
 				<CardContent>
 					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} sx={{ mb: 3 }}>
 						<Typography variant={'h5'} className={'section-title'} sx={{ fontWeight: 600 }}>
-							Quick Links
+							{t('AdminQuickLinks')}
 						</Typography>
 						<TrendingUpIcon sx={{ color: '#8B4513', fontSize: 28 }} />
 					</Stack>
@@ -293,13 +296,13 @@ const AdminHome: NextPage = (props: any) => {
 											backgroundColor: `${link.color}15`,
 											transform: 'translateX(4px)',
 										},
-										transition: 'all 0.3s ease',
-									}}
-								>
-									<Typography variant={'body1'} sx={{ fontWeight: 500 }}>
-										{link.title}
-									</Typography>
-								</Button>
+									transition: 'all 0.3s ease',
+								}}
+							>
+								<Typography variant={'body1'} sx={{ fontWeight: 500 }}>
+									{t(link.titleKey)}
+								</Typography>
+							</Button>
 							</Grid>
 						))}
 					</Grid>
@@ -308,5 +311,11 @@ const AdminHome: NextPage = (props: any) => {
 		</Box>
 	);
 };
+
+export const getStaticProps = async ({ locale }: { locale?: string }) => ({
+	props: {
+		...(await serverSideTranslations(locale || 'en', ['common'])),
+	},
+});
 
 export default withAdminLayout(AdminHome);

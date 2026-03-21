@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import type { NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { MemberPanelList } from '../../../libs/components/admin/users/MemberList';
 import {
@@ -1122,5 +1123,18 @@ AdminUsers.defaultProps = {
 		search: {},
 	},
 };
+
+export const getStaticProps = async ({ locale }: { locale?: string }) => ({
+	props: {
+		...(await serverSideTranslations(locale || 'en', ['common'])),
+		initialInquiry: {
+			page: 1,
+			limit: 10,
+			sort: 'createdAt',
+			direction: 'DESC',
+			search: {},
+		},
+	},
+});
 
 export default withAdminLayout(AdminUsers);

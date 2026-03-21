@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { Box, Button, InputAdornment, Stack, Card, CardContent, Chip } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -192,5 +193,11 @@ const InquiryArticles: NextPage = (props: any) => {
 		</Box>
 	);
 };
+
+export const getStaticProps = async ({ locale }: { locale?: string }) => ({
+	props: {
+		...(await serverSideTranslations(locale || 'en', ['common'])),
+	},
+});
 
 export default withAdminLayout(InquiryArticles);
