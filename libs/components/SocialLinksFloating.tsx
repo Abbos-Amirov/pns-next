@@ -3,6 +3,7 @@
 import React from 'react';
 
 const PNS_MAIN_URL = 'https://www.pnswindow.co.kr/html/00_main/';
+const NAVER_BLOG_URL = 'https://blog.naver.com/pnshomes';
 const YOUTUBE_URL = 'https://www.youtube.com/@pnswindow';
 const KAKAOTALK_URL =
   'https://accounts.kakao.com/login/?continue=https%3A%2F%2Fpf.kakao.com%2F_gvlGG%2Fchat%3Fapi_ver%3D1.1%26kakao_agent%3Dsdk%252F2.5.0%2520os%252Fjavascript%2520sdk_type%252Fjavascript%2520lang%252Fko-KR%2520device%252FMacIntel%2520origin%252Fhttps%25253A%25252F%25252Fwww.pnswindow.co.kr%26app_key%3Df34b1ee4e3e3fd04ef97563bcb8868a6%26referer%3Dhttps%253A%252F%252Fwww.pnswindow.co.kr%252Fhtml%252F01_product%252Fp_order.php#login';
@@ -54,10 +55,19 @@ function NaverIconSvg() {
   );
 }
 
-/** Floating social links - bottom-left, opposite to Chat/AIChat */
+/** Floating social links - right side, stacked vertically above "I am PNS AI" */
 export default function SocialLinksFloating() {
   return (
     <div className="social-links-floating">
+      <a
+        href={NAVER_BLOG_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="social-floating-btn social-floating-blog social-floating-blog-text"
+        aria-label="Naver Blog"
+      >
+        Blog
+      </a>
       <a
         href={PNS_MAIN_URL}
         target="_blank"
