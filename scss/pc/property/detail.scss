@@ -275,8 +275,10 @@
 				height: auto;
 				flex-direction: row;
 				gap: 22px;
+				justify-content: center;
 				.left-config {
 					width: 960px;
+					max-width: 100%;
 					height: auto;
 					gap: 40px;
 					.options-config {
