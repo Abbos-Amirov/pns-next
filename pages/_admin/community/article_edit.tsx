@@ -237,10 +237,10 @@ const ArticleEdit: NextPage = (props: any) => {
 							>
 								Back
 							</Button>
-							<Box className={'article-edit-icon-box'}>
+							<Box component="div" className={'article-edit-icon-box'}>
 								<EditIcon className={'article-edit-icon'} />
 							</Box>
-							<Box>
+							<Box component="div">
 								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
 									Edit Article
 								</Typography>
@@ -260,14 +260,14 @@ const ArticleEdit: NextPage = (props: any) => {
 					<Card className={'info-card'}>
 						<CardContent>
 							<Stack spacing={3}>
-								<Box>
+								<Box component="div">
 									<Stack direction={'row'} alignItems={'center'} spacing={1} sx={{ mb: 2 }}>
 										<InfoOutlinedIcon sx={{ color: '#8B4513', fontSize: 20 }} />
 										<Typography variant={'h6'} sx={{ fontWeight: 600, color: '#8B4513' }}>
 											Article Information
 										</Typography>
 									</Stack>
-									<Box className={'info-item'}>
+									<Box component="div" className={'info-item'}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Article ID
 										</Typography>
@@ -275,7 +275,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											{articleData._id || 'Loading...'}
 										</Typography>
 									</Box>
-									<Box className={'info-item'} sx={{ mt: 2 }}>
+									<Box component="div" className={'info-item'} sx={{ mt: 2 }}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Category
 										</Typography>
@@ -283,7 +283,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											{currentArticle?.articleCategory || 'N/A'}
 										</Typography>
 									</Box>
-									<Box className={'info-item'} sx={{ mt: 2 }}>
+									<Box component="div" className={'info-item'} sx={{ mt: 2 }}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Views
 										</Typography>
@@ -291,7 +291,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											{currentArticle?.articleViews || 0}
 										</Typography>
 									</Box>
-									<Box className={'info-item'} sx={{ mt: 2 }}>
+									<Box component="div" className={'info-item'} sx={{ mt: 2 }}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Likes
 										</Typography>
@@ -299,7 +299,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											{currentArticle?.articleLikes || 0}
 										</Typography>
 									</Box>
-									<Box className={'info-item'} sx={{ mt: 2 }}>
+									<Box component="div" className={'info-item'} sx={{ mt: 2 }}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Comments
 										</Typography>
@@ -311,14 +311,14 @@ const ArticleEdit: NextPage = (props: any) => {
 
 								<Divider />
 
-								<Box>
+								<Box component="div">
 									<Stack direction={'row'} alignItems={'center'} spacing={1} sx={{ mb: 2 }}>
 										<CalendarTodayIcon sx={{ color: '#8B4513', fontSize: 20 }} />
 										<Typography variant={'h6'} sx={{ fontWeight: 600, color: '#8B4513' }}>
 											Timeline
 										</Typography>
 									</Stack>
-									<Box className={'info-item'}>
+									<Box component="div" className={'info-item'}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Created At
 										</Typography>
@@ -330,7 +330,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											)}
 										</Typography>
 									</Box>
-									<Box className={'info-item'} sx={{ mt: 2 }}>
+									<Box component="div" className={'info-item'} sx={{ mt: 2 }}>
 										<Typography variant={'caption'} sx={{ color: '#9e9e9e', display: 'block', mb: 0.5 }}>
 											Last Updated
 										</Typography>
@@ -354,7 +354,7 @@ const ArticleEdit: NextPage = (props: any) => {
 						<CardContent>
 							<Stack spacing={3}>
 								{/* Title Field */}
-								<Box>
+								<Box component="div">
 									<Typography variant={'subtitle1'} sx={{ fontWeight: 600, mb: 1.5, color: '#181a20' }}>
 										Article Title <span style={{ color: '#d32f2f' }}>*</span>
 									</Typography>
@@ -369,7 +369,7 @@ const ArticleEdit: NextPage = (props: any) => {
 								</Box>
 
 								{/* Content Field */}
-								<Box>
+								<Box component="div">
 									<Typography variant={'subtitle1'} sx={{ fontWeight: 600, mb: 1.5, color: '#181a20' }}>
 										Article Content <span style={{ color: '#d32f2f' }}>*</span>
 									</Typography>
@@ -386,11 +386,11 @@ const ArticleEdit: NextPage = (props: any) => {
 								</Box>
 
 								{/* Image Upload Section */}
-								<Box>
+								<Box component="div">
 									<Typography variant={'subtitle1'} sx={{ fontWeight: 600, mb: 1.5, color: '#181a20' }}>
 										Article Image
 									</Typography>
-									<Box className={'image-upload-section'}>
+									<Box component="div" className={'image-upload-section'}>
 										<input
 											type="file"
 											ref={inputRef}
@@ -416,7 +416,7 @@ const ArticleEdit: NextPage = (props: any) => {
 											</Button>
 										</Stack>
 										{articleData.articleImage && (
-											<Box className={'image-preview-box'}>
+											<Box component="div" className={'image-preview-box'}>
 												<img
 													src={`${REACT_APP_API_URL}/${articleData.articleImage}`}
 													alt="Article"
@@ -435,7 +435,7 @@ const ArticleEdit: NextPage = (props: any) => {
 								</Box>
 
 								{/* Status Field */}
-								<Box>
+								<Box component="div">
 									<Typography variant={'subtitle1'} sx={{ fontWeight: 600, mb: 1.5, color: '#181a20' }}>
 										Article Status
 									</Typography>

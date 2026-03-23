@@ -1,14 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Box, Button, Stack, InputAdornment, IconButton } from '@mui/material';
+import { Box, Button, Stack, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { signUp } from '../../libs/auth';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { GoogleIconSvg, KakaoIconSvg } from '../../libs/components/auth/SocialAuthIcons';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -17,10 +19,26 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const Signup: NextPage = () => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const device = useDeviceDetect();
 	const [input, setInput] = useState({ memberNick: '', memberPhone: '', memberPassword: '', type: 'USER' });
 	const [showPassword, setShowPassword] = useState(false);
+
+	const handleGoogleLogin = () => {
+		window.location.href = '/api/auth/google?from=signup';
+	};
+	const handleKakaoLogin = () => {
+		window.location.href = '/api/auth/kakao';
+	};
+
+	useEffect(() => {
+		if (router.query.error === 'google_no_client_id') {
+			const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback/google` : '';
+			sweetMixinErrorAlert(`.env.local ga REACT_APP_GOOGLE_CLIENT_ID qo'shing (backend bilan bir xil). Redirect URI: ${redirectUri}`);
+			router.replace('/auth/signup');
+		}
+	}, [router.query.error, router]);
 
 	/** HANDLERS **/
 	const handleInput = useCallback((name: any, value: any) => {
@@ -51,6 +69,18 @@ const Signup: NextPage = () => {
 							<h1>Sign Up</h1>
 							<p>Create your account</p>
 						</Box>
+						<div className={'auth-social-buttons'}>
+							<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
+							<div className={'social-buttons'}>
+								<Button className={'social-btn social-btn-google'} onClick={handleGoogleLogin} startIcon={<GoogleIconSvg size={20} />}>
+									Google
+								</Button>
+								<Button className={'social-btn social-btn-kakao'} onClick={handleKakaoLogin} startIcon={<KakaoIconSvg size={20} />}>
+									KakaoTalk
+								</Button>
+							</div>
+							<Typography className={'or-separator'}>{t('JoinOr')}</Typography>
+						</div>
 						<Box component="div" className={'input-wrap'}>
 							<div className={'input-box'}>
 								<input
@@ -110,6 +140,18 @@ const Signup: NextPage = () => {
 								<Box component="div" className={'form-header'}>
 									<h1>Start your perfect trip</h1>
 								</Box>
+								<div className={'auth-social-buttons'}>
+									<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
+									<div className={'social-buttons'}>
+										<Button className={'social-btn social-btn-google'} onClick={handleGoogleLogin} startIcon={<GoogleIconSvg size={20} />}>
+											Google
+										</Button>
+										<Button className={'social-btn social-btn-kakao'} onClick={handleKakaoLogin} startIcon={<KakaoIconSvg size={20} />}>
+											KakaoTalk
+										</Button>
+									</div>
+									<Typography className={'or-separator'}>{t('JoinOr')}</Typography>
+								</div>
 								<Box component="div" className={'input-wrap'}>
 									<div className={'input-box'}>
 										<input

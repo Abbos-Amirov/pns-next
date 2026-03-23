@@ -26,6 +26,7 @@ import 'swiper/css/navigation';
 import TopBasic from '../TopBasic';
 import { REACT_APP_API_URL } from '../../config';
 import { useThemeMode } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const getUserImageSrc = (img?: string) => {
 	if (!img) return '/img/profile/defaultUser.svg';
@@ -52,6 +53,7 @@ const withLayoutBasic = (Component: any) => {
 		const supportOpen = Boolean(supportAnchor);
 		const [navOverlayOpen, setNavOverlayOpen] = useState(false);
 		const { mode, toggleTheme } = useThemeMode();
+		const { openAuthModal } = useAuth();
 
 		const openNavOverlay = () => setNavOverlayOpen(true);
 		const closeNavOverlay = () => setNavOverlayOpen(false);
@@ -498,7 +500,7 @@ const withLayoutBasic = (Component: any) => {
 									) : (
 										<Button 
 											className={'login-signup-btn-dark'}
-											onClick={() => router.push('/account/join')}
+											onClick={() => openAuthModal('login')}
 										>
 											{t('Login/Signup')}
 										</Button>
@@ -596,13 +598,25 @@ const withLayoutBasic = (Component: any) => {
 											</div>
 											<span className={'nav-overlay-card-label'}>{t('Community')}</span>
 										</Link>
-										{user?._id && (
+										{user?._id ? (
 											<Link href={'/mypage'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 												<div className={'nav-overlay-card-image'}>
 													<img src={getUserImageSrc(user?.memberImage)} alt={t('My Page')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} />
 												</div>
 												<span className={'nav-overlay-card-label'}>{t('My Page')}</span>
 											</Link>
+										) : (
+											<Box
+												component={'div'}
+												className={'nav-overlay-card'}
+												onClick={() => { openAuthModal('login'); closeNavOverlay(); }}
+												sx={{ cursor: 'pointer', textDecoration: 'none' }}
+											>
+												<div className={'nav-overlay-card-image'}>
+													<img src={'/img/profile/defaultUser.svg'} alt={t('Login/Signup')} />
+												</div>
+												<span className={'nav-overlay-card-label'}>{t('Login/Signup')}</span>
+											</Box>
 										)}
 										<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 											<div className={'nav-overlay-card-image'}>

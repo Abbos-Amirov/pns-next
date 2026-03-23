@@ -3,7 +3,7 @@ import { initializeApollo } from '../../apollo/client';
 import { userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
-import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
+import { LOGIN, LOGIN_WITH_GOOGLE, SIGN_UP } from '../../apollo/user/mutation';
 
 export function getJwtToken(): any {
 	if (typeof window !== 'undefined') {
@@ -98,6 +98,63 @@ const requestJwtToken = async ({
 		}
 		
 		// Xato xabarini ko'rsatish
+		await sweetMixinErrorAlert(errorMessage);
+		throw new Error(errorMessage);
+	}
+};
+
+/**
+ * Google OAuth orqali GraphQL loginWithGoogle mutation chaqiriladi.
+ * GoogleLoginInput odatda { code, redirectUri } yoki { idToken } qabul qiladi.
+ */
+export const loginWithGoogle = async (input: { code?: string; redirectUri?: string; idToken?: string }): Promise<void> => {
+	const { jwtToken } = await requestGoogleJwtToken(input);
+	if (jwtToken) {
+		updateStorage({ jwtToken });
+		updateUserInfo(jwtToken);
+	}
+};
+
+const requestGoogleJwtToken = async (
+	input: { code?: string; redirectUri?: string; idToken?: string }
+): Promise<{ jwtToken: string }> => {
+	const apolloClient = await initializeApollo();
+
+	const graphqlInput: Record<string, string> = {};
+	if (input.idToken) {
+		graphqlInput.idToken = input.idToken;
+	} else if (input.code && input.redirectUri) {
+		graphqlInput.code = input.code;
+		graphqlInput.redirectUri = input.redirectUri;
+	} else {
+		throw new Error('Google login: idToken yoki (code + redirectUri) talab qilinadi');
+	}
+
+	try {
+		const result = await apolloClient.mutate({
+			mutation: LOGIN_WITH_GOOGLE,
+			variables: { input: graphqlInput },
+			fetchPolicy: 'network-only',
+		});
+
+		const data = result?.data as { loginWithGoogle?: { accessToken?: string } };
+		const accessToken = data?.loginWithGoogle?.accessToken;
+
+		if (!accessToken) {
+			throw new Error('No access token received from server');
+		}
+
+		return { jwtToken: accessToken };
+	} catch (err: any) {
+		console.log('request google login token err', err);
+		let errorMessage = 'Google login failed. Please try again.';
+
+		if (err?.graphQLErrors && Array.isArray(err.graphQLErrors) && err.graphQLErrors.length > 0) {
+			const graphQLError = err.graphQLErrors[0];
+			errorMessage = (graphQLError as any)?.message || errorMessage;
+		} else if (err?.message) {
+			errorMessage = err.message;
+		}
 		await sweetMixinErrorAlert(errorMessage);
 		throw new Error(errorMessage);
 	}

@@ -1,14 +1,18 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Box, Button, Stack, IconButton, Modal } from '@mui/material';
+import { Button, Stack, IconButton, Modal, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { logIn, signUp } from '../../auth';
+import { logIn, signUp, getJwtToken } from '../../auth';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../context/AuthContext';
-
+import { useThemeMode } from '../../context/ThemeContext';
+import { useTranslation } from 'next-i18next';
+import { MemberType } from '../../enums/member.enum';
+import decodeJWT from 'jwt-decode';
+import { CustomJwtPayload } from '../../types/customJwtPayload';
+import { GoogleIconSvg, KakaoIconSvg, NaverIconSvg } from './SocialAuthIcons';
 
 interface AuthModalProps {
 	open: boolean;
@@ -17,155 +21,312 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, type }) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
-	const device = useDeviceDetect();
 	const { openAuthModal } = useAuth();
-	const [input, setInput] = useState({ memberNick: '', memberPhone: '', memberPassword: '', type: 'USER' });
+	const { mode } = useThemeMode();
+	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: MemberType.USER });
 	const [showPassword, setShowPassword] = useState(false);
-	const [currentType, setCurrentType] = useState<'login' | 'signup'>(type);
+	const [isLoading, setIsLoading] = useState(false);
+	const [loginView, setLoginView] = useState(type === 'login');
 
 	useEffect(() => {
-		setCurrentType(type);
+		setLoginView(type === 'login');
 	}, [type]);
 
-	/** HANDLERS **/
-	const handleInput = useCallback((name: any, value: any) => {
-		setInput((prev) => {
-			return { ...prev, [name]: value };
-		});
+	const handleInput = useCallback((name: string, value: string | MemberType) => {
+		setInput((prev) => ({ ...prev, [name]: value }));
 	}, []);
 
-	const handleTogglePassword = () => {
-		setShowPassword(!showPassword);
+	const checkUserTypeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const checked = e.target.checked;
+		if (checked) {
+			const value = e.target.name as MemberType;
+			if (value === MemberType.MEASURER) handleInput('type', MemberType.MEASURER);
+			else if (value === MemberType.INSTALLER) handleInput('type', MemberType.INSTALLER);
+			else handleInput('type', MemberType.USER);
+		} else {
+			handleInput('type', MemberType.USER);
+		}
 	};
 
 	const doLogin = useCallback(async () => {
 		try {
-			await logIn(input.memberNick, input.memberPassword);
+			if (!input.nick || !input.password) {
+				await sweetMixinErrorAlert(t('JoinFillRequiredFields'));
+				return;
+			}
+			setIsLoading(true);
+			await logIn(input.nick, input.password);
+			setIsLoading(false);
+			const jwtToken = getJwtToken();
+			if (jwtToken) {
+				try {
+					const claims = decodeJWT<CustomJwtPayload>(jwtToken);
+					if (claims?.memberType === MemberType.ADMIN) {
+						onClose();
+						await router.push('/_admin');
+						return;
+					}
+				} catch {
+					// ignore
+				}
+			}
 			onClose();
-			setInput({ memberNick: '', memberPhone: '', memberPassword: '', type: 'USER' });
-			await router.push('/');
+			setInput({ nick: '', password: '', phone: '', type: MemberType.USER });
+			router.reload();
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			setIsLoading(false);
+			console.error('Login error:', err);
 		}
-	}, [input, router, onClose]);
+	}, [input, router, onClose, t]);
 
 	const doSignUp = useCallback(async () => {
 		try {
-			await signUp(input.memberNick, input.memberPassword, input.memberPhone, input.type);
+			if (!input.nick || !input.password || !input.phone || !input.type) {
+				await sweetMixinErrorAlert(t('JoinFillRequiredFields'));
+				return;
+			}
+			setIsLoading(true);
+			await signUp(input.nick, input.password, input.phone, input.type);
+			setIsLoading(false);
+			const jwtToken = getJwtToken();
+			if (jwtToken) {
+				try {
+					const claims = decodeJWT<CustomJwtPayload>(jwtToken);
+					if (claims?.memberType === MemberType.ADMIN) {
+						onClose();
+						await router.push('/_admin');
+						return;
+					}
+				} catch {
+					// ignore
+				}
+			}
 			onClose();
-			setInput({ memberNick: '', memberPhone: '', memberPassword: '', type: 'USER' });
-			await router.push('/');
+			setInput({ nick: '', password: '', phone: '', type: MemberType.USER });
+			router.reload();
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			setIsLoading(false);
+			console.error('Signup error:', err);
 		}
-	}, [input, router, onClose]);
+	}, [input, router, onClose, t]);
 
 	const handleClose = () => {
-		setInput({ memberNick: '', memberPhone: '', memberPassword: '', type: 'USER' });
+		setInput({ nick: '', password: '', phone: '', type: MemberType.USER });
 		setShowPassword(false);
 		onClose();
 	};
 
+	const handleGoogleLogin = () => {
+		const from = loginView ? 'login' : 'signup';
+		window.location.href = `/api/auth/google?from=${from}`;
+	};
+
+	const handleKakaoLogin = () => {
+		const redirectUri = typeof window !== 'undefined' ? encodeURIComponent(window.location.origin + '/') : '';
+		window.location.href = `/api/auth/kakao${redirectUri ? `?redirect_uri=${redirectUri}` : ''}`;
+	};
+
+	const handleNaverLogin = () => {
+		const redirectUri = typeof window !== 'undefined' ? encodeURIComponent(window.location.origin + '/') : '';
+		window.location.href = `/api/auth/naver${redirectUri ? `?redirect_uri=${redirectUri}` : ''}`;
+	};
+
 	return (
-		<Modal 
-			open={open} 
-			onClose={handleClose} 
-			className={'auth-modal'}
+		<Modal
+			open={open}
+			onClose={handleClose}
+			className={`auth-modal auth-modal-${mode}`}
 			sx={{
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
 				'& .MuiBackdrop-root': {
-					backgroundColor: 'rgba(0, 0, 0, 0.7)',
+					backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.75)' : 'rgba(0, 0, 0, 0.6)',
 					backdropFilter: 'blur(8px)',
 				},
 			}}
 		>
-			<Stack className={'auth-modal-content'}>
-				<Stack className={'main-content'}>
-					<Stack className={'left-section'}>
-						<div className={'form-container'}>
-							<IconButton className={'close-button'} onClick={handleClose}>
-								<CloseIcon />
+			<Stack className={`auth-modal-content auth-modal-compact`} data-theme={mode}>
+				<IconButton className={'close-button'} onClick={handleClose} size="small">
+					<CloseIcon />
+				</IconButton>
+
+				<div className={'auth-modal-form'}>
+					<div className={'auth-modal-header'}>
+						<img src={'/img/logo/pns-arched-door.svg'} alt="PNS" className={'auth-modal-logo'} />
+						<Typography className={'auth-modal-title'}>PNS Window</Typography>
+					</div>
+
+					<div className={'toggle-buttons'}>
+						<Button
+							className={`toggle-btn ${!loginView ? 'active' : ''}`}
+							onClick={() => setLoginView(false)}
+							sx={{ textTransform: 'none' }}
+						>
+							{t('JoinSignUp')}
+						</Button>
+						<Button
+							className={`toggle-btn ${loginView ? 'active' : ''}`}
+							onClick={() => setLoginView(true)}
+							sx={{ textTransform: 'none' }}
+						>
+							{t('JoinLogIn')}
+						</Button>
+					</div>
+
+					<Typography className={'auth-modal-heading'}>
+						{loginView ? t('JoinJourneyBegins') : t('JoinStartYourJourney')}
+					</Typography>
+
+					<div className={'input-wrap'}>
+						<div className={'input-box'}>
+							<input
+								type="text"
+								placeholder={loginView ? t('JoinPlaceholderUsernameLogin') : t('JoinPlaceholderUsername')}
+								value={input.nick}
+								onChange={(e) => handleInput('nick', e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter' && loginView) doLogin();
+									if (e.key === 'Enter' && !loginView) doSignUp();
+								}}
+							/>
+						</div>
+						{!loginView && (
+							<div className={'input-box'}>
+								<input
+									type="text"
+									placeholder={t('JoinPlaceholderPhone')}
+									value={input.phone}
+									onChange={(e) => handleInput('phone', e.target.value)}
+									onKeyDown={(e) => e.key === 'Enter' && doSignUp()}
+								/>
+							</div>
+						)}
+						<div className={'input-box'}>
+							<input
+								type={showPassword ? 'text' : 'password'}
+								placeholder={t('JoinPlaceholderPassword')}
+								value={input.password}
+								onChange={(e) => handleInput('password', e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter' && loginView) doLogin();
+									if (e.key === 'Enter' && !loginView) doSignUp();
+								}}
+							/>
+							<IconButton onClick={() => setShowPassword(!showPassword)} className={'password-toggle'} size="small">
+								{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
 							</IconButton>
-							<div className={'form-header'}>
-								<h1>Start your perfect trip</h1>
-							</div>
-							<div className={'input-wrap'}>
-								<div className={'input-box'}>
-									<input
-										type="text"
-										placeholder={'Full name'}
-										value={input.memberNick}
-										onChange={(e) => handleInput('memberNick', e.target.value)}
-										required={true}
-									/>
-								</div>
-								{currentType === 'signup' && (
-									<div className={'input-box'}>
-										<input
-											type="text"
-											placeholder={'Phone'}
-											value={input.memberPhone}
-											onChange={(e) => handleInput('memberPhone', e.target.value)}
-											required={true}
+						</div>
+					</div>
+
+					{loginView && (
+						<div className={'remember-forgot'}>
+							<FormControlLabel
+								control={<Checkbox defaultChecked size="small" />}
+								label={t('JoinRememberMe')}
+								sx={{ '& .MuiTypography-root': { fontSize: 13 } }}
+							/>
+							<Typography component="a" className={'forgot-link'} sx={{ fontSize: 13 }}>
+								{t('JoinForgotPassword')}
+							</Typography>
+						</div>
+					)}
+
+					{!loginView && (
+						<div className={'user-type-selection'}>
+							<Typography className={'type-label'} sx={{ fontSize: 13 }}>
+								{t('JoinRegisterAs')}
+							</Typography>
+							<div className={'type-checkboxes'}>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.USER}
+											onChange={checkUserTypeHandler}
+											checked={input.type === MemberType.USER}
+											size="small"
 										/>
-									</div>
-								)}
-								<div className={'input-box'}>
-									<input
-										type={showPassword ? 'text' : 'password'}
-										placeholder={'Password'}
-										value={input.memberPassword}
-										onChange={(e) => handleInput('memberPassword', e.target.value)}
-										required={true}
-									/>
-									<IconButton onClick={handleTogglePassword} className={'password-toggle'}>
-										{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-									</IconButton>
-								</div>
-							</div>
-							{currentType === 'login' ? (
-								<Button
-									className={'submit-btn'}
-									disabled={input.memberNick === '' || input.memberPassword === ''}
-									onClick={doLogin}
-								>
-									Login
-								</Button>
-							) : (
-								<Button
-									className={'submit-btn'}
-									disabled={input.memberNick === '' || input.memberPassword === '' || input.memberPhone === ''}
-									onClick={doSignUp}
-								>
-									Start
-								</Button>
-							)}
-							<div className={currentType === 'login' ? 'signup-link' : 'login-link'}>
-								{currentType === 'login' ? (
-									<p>
-										Not registered yet? <span onClick={() => openAuthModal('signup')}>Sign up</span>
-									</p>
-								) : (
-									<p>
-										Already have an account? <span onClick={() => openAuthModal('login')}>Log in</span>
-									</p>
-								)}
+									}
+									label={t('User')}
+									sx={{ '& .MuiTypography-root': { fontSize: 13 } }}
+								/>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.MEASURER}
+											onChange={checkUserTypeHandler}
+											checked={input.type === MemberType.MEASURER}
+											size="small"
+										/>
+									}
+									label={t('JoinMeasurer')}
+									sx={{ '& .MuiTypography-root': { fontSize: 13 } }}
+								/>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.INSTALLER}
+											onChange={checkUserTypeHandler}
+											checked={input.type === MemberType.INSTALLER}
+											size="small"
+										/>
+									}
+									label={t('JoinInstaller')}
+									sx={{ '& .MuiTypography-root': { fontSize: 13 } }}
+								/>
 							</div>
 						</div>
-					</Stack>
-					<Stack className={'right-section'}>
-						<div className={'map-visualization'}>
-							{/* Map visualization */}
+					)}
+
+					{/* Social Login - Google, KakaoTalk, Naver (I want to be registered as pastidan) */}
+					<div className={'auth-social-buttons auth-social-bottom'}>
+						<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
+						<div className={'social-buttons'}>
+							<Button className={'social-btn social-btn-google'} onClick={handleGoogleLogin} startIcon={<GoogleIconSvg size={20} />}>
+								Google
+							</Button>
+							<Button className={'social-btn social-btn-kakao'} onClick={handleKakaoLogin} startIcon={<KakaoIconSvg size={20} />}>
+								KakaoTalk
+							</Button>
+							<Button className={'social-btn social-btn-naver'} onClick={handleNaverLogin} startIcon={<NaverIconSvg size={20} />}>
+								Naver
+							</Button>
 						</div>
-					</Stack>
-				</Stack>
+					</div>
+
+					<Button
+						className={'submit-btn'}
+						disabled={
+							isLoading ||
+							(loginView
+								? !input.nick || !input.password
+								: !input.nick || !input.password || !input.phone)
+						}
+						onClick={loginView ? doLogin : doSignUp}
+						sx={{ textTransform: 'none' }}
+					>
+						{isLoading ? t('JoinLoading') : loginView ? t('JoinLogIn') : t('JoinSignUp')}
+					</Button>
+
+					<div className={loginView ? 'signup-link' : 'login-link'}>
+						{loginView ? (
+							<p>
+								{t('JoinNotRegisteredYet')}{' '}
+								<span onClick={() => openAuthModal('signup')}>{t('JoinSignUp')}</span>
+							</p>
+						) : (
+							<p>
+								{t('JoinAlreadyHaveAccount')}{' '}
+								<span onClick={() => openAuthModal('login')}>{t('JoinLogIn')}</span>
+							</p>
+						)}
+					</div>
+				</div>
 			</Stack>
 		</Modal>
 	);
 };
 
 export default AuthModal;
-

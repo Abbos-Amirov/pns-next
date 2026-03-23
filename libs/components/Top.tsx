@@ -25,6 +25,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import { REACT_APP_API_URL } from '../config';
 import { useThemeMode } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -65,6 +66,7 @@ const Top = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const { mode, toggleTheme } = useThemeMode();
+	const { openAuthModal } = useAuth();
 	const { t, i18n } = useTranslation('common');
 	const router = useRouter();
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
@@ -537,7 +539,7 @@ const Top = () => {
 									<IconButton className={'lang-switcher-btn-home'} onClick={langClick} sx={{ width: 53, height: 53, minWidth: 53, '& svg': { fontSize: 22 } }}>
 										<LanguageIcon />
 									</IconButton>
-									<Button className={'login-signup-btn'} onClick={() => router.push('/account/join')} sx={{ py: 0.5, px: 1.5, fontSize: 13 }}>
+									<Button className={'login-signup-btn'} onClick={() => openAuthModal('login')} sx={{ py: 0.5, px: 1.5, fontSize: 13 }}>
 										{t('Login/Signup')}
 									</Button>
 									<IconButton 

@@ -36,6 +36,40 @@ export const SIGN_UP = gql`
 }
 `;
 
+export const LOGIN_WITH_GOOGLE = gql`
+	mutation LoginWithGoogle($input: GoogleLoginInput!) {
+		loginWithGoogle(input: $input) {
+			_id
+			memberType
+			memberStatus
+			memberAuthType
+			memberPhone
+			memberNick
+			memberFullName
+			memberImage
+			memberAddress
+			memberDesc
+			memberExperience
+			memberEducation
+			memberProducts
+			memberArticles
+			memberFollowers
+			memberFollowings
+			memberPoints
+			memberLikes
+			memberViews
+			memberComments
+			memberRank
+			memberWarnings
+			memberBlocks
+			deletedAt
+			createdAt
+			updatedAt
+			accessToken
+		}
+	}
+`;
+
 export const LOGIN = gql`
 	mutation Login($input: LoginInput!) {
     login(input: $input) {

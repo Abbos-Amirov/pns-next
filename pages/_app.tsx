@@ -9,9 +9,16 @@ import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
 import Loading from '../libs/components/common/Loading';
 import { ThemeProvider, useThemeMode } from '../libs/context/ThemeContext';
+import { AuthProvider, useAuth } from '../libs/context/AuthContext';
+import AuthModal from '../libs/components/auth/AuthModal';
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
+
+const AuthModalWrapper = () => {
+	const { authModalOpen, authModalType, closeAuthModal } = useAuth();
+	return <AuthModal open={authModalOpen} onClose={closeAuthModal} type={authModalType} />;
+};
 
 const ThemedApp = ({ Component, pageProps }: AppProps) => {
 	const { mode } = useThemeMode();
@@ -48,8 +55,11 @@ const ThemedApp = ({ Component, pageProps }: AppProps) => {
 		<ApolloProvider client={client}>
 			<MuiThemeProvider theme={muiTheme}>
 				<CssBaseline />
-				<Loading isLoading={isLoading} />
-				<Component {...pageProps} />
+				<AuthProvider>
+					<AuthModalWrapper />
+					<Loading isLoading={isLoading} />
+					<Component {...pageProps} />
+				</AuthProvider>
 			</MuiThemeProvider>
 		</ApolloProvider>
 	);

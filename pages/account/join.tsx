@@ -15,9 +15,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import AppleIcon from '@mui/icons-material/Apple';
-import GoogleIcon from '@mui/icons-material/Google';
-import TwitterIcon from '@mui/icons-material/Twitter';
+import { GoogleIconSvg, KakaoIconSvg } from '../../libs/components/auth/SocialAuthIcons';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -177,24 +175,19 @@ const Join: NextPage = () => {
 								{loginView ? t('JoinJourneyBegins') : t('JoinStartYourJourney')}
 							</Typography>
 
-							{/* Social Login */}
-							{loginView && (
-								<>
-									<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
-									<div className={'social-buttons'}>
-										<Button className={'social-btn'}>
-											<AppleIcon />
-										</Button>
-										<Button className={'social-btn'}>
-											<GoogleIcon />
-										</Button>
-										<Button className={'social-btn'}>
-											<TwitterIcon />
-										</Button>
-									</div>
-									<Typography className={'or-separator'}>{t('JoinOr')}</Typography>
-								</>
-							)}
+							{/* Social Login - Google & KakaoTalk */}
+							<>
+								<Typography className={'social-text'}>{t('JoinLogInWithOpen')}</Typography>
+								<div className={'social-buttons'}>
+									<Button className={'social-btn social-btn-google'} onClick={() => window.location.href = '/api/auth/google'} startIcon={<GoogleIconSvg size={20} />}>
+										Google
+									</Button>
+									<Button className={'social-btn social-btn-kakao'} onClick={() => window.location.href = '/api/auth/kakao'} startIcon={<KakaoIconSvg size={20} />}>
+										KakaoTalk
+									</Button>
+								</div>
+								<Typography className={'or-separator'}>{t('JoinOr')}</Typography>
+							</>
 
 							{/* Input Fields */}
 							<div className={'input-wrap'}>
