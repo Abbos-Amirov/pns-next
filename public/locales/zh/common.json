@@ -2,7 +2,7 @@
 "SearchInstaller":"搜索安装师",
 "InstallerDescDefault":"专业安装师",
 "SortBy":"排序","SortRecent":"最新","SortOldest":"最旧","Experience":"经验","Education":"学历","Description":"描述","Comments":"评论","Likes":"点赞","Views":"浏览量","SortFeatured":"精选","SortBestSelling":"最畅销","SortAlphabeticalAZ":"字母顺序 A-Z","SortAlphabeticalZA":"字母顺序 Z-A","SortPriceLowHigh":"价格从低到高","SortPriceHighLow":"价格从高到低","SortDateOldNew":"日期从旧到新","SortDateNewOld":"日期从新到旧","LabelProject":"项目",
-"LabelRole":"负责角色","LabelDimensions":"尺寸 (高 × 宽)","LabelCategories":"分类","LabelStatus":"状态","StatusReady":"可使用","Demo":"演示","TotalProducts":"共 {{count}} 件产品","PropertyDescDefault":"高品质产品，功能出色。","MeasurerDescDefault":"专业测量师","PropertiesMobile":"产品 移动版","Home":"首页","Products":"产品","Product":"产品","Measurer":"测量师","Measurers":"测量师","Experts":"专家","Installers":"安装师","City":"城市","Community":"社区","My Page":"我的页面",
+"LabelRole":"负责角色","LabelDimensions":"尺寸 (高 × 宽)","LabelCategories":"分类","LabelStatus":"状态","StatusReady":"可使用","Demo":"演示","ViewDetails":"查看详情","TotalProducts":"共 {{count}} 件产品","PropertyDescDefault":"高品质产品，功能出色。","MeasurerDescDefault":"专业测量师","PropertiesMobile":"产品 移动版","Home":"首页","Products":"产品","Product":"产品","Measurer":"测量师","Measurers":"测量师","Experts":"专家","Installers":"安装师","City":"城市","Community":"社区","My Page":"我的页面",
   "MyProfile":"我的资料",
   "MyProfileSubtitle":"欢迎再次光临！",
   "Photo":"照片",

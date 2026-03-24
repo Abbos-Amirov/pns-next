@@ -21,6 +21,7 @@
 	"LabelStatus": "ステータス",
 	"StatusReady": "使用可能",
 	"Demo": "デモ",
+	"ViewDetails": "詳細を見る",
 	"TotalProducts": "合計 {{count}} 件の製品",
 	"PropertyDescDefault": "高品質な製品で優れた機能を備えています。",
 	"MeasurerDescDefault": "プロの計測士",

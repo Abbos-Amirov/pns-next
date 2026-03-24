@@ -220,7 +220,7 @@ hr {
 					}
 					.filter-sort-search-row .filter-sort-block {
 						.filter-sort-label { color: #1a1c21 !important; }
-						.filter-sort-btn { background: #8b4513 !important; color: #fff !important; }
+						.filter-sort-btn { background: #2563eb !important; color: #fff !important; }
 					}
 					.hot-deals-wrapper .hot-deal-image {
 						height: 110px !important;
@@ -247,14 +247,28 @@ hr {
 				border-color: rgba(0, 0, 0, 0.1) !important;
 				background: #fff !important;
 			}
+			/* DEMO: 01/02 raqami bilan bir xil (#181a20 + 0.6 opacity ohang) */
 			.stack-demo-btn {
-				background: #8b4513 !important;
+				background: rgba(24, 26, 32, 0.06) !important;
+				color: rgba(24, 26, 32, 0.65) !important;
+				border: 1px solid rgba(24, 26, 32, 0.14) !important;
+				&:hover {
+					background: rgba(24, 26, 32, 0.1) !important;
+					color: rgba(24, 26, 32, 0.85) !important;
+					border-color: rgba(24, 26, 32, 0.22) !important;
+				}
+				svg {
+					color: inherit !important;
+				}
+			}
+			.stack-view-details-btn {
+				background: #2563eb !important;
 				color: #fff !important;
-				&:hover { background: #6d3809 !important; }
+				&:hover { background: #1d4ed8 !important; }
 			}
 			.stack-hot-deals-row .stack-hot-deal-thumb {
 				border-color: rgba(0,0,0,0.12) !important;
-				&:hover { border-color: #8b4513 !important; }
+				&:hover { border-color: #2563eb !important; }
 			}
 			.stack-sort-row {
 				background: #f6f6f6 !important;
@@ -833,7 +847,7 @@ hr {
 			border-color: rgba(255, 255, 255, 0.15) !important;
 			background: rgba(255, 255, 255, 0.04) !important;
 		}
-		.filter-config-stack {
+			.filter-config-stack {
 			background: rgba(0, 0, 0, 0.25) !important;
 			border-color: rgba(255, 255, 255, 0.18) !important;
 			.filter-main .filter-section {
@@ -849,6 +863,16 @@ hr {
 				}
 				.filter-sort-label { color: #e0e0e0 !important; }
 			}
+		}
+		.stack-demo-btn {
+			background: #2563eb !important;
+			color: #fff !important;
+			&:hover { background: #1d4ed8 !important; }
+		}
+		.stack-view-details-btn {
+			background: #2563eb !important;
+			color: #fff !important;
+			&:hover { background: #1d4ed8 !important; }
 		}
 	}
 	/* MyFavorites, RecentlyVisited - dark mode */
@@ -913,29 +937,31 @@ hr {
 		background: #0d0d0d !important;
 		.property-detail-config {
 			.property-info-config {
-				.info .left-box .title-main,
 				.info .left-box .city,
 				.info .left-box .category,
 				.info .left-box .buy-rent,
 				.info .left-box .date { color: #c9a962 !important; }
+				.info .left-box .title-main,
+				.info .right-box .property-header-price {
+					color: #a8b4c9 !important;
+				}
 				.info .bottom-box .option p { color: #e0e0e0 !important; }
-				.info .right-box p,
-				.info .right-box span { color: #e0e0e0 !important; }
+				.info .right-box .buttons .MuiTypography-root { color: #e0e0e0 !important; }
 				.info .right-box span { color: #b0b0b0 !important; }
 				.images .sub-images .sub-img-box {
 					border-color: transparent !important;
-					&:hover { border-color: #8b4513 !important; }
+					&:hover { border-color: #2563eb !important; }
 				}
 				.product-specs {
 					background: #1e1e1e !important;
 					border-color: #444 !important;
 					.spec-item {
-						.spec-icon { color: #8b4513 !important; }
+						.spec-icon { color: #2563eb !important; }
 						.spec-content .spec-label { color: #999 !important; }
 						.spec-content .spec-value { color: #e0e0e0 !important; }
 						&:hover {
-							background: rgba(139, 69, 19, 0.15) !important;
-							border-color: #8b4513 !important;
+							background: rgba(37, 99, 235, 0.15) !important;
+							border-color: #2563eb !important;
 						}
 					}
 				}
@@ -956,14 +982,37 @@ hr {
 					background: #252525 !important;
 					border-color: #444 !important;
 				}
-				.floor-plans-config {
-					background: #1e1e1e !important;
+				.product-series-section {
+					background: #252525 !important;
 					border-color: #444 !important;
-					.title,
-					.plan-title { color: #c9a962 !important; }
-					.image-box {
-						background: #252525 !important;
-						border-color: #444 !important;
+					.series-main-title,
+					.series-aside-heading,
+					.series-specs-toggle .series-specs-label,
+					.series-specs-body .series-spec-line strong { color: #e0e0e0 !important; }
+					.series-aside-text,
+					.series-specs-body .series-spec-line,
+					.series-empty-text { color: #a3a3a3 !important; }
+					.series-aside {
+						background: #1e1e1e !important;
+						box-shadow: none !important;
+					}
+					.series-card {
+						background: #1e1e1e !important;
+						.series-showcase-cell {
+							border-color: #444 !important;
+							background: #1e1e1e !important;
+							box-shadow: none !important;
+						}
+						.series-card-title { color: #60a5fa !important; }
+						.series-card-desc { color: #a3a3a3 !important; }
+						.series-feature-pill {
+							background: #333 !important;
+							color: #ccc !important;
+						}
+						.series-card-cta {
+							background: #2563eb !important;
+							&:hover { background: #1d4ed8 !important; }
+						}
 					}
 				}
 			}
@@ -995,9 +1044,9 @@ hr {
 				border-color: #444 !important;
 			}
 			.send-message {
-				background: #8b4513 !important;
+				background: #2563eb !important;
 				color: #fff !important;
-				&:hover { background: #6d3809 !important; }
+				&:hover { background: #1d4ed8 !important; }
 			}
 		}
 		.similar-properties-config {

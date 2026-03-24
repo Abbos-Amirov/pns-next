@@ -29,6 +29,7 @@
   "LabelStatus": "STATUS",
   "StatusReady": "READY FOR USE",
   "Demo": "DEMO",
+  "ViewDetails": "View details",
   "TotalProducts": "Total {{count}} products",
   "PropertyDescDefault": "High-quality product with excellent features.",
   "MeasurerDescDefault": "Professional measurer",

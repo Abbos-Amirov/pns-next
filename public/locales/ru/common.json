@@ -21,6 +21,7 @@
 	"LabelStatus": "СТАТУС",
 	"StatusReady": "ГОТОВ К ИСПОЛЬЗОВАНИЮ",
 	"Demo": "ДЕМО",
+	"ViewDetails": "Подробнее",
 	"TotalProducts": "Всего {{count}} продуктов",
 	"PropertyDescDefault": "Качественный продукт с отличными характеристиками.",
 	"MeasurerDescDefault": "Профессиональный замерщик",

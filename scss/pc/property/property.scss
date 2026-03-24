@@ -1000,7 +1000,7 @@
 							opacity: 0.95;
 						}
 						.filter-sort-btn {
-							background: #8b4513 !important;
+							background: #2563eb !important;
 							color: #fff !important;
 							font-weight: 600;
 							text-transform: none;
@@ -1011,7 +1011,7 @@
 				.filter-section {
 					padding: 14px 0 0;
 					&:first-of-type { padding-top: 0; }
-					.section-header { background: #8b4513; color: #fff; }
+					.section-header { background: #2563eb; color: #fff; }
 					.category-list, .search-content, .price-range-content,
 					.availability-content, .hot-deals-wrapper {
 						background: rgba(255,255,255,0.06);
@@ -1098,7 +1098,7 @@
 				.stack-bg-number {
 					flex-shrink: 0;
 					text-align: center;
-					padding: 12px 0 8px;
+					padding: 12px 0 4px;
 					font-size: 120px;
 					font-weight: 800;
 					line-height: 1;
@@ -1106,6 +1106,26 @@
 					color: #fff;
 					pointer-events: none;
 					user-select: none;
+				}
+				.stack-view-details-btn {
+					display: block;
+					flex-shrink: 0;
+					align-self: center;
+					margin: 8px auto 20px;
+					padding: 12px 28px;
+					border-radius: 12px;
+					background: #2563eb;
+					color: #fff !important;
+					font-weight: 700;
+					font-size: 14px;
+					letter-spacing: 0.04em;
+					text-align: center;
+					text-decoration: none;
+					transition: background 0.2s ease, transform 0.2s ease;
+					&:hover {
+						background: #1d4ed8;
+						transform: translateY(-1px);
+					}
 				}
 			}
 		}
@@ -1151,25 +1171,30 @@
 			gap: 16px;
 			margin-top: 28px;
 		}
+		/* DEMO: rang va ohang — o‘ngdagi 01/02 raqamlari (stack-bg-number) bilan bir xil */
 		.stack-demo-btn {
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
 			padding: 14px 28px;
 			border-radius: 12px;
-			background: #fff;
-			color: #0b0c10;
+			background: rgba(255, 255, 255, 0.06);
+			color: rgba(255, 255, 255, 0.45);
 			font-weight: 700;
 			font-size: 14px;
 			letter-spacing: 0.5px;
-			border: none;
+			border: 1px solid rgba(255, 255, 255, 0.12);
 			cursor: pointer;
 			transition: all 0.2s;
 			flex-shrink: 0;
-			svg { font-size: 20px; }
+			svg {
+				font-size: 20px;
+				color: inherit;
+			}
 			&:hover {
-				background: #8b4513;
-				color: #fff;
+				background: rgba(255, 255, 255, 0.1);
+				color: rgba(255, 255, 255, 0.65);
+				border-color: rgba(255, 255, 255, 0.2);
 			}
 		}
 		.stack-hot-deals-row {

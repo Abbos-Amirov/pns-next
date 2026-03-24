@@ -1,5 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useMemo, useState } from 'react';
+import { Box, Button, CircularProgress, Collapse, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { NextPage } from 'next';
@@ -18,12 +19,14 @@ import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
-import { GET_COMMENTS, GET_PRODUCT } from '../../apollo/user/query';
+import { GET_COMMENTS, GET_PRODUCT, GET_PRODUCTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../libs/sweetAlert';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentGroup } from '../../libs/enums/comment.enum';
+import { Direction } from '../../libs/enums/common.enum';
+import { ProductStatus, ProductType } from '../../libs/enums/property.enum';
 import { Pagination as MuiPagination } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import HeightIcon from '@mui/icons-material/Height';
@@ -31,6 +34,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import PaletteIcon from '@mui/icons-material/Palette';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import AspectRatioIcon from '@mui/icons-material/AspectRatio';
+import AddIcon from '@mui/icons-material/Add';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -49,6 +53,26 @@ const PRODUCT_DETAIL_EXTRA_THUMBNAILS: readonly string[] = [
 	'/img/property/detail-gallery/extra-8.png',
 	'/img/property/detail-gallery/extra-9.png',
 ];
+
+/** Seriya bo‘limi pastidagi 4 ta namoyish rasmi (har biri alohida katak) */
+const SERIES_SHOWCASE_IMAGES: readonly string[] = [
+	'/img/property/series-card-gallery/series-1.png',
+	'/img/property/series-card-gallery/series-2.png',
+	'/img/property/series-card-gallery/series-3.png',
+	'/img/property/series-card-gallery/series-4.png',
+];
+
+function resolveProductGallerySrc(src: string | undefined): string {
+	if (!src) return '/img/property/bigImage.png';
+	if (src.startsWith('http://') || src.startsWith('https://')) return src;
+	if (src.startsWith('/img/')) return src;
+	return `${REACT_APP_API_URL}/${src}`;
+}
+
+const SERIES_CARD_KO_TITLE = '모던 창호 시스템';
+const SERIES_CARD_KO_DESC =
+	'이 제품은 현대적인 디자인과 뛰어난 내구성을 갖춘 프리미엄 창호 시스템입니다. 넓은 파노라마 뷰를 제공하며, 단열 및 방음 성능이 우수합니다. 주거 공간의 품질을 한층 높여주는 스마트한 선택입니다.';
+const SERIES_FEATURE_LABELS = ['Energy efficient', 'Secure hardware', 'Easy maintenance', 'Custom finishes'] as const;
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -84,6 +108,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentRefId: '',
 	});
 	const [isLiked, setIsLiked] = useState<boolean>(false);
+	const [seriesSpecsOpen, setSeriesSpecsOpen] = useState(false);
 
 	/** APOLLO REQUESTS **/
 	const { data: productData, loading: productLoading, error: productError } = useQuery(GET_PRODUCT, {
@@ -107,6 +132,43 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 			sweetErrorHandling(err).then();
 		},
 	});
+
+	const { data: seriesData, loading: seriesLoading } = useQuery(GET_PRODUCTS, {
+		skip: !property?._id,
+		variables: {
+			input: {
+				page: 1,
+				limit: 48,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				search: {
+					productStatus: ProductStatus.ACTIVE,
+					...(property?.productType ? { productType: [property.productType] } : {}),
+				},
+			},
+		},
+		fetchPolicy: 'cache-and-network',
+	});
+
+	const seriesTitle = useMemo(() => {
+		if (!property?.productType) return 'Products in this series';
+		if (property.productType === ProductType.WINDOW) return 'Windows in this series';
+		if (property.productType === ProductType.DOOR) return 'Doors in this series';
+		return 'Products in this series';
+	}, [property?.productType]);
+
+	const seriesProducts = useMemo(() => {
+		const list = seriesData?.getProducts?.list ?? [];
+		const id = property?._id;
+		const cat = (property as ProductDetail | null)?.productCategory;
+		return list
+			.filter((p: ProductDetail) => {
+				if (p._id === id) return false;
+				if (cat && (p as any).productCategory && (p as any).productCategory !== cat) return false;
+				return true;
+			})
+			.slice(0, 4);
+	}, [seriesData, property]);
 
 	// Get Comments Query
 	const {
@@ -371,11 +433,11 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<g clipPath="url(#clip0_6505_6282)">
 												<path
 													d="M7 14C5.61553 14 4.26216 13.5895 3.11101 12.8203C1.95987 12.0511 1.06266 10.9579 0.532846 9.67879C0.00303297 8.3997 -0.13559 6.99224 0.134506 5.63437C0.404603 4.2765 1.07129 3.02922 2.05026 2.05026C3.02922 1.07129 4.2765 0.404603 5.63437 0.134506C6.99224 -0.13559 8.3997 0.00303297 9.67879 0.532846C10.9579 1.06266 12.0511 1.95987 12.8203 3.11101C13.5895 4.26216 14 5.61553 14 7C14 8.85652 13.2625 10.637 11.9498 11.9498C10.637 13.2625 8.85652 14 7 14ZM7 0.931878C5.79984 0.931878 4.62663 1.28777 3.62873 1.95454C2.63084 2.62132 1.85307 3.56903 1.39379 4.67783C0.934505 5.78664 0.814336 7.00673 1.04848 8.18384C1.28262 9.36094 1.86055 10.4422 2.70919 11.2908C3.55783 12.1395 4.63907 12.7174 5.81617 12.9515C6.99327 13.1857 8.21337 13.0655 9.32217 12.6062C10.431 12.1469 11.3787 11.3692 12.0455 10.3713C12.7122 9.37337 13.0681 8.20016 13.0681 7C13.067 5.39099 12.4273 3.84821 11.2895 2.71047C10.1518 1.57273 8.60901 0.933037 7 0.931878Z"
-													fill="#8B4513"
+													fill="#2563eb"
 												/>
 												<path
 													d="M9.0372 9.7275C8.97153 9.72795 8.90643 9.71543 8.84562 9.69065C8.7848 9.66587 8.72948 9.62933 8.68282 9.58313L6.68345 7.58375C6.63724 7.53709 6.6007 7.48177 6.57592 7.42096C6.55115 7.36015 6.53863 7.29504 6.53907 7.22938V2.7275C6.53907 2.59464 6.59185 2.46723 6.6858 2.37328C6.77974 2.27934 6.90715 2.22656 7.04001 2.22656C7.17287 2.22656 7.30028 2.27934 7.39423 2.37328C7.48817 2.46723 7.54095 2.59464 7.54095 2.7275V7.01937L9.39595 8.87438C9.47462 8.9425 9.53001 9.03354 9.55436 9.13472C9.57871 9.2359 9.5708 9.34217 9.53173 9.43863C9.49266 9.53509 9.4244 9.61691 9.3365 9.67264C9.24861 9.72836 9.14548 9.75519 9.04157 9.74938L9.0372 9.7275Z"
-													fill="#8B4513"
+													fill="#2563eb"
 												/>
 											</g>
 											<defs>
@@ -397,14 +459,14 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<Stack className="button-box">
 														{isLiked ? (
 															<FavoriteIcon 
-															sx={{ color: '#eb6753', cursor: 'pointer' }} 
+															sx={{ color: '#2563eb', cursor: 'pointer' }} 
 															fontSize="medium"
 															onClick={() => likePropertyHandler(user, property?._id)}
 															/>
 														) : (
 															<FavoriteBorderIcon
 															fontSize="medium"
-															sx={{ color: '#8B4513', cursor: 'pointer' }}
+															sx={{ color: '#2563eb', cursor: 'pointer' }}
 															onClick={() => likePropertyHandler(user, property?._id)}
 															/>
 														)}
@@ -412,7 +474,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 														<Typography>{property?.productLikes}</Typography>
 														</Stack>
 									</Stack>
-									<Typography>${formatterStr(property?.productPrice)}</Typography>
+									<Typography className={'property-header-price'}>
+										${formatterStr(property?.productPrice)}
+									</Typography>
 								</Stack>
 							</Stack>
 							<Stack className={'images'}>
@@ -506,9 +570,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
 												<path
 														d="M17.2955 18.8863H6.64714C5.76532 18.8848 4.92008 18.5724 4.29654 18.0174C3.673 17.4624 3.32196 16.7101 3.32031 15.9252V7.21961C3.32207 6.73455 3.45794 6.25732 3.71592 5.83005C3.97391 5.40277 4.34608 5.03858 4.7996 4.76961L10.0988 1.6085C10.6506 1.27315 11.3032 1.09375 11.9713 1.09375C12.6394 1.09375 13.292 1.27315 13.8438 1.6085L19.168 4.76961C19.618 5.04048 19.9866 5.4055 20.2412 5.83265C20.4958 6.25981 20.6289 6.73605 20.6285 7.21961V15.9252C20.6269 16.711 20.275 17.4642 19.6501 18.0193C19.0252 18.5745 18.1784 18.8863 17.2955 18.8863ZM11.9713 2.29183C11.5779 2.29281 11.1936 2.39717 10.8665 2.59183L5.53612 5.75294C5.26468 5.91407 5.04189 6.1321 4.88734 6.38784C4.73279 6.64359 4.65122 6.92922 4.64979 7.21961V15.9252C4.64979 16.3967 4.86023 16.8488 5.2348 17.1822C5.60938 17.5156 6.11741 17.7029 6.64714 17.7029H17.2955C17.8252 17.7029 18.3332 17.5156 18.7078 17.1822C19.0824 16.8488 19.2928 16.3967 19.2928 15.9252V7.21961C19.2935 6.92734 19.2129 6.63946 19.0582 6.38163C18.9036 6.12379 18.6797 5.904 18.4065 5.74183L13.0761 2.59183C12.7492 2.39687 12.3648 2.29248 11.9713 2.29183Z"
-														fill="#8B4513"
+														fill="#2563eb"
 												/>
-													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#8B4513" />
+													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#2563eb" />
 											</svg>
 										</Stack>
 										<Stack className={'option-includes'}>
@@ -523,9 +587,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
 												<path
 														d="M17.2955 18.8863H6.64714C5.76532 18.8848 4.92008 18.5724 4.29654 18.0174C3.673 17.4624 3.32196 16.7101 3.32031 15.9252V7.21961C3.32207 6.73455 3.45794 6.25732 3.71592 5.83005C3.97391 5.40277 4.34608 5.03858 4.7996 4.76961L10.0988 1.6085C10.6506 1.27315 11.3032 1.09375 11.9713 1.09375C12.6394 1.09375 13.292 1.27315 13.8438 1.6085L19.168 4.76961C19.618 5.04048 19.9866 5.4055 20.2412 5.83265C20.4958 6.25981 20.6289 6.73605 20.6285 7.21961V15.9252C20.6269 16.711 20.275 17.4642 19.6501 18.0193C19.0252 18.5745 18.1784 18.8863 17.2955 18.8863ZM11.9713 2.29183C11.5779 2.29281 11.1936 2.39717 10.8665 2.59183L5.53612 5.75294C5.26468 5.91407 5.04189 6.1321 4.88734 6.38784C4.73279 6.64359 4.65122 6.92922 4.64979 7.21961V15.9252C4.64979 16.3967 4.86023 16.8488 5.2348 17.1822C5.60938 17.5156 6.11741 17.7029 6.64714 17.7029H17.2955C17.8252 17.7029 18.3332 17.5156 18.7078 17.1822C19.0824 16.8488 19.2928 16.3967 19.2928 15.9252V7.21961C19.2935 6.92734 19.2129 6.63946 19.0582 6.38163C18.9036 6.12379 18.6797 5.904 18.4065 5.74183L13.0761 2.59183C12.7492 2.39687 12.3648 2.29248 11.9713 2.29183Z"
-														fill="#8B4513"
+														fill="#2563eb"
 												/>
-													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#8B4513" />
+													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#2563eb" />
 											</svg>
 										</Stack>
 										<Stack className={'option-includes'}>
@@ -540,9 +604,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
 												<path
 														d="M17.2955 18.8863H6.64714C5.76532 18.8848 4.92008 18.5724 4.29654 18.0174C3.673 17.4624 3.32196 16.7101 3.32031 15.9252V7.21961C3.32207 6.73455 3.45794 6.25732 3.71592 5.83005C3.97391 5.40277 4.34608 5.03858 4.7996 4.76961L10.0988 1.6085C10.6506 1.27315 11.3032 1.09375 11.9713 1.09375C12.6394 1.09375 13.292 1.27315 13.8438 1.6085L19.168 4.76961C19.618 5.04048 19.9866 5.4055 20.2412 5.83265C20.4958 6.25981 20.6289 6.73605 20.6285 7.21961V15.9252C20.6269 16.711 20.275 17.4642 19.6501 18.0193C19.0252 18.5745 18.1784 18.8863 17.2955 18.8863ZM11.9713 2.29183C11.5779 2.29281 11.1936 2.39717 10.8665 2.59183L5.53612 5.75294C5.26468 5.91407 5.04189 6.1321 4.88734 6.38784C4.73279 6.64359 4.65122 6.92922 4.64979 7.21961V15.9252C4.64979 16.3967 4.86023 16.8488 5.2348 17.1822C5.60938 17.5156 6.11741 17.7029 6.64714 17.7029H17.2955C17.8252 17.7029 18.3332 17.5156 18.7078 17.1822C19.0824 16.8488 19.2928 16.3967 19.2928 15.9252V7.21961C19.2935 6.92734 19.2129 6.63946 19.0582 6.38163C18.9036 6.12379 18.6797 5.904 18.4065 5.74183L13.0761 2.59183C12.7492 2.39687 12.3648 2.29248 11.9713 2.29183Z"
-														fill="#8B4513"
+														fill="#2563eb"
 													/>
-													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#8B4513" />
+													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#2563eb" />
 											</svg>
 										</Stack>
 										<Stack className={'option-includes'}>
@@ -557,9 +621,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
 												<path
 													d="M17.2955 18.8863H6.64714C5.76532 18.8848 4.92008 18.5724 4.29654 18.0174C3.673 17.4624 3.32196 16.7101 3.32031 15.9252V7.21961C3.32207 6.73455 3.45794 6.25732 3.71592 5.83005C3.97391 5.40277 4.34608 5.03858 4.7996 4.76961L10.0988 1.6085C10.6506 1.27315 11.3032 1.09375 11.9713 1.09375C12.6394 1.09375 13.292 1.27315 13.8438 1.6085L19.168 4.76961C19.618 5.04048 19.9866 5.4055 20.2412 5.83265C20.4958 6.25981 20.6289 6.73605 20.6285 7.21961V15.9252C20.6269 16.711 20.275 17.4642 19.6501 18.0193C19.0252 18.5745 18.1784 18.8863 17.2955 18.8863ZM11.9713 2.29183C11.5779 2.29281 11.1936 2.39717 10.8665 2.59183L5.53612 5.75294C5.26468 5.91407 5.04189 6.1321 4.88734 6.38784C4.73279 6.64359 4.65122 6.92922 4.64979 7.21961V15.9252C4.64979 16.3967 4.86023 16.8488 5.2348 17.1822C5.60938 17.5156 6.11741 17.7029 6.64714 17.7029H17.2955C17.8252 17.7029 18.3332 17.5156 18.7078 17.1822C19.0824 16.8488 19.2928 16.3967 19.2928 15.9252V7.21961C19.2935 6.92734 19.2129 6.63946 19.0582 6.38163C18.9036 6.12379 18.6797 5.904 18.4065 5.74183L13.0761 2.59183C12.7492 2.39687 12.3648 2.29248 11.9713 2.29183Z"
-														fill="#8B4513"
+														fill="#2563eb"
 												/>
-													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#8B4513" />
+													<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#2563eb" />
 											</svg>
 										</Stack>
 										<Stack className={'option-includes'}>
@@ -630,43 +694,188 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										</Stack>
 									</Stack>
 								</Stack>
-								<Stack className={'floor-plans-config'}>
-									<Typography className={'title'}>Product Plans</Typography>
-									<Stack className={'plans-grid'}>
-										<Stack className={'plan-item'}>
-											<Typography className={'plan-title'}>Door Plan</Typography>
-											<Stack className={'image-box'}>
-												<a href="https://www.shutterstock.com/search/doors-plan" target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
-													<img 
-														src={'https://t4.ftcdn.net/jpg/17/83/11/47/240_F_1783114735_wVf1isO3bRO52xUy8kDUbgT9NCZEOFnC.jpg'} 
-														alt={'Door Plan'}
-														style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-														onError={(e) => {
-															// Prevent infinite loop by checking if already tried fallback
-															const target = e.target as HTMLImageElement;
-															if (!target.dataset.fallback) {
-																target.dataset.fallback = 'true';
-																target.src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800';
-															}
-														}}
-													/>
-												</a>
-											</Stack>
+								{property && (
+									<Stack className={'product-series-section'}>
+										<Stack className={'series-header'} direction="row" alignItems="center" gap={1.5}>
+											<Box className={'series-header-icon'} component="span" aria-hidden />
+											<Typography className={'series-main-title'} component="h2">
+												{seriesTitle}
+											</Typography>
 										</Stack>
-										<Stack className={'plan-item'}>
-											<Typography className={'plan-title'}>Window Plan</Typography>
-											<Stack className={'image-box'}>
-												<a href="https://www.bibliocad.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'block', width: '100%', height: '100%' }}>
-													<img 
-														src={'https://thumb.bibliocad.com/thumbs/content/586x440/00130000/0000/130080.webp'} 
-														alt={'Window Plan'}
-														style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-													/>
-												</a>
+										<Stack className={'series-aside'}>
+											<Typography className={'series-aside-heading'} component="h3">
+												Classical appeal, modern solutions
+											</Typography>
+											<Typography className={'series-aside-text'}>
+												Our systems combine timeless design with energy-efficient performance. Refined profiles,
+												durable hardware, and finish options help you match both interior comfort and exterior
+												style—engineered for everyday use and long-term reliability.
+											</Typography>
+											<Stack
+												className={'series-specs-toggle'}
+												direction="row"
+												alignItems="center"
+												justifyContent="space-between"
+												onClick={() => setSeriesSpecsOpen((v) => !v)}
+												role="button"
+												tabIndex={0}
+												onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+													if (e.key === 'Enter' || e.key === ' ') {
+														e.preventDefault();
+														setSeriesSpecsOpen((v) => !v);
+													}
+												}}
+											>
+												<Typography className={'series-specs-label'}>Specifications</Typography>
+												<div className={'series-specs-line'} />
+												<AddIcon
+													className={'series-specs-plus'}
+													sx={{
+														transform: seriesSpecsOpen ? 'rotate(45deg)' : 'none',
+														transition: 'transform 0.2s ease',
+													}}
+												/>
 											</Stack>
+											<Collapse in={seriesSpecsOpen}>
+												<Stack className={'series-specs-body'} gap={1}>
+													{(property as any)?.productHeight != null && (
+														<Typography className={'series-spec-line'}>
+															<strong>Height:</strong> {(property as any).productHeight} cm
+														</Typography>
+													)}
+													{(property as any)?.productWidth != null && (
+														<Typography className={'series-spec-line'}>
+															<strong>Width:</strong> {(property as any).productWidth} cm
+														</Typography>
+													)}
+													{property?.productMaterial && (
+														<Typography className={'series-spec-line'}>
+															<strong>Material:</strong> {property.productMaterial}
+														</Typography>
+													)}
+													{(property as any)?.productGlassType && (
+														<Typography className={'series-spec-line'}>
+															<strong>Glass:</strong> {(property as any).productGlassType}
+														</Typography>
+													)}
+													{(property as any)?.productOpenType && (
+														<Typography className={'series-spec-line'}>
+															<strong>Open type:</strong> {(property as any).productOpenType}
+														</Typography>
+													)}
+													{(property as any)?.productCategory && (
+														<Typography className={'series-spec-line'}>
+															<strong>Category:</strong> {(property as any).productCategory}
+														</Typography>
+													)}
+												</Stack>
+											</Collapse>
+										</Stack>
+										<div className={'series-showcase-row'}>
+											{SERIES_SHOWCASE_IMAGES.map((src, i) => {
+												const detailId = seriesProducts[i]?._id ?? property?._id ?? '';
+												return (
+													<div className={'series-showcase-cell'} key={src}>
+														<div className={'series-showcase-image'}>
+															<img src={src} alt={`${SERIES_CARD_KO_TITLE} ${i + 1}`} />
+														</div>
+														<Typography className={'series-card-title'}>{SERIES_CARD_KO_TITLE}</Typography>
+														<Typography className={'series-card-desc'}>{SERIES_CARD_KO_DESC}</Typography>
+														<Stack className={'series-card-features'}>
+															{SERIES_FEATURE_LABELS.map((label) => (
+																<Typography key={label} className={'series-feature-pill'}>
+																	{label}
+																</Typography>
+															))}
+														</Stack>
+														<div className={'series-swatches-row'}>
+															<div className={'series-swatch-col'}>
+																<Typography className={'series-swatch-label'}>Exterior</Typography>
+																<div className={'series-swatch-pair'}>
+																	<div className={'series-swatch series-swatch-ext'} />
+																	<div className={'series-swatch series-swatch-ext-alt'} />
+																</div>
+															</div>
+															<div className={'series-swatch-col'}>
+																<Typography className={'series-swatch-label'}>Interior</Typography>
+																<div className={'series-swatch-pair'}>
+																	<div className={'series-swatch series-swatch-int'} />
+																	<div className={'series-swatch series-swatch-int-alt'} />
+																</div>
+															</div>
+														</div>
+														<Link
+															href={detailId ? `/property/detail?id=${detailId}` : '#'}
+															className={'series-card-cta'}
+														>
+															View details
+														</Link>
+													</div>
+												);
+											})}
+										</div>
+										<Stack className={'series-cards-wrap'} width="100%" minWidth={0}>
+												{seriesLoading && seriesProducts.length === 0 ? (
+													<Stack alignItems="center" justifyContent="center" sx={{ minHeight: 220, width: '100%' }}>
+														<CircularProgress size={36} sx={{ color: '#2563eb' }} />
+													</Stack>
+												) : seriesProducts.length === 0 ? (
+													<Stack className={'series-empty'} alignItems="center" justifyContent="center" sx={{ minHeight: 180 }}>
+														<Typography className={'series-empty-text'}>
+															No other products in this series yet.
+														</Typography>
+													</Stack>
+												) : (
+													<Stack className={'series-cards'} direction="row" gap={2}>
+														{seriesProducts.map((p: ProductDetail) => {
+															const thumb = p.productImages?.[0];
+															return (
+																<Stack className={'series-card'} key={p._id}>
+																	<div className={'series-card-image-wrap'}>
+																		<img
+																			src={resolveProductGallerySrc(thumb)}
+																			alt={SERIES_CARD_KO_TITLE}
+																		/>
+																	</div>
+																	<Typography className={'series-card-title'}>{SERIES_CARD_KO_TITLE}</Typography>
+																	<Typography className={'series-card-desc'}>{SERIES_CARD_KO_DESC}</Typography>
+																	<Stack className={'series-card-features'}>
+																		{SERIES_FEATURE_LABELS.map((label) => (
+																			<Typography key={label} className={'series-feature-pill'}>
+																				{label}
+																			</Typography>
+																		))}
+																	</Stack>
+																	<div className={'series-swatches-row'}>
+																		<div className={'series-swatch-col'}>
+																			<Typography className={'series-swatch-label'}>Exterior</Typography>
+																			<div className={'series-swatch-pair'}>
+																				<div className={'series-swatch series-swatch-ext'} />
+																				<div className={'series-swatch series-swatch-ext-alt'} />
+																			</div>
+																		</div>
+																		<div className={'series-swatch-col'}>
+																			<Typography className={'series-swatch-label'}>Interior</Typography>
+																			<div className={'series-swatch-pair'}>
+																				<div className={'series-swatch series-swatch-int'} />
+																				<div className={'series-swatch series-swatch-int-alt'} />
+																			</div>
+																		</div>
+																	</div>
+																	<Link
+																		href={`/property/detail?id=${p._id}`}
+																		className={'series-card-cta'}
+																	>
+																		View details
+																	</Link>
+																</Stack>
+															);
+														})}
+													</Stack>
+												)}
 										</Stack>
 									</Stack>
-								</Stack>
+								)}
 								<Stack className={'leave-review-config'}>
 									<Typography className={'main-title'}>Leave A Review</Typography>
 									<Typography className={'review-title'}>Review</Typography>
@@ -687,7 +896,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<g clipPath="url(#clip0_6975_3642)">
 													<path
 														d="M16.1571 0.5H6.37936C6.1337 0.5 5.93491 0.698792 5.93491 0.944458C5.93491 1.19012 6.1337 1.38892 6.37936 1.38892H15.0842L0.731781 15.7413C0.558156 15.915 0.558156 16.1962 0.731781 16.3698C0.818573 16.4566 0.932323 16.5 1.04603 16.5C1.15974 16.5 1.27345 16.4566 1.36028 16.3698L15.7127 2.01737V10.7222C15.7127 10.9679 15.9115 11.1667 16.1572 11.1667C16.4028 11.1667 16.6016 10.9679 16.6016 10.7222V0.944458C16.6016 0.698792 16.4028 0.5 16.1571 0.5Z"
-														fill="#8B4513"
+														fill="#2563eb"
 													/>
 												</g>
 												<defs>

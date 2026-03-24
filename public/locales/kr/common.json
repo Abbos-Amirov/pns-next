@@ -21,6 +21,7 @@
   "LabelStatus": "상태",
   "StatusReady": "사용 가능",
   "Demo": "데모",
+  "ViewDetails": "상세 보기",
   "TotalProducts": "총 {{count}}개 제품",
   "PropertyDescDefault": "우수한 기능을 갖춘 고품질 제품입니다.",
   "MeasurerDescDefault": "전문 측정사",

@@ -323,6 +323,9 @@ export const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 											<img src={getImageUrl(p)} alt={p.productTitle} />
 										</Link>
 										<div className="stack-bg-number">{String(i + 1).padStart(2, '0')}</div>
+										<Link href={`/property/detail?id=${p._id}`} className="stack-view-details-btn">
+											{t('ViewDetails')}
+										</Link>
 									</div>
 								</section>
 							))}
