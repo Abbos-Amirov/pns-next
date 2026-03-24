@@ -37,6 +37,19 @@ import 'swiper/css/pagination';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
+/** Har bir mahsulot detail sahifasida ko‘rinadigan qo‘shimcha kichik rasmlar (mahsulot rasmlaridan keyin) */
+const PRODUCT_DETAIL_EXTRA_THUMBNAILS: readonly string[] = [
+	'/img/property/detail-gallery/extra-1.png',
+	'/img/property/detail-gallery/extra-2.png',
+	'/img/property/detail-gallery/extra-3.png',
+	'/img/property/detail-gallery/extra-4.png',
+	'/img/property/detail-gallery/extra-5.png',
+	'/img/property/detail-gallery/extra-6.png',
+	'/img/property/detail-gallery/extra-7.png',
+	'/img/property/detail-gallery/extra-8.png',
+	'/img/property/detail-gallery/extra-9.png',
+];
+
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
@@ -424,18 +437,25 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 									/>
 								</Stack>
 								<Stack className={'sub-images'}>
-									{(property?.productImages || []).map((subImg: string, index: number) => {
-										const imagePath: string = subImg.startsWith('http://') || subImg.startsWith('https://')
-											? subImg
-											: subImg.startsWith('/img/')
-												? subImg
-												: `${REACT_APP_API_URL}/${subImg}`;
-										return (
-											<Stack className={'sub-img-box'} onClick={() => changeImageHandler(subImg)} key={`${subImg}-${index}`}>
-												<img src={imagePath} alt={'sub-image'} />
-											</Stack>
-										);
-									})}
+									{[...(property?.productImages || []), ...PRODUCT_DETAIL_EXTRA_THUMBNAILS].map(
+										(subImg: string, index: number) => {
+											const imagePath: string =
+												subImg.startsWith('http://') || subImg.startsWith('https://')
+													? subImg
+													: subImg.startsWith('/img/')
+														? subImg
+														: `${REACT_APP_API_URL}/${subImg}`;
+											return (
+												<Stack
+													className={'sub-img-box'}
+													onClick={() => changeImageHandler(subImg)}
+													key={`${subImg}-${index}`}
+												>
+													<img src={imagePath} alt={'sub-image'} />
+												</Stack>
+											);
+										},
+									)}
 								</Stack>
 								{/* Product Specifications Below Image */}
 								<Stack className={'product-specs'}>
