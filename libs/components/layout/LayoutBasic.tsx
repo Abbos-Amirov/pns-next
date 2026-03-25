@@ -53,7 +53,10 @@ const withLayoutBasic = (Component: any) => {
 
 		const closeMega = () => setMegaPanel(null);
 		const toggleMega = (panel: MegaPanel) => {
-			setMegaPanel((p) => (p === panel ? null : panel));
+			setMegaPanel((prev) => {
+				if (prev === panel) return null;
+				return panel;
+			});
 		};
 
 		const openNavOverlay = () => {
@@ -447,6 +450,7 @@ const withLayoutBasic = (Component: any) => {
 							onClose={closeNavOverlay}
 							className={'nav-overlay-drawer'}
 							sx={{
+								zIndex: 1400,
 								'& .MuiDrawer-paper': {
 									width: '100%',
 									maxWidth: '100%',

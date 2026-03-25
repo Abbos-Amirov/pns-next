@@ -80,8 +80,12 @@ const Top = () => {
 	const [navOverlayOpen, setNavOverlayOpen] = useState(false);
 
 	const closeMega = () => setMegaPanel(null);
+	/** Same section again → close; other section → switch panel without closing overlay */
 	const toggleMega = (panel: MegaPanel) => {
-		setMegaPanel((p) => (p === panel ? null : panel));
+		setMegaPanel((prev) => {
+			if (prev === panel) return null;
+			return panel;
+		});
 	};
 
 	const openNavOverlay = () => {
@@ -512,6 +516,7 @@ const Top = () => {
 				onClose={closeNavOverlay}
 				className={'nav-overlay-drawer nav-overlay-top'}
 				sx={{
+					zIndex: 1400,
 					'& .MuiDrawer-paper': {
 						width: '100%',
 						maxWidth: '100%',

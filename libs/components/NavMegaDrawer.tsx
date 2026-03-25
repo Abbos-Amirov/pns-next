@@ -82,6 +82,8 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 			disableScrollLock={false}
 			ModalProps={{
 				keepMounted: false,
+				disableEnforceFocus: true,
+				disableAutoFocus: true,
 			}}
 			BackdropProps={{
 				sx: {
@@ -89,6 +91,7 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 					bottom: 0,
 					left: 0,
 					right: 0,
+					pointerEvents: 'auto',
 					backgroundColor: 'rgba(8, 10, 16, 0.58)',
 					backdropFilter: 'blur(3px)',
 					WebkitBackdropFilter: 'blur(3px)',
@@ -96,7 +99,10 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 			}}
 			sx={{
 				zIndex: 1200,
+				/* Root covers viewport; pass clicks through to navbar — only backdrop + paper capture pointers */
+				pointerEvents: 'none',
 				'& .MuiDrawer-paper': {
+					pointerEvents: 'auto',
 					width: '100%',
 					maxWidth: '100%',
 					height: 'auto',
