@@ -126,11 +126,15 @@ const withLayoutBasic = (Component: any) => {
 					desc = t('RepairMaintenanceSubtitle');
 					bgImage = '/img/banner/header2.svg';
 					break;
+				case '/contact-us':
+					title = t('ContactUs');
+					desc = t('ContactUsSubtitle');
+					bgImage = '/img/contact/contact-hero.png';
+					break;
 				case '/account/join':
 					title = t('Login/Signup');
 					desc = t('Authentication Process');
 					bgImage = '/img/banner/header2.svg';
-					setAuthHeader(true);
 					break;
 				case '/member':
 					title = t('Member Page');
@@ -143,6 +147,10 @@ const withLayoutBasic = (Component: any) => {
 
 			return { title, desc, bgImage };
 		}, [router.pathname, i18n.language, t]);
+
+		useEffect(() => {
+			setAuthHeader(router.pathname === '/account/join');
+		}, [router.pathname]);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -233,7 +241,7 @@ const withLayoutBasic = (Component: any) => {
 						<title>PNS_DEV</title>
 						<meta name={'title'} content={`PNS_DEV`} />
 					</Head>
-					<Stack id="pc-wrap">
+					<Stack id="pc-wrap" className={router.pathname === '/contact-us' ? 'layout-contact-us' : ''}>
 
 					<TopBasic/>
 					
@@ -406,6 +414,12 @@ const withLayoutBasic = (Component: any) => {
 												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('AboutMe')}</span>
 												<div className={'support-menu-card-image'}>
 													<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+												</div>
+											</Link>
+											<Link href={'/contact-us'} className={'support-menu-card'} onClick={handleSupportClose}>
+												<span className={'support-menu-card-label support-menu-card-label-dark'}>{t('ContactUs')}</span>
+												<div className={'support-menu-card-image'}>
+													<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
 												</div>
 											</Link>
 										</Menu>
@@ -641,6 +655,12 @@ const withLayoutBasic = (Component: any) => {
 												<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
 											</div>
 											<span className={'nav-overlay-card-label'}>{t('AboutMe')}</span>
+										</Link>
+										<Link href={'/contact-us'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('ContactUs')}</span>
 										</Link>
 									</div>
 								</div>

@@ -458,6 +458,12 @@ const Top = () => {
 											<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
 										</div>
 									</Link>
+									<Link href={'/contact-us'} className={'support-menu-card'} onClick={handleSupportClose}>
+										<span className={'support-menu-card-label'}>{t('ContactUs')}</span>
+										<div className={'support-menu-card-image'}>
+											<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
+										</div>
+									</Link>
 								</Menu>
 							</Box>
 						</Box>
@@ -717,6 +723,12 @@ const Top = () => {
 									<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('AboutMe')}</span>
+							</Link>
+							<Link href={'/contact-us'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('ContactUs')}</span>
 							</Link>
 						</div>
 					</div>
