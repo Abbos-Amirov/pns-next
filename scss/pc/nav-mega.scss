@@ -1,0 +1,126 @@
+@import '/scss/variables.scss';
+
+.nav-mega-drawer {
+	.MuiDrawer-paper {
+		overflow-y: auto;
+	}
+}
+
+.nav-mega-panel {
+	display: flex;
+	flex-direction: column;
+	padding: 20px 0 28px;
+	box-sizing: border-box;
+	min-height: 0;
+}
+
+.nav-mega-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 28px 20px;
+	flex-shrink: 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	margin-bottom: 8px;
+}
+
+.nav-mega-header-left {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	min-width: 0;
+}
+
+.nav-mega-logo {
+	height: 48px;
+	width: auto;
+	object-fit: contain;
+}
+
+.nav-mega-section-title {
+	font-family: $font;
+	font-size: 18px;
+	font-weight: 700;
+	color: #e8ecf4;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.nav-mega-close {
+	color: #e8ecf4 !important;
+	width: 48px !important;
+	height: 48px !important;
+	& svg {
+		font-size: 28px !important;
+	}
+	&:hover {
+		background: rgba(255, 255, 255, 0.1) !important;
+	}
+}
+
+.nav-mega-content {
+	width: 100%;
+	max-width: 1320px;
+	margin: 0 auto;
+	padding: 12px 28px 8px;
+	box-sizing: border-box;
+}
+
+/* Katta bo'shliqlar: kartochkalar orasida ochiq joy */
+.nav-mega-grid {
+	display: grid;
+	gap: 22px;
+	width: 100%;
+	box-sizing: border-box;
+
+	&--2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		max-width: 720px;
+		margin: 0 auto;
+	}
+
+	&--5 {
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		@media (max-width: 1200px) {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		@media (max-width: 768px) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+}
+
+.nav-mega-card {
+	min-height: 0;
+
+	&.nav-overlay-card {
+		border-radius: 14px;
+		gap: 0;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+		background: rgba(255, 255, 255, 0.06);
+
+		&:hover {
+			border-color: rgba(255, 255, 255, 0.22);
+			background: rgba(255, 255, 255, 0.1);
+			transform: translateY(-3px);
+		}
+	}
+}
+
+.nav-mega-card-image.nav-overlay-card-image {
+	height: 120px;
+
+	@media (max-width: 600px) {
+		height: 96px;
+	}
+}
+
+/* Pastki label — och kulrang panel, qora matn (namuna) */
+.nav-mega-panel .nav-overlay-card-label {
+	color: #1c1f26 !important;
+	background: rgba(236, 238, 244, 0.95) !important;
+	font-weight: 700 !important;
+}

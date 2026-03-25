@@ -24,6 +24,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import { REACT_APP_API_URL } from '../config';
+import NavMegaDrawer, { MegaPanel } from './NavMegaDrawer';
 import { useThemeMode } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -75,15 +76,18 @@ const Top = () => {
 	const [colorChange, setColorChange] = useState(false);
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [topBarVisible, setTopBarVisible] = useState(true);
-	const [measurerAnchor, setMeasurerAnchor] = useState<null | HTMLElement>(null);
-	const measurerOpen = Boolean(measurerAnchor);
-	const [productAnchor, setProductAnchor] = useState<null | HTMLElement>(null);
-	const productOpen = Boolean(productAnchor);
-	const [supportAnchor, setSupportAnchor] = useState<null | HTMLElement>(null);
-	const supportOpen = Boolean(supportAnchor);
+	const [megaPanel, setMegaPanel] = useState<MegaPanel | null>(null);
 	const [navOverlayOpen, setNavOverlayOpen] = useState(false);
 
-	const openNavOverlay = () => setNavOverlayOpen(true);
+	const closeMega = () => setMegaPanel(null);
+	const toggleMega = (panel: MegaPanel) => {
+		setMegaPanel((p) => (p === panel ? null : panel));
+	};
+
+	const openNavOverlay = () => {
+		setMegaPanel(null);
+		setNavOverlayOpen(true);
+	};
 	const closeNavOverlay = () => setNavOverlayOpen(false);
 
 	/** LIFECYCLES **/
@@ -110,6 +114,10 @@ const Top = () => {
 		const jwt = getJwtToken();
 		if (jwt) updateUserInfo(jwt);
 	}, []);
+
+	useEffect(() => {
+		setMegaPanel(null);
+	}, [router.pathname]);
 
 	/** HANDLERS **/
 	const langClick = (e: any) => {
@@ -168,30 +176,6 @@ const Top = () => {
 		} catch (err: any) {
 			console.log('ERROR, logoutHandler:', err.message);
 		}
-	};
-
-	const handleMeasurerClick = (event: React.MouseEvent<HTMLElement>) => {
-		setMeasurerAnchor(event.currentTarget);
-	};
-
-	const handleMeasurerClose = () => {
-		setMeasurerAnchor(null);
-	};
-
-	const handleProductClick = (event: React.MouseEvent<HTMLElement>) => {
-		setProductAnchor(event.currentTarget);
-	};
-
-	const handleProductClose = () => {
-		setProductAnchor(null);
-	};
-
-	const handleSupportClick = (event: React.MouseEvent<HTMLElement>) => {
-		setSupportAnchor(event.currentTarget);
-	};
-
-	const handleSupportClose = () => {
-		setSupportAnchor(null);
 	};
 
 	if (device == 'mobile') {
@@ -271,7 +255,11 @@ const Top = () => {
 				)}
 
 				{/* Main Navigation */}
-				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`} data-theme={mode}>
+				<Stack
+					id="navbar-primary"
+					className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}
+					data-theme={mode}
+				>
 					<Stack className={'container premium-nav-container'}>
 						<Box component={'div'} className={'logo-box premium-logo'}>
 							<Link href={'/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -292,99 +280,44 @@ const Top = () => {
 							<Box
 								component={'div'}
 								className={'product-dropdown'}
-								onMouseEnter={handleProductClick}
-								onMouseLeave={handleProductClose}
+								onClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+									setNavOverlayOpen(false);
+									toggleMega('product');
+								}}
 							>
-								<Box component={'span'} className={`nav-link product-link ${productOpen ? 'is-open' : ''}`}>
+								<Box component={'span'} className={`nav-link product-link ${megaPanel === 'product' ? 'is-open' : ''}`}>
 									{t('Product')}
 									<KeyboardArrowDownIcon className={'dropdown-icon'} />
 								</Box>
-								<Menu
-									anchorEl={productAnchor}
-									open={productOpen}
-									onClose={handleProductClose}
-									MenuListProps={{
-										onMouseLeave: handleProductClose,
-										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
-									}}
-									anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-									transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-									className={'product-menu product-menu-with-images premium-mega-menu'}
-								>
-									<Link
-										href={'/property/window'}
-										className={'product-menu-card'}
-										onClick={handleProductClose}
-									>
-										<span className={'product-menu-card-label'}>{t('Windows')}</span>
-										<div className={'product-menu-card-image'}>
-											<img src={'/img/property/window1.jpg'} alt={t('Windows')} />
-										</div>
-									</Link>
-									<Link
-										href={'/property/door'}
-										className={'product-menu-card'}
-										onClick={handleProductClose}
-									>
-										<span className={'product-menu-card-label'}>{t('Doors')}</span>
-										<div className={'product-menu-card-image'}>
-											<img src={'/img/property/bigImage.png'} alt={t('Doors')} />
-										</div>
-									</Link>
-								</Menu>
 							</Box>
 							<span className={'nav-separator'}>/</span>
-							<Box 
-								component={'div'} 
+							<Box
+								component={'div'}
 								className={'measurer-dropdown'}
-								onMouseEnter={handleMeasurerClick}
-								onMouseLeave={handleMeasurerClose}
+								onClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+									setNavOverlayOpen(false);
+									toggleMega('experts');
+								}}
 							>
-								<Link href={'/agent'} style={{ textDecoration: 'none' }}>
-									<span className={`nav-link measurer-link ${measurerOpen ? 'is-open' : ''}`}>
-										{t('Exportlar')}
-										<KeyboardArrowDownIcon className={'dropdown-icon'} />
-									</span>
-								</Link>
-								<Menu
-									anchorEl={measurerAnchor}
-									open={measurerOpen}
-									onClose={handleMeasurerClose}
-									MenuListProps={{
-										onMouseLeave: handleMeasurerClose,
-										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
+								<Box
+									component={'span'}
+									role={'button'}
+									tabIndex={0}
+									onKeyDown={(e: React.KeyboardEvent) => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											e.preventDefault();
+											setNavOverlayOpen(false);
+											toggleMega('experts');
+										}
 									}}
-									anchorOrigin={{
-										vertical: 'bottom',
-										horizontal: 'left',
-									}}
-									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'left',
-									}}
-									className={'measurer-menu measurer-menu-with-images premium-mega-menu'}
+									className={`nav-link measurer-link ${megaPanel === 'experts' ? 'is-open' : ''}`}
+									sx={{ cursor: 'pointer' }}
 								>
-									<Link
-										href={'/agent'}
-										className={'measurer-menu-card'}
-										onClick={handleMeasurerClose}
-									>
-										<span className={'measurer-menu-card-label'}>{t('Measurers')}</span>
-										<div className={'measurer-menu-card-image'}>
-											<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
-										</div>
-									</Link>
-									<Link
-										href={'/installer'}
-										className={'measurer-menu-card'}
-										onClick={handleMeasurerClose}
-									>
-										<span className={'measurer-menu-card-label'}>{t('Installers')}</span>
-										<div className={'measurer-menu-card-image'}>
-											<img src={'/img/experts/installers.png'} alt={t('Installers')} />
-										</div>
-									</Link>
-								</Menu>
+									{t('Exportlar')}
+									<KeyboardArrowDownIcon className={'dropdown-icon'} />
+								</Box>
 							</Box>
 							<span className={'nav-separator'}>/</span>
 							<Link href={'/city'}>
@@ -407,64 +340,16 @@ const Top = () => {
 							<Box
 								component={'div'}
 								className={'support-dropdown'}
-								onMouseEnter={handleSupportClick}
-								onMouseLeave={handleSupportClose}
+								onClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+									setNavOverlayOpen(false);
+									toggleMega('support');
+								}}
 							>
-								<Link href={'/cs'} style={{ textDecoration: 'none' }}>
-									<span className={`nav-link support-link ${supportOpen ? 'is-open' : ''}`}>
-										<KeyboardArrowDownIcon className={'dropdown-icon'} />
-										{t('Support')}
-									</span>
-								</Link>
-								<Menu
-									anchorEl={supportAnchor}
-									open={supportOpen}
-									onClose={handleSupportClose}
-									MenuListProps={{
-										onMouseLeave: handleSupportClose,
-										sx: { display: 'flex', flexDirection: 'row', padding: 0, gap: 0 },
-									}}
-									anchorOrigin={{
-										vertical: 'bottom',
-										horizontal: 'right',
-									}}
-									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'right',
-									}}
-									className={'support-menu support-menu-with-images premium-mega-menu'}
-								>
-									<Link href={'/our-services'} className={'support-menu-card'} onClick={handleSupportClose}>
-										<span className={'support-menu-card-label'}>{t('OurServices')}</span>
-										<div className={'support-menu-card-image'}>
-											<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
-										</div>
-									</Link>
-									<Link href={'/cs'} className={'support-menu-card'} onClick={handleSupportClose}>
-										<span className={'support-menu-card-label'}>{t('Support')}</span>
-										<div className={'support-menu-card-image'}>
-											<img src={'/img/support/support.png'} alt={t('Support')} />
-										</div>
-									</Link>
-									<Link href={'/repair-maintenance'} className={'support-menu-card'} onClick={handleSupportClose}>
-										<span className={'support-menu-card-label'}>{t('RepairMaintenanceService')}</span>
-										<div className={'support-menu-card-image'}>
-											<img src={'/img/support/our-services.png'} alt={t('RepairMaintenanceService')} />
-										</div>
-									</Link>
-									<Link href={'/about-me'} className={'support-menu-card'} onClick={handleSupportClose}>
-										<span className={'support-menu-card-label'}>{t('AboutMe')}</span>
-										<div className={'support-menu-card-image'}>
-											<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
-										</div>
-									</Link>
-									<Link href={'/contact-us'} className={'support-menu-card'} onClick={handleSupportClose}>
-										<span className={'support-menu-card-label'}>{t('ContactUs')}</span>
-										<div className={'support-menu-card-image'}>
-											<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
-										</div>
-									</Link>
-								</Menu>
+								<Box component={'span'} className={`nav-link support-link ${megaPanel === 'support' ? 'is-open' : ''}`}>
+									<KeyboardArrowDownIcon className={'dropdown-icon'} />
+									{t('Support')}
+								</Box>
 							</Box>
 						</Box>
 
@@ -737,6 +622,8 @@ const Top = () => {
 					</div>
 				</div>
 			</Drawer>
+
+			<NavMegaDrawer panel={megaPanel} onClose={closeMega} mode={mode} />
 			</>
 		);
 	}
