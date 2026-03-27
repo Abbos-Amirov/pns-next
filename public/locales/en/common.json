@@ -339,7 +339,22 @@
   "AdminNotice": "Notice",
   "Admin1to1Inquiry": "1:1 Inquiry",
   "AdminCs": "Support",
-  "AdminNoPhone": "No phone"
+  "AdminNoPhone": "No phone",
+
+  "MyPageManageListings": "MANAGE LISTINGS",
+  "MyPageAddProperty": "Add Property",
+  "MyPageMyProperties": "My Properties",
+  "MyPageMyLocations": "My Locations",
+  "MyPageAddLocation": "Add Location",
+  "MyPageMyFavorites": "My Favorites",
+  "MyPageRecentlyVisited": "Recently Visited",
+  "MyPageMyFollowers": "My Followers",
+  "MyPageMyFollowings": "My Followings",
+  "MyPageArticles": "Articles",
+  "MyPageWriteArticle": "Write Article",
+  "MyPageManageAccount": "MANAGE ACCOUNT",
+  "MyPageNoPhone": "No phone",
+  "MyPageLogoutConfirm": "Do you want to logout?"
 }
 
 

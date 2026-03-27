@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import { Stack, Typography, Box, List, ListItem } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
@@ -12,6 +13,7 @@ import { logOut } from '../../auth';
 import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
 
 const MyMenu = () => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const pathname = router.query.category ?? 'myProfile';
@@ -21,7 +23,7 @@ const MyMenu = () => {
 	/** HANDLERS **/
 	const logoutHandler = async () => {
 		try {
-			if (await sweetConfirmAlert('Do you want to logout?')) logOut();
+			if (await sweetConfirmAlert(t('MyPageLogoutConfirm'))) logOut();
 		} catch (err: any) {
 			console.log('ERROR, logoutHandler:', err.message);
 		}
@@ -44,10 +46,10 @@ const MyMenu = () => {
 							/>
 						</Box>
 						<Stack className={'user-info-section'}>
-							<Typography className={'user-name'}>{user?.memberNick || 'User'}</Typography>
+							<Typography className={'user-name'}>{user?.memberNick || t('User')}</Typography>
 							<Box component={'div'} className={'user-phone-section'}>
 								<img src={'/img/icons/call.svg'} alt={'icon'} className={'phone-icon'} />
-								<Typography className={'phone-number'}>{user?.memberPhone || 'No phone'}</Typography>
+								<Typography className={'phone-number'}>{user?.memberPhone || t('MyPageNoPhone')}</Typography>
 							</Box>
 							{user?.memberType === 'ADMIN' ? (
 								<a href="/_admin/users" target={'_blank'} className={'member-type-link'}>
@@ -63,7 +65,7 @@ const MyMenu = () => {
 				<Stack className={'menu-sections'}>
 					<Stack className={'menu-section'}>
 						<Typography className="section-title" variant={'h6'}>
-							MANAGE LISTINGS
+							{t('MyPageManageListings')}
 						</Typography>
 						<List className={'menu-list'}>
 							{user.memberType === 'AGENT' && (
@@ -85,7 +87,7 @@ const MyMenu = () => {
 													<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
 												)}
 												<Typography className={'menu-item-text'} variant={'body2'}>
-													Add Property
+													{t('MyPageAddProperty')}
 												</Typography>
 											</Box>
 										</Link>
@@ -105,7 +107,7 @@ const MyMenu = () => {
 													<img className={'menu-icon'} src={'/img/icons/home.svg'} alt={'icon'} />
 												)}
 												<Typography className={'menu-item-text'} variant={'body2'}>
-													My Properties
+													{t('MyPageMyProperties')}
 												</Typography>
 											</Box>
 										</Link>
@@ -131,7 +133,7 @@ const MyMenu = () => {
 													<img className={'menu-icon'} src={'/img/icons/home.svg'} alt={'icon'} />
 												)}
 												<Typography className={'menu-item-text'} variant={'body2'}>
-													My Locations
+													{t('MyPageMyLocations')}
 												</Typography>
 											</Box>
 										</Link>
@@ -151,7 +153,7 @@ const MyMenu = () => {
 													<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
 												)}
 												<Typography className={'menu-item-text'} variant={'body2'}>
-													Add Location
+													{t('MyPageAddLocation')}
 												</Typography>
 											</Box>
 										</Link>
@@ -173,7 +175,7 @@ const MyMenu = () => {
 											<img className={'menu-icon'} src={'/img/icons/like.svg'} alt={'icon'} />
 										)}
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											My Favorites
+											{t('MyPageMyFavorites')}
 										</Typography>
 									</Box>
 								</Link>
@@ -193,7 +195,7 @@ const MyMenu = () => {
 											<img className={'menu-icon'} src={'/img/icons/search.svg'} alt={'icon'} />
 										)}
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											Recently Visited
+											{t('MyPageRecentlyVisited')}
 										</Typography>
 									</Box>
 								</Link>
@@ -209,7 +211,7 @@ const MyMenu = () => {
 									<Box component={'div'} className={'menu-item-content'}>
 										<svg
 											className={'menu-icon'}
-											fill={category === 'followers' ? '#ffffff' : '#8B4513'}
+											fill={category === 'followers' ? '#ffffff' : '#120d53'}
 											height="18px"
 											width="18px"
 											viewBox="0 0 328 328"
@@ -221,7 +223,7 @@ const MyMenu = () => {
 											</g>
 										</svg>
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											My Followers
+											{t('MyPageMyFollowers')}
 										</Typography>
 									</Box>
 								</Link>
@@ -237,7 +239,7 @@ const MyMenu = () => {
 									<Box component={'div'} className={'menu-item-content'}>
 										<svg
 											className={'menu-icon'}
-											fill={category === 'followings' ? '#ffffff' : '#8B4513'}
+											fill={category === 'followings' ? '#ffffff' : '#120d53'}
 											height="18px"
 											width="18px"
 											viewBox="0 0 328 328"
@@ -249,7 +251,7 @@ const MyMenu = () => {
 											</g>
 										</svg>
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											My Followings
+											{t('MyPageMyFollowings')}
 										</Typography>
 									</Box>
 								</Link>
@@ -258,7 +260,7 @@ const MyMenu = () => {
 					</Stack>
 					<Stack className={'menu-section'}>
 						<Typography className="section-title" variant={'h6'}>
-							Community
+							{t('Community')}
 						</Typography>
 						<List className={'menu-list'}>
 							<ListItem className={pathname === 'myArticles' ? 'menu-item-active' : 'menu-item'}>
@@ -276,7 +278,7 @@ const MyMenu = () => {
 											<img className={'menu-icon'} src={'/img/icons/discovery.svg'} alt={'icon'} />
 										)}
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											Articles
+											{t('MyPageArticles')}
 										</Typography>
 									</Box>
 								</Link>
@@ -296,7 +298,7 @@ const MyMenu = () => {
 											<img className={'menu-icon'} src={'/img/icons/newTab.svg'} alt={'icon'} />
 										)}
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											Write Article
+											{t('MyPageWriteArticle')}
 										</Typography>
 									</Box>
 								</Link>
@@ -305,7 +307,7 @@ const MyMenu = () => {
 					</Stack>
 					<Stack className={'menu-section'}>
 						<Typography className="section-title" variant={'h6'}>
-							MANAGE ACCOUNT
+							{t('MyPageManageAccount')}
 						</Typography>
 						<List className={'menu-list'}>
 							<ListItem className={pathname === 'myProfile' ? 'menu-item-active' : 'menu-item'}>
@@ -323,7 +325,7 @@ const MyMenu = () => {
 											<img className={'menu-icon'} src={'/img/icons/user.svg'} alt={'icon'} />
 										)}
 										<Typography className={'menu-item-text'} variant={'body2'}>
-											My Profile
+											{t('MyProfile')}
 										</Typography>
 									</Box>
 								</Link>
@@ -332,7 +334,7 @@ const MyMenu = () => {
 								<Box component={'div'} className={'menu-item-content'}>
 									<img className={'menu-icon'} src={'/img/icons/logout.svg'} alt={'icon'} />
 									<Typography className={'menu-item-text'} variant={'body2'}>
-										Logout
+										{t('Logout')}
 									</Typography>
 								</Box>
 							</ListItem>

@@ -13,7 +13,7 @@
 			padding-bottom: 50px;
 			overflow: visible;
 			position: relative;
-			background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, rgba(160, 82, 45, 0.02) 100%);
+			background: linear-gradient(135deg, rgba(18, 13, 83, 0.02) 0%, rgba(22, 32, 110, 0.02) 100%);
 			border-radius: 16px;
 			padding: 30px;
 
@@ -33,9 +33,9 @@
 			.edit-main-title-box {
 				margin-bottom: 25px;
 				padding-bottom: 20px;
-				border-bottom: 2px solid rgba(139, 69, 19, 0.15);
+				border-bottom: 2px solid rgba(18, 13, 83, 0.15);
 				.edit-main-title {
-					color: #8B4513;
+					color: #120d53;
 					font-family: $font;
 					font-size: 32px;
 					font-style: normal;
@@ -63,9 +63,9 @@
 				min-height: auto !important;
 				padding: 42px 40px 40px 40px;
 				border-radius: 16px;
-				border: 2px solid rgba(139, 69, 19, 0.2);
+				border: 2px solid rgba(18, 13, 83, 0.2);
 				background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.98) 100%);
-				box-shadow: 0px 4px 20px 0px rgba(139, 69, 19, 0.08);
+				box-shadow: 0px 4px 20px 0px rgba(18, 13, 83, 0.08);
 				position: relative;
 				overflow: visible !important;
 				display: flex !important;
@@ -76,8 +76,8 @@
 				transition: all 0.3s ease;
 
 				&:hover {
-					box-shadow: 0px 6px 24px 0px rgba(139, 69, 19, 0.12);
-					border-color: rgba(139, 69, 19, 0.3);
+					box-shadow: 0px 6px 24px 0px rgba(18, 13, 83, 0.12);
+					border-color: rgba(18, 13, 83, 0.3);
 				}
 
 				.edit-description-box {
@@ -91,7 +91,7 @@
 						margin-top: 18px;
 						width: 100%;
 						.edit-title {
-							color: #8B4513;
+							color: #120d53;
 							font-family: $font;
 							font-size: 15px;
 							font-style: normal;
@@ -104,7 +104,7 @@
 							height: 50px;
 							padding: 0 18px;
 							border-radius: 10px;
-							border: 1.5px solid rgba(139, 69, 19, 0.25);
+							border: 1.5px solid rgba(18, 13, 83, 0.25);
 							background: #fff;
 							color: #181a20;
 							font-family: $font;
@@ -116,8 +116,8 @@
 
 							&:focus {
 								outline: none;
-								border-color: #8B4513;
-								box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+								border-color: #120d53;
+								box-shadow: 0px 0px 0px 3px rgba(18, 13, 83, 0.1);
 							}
 
 							&::placeholder {
@@ -129,7 +129,7 @@
 							min-height: 140px;
 							padding: 15px 18px;
 							border-radius: 10px;
-							border: 1.5px solid rgba(139, 69, 19, 0.25);
+							border: 1.5px solid rgba(18, 13, 83, 0.25);
 							background: #fff;
 							color: #181a20;
 							font-family: $font;
@@ -142,8 +142,8 @@
 
 							&:focus {
 								outline: none;
-								border-color: #8B4513;
-								box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+								border-color: #120d53;
+								box-shadow: 0px 0px 0px 3px rgba(18, 13, 83, 0.1);
 							}
 
 							&::placeholder {
@@ -166,7 +166,7 @@
 							position: relative;
 
 							.edit-title {
-								color: #8B4513;
+								color: #120d53;
 								font-family: $font;
 								font-size: 15px;
 								font-style: normal;
@@ -180,7 +180,7 @@
 								height: 50px;
 								padding: 0 50px 0 18px;
 								border-radius: 10px;
-								border: 1.5px solid rgba(139, 69, 19, 0.25);
+								border: 1.5px solid rgba(18, 13, 83, 0.25);
 								background: #fff;
 								color: #181a20;
 								font-family: $font;
@@ -194,8 +194,8 @@
 
 								&:focus {
 									outline: none;
-									border-color: #8B4513;
-									box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+									border-color: #120d53;
+									box-shadow: 0px 0px 0px 3px rgba(18, 13, 83, 0.1);
 								}
 
 								option {
@@ -211,7 +211,7 @@
 								transform: translateY(-50%);
 								width: 1px;
 								height: 30px;
-								background: rgba(139, 69, 19, 0.2);
+								background: rgba(18, 13, 83, 0.2);
 								pointer-events: none;
 							}
 
@@ -231,7 +231,7 @@
 								height: 50px;
 								padding: 0 18px;
 								border-radius: 10px;
-								border: 1.5px solid rgba(139, 69, 19, 0.25);
+								border: 1.5px solid rgba(18, 13, 83, 0.25);
 								background: #fff;
 								color: #181a20;
 								font-family: $font;
@@ -243,8 +243,8 @@
 
 								&:focus {
 									outline: none;
-									border-color: #8B4513;
-									box-shadow: 0px 0px 0px 3px rgba(139, 69, 19, 0.1);
+									border-color: #120d53;
+									box-shadow: 0px 0px 0px 3px rgba(18, 13, 83, 0.1);
 								}
 
 								&::placeholder {
@@ -255,7 +255,7 @@
 					}
 
 					.edit-property-title {
-						color: #8B4513;
+						color: #120d53;
 						font-family: $font;
 						font-size: 18px;
 						font-style: normal;
@@ -267,7 +267,7 @@
 				}
 
 				.edit-upload-title {
-					color: #8B4513;
+					color: #120d53;
 					font-family: $font;
 					font-size: 18px;
 					font-style: normal;
@@ -302,15 +302,15 @@
 						gap: 20px;
 						padding: 40px;
 						border-radius: 12px;
-						border: 2px dashed rgba(139, 69, 19, 0.3);
-						background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
+						border: 2px dashed rgba(18, 13, 83, 0.3);
+						background: linear-gradient(135deg, rgba(18, 13, 83, 0.03) 0%, rgba(22, 32, 110, 0.03) 100%);
 						transition: all 0.3s ease;
 						position: relative;
 						z-index: 1;
 
 						&:hover {
-							border-color: rgba(139, 69, 19, 0.5);
-							background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(160, 82, 45, 0.05) 100%);
+							border-color: rgba(18, 13, 83, 0.5);
+							background: linear-gradient(135deg, rgba(18, 13, 83, 0.05) 0%, rgba(22, 32, 110, 0.05) 100%);
 						}
 
 						.edit-text-box {
@@ -320,7 +320,7 @@
 							gap: 8px;
 
 							.edit-drag-title {
-								color: #8B4513;
+								color: #120d53;
 								font-family: $font;
 								font-size: 16px;
 								font-style: normal;
@@ -346,7 +346,7 @@
 							gap: 8px;
 							padding: 12px 24px;
 							border-radius: 10px;
-							background: #8B4513;
+							background: #120d53;
 							color: #fff;
 							border: none;
 							cursor: pointer;
@@ -355,9 +355,9 @@
 							z-index: 2;
 
 							&:hover {
-								background: darken(#8B4513, 8%);
+								background: darken(#120d53, 8%);
 								transform: translateY(-2px);
-								box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+								box-shadow: 0px 4px 12px rgba(18, 13, 83, 0.3);
 							}
 
 							&:active {
@@ -388,15 +388,15 @@
 							height: 150px;
 							border-radius: 12px;
 							overflow: hidden;
-							border: 2px solid rgba(139, 69, 19, 0.2);
+							border: 2px solid rgba(18, 13, 83, 0.2);
 							background: #f5f5f5;
 							position: relative;
 							transition: all 0.3s ease;
 
 							&:hover {
-								border-color: rgba(139, 69, 19, 0.4);
+								border-color: rgba(18, 13, 83, 0.4);
 								transform: scale(1.05);
-								box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.2);
+								box-shadow: 0px 4px 12px rgba(18, 13, 83, 0.2);
 							}
 
 							img {
@@ -423,7 +423,7 @@
 					gap: 15px;
 					margin-top: 35px;
 					padding-top: 25px;
-					border-top: 1px solid rgba(139, 69, 19, 0.15);
+					border-top: 1px solid rgba(18, 13, 83, 0.15);
 					position: relative;
 					z-index: 10;
 
@@ -435,7 +435,7 @@
 						justify-content: center;
 						padding: 14px 32px;
 						border-radius: 12px;
-						background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+						background: linear-gradient(135deg, #120d53 0%, #16206e 100%);
 						color: #fff;
 						border: none;
 						cursor: pointer;
@@ -445,9 +445,9 @@
 						min-width: 140px;
 
 						&:hover:not(:disabled) {
-							background: linear-gradient(135deg, darken(#8B4513, 5%) 0%, darken(#A0522D, 5%) 100%);
+							background: linear-gradient(135deg, darken(#120d53, 5%) 0%, darken(#16206e, 5%) 100%);
 							transform: translateY(-2px);
-							box-shadow: 0px 6px 20px rgba(139, 69, 19, 0.4);
+							box-shadow: 0px 6px 20px rgba(18, 13, 83, 0.4);
 						}
 
 						&:active:not(:disabled) {
@@ -457,7 +457,7 @@
 						&:disabled {
 							opacity: 0.6;
 							cursor: not-allowed;
-							background: linear-gradient(135deg, rgba(139, 69, 19, 0.5) 0%, rgba(160, 82, 45, 0.5) 100%);
+							background: linear-gradient(135deg, rgba(18, 13, 83, 0.5) 0%, rgba(22, 32, 110, 0.5) 100%);
 						}
 
 						.edit-update-button-text {

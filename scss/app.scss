@@ -523,6 +523,104 @@ hr {
 			a.measurer-menu-card { color: #ffffff !important; }
 		}
 	}
+
+	/* My Page (/mypage) — dark mode */
+	#my-page.mypage-container {
+		background: #0d1117 !important;
+		.mypage-sidebar-card,
+		.mypage-content-card {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+		}
+		.mypage-sidebar-card {
+			&::-webkit-scrollbar-track {
+				background: #21262d !important;
+			}
+			&::-webkit-scrollbar-thumb {
+				background: #120d53 !important;
+				&:hover {
+					background: #16206e !important;
+				}
+			}
+		}
+		.mypage-content-wrapper {
+			background: transparent !important;
+		}
+		.mypage-sidebar {
+			.profile-header-bg {
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			}
+			.user-name {
+				color: #e6edf3 !important;
+			}
+			.phone-number {
+				color: rgba(255, 255, 255, 0.65) !important;
+			}
+			.member-type-badge {
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+				box-shadow: 0 2px 8px rgba(18, 13, 83, 0.35) !important;
+			}
+			.section-title {
+				color: #a5b4fc !important;
+			}
+			.menu-list {
+				.menu-item:hover {
+					background: rgba(18, 13, 83, 0.22) !important;
+				}
+				.menu-item .menu-item-text {
+					color: #e6edf3 !important;
+				}
+				.menu-item-active {
+					background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+					box-shadow: 0 2px 10px rgba(18, 13, 83, 0.4) !important;
+					.menu-item-text {
+						color: #ffffff !important;
+					}
+				}
+			}
+		}
+		.my-articles-page,
+		.recently-visited-page,
+		.my-favorites-page {
+			.articles-header-card,
+			.visited-header-card,
+			.MuiCard-root {
+				background: #161b22 !important;
+				border-color: #30363d !important;
+			}
+			.page-title {
+				color: #e6edf3 !important;
+			}
+			.MuiPagination-root {
+				.MuiPaginationItem-root {
+					color: #e6edf3 !important;
+				}
+				.MuiPaginationItem-root.Mui-selected {
+					background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+					color: #ffffff !important;
+				}
+			}
+		}
+		#edit-location-page {
+			background: #161b22 !important;
+			border-color: #30363d !important;
+			.MuiTypography-root,
+			.MuiInputLabel-root,
+			label {
+				color: #e6edf3 !important;
+			}
+			.MuiOutlinedInput-root {
+				fieldset {
+					border-color: #30363d !important;
+				}
+				.MuiInputBase-input {
+					color: #e6edf3 !important;
+				}
+			}
+		}
+	}
+
 	/* Lang menu - dark mode: qora fon, oq matn */
 	.lang-menu .MuiPaper-root {
 		background-color: rgba(30, 30, 30, 0.98) !important;

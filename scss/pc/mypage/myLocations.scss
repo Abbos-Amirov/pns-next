@@ -158,8 +158,8 @@
 						position: relative;
 						
 						&.no-image {
-							background: linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(139, 69, 19, 0.1) 100%);
-							border: 1px solid rgba(139, 69, 19, 0.2);
+							background: linear-gradient(135deg, rgba(18, 13, 83, 0.05) 0%, rgba(18, 13, 83, 0.1) 100%);
+							border: 1px solid rgba(18, 13, 83, 0.2);
 						}
 						
 						img {
@@ -247,8 +247,8 @@
 							align-items: center;
 							justify-content: center;
 							border-radius: 60px;
-							background: rgba(139, 69, 19, 0.1);
-							border: 1px solid rgba(139, 69, 19, 0.2);
+							background: rgba(18, 13, 83, 0.1);
+							border: 1px solid rgba(18, 13, 83, 0.2);
 							.type {
 								font-family: $font;
 								font-size: 12px;
@@ -256,7 +256,7 @@
 								font-weight: 500;
 								line-height: 26px;
 								text-transform: capitalize;
-								color: #8B4513;
+								color: #120d53;
 							}
 						}
 					}
@@ -302,7 +302,7 @@
 						margin-right: 40px;
 						flex-shrink: 0;
 						.likes {
-							color: #8B4513;
+							color: #120d53;
 							font-family: $font;
 							font-size: 13px;
 							font-style: normal;
@@ -332,11 +332,11 @@
 							}
 						}
 						.edit-icon-button {
-							color: #8B4513;
-							background: rgba(139, 69, 19, 0.1);
+							color: #120d53;
+							background: rgba(18, 13, 83, 0.1);
 							&:hover {
-								background: rgba(139, 69, 19, 0.2);
-								box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.2);
+								background: rgba(18, 13, 83, 0.2);
+								box-shadow: 0px 4px 12px rgba(18, 13, 83, 0.2);
 							}
 						}
 						.delete-icon-button {

@@ -98,7 +98,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
-									color: '#8B4513',
+									color: '#120d53',
 								}}
 							>
 								<ArticleIcon sx={{ fontSize: 32 }} />
@@ -117,7 +117,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 									padding: '8px 16px',
 									borderRadius: '12px',
 									backgroundColor: 'rgba(139, 69, 19, 0.1)',
-									color: '#8B4513',
+									color: '#120d53',
 									fontWeight: 600,
 									fontSize: '14px',
 								}}
@@ -178,7 +178,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 												fontWeight: 500,
 											},
 											'& .MuiPaginationItem-root.Mui-selected': {
-												backgroundColor: '#8B4513',
+												backgroundColor: '#120d53',
 												color: '#ffffff',
 												fontSize: '16px',
 												fontWeight: 600,
@@ -210,7 +210,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 									justifyContent: 'center',
 								}}
 							>
-								<ArticleIcon sx={{ fontSize: 60, color: '#8B4513' }} />
+								<ArticleIcon sx={{ fontSize: 60, color: '#120d53' }} />
 							</div>
 							<Typography variant={'h6'} sx={{ fontWeight: 600, mb: 1, color: '#181a20' }}>
 								No Articles Found

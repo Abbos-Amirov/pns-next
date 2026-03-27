@@ -547,13 +547,13 @@ const Top = () => {
 							</Link>
 							<Link href={'/property/window'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/property/window1.jpg'} alt={t('Windows')} />
+									<img src={'/img/property/menu-product-window.png'} alt={t('Windows')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('Windows')}</span>
 							</Link>
 							<Link href={'/property/door'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/nav-overlay/doors.png'} alt={t('Doors')} />
+									<img src={'/img/property/menu-product-door.png'} alt={t('Doors')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('Doors')}</span>
 							</Link>

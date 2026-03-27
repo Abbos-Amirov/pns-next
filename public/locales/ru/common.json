@@ -330,5 +330,20 @@
   "AdminNotice": "Объявления",
   "Admin1to1Inquiry": "1:1 Запрос",
   "AdminCs": "Поддержка",
-  "AdminNoPhone": "Нет телефона"
+  "AdminNoPhone": "Нет телефона",
+
+  "MyPageManageListings": "УПРАВЛЕНИЕ ОБЪЯВЛЕНИЯМИ",
+  "MyPageAddProperty": "Добавить объект",
+  "MyPageMyProperties": "Мои объекты",
+  "MyPageMyLocations": "Мои локации",
+  "MyPageAddLocation": "Добавить локацию",
+  "MyPageMyFavorites": "Избранное",
+  "MyPageRecentlyVisited": "Недавно просмотренные",
+  "MyPageMyFollowers": "Подписчики",
+  "MyPageMyFollowings": "Подписки",
+  "MyPageArticles": "Статьи",
+  "MyPageWriteArticle": "Написать статью",
+  "MyPageManageAccount": "АККАУНТ",
+  "MyPageNoPhone": "Нет телефона",
+  "MyPageLogoutConfirm": "Выйти из аккаунта?"
 }

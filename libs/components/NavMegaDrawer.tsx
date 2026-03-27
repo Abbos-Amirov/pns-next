@@ -12,8 +12,8 @@ export const MEGA_ITEMS: Record<
 	{ href: string; labelKey: string; img: string }[]
 > = {
 	product: [
-		{ href: '/property/window', labelKey: 'Windows', img: '/img/property/window1.jpg' },
-		{ href: '/property/door', labelKey: 'Doors', img: '/img/property/bigImage.png' },
+		{ href: '/property/window', labelKey: 'Windows', img: '/img/property/menu-product-window.png' },
+		{ href: '/property/door', labelKey: 'Doors', img: '/img/property/menu-product-door.png' },
 	],
 	experts: [
 		{ href: '/agent', labelKey: 'Measurers', img: '/img/experts/measurers.png' },

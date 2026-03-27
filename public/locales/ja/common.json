@@ -400,5 +400,20 @@
   "AdminNotice": "お知らせ",
   "Admin1to1Inquiry": "1:1お問い合わせ",
   "AdminCs": "サポート",
-  "AdminNoPhone": "電話番号なし"
+	"AdminNoPhone": "電話番号なし",
+
+	"MyPageManageListings": "リスティング管理",
+	"MyPageAddProperty": "物件を追加",
+	"MyPageMyProperties": "マイ物件",
+	"MyPageMyLocations": "マイロケーション",
+	"MyPageAddLocation": "ロケーションを追加",
+	"MyPageMyFavorites": "お気に入り",
+	"MyPageRecentlyVisited": "最近見た項目",
+	"MyPageMyFollowers": "フォロワー",
+	"MyPageMyFollowings": "フォロー中",
+	"MyPageArticles": "記事",
+	"MyPageWriteArticle": "記事を書く",
+	"MyPageManageAccount": "アカウント管理",
+	"MyPageNoPhone": "電話番号なし",
+	"MyPageLogoutConfirm": "ログアウトしますか？"
 }

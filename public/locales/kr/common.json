@@ -329,5 +329,20 @@
   "AdminNotice": "공지사항",
   "Admin1to1Inquiry": "1:1 문의",
   "AdminCs": "고객지원",
-  "AdminNoPhone": "전화번호 없음"
+  "AdminNoPhone": "전화번호 없음",
+
+  "MyPageManageListings": "리스팅 관리",
+  "MyPageAddProperty": "매물 등록",
+  "MyPageMyProperties": "내 매물",
+  "MyPageMyLocations": "내 위치",
+  "MyPageAddLocation": "위치 추가",
+  "MyPageMyFavorites": "즐겨찾기",
+  "MyPageRecentlyVisited": "최근 본 항목",
+  "MyPageMyFollowers": "팔로워",
+  "MyPageMyFollowings": "팔로잉",
+  "MyPageArticles": "게시글",
+  "MyPageWriteArticle": "글쓰기",
+  "MyPageManageAccount": "계정 관리",
+  "MyPageNoPhone": "전화번호 없음",
+  "MyPageLogoutConfirm": "로그아웃하시겠습니까?"
 }

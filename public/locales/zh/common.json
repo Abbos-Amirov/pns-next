@@ -175,5 +175,20 @@
   "AdminNotice": "公告",
   "Admin1to1Inquiry": "1:1 咨询",
   "AdminCs": "客服",
-  "AdminNoPhone": "无电话"
+  "AdminNoPhone": "无电话",
+
+  "MyPageManageListings": "房源管理",
+  "MyPageAddProperty": "添加房源",
+  "MyPageMyProperties": "我的房源",
+  "MyPageMyLocations": "我的位置",
+  "MyPageAddLocation": "添加位置",
+  "MyPageMyFavorites": "我的收藏",
+  "MyPageRecentlyVisited": "最近浏览",
+  "MyPageMyFollowers": "粉丝",
+  "MyPageMyFollowings": "关注",
+  "MyPageArticles": "文章",
+  "MyPageWriteArticle": "写文章",
+  "MyPageManageAccount": "账户管理",
+  "MyPageNoPhone": "无电话",
+  "MyPageLogoutConfirm": "确定要退出登录吗？"
 }

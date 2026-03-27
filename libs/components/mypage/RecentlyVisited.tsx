@@ -80,7 +80,7 @@ const RecentlyVisited: NextPage = () => {
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
-									color: '#8B4513',
+									color: '#120d53',
 								}}
 							>
 								<VisibilityIcon sx={{ fontSize: 32 }} />
@@ -99,7 +99,7 @@ const RecentlyVisited: NextPage = () => {
 									padding: '8px 16px',
 									borderRadius: '12px',
 									backgroundColor: 'rgba(139, 69, 19, 0.1)',
-									color: '#8B4513',
+									color: '#120d53',
 									fontWeight: 600,
 									fontSize: '14px',
 								}}
@@ -153,7 +153,7 @@ const RecentlyVisited: NextPage = () => {
 										onChange={paginationHandler}
 										sx={{
 											'& .MuiPaginationItem-root.Mui-selected': {
-												backgroundColor: '#8B4513',
+												backgroundColor: '#120d53',
 												color: '#ffffff',
 												'&:hover': {
 													backgroundColor: '#6B3410',
@@ -180,7 +180,7 @@ const RecentlyVisited: NextPage = () => {
 									justifyContent: 'center',
 								}}
 							>
-								<VisibilityIcon sx={{ fontSize: 60, color: '#8B4513' }} />
+								<VisibilityIcon sx={{ fontSize: 60, color: '#120d53' }} />
 							</div>
 							<Typography variant={'h6'} sx={{ fontWeight: 600, mb: 1, color: '#181a20' }}>
 								No Recently Visited Found
