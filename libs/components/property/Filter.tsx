@@ -1,13 +1,11 @@
 import React, { useCallback, useState, ChangeEvent, useEffect, useRef } from 'react';
-import { Stack, Typography, Box, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment, Button, Menu, MenuItem } from '@mui/material';
+import { Stack, Typography, Box, RadioGroup, FormControlLabel, Radio, TextField, InputAdornment } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductMaterial, PropertyType } from '../../enums/property.enum';
 import { PropertiesInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import SearchIcon from '@mui/icons-material/Search';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-
 interface FilterType {
 	searchFilter: PropertiesInquiry;
 	setSearchFilter: any;
@@ -321,7 +319,7 @@ const Filter = (props: FilterType) => {
 		return <div>PROPERTIES FILTER</div>;
 	} else {
 		return (
-			<Stack className={'filter-main'}>
+			<Stack className={'filter-main filter-sidebar'}>
 				{/* Sort by + Search - parallel row */}
 				<Stack className={'filter-section filter-sort-search-row'} mb={'24px'}>
 					<Stack direction={'row'} alignItems={'center'} gap={'12px'} flexWrap={'wrap'}>
@@ -335,20 +333,21 @@ const Filter = (props: FilterType) => {
 
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+						<Typography className={'section-header__title'} component={'span'}>
 							Search
 						</Typography>
 					</Box>
-					<Stack className={'search-content'}>
+					<Stack className={'filter-panel search-content'}>
 						<TextField
 							fullWidth
+							size="small"
 							placeholder="Search products..."
 							value={searchText}
 							onChange={handleSearchChange}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position="start">
-										<SearchIcon />
+										<SearchIcon className="filter-search-icon" fontSize="small" />
 									</InputAdornment>
 								),
 							}}
@@ -359,14 +358,15 @@ const Filter = (props: FilterType) => {
 
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+						<Typography className={'section-header__title'} component={'span'}>
 							Price Range
 						</Typography>
 					</Box>
-					<Stack className={'price-range-content'}>
+					<Stack className={'filter-panel price-range-content'}>
 						<Stack className={'price-inputs'} direction={'row'} gap={'12px'}>
 							<TextField
 								type="number"
+								size="small"
 								placeholder="Min Price"
 								value={minPrice}
 								onChange={handleMinPriceChange}
@@ -381,6 +381,7 @@ const Filter = (props: FilterType) => {
 							/>
 							<TextField
 								type="number"
+								size="small"
 								placeholder="Max Price"
 								value={maxPrice}
 								onChange={handleMaxPriceChange}
@@ -398,11 +399,11 @@ const Filter = (props: FilterType) => {
 				</Stack>
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+						<Typography className={'section-header__title'} component={'span'}>
 							Material
 						</Typography>
 					</Box>
-					<Stack className={'category-list'}>
+					<Stack className={'filter-panel category-list'}>
 						{/* All materials (clear filter) */}
 						<Stack
 							className={`category-item ${!searchFilter?.search?.productMaterial ? 'selected' : ''}`}
@@ -430,19 +431,31 @@ const Filter = (props: FilterType) => {
 
 				<Stack className={'filter-section filter-section--availability'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+						<Typography className={'section-header__title'} component={'span'}>
 							Availability
 						</Typography>
 					</Box>
-					<Stack className={'availability-content'}>
+					<Stack className={'filter-panel availability-content'}>
 						<RadioGroup
 							value={availabilityFilter}
 							onChange={(e) => availabilityHandler(e.target.value)}
 							className={'availability-radio-group'}
 						>
-							<FormControlLabel value="all" control={<Radio />} label="All" />
-							<FormControlLabel value="in_stock" control={<Radio />} label="In stock (5)" />
-							<FormControlLabel value="out_of_stock" control={<Radio />} label="Out of stock (1)" />
+							<FormControlLabel
+								value="all"
+								control={<Radio size="small" className="filter-availability-radio" />}
+								label="All"
+							/>
+							<FormControlLabel
+								value="in_stock"
+								control={<Radio size="small" className="filter-availability-radio" />}
+								label="In stock (5)"
+							/>
+							<FormControlLabel
+								value="out_of_stock"
+								control={<Radio size="small" className="filter-availability-radio" />}
+								label="Out of stock (1)"
+							/>
 						</RadioGroup>
 					</Stack>
 				</Stack>

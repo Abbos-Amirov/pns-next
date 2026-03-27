@@ -247,24 +247,30 @@ hr {
 				border-color: rgba(0, 0, 0, 0.1) !important;
 				background: #fff !important;
 			}
-			/* DEMO: 01/02 raqami bilan bir xil (#181a20 + 0.6 opacity ohang) */
+			/* DEMO — View details bilan bir xil gradient */
 			.stack-demo-btn {
-				background: rgba(24, 26, 32, 0.06) !important;
-				color: rgba(24, 26, 32, 0.65) !important;
-				border: 1px solid rgba(24, 26, 32, 0.14) !important;
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+				border: 1px solid rgba(255, 255, 255, 0.12) !important;
+				box-shadow: 0 4px 14px rgba(18, 13, 83, 0.3) !important;
+				color: #fff !important;
 				&:hover {
-					background: rgba(24, 26, 32, 0.1) !important;
-					color: rgba(24, 26, 32, 0.85) !important;
-					border-color: rgba(24, 26, 32, 0.22) !important;
+					background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%) !important;
+					box-shadow: 0 6px 18px rgba(18, 13, 83, 0.4) !important;
+					color: #fff !important;
 				}
 				svg {
 					color: inherit !important;
 				}
 			}
 			.stack-view-details-btn {
-				background: #2563eb !important;
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+				border: 1px solid rgba(255, 255, 255, 0.12) !important;
+				box-shadow: 0 4px 14px rgba(18, 13, 83, 0.3) !important;
 				color: #fff !important;
-				&:hover { background: #1d4ed8 !important; }
+				&:hover {
+					background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%) !important;
+					box-shadow: 0 6px 18px rgba(18, 13, 83, 0.4) !important;
+				}
 			}
 			.stack-hot-deals-row .stack-hot-deal-thumb {
 				border-color: rgba(0,0,0,0.12) !important;
@@ -865,14 +871,24 @@ hr {
 			}
 		}
 		.stack-demo-btn {
-			background: #2563eb !important;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			border: 1px solid rgba(255, 255, 255, 0.14) !important;
+			box-shadow: 0 4px 14px rgba(18, 13, 83, 0.45) !important;
 			color: #fff !important;
-			&:hover { background: #1d4ed8 !important; }
+			&:hover {
+				background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%) !important;
+				box-shadow: 0 6px 20px rgba(18, 13, 83, 0.5) !important;
+			}
 		}
 		.stack-view-details-btn {
-			background: #2563eb !important;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			border: 1px solid rgba(255, 255, 255, 0.14) !important;
+			box-shadow: 0 4px 14px rgba(18, 13, 83, 0.45) !important;
 			color: #fff !important;
-			&:hover { background: #1d4ed8 !important; }
+			&:hover {
+				background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%) !important;
+				box-shadow: 0 6px 20px rgba(18, 13, 83, 0.5) !important;
+			}
 		}
 	}
 	/* MyFavorites, RecentlyVisited - dark mode */

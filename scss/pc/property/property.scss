@@ -118,9 +118,9 @@
 							margin-bottom: 30px;
 							.section-header {
 								width: 100%;
-								height: 48px;
-								background: #120d53;
-								border-radius: 0;
+								min-height: 48px;
+								background: #8b4513;
+								border-radius: 12px 12px 0 0;
 								display: flex;
 								align-items: center;
 								justify-content: flex-start;
@@ -1011,16 +1011,27 @@
 				.filter-section {
 					padding: 14px 0 0;
 					&:first-of-type { padding-top: 0; }
-					.section-header { background: #2563eb; color: #fff; }
+					.section-header {
+						background: linear-gradient(145deg, #1e3a5f 0%, #152238 50%, #101827 100%);
+						color: #fff;
+						border-radius: 12px 12px 0 0;
+						border: 1px solid rgba(201, 169, 98, 0.35);
+						border-bottom: none;
+						box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+						min-height: 50px;
+						padding: 12px 16px !important;
+					}
 					.category-list, .search-content, .price-range-content,
 					.availability-content, .hot-deals-wrapper {
-						background: rgba(255,255,255,0.06);
-						border: 1px solid rgba(255,255,255,0.1);
+						background: rgba(255, 255, 255, 0.05);
+						border: 1px solid rgba(255, 255, 255, 0.12);
+						border-top: none;
 						padding: 14px 16px;
-						border-radius: 8px;
-						margin-top: 10px;
-						.category-item span, .category-item .MuiTypography-root, input, label, .category-item { color: #e8e6e3 !important; }
-						.MuiFormControlLabel-label { color: #e8e6e3 !important; opacity: 0.95; }
+						border-radius: 0 0 12px 12px;
+						margin-top: 0;
+						box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+						.category-item span, .category-item .MuiTypography-root, input, label, .category-item { color: #e8edf4 !important; }
+						.MuiFormControlLabel-label { color: #e8edf4 !important; opacity: 0.98; }
 					}
 					.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
 					.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
@@ -1041,6 +1052,12 @@
 						display: flex;
 						flex-direction: column;
 						gap: 10px;
+					}
+					.filter-availability-radio {
+						color: rgba(201, 169, 98, 0.85) !important;
+						&.Mui-checked {
+							color: #c9a962 !important;
+						}
 					}
 					.price-range-content .price-inputs { gap: 12px; }
 					.hot-deals-wrapper .hot-deal-card .hot-deal-image {
@@ -1114,16 +1131,19 @@
 					margin: 8px auto 20px;
 					padding: 12px 28px;
 					border-radius: 12px;
-					background: #2563eb;
+					background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
 					color: #fff !important;
 					font-weight: 700;
 					font-size: 14px;
 					letter-spacing: 0.04em;
 					text-align: center;
 					text-decoration: none;
-					transition: background 0.2s ease, transform 0.2s ease;
+					border: 1px solid rgba(255, 255, 255, 0.12);
+					box-shadow: 0 4px 14px rgba(18, 13, 83, 0.35);
+					transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
 					&:hover {
-						background: #1d4ed8;
+						background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%);
+						box-shadow: 0 6px 20px rgba(18, 13, 83, 0.45);
 						transform: translateY(-1px);
 					}
 				}
@@ -1171,30 +1191,32 @@
 			gap: 16px;
 			margin-top: 28px;
 		}
-		/* DEMO: rang va ohang — o‘ngdagi 01/02 raqamlari (stack-bg-number) bilan bir xil */
+		/* DEMO — View details bilan bir xil brend gradient (#120d53 → #16206e) */
 		.stack-demo-btn {
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
-			padding: 14px 28px;
+			padding: 12px 28px;
 			border-radius: 12px;
-			background: rgba(255, 255, 255, 0.06);
-			color: rgba(255, 255, 255, 0.45);
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			color: #fff !important;
 			font-weight: 700;
 			font-size: 14px;
-			letter-spacing: 0.5px;
+			letter-spacing: 0.04em;
 			border: 1px solid rgba(255, 255, 255, 0.12);
+			box-shadow: 0 4px 14px rgba(18, 13, 83, 0.35);
 			cursor: pointer;
-			transition: all 0.2s;
+			transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
 			flex-shrink: 0;
 			svg {
 				font-size: 20px;
 				color: inherit;
 			}
 			&:hover {
-				background: rgba(255, 255, 255, 0.1);
-				color: rgba(255, 255, 255, 0.65);
-				border-color: rgba(255, 255, 255, 0.2);
+				background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%);
+				box-shadow: 0 6px 20px rgba(18, 13, 83, 0.45);
+				color: #fff !important;
+				transform: translateY(-1px);
 			}
 		}
 		.stack-hot-deals-row {
@@ -1295,66 +1317,330 @@
 	}
 }
 
-/* Filter: barcha blok sarlavhalari (Search, Price, Material, Availability) */
-#pc-wrap .filter-main .section-header .section-header__title {
+/* ========== Filter sidebar (Filter.tsx) — premium light / dark ========== */
+#pc-wrap .filter-main.filter-sidebar .section-header .section-header__title {
 	display: block;
-	padding: 10px 0;
+	padding: 4px 0 4px 2px;
 	margin: 0;
 	color: #ffffff !important;
 	font-family: $font;
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 600;
 	text-transform: uppercase;
-	letter-spacing: 0.5px;
+	letter-spacing: 0.08em;
 }
 
-/* Yorug‘ rejim: sarlavha fonlari #120d53; ichki matn / $ / material nomlari mos rang */
-[data-theme='light'] #pc-wrap .filter-main .filter-section .section-header {
-	min-height: 56px;
-	padding: 12px 24px !important;
-	background: #120d53 !important;
-	box-sizing: border-box;
-	width: 100%;
-}
+/* Yorug‘ rejim — ko‘k (#120d53) brend, oq panellar */
+[data-theme='light'] #pc-wrap .filter-main.filter-sidebar {
+	.filter-section:not(.filter-sort-search-row) {
+		margin-bottom: 20px;
+	}
 
-[data-theme='light'] #pc-wrap .filter-main {
-	.category-list .category-item span,
-	.category-list .category-item .MuiTypography-root,
-	.category-list .category-item p {
+	.section-header {
+		min-height: 52px;
+		padding: 14px 18px !important;
+		background: linear-gradient(135deg, #120d53 0%, #1a1780 48%, #16206e 100%) !important;
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		border-bottom: none;
+		border-radius: 14px 14px 0 0 !important;
+		box-sizing: border-box;
+		width: 100%;
+		box-shadow: 0 6px 18px rgba(18, 13, 83, 0.22);
+	}
+
+	.filter-panel.search-content,
+	.filter-panel.price-range-content,
+	.filter-panel.category-list,
+	.filter-panel.availability-content {
+		background: #ffffff !important;
+		border: 1px solid rgba(18, 13, 83, 0.12) !important;
+		border-top: none !important;
+		border-radius: 0 0 14px 14px !important;
+		box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+		padding: 16px 18px !important;
+		margin-top: 0 !important;
+	}
+
+	.category-list .category-item {
+		border-bottom: 1px solid rgba(18, 13, 83, 0.08);
+		border-radius: 8px;
+		padding: 11px 10px !important;
+		margin-bottom: 4px;
+		transition: background 0.2s ease, padding-left 0.2s ease;
+
+		&:hover {
+			background: rgba(18, 13, 83, 0.04);
+			padding-left: 14px !important;
+		}
+
+		&.selected {
+			background: rgba(18, 13, 83, 0.07);
+			border-left: 3px solid #120d53;
+		}
+	}
+
+	.filter-panel.category-list .category-item span,
+	.filter-panel.category-list .category-item .MuiTypography-root,
+	.filter-panel.category-list .category-item p {
+		color: #0f172a !important;
+		-webkit-text-fill-color: #0f172a !important;
+		opacity: 1 !important;
+	}
+
+	.filter-panel.category-list .category-item.selected span,
+	.filter-panel.category-list .category-item.selected .MuiTypography-root {
+		color: #0a0840 !important;
+		-webkit-text-fill-color: #0a0840 !important;
+		font-weight: 700;
+	}
+
+	.search-input .MuiOutlinedInput-root,
+	.price-input .MuiOutlinedInput-root {
+		border-radius: 10px !important;
+		background: #fafbfe !important;
+		transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+		fieldset {
+			border-color: rgba(18, 13, 83, 0.16) !important;
+		}
+
+		&:hover fieldset {
+			border-color: rgba(18, 13, 83, 0.35) !important;
+		}
+
+		&.Mui-focused {
+			box-shadow: 0 0 0 3px rgba(18, 13, 83, 0.12);
+			fieldset {
+				border-color: #120d53 !important;
+			}
+		}
+	}
+
+	.search-content .search-input .MuiInputBase-input,
+	.price-range-content .price-input .MuiInputBase-input {
+		color: #0f172a !important;
+		font-weight: 500;
+	}
+
+	.search-content .search-input .MuiInputAdornment-root,
+	.search-content .filter-search-icon {
 		color: #120d53 !important;
 	}
-	.category-list .category-item.selected span,
-	.category-list .category-item.selected .MuiTypography-root {
-		color: #0a0840 !important;
+
+	.price-range-content .price-input .MuiInputAdornment-root {
+		color: #334155 !important;
 		font-weight: 600;
 	}
-	.search-content .search-input .MuiInputBase-input {
-		color: #120d53 !important;
+
+	/* Oq fonda placeholder / $ — yuqori kontrast (MUI theme yengil kulrang bermasin) */
+	.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+	.price-range-content .price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+	.search-input .MuiOutlinedInput-root input::placeholder,
+	.price-range-content .price-input .MuiOutlinedInput-root input::placeholder {
+		color: #475569 !important;
+		opacity: 1 !important;
+		-webkit-text-fill-color: #475569 !important;
 	}
-	.search-content .search-input .MuiInputAdornment-root,
-	.search-content .search-input .MuiSvgIcon-root {
-		color: #120d53 !important;
-	}
-	.search-content .search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
-		color: rgba(18, 13, 83, 0.55) !important;
-		opacity: 1;
-	}
-	.price-range-content .price-input .MuiInputBase-input {
-		color: #120d53 !important;
-	}
-	.price-range-content .price-input .MuiInputAdornment-root {
-		color: #120d53 !important;
-	}
-	.price-range-content .price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
-		color: rgba(18, 13, 83, 0.55) !important;
-		opacity: 1;
-	}
+
 	.filter-section--availability .availability-content {
 		.MuiFormControlLabel-label,
 		.availability-radio-group label span,
 		.availability-radio-group .MuiTypography-root {
+			color: #0f172a !important;
+			font-weight: 500;
+		}
+	}
+
+	.filter-availability-radio {
+		color: rgba(18, 13, 83, 0.45) !important;
+		&.Mui-checked {
 			color: #120d53 !important;
 		}
+	}
+}
+
+/* Qorong‘i rejim — PNS oltin + yumshoq kontrast */
+[data-theme='dark'] #pc-wrap .filter-main.filter-sidebar {
+	.filter-section:not(.filter-sort-search-row) {
+		margin-bottom: 20px;
+	}
+
+	.section-header {
+		min-height: 52px;
+		padding: 14px 18px !important;
+		background: linear-gradient(145deg, #1a2332 0%, #121a2a 55%, #0d1320 100%) !important;
+		border: 1px solid rgba(201, 169, 98, 0.32) !important;
+		border-bottom: none !important;
+		border-radius: 14px 14px 0 0 !important;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 22px rgba(0, 0, 0, 0.35);
+	}
+
+	.section-header__title {
+		color: #f1f5f9 !important;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+	}
+
+	.filter-panel.search-content,
+	.filter-panel.price-range-content,
+	.filter-panel.category-list,
+	.filter-panel.availability-content {
+		background: rgba(255, 255, 255, 0.05) !important;
+		border: 1px solid rgba(255, 255, 255, 0.12) !important;
+		border-top: none !important;
+		border-radius: 0 0 14px 14px !important;
+		padding: 16px 18px !important;
+		margin-top: 0 !important;
+		backdrop-filter: blur(8px);
+	}
+
+	.category-list .category-item {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		padding: 12px 10px !important;
+		border-radius: 8px;
+		transition: background 0.2s ease, padding-left 0.2s ease;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.06);
+			padding-left: 14px !important;
+		}
+
+		&.selected {
+			background: rgba(201, 169, 98, 0.12);
+			border-left: 3px solid #c9a962;
+		}
+	}
+
+	.category-list .category-item span,
+	.category-list .category-item .MuiTypography-root {
+		color: #e8edf4 !important;
+	}
+
+	.category-list .category-item.selected .MuiTypography-root {
+		color: #c9a962 !important;
+		font-weight: 700;
+	}
+
+	.search-input .MuiOutlinedInput-root,
+	.price-input .MuiOutlinedInput-root {
+		border-radius: 10px !important;
+		background: rgba(0, 0, 0, 0.22) !important;
+
+		fieldset {
+			border-color: rgba(255, 255, 255, 0.14) !important;
+		}
+
+		&:hover fieldset {
+			border-color: rgba(201, 169, 98, 0.45) !important;
+		}
+
+		&.Mui-focused fieldset {
+			border-color: #c9a962 !important;
+		}
+	}
+
+	.search-content .search-input .MuiInputBase-input,
+	.price-range-content .price-input .MuiInputBase-input {
+		color: #f1f5f9 !important;
+	}
+
+	.search-content .filter-search-icon,
+	.search-content .search-input .MuiInputAdornment-root,
+	.price-range-content .price-input .MuiInputAdornment-root {
+		color: #c9a962 !important;
+	}
+
+	.search-content .search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+	.price-range-content .price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+		color: rgba(226, 232, 240, 0.55) !important;
+		opacity: 1;
+	}
+
+	.filter-section--availability .availability-content {
+		.MuiFormControlLabel-label {
+			color: #e8edf4 !important;
+		}
+	}
+
+	.filter-availability-radio {
+		color: rgba(226, 232, 240, 0.55) !important;
+		&.Mui-checked {
+			color: #c9a962 !important;
+		}
+	}
+}
+
+/* Property scroll-stack: 2×#id — filter-sidebar stillarini majburan qo‘llash */
+[data-theme='light'] #pc-wrap #property-list-page.property-scroll-stack .filter-config-stack .filter-main.filter-sidebar {
+	.section-header {
+		background: linear-gradient(135deg, #120d53 0%, #1a1780 48%, #16206e 100%) !important;
+		border-radius: 14px 14px 0 0 !important;
+	}
+
+	.filter-panel.search-content,
+	.filter-panel.price-range-content,
+	.filter-panel.category-list,
+	.filter-panel.availability-content {
+		background: #ffffff !important;
+		border-radius: 0 0 14px 14px !important;
+	}
+
+	.filter-panel.category-list .category-item .MuiTypography-root,
+	.filter-panel.category-list .category-item span {
+		color: #0f172a !important;
+		-webkit-text-fill-color: #0f172a !important;
+	}
+
+	.filter-panel.category-list .category-item.selected .MuiTypography-root {
+		color: #0a0840 !important;
+		-webkit-text-fill-color: #0a0840 !important;
+	}
+
+	.search-content .search-input .MuiInputBase-input,
+	.price-range-content .price-input .MuiInputBase-input {
+		color: #0f172a !important;
+	}
+
+	.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
+	.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+		color: #475569 !important;
+		opacity: 1 !important;
+		-webkit-text-fill-color: #475569 !important;
+	}
+
+	.price-range-content .price-input .MuiInputAdornment-root {
+		color: #334155 !important;
+	}
+}
+
+[data-theme='dark'] #pc-wrap #property-list-page.property-scroll-stack .filter-config-stack .filter-main.filter-sidebar {
+	.section-header {
+		background: linear-gradient(145deg, #1a2332 0%, #121a2a 55%, #0d1320 100%) !important;
+		border-color: rgba(201, 169, 98, 0.32) !important;
+	}
+
+	.filter-panel.search-content,
+	.filter-panel.price-range-content,
+	.filter-panel.category-list,
+	.filter-panel.availability-content {
+		background: rgba(255, 255, 255, 0.05) !important;
+	}
+
+	.category-list .category-item .MuiTypography-root,
+	.category-list .category-item span {
+		color: #e8edf4 !important;
+	}
+
+	.category-list .category-item.selected .MuiTypography-root {
+		color: #c9a962 !important;
+	}
+
+	.search-content .search-input .MuiInputBase-input,
+	.price-range-content .price-input .MuiInputBase-input {
+		color: #f1f5f9 !important;
+	}
+
+	.filter-section--availability .MuiFormControlLabel-label {
+		color: #e8edf4 !important;
 	}
 }
 
