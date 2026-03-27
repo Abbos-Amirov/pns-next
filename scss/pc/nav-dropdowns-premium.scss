@@ -3,7 +3,8 @@
 /* ========== Premium Nav Trigger Links ========== */
 .nav-link.product-link,
 .nav-link.measurer-link,
-.nav-link.support-link {
+.nav-link.support-link,
+.nav-link.home-link {
 	display: inline-flex !important;
 	align-items: center !important;
 	gap: 6px;
@@ -17,6 +18,41 @@
 	}
 }
 
+/* Home (yorug‘ navbar): Product kabi qalin, matn aniq qora */
+.navbar-main:not([data-theme='dark']) .nav-link.home-link {
+	color: #0d0d0d !important;
+}
+.navbar-main:not([data-theme='dark']) .home-dropdown .dropdown-icon {
+	color: #0d0d0d !important;
+}
+.navbar-main:not([data-theme='dark']) .home-dropdown:hover .nav-link.home-link {
+	color: #1a5f9e !important;
+	opacity: 1;
+}
+.navbar-main:not([data-theme='dark']) .home-dropdown:hover .dropdown-icon {
+	color: #1a5f9e !important;
+}
+.navbar-main:not([data-theme='dark']) .nav-link.home-link.is-open {
+	color: #0d0d0d !important;
+}
+.navbar-main:not([data-theme='dark']) .nav-link.home-link.is-open .dropdown-icon {
+	color: #0d0d0d !important;
+}
+
+/* Top: global dark rejim — Home ham Product/Experts/Support kabi oltin rang */
+.navbar-main[data-theme='dark'] .nav-link.home-link {
+	color: rgba(201, 169, 98, 0.95) !important;
+}
+.navbar-main[data-theme='dark'] .home-dropdown .dropdown-icon {
+	color: rgba(201, 169, 98, 0.95) !important;
+}
+.navbar-main[data-theme='dark'] .nav-link.home-link.is-open {
+	color: #c9a962 !important;
+}
+.navbar-main[data-theme='dark'] .nav-link.home-link.is-open .dropdown-icon {
+	color: #c9a962 !important;
+}
+
 .product-dropdown .dropdown-icon,
 .measurer-dropdown .dropdown-icon,
 .support-dropdown .dropdown-icon {
@@ -25,9 +61,12 @@
 }
 
 .product-dropdown:hover .dropdown-icon,
+.home-dropdown:hover .dropdown-icon,
 .measurer-dropdown:hover .dropdown-icon,
 .support-dropdown:hover .dropdown-icon,
 .product-link.is-open .dropdown-icon,
+.home-link.is-open .dropdown-icon,
+.home-link-dark.is-open .dropdown-icon,
 .measurer-link.is-open .dropdown-icon,
 .support-link.is-open .dropdown-icon {
 	transform: rotate(180deg);
@@ -44,6 +83,7 @@
 
 /* ========== Premium Mega Menu Panel (MUI Paper override) ========== */
 .product-menu.premium-mega-menu .MuiPaper-root,
+.home-menu.premium-mega-menu .MuiPaper-root,
 .measurer-menu.premium-mega-menu .MuiPaper-root,
 .support-menu.premium-mega-menu .MuiPaper-root,
 .product-menu-dark.premium-mega-menu .MuiPaper-root,
@@ -58,6 +98,7 @@
 }
 
 .product-menu.premium-mega-menu,
+.home-menu.premium-mega-menu,
 .measurer-menu.premium-mega-menu,
 .support-menu.premium-mega-menu,
 .product-menu-dark.premium-mega-menu,
@@ -74,8 +115,9 @@
 	}
 }
 
-/* Product & Experts: 2 cards */
+/* Product & Experts & Home: 2 cards */
 .product-menu.premium-mega-menu .MuiMenu-list,
+.home-menu.premium-mega-menu .MuiMenu-list,
 .measurer-menu.premium-mega-menu .MuiMenu-list {
 	gap: 20px !important;
 }
@@ -211,6 +253,7 @@ a.support-menu-card {
 
 /* Dark theme nav triggers (LayoutBasic) */
 .product-dropdown-dark .product-link-dark,
+.home-dropdown-dark .home-link-dark,
 .measurer-dropdown-dark .measurer-link-dark,
 .support-dropdown-dark .support-link-dark {
 	display: inline-flex !important;
@@ -220,6 +263,7 @@ a.support-menu-card {
 }
 
 .product-dropdown-dark .dropdown-icon-dark,
+.home-dropdown-dark .dropdown-icon-dark,
 .measurer-dropdown-dark .dropdown-icon-dark,
 .support-dropdown-dark .dropdown-icon-dark {
 	transition: transform 0.3s ease;
@@ -227,16 +271,19 @@ a.support-menu-card {
 }
 
 .product-dropdown-dark:hover .dropdown-icon-dark,
+.home-dropdown-dark:hover .dropdown-icon-dark,
 .measurer-dropdown-dark:hover .dropdown-icon-dark,
 .support-dropdown-dark:hover .dropdown-icon-dark,
 .product-link-dark.is-open .dropdown-icon-dark,
+.home-link-dark.is-open .dropdown-icon-dark,
 .measurer-link-dark.is-open .dropdown-icon-dark,
 .support-link-dark.is-open .dropdown-icon-dark {
 	transform: rotate(180deg);
 }
 
-/* Product, Experts, Support – ajralib turishi (Home pagedagi kabi) */
+/* Product, Experts, Support, Home – ajralib turishi (LayoutBasic navbar-dark) */
 .product-link-dark,
+.home-link-dark,
 .measurer-link-dark,
 .support-link-dark {
 	color: rgba(201, 169, 98, 0.95) !important;
@@ -244,7 +291,16 @@ a.support-menu-card {
 }
 
 .product-link-dark.is-open,
+.home-link-dark.is-open,
 .measurer-link-dark.is-open,
 .support-link-dark.is-open {
+	color: #c9a962 !important;
+}
+
+.home-link-dark .dropdown-icon-dark {
+	color: rgba(201, 169, 98, 0.95) !important;
+}
+
+.home-link-dark.is-open .dropdown-icon-dark {
 	color: #c9a962 !important;
 }

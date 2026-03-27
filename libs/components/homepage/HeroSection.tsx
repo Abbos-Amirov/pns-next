@@ -26,10 +26,10 @@ const HeroSection = () => {
 							{t('Explore our products')}
 						</Box>
 						<Box component={'div'} className={'hero-cta-block'}>
-							<Button className={'hero-cta-btn'} onClick={() => router.push('/property')}>
+							<Button className={'hero-cta-btn'} onClick={() => router.push('/property/window')}>
 								<WindowIcon className={'cta-icon'} /> {t('Windows')}
 							</Button>
-							<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+							<Button className={'hero-cta-btn'} onClick={() => router.push('/property/door')}>
 								<DoorIcon className={'cta-icon'} /> {t('Doors')}
 							</Button>
 							<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
@@ -67,28 +67,17 @@ const HeroSection = () => {
 						{t('Explore our products')}
 					</Box>
 					<Box component={'div'} className={'hero-cta-block'}>
-						<Button className={'hero-cta-btn'} onClick={() => router.push('/property')}>
+						<Button className={'hero-cta-btn'} onClick={() => router.push('/property/window')}>
 							<WindowIcon className={'cta-icon'} /> {t('Windows')}
 						</Button>
-						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
+						<Button className={'hero-cta-btn'} onClick={() => router.push('/property/door')}>
 							<DoorIcon className={'cta-icon'} /> {t('Doors')}
 						</Button>
 						<Button className={'hero-cta-btn'} onClick={() => router.push('/configurator')}>
 							<DesignServicesIcon className={'cta-icon'} /> {t('UyDizayneri')}
 						</Button>
 					</Box>
-					<Box
-						component={'div'}
-						className={'hero-configurator-mini'}
-						onClick={() => router.push('/configurator')}
-						role="button"
-						tabIndex={0}
-						onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Enter') router.push('/configurator'); }}
-					>
-						<div className={'hero-configurator-mini-bg'} style={{ backgroundImage: 'url(/img/configurator/hero-1.png)' }} />
-						<div className={'hero-configurator-mini-overlay'} />
-						<span className={'hero-configurator-mini-label'}>{t('Configurator')} →</span>
-					</Box>
+					
 				</Box>
 			</Stack>
 		</Stack>

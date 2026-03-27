@@ -28,6 +28,7 @@ import { REACT_APP_API_URL } from '../../config';
 import { useThemeMode } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import NavMegaDrawer, { MegaPanel } from '../NavMegaDrawer';
+import HomeNavDropdown from '../HomeNavDropdown';
 
 const getUserImageSrc = (img?: string) => {
 	if (!img) return '/img/profile/defaultUser.svg';
@@ -247,9 +248,7 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* Navigation Links - Center */}
 								<Box component={'div'} className={'nav-menu-dark'}>
-									<Link href={'/'}>
-										<span className={'nav-link-dark'}>{t('Home')}</span>
-									</Link>
+									<HomeNavDropdown variant="dark" />
 									<span className={'nav-separator-dark'}>/</span>
 									<Box
 										component={'div'}

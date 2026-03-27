@@ -25,6 +25,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import { REACT_APP_API_URL } from '../config';
 import NavMegaDrawer, { MegaPanel } from './NavMegaDrawer';
+import HomeNavDropdown from './HomeNavDropdown';
 import { useThemeMode } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -277,9 +278,7 @@ const Top = () => {
 							</Link>
 						</Box>
 						<Box component={'div'} className={'nav-menu'}>
-							<Link href={'/'}>
-								<span className={'nav-link'}>{t('Home')}</span>
-							</Link>
+							<HomeNavDropdown />
 							<span className={'nav-separator'}>/</span>
 							<Box
 								component={'div'}
