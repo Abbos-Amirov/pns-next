@@ -119,7 +119,7 @@
 							.section-header {
 								width: 100%;
 								height: 48px;
-								background: #8B4513;;
+								background: #120d53;
 								border-radius: 0;
 								display: flex;
 								align-items: center;
@@ -1291,6 +1291,69 @@
 			.MuiTypography-root { color: rgba(255,255,255,0.8); }
 			.MuiPaginationItem-root { color: #fff; }
 			.Mui-selected { background: #8b4513 !important; color: #fff !important; }
+		}
+	}
+}
+
+/* Filter: barcha blok sarlavhalari (Search, Price, Material, Availability) */
+#pc-wrap .filter-main .section-header .section-header__title {
+	display: block;
+	padding: 10px 0;
+	margin: 0;
+	color: #ffffff !important;
+	font-family: $font;
+	font-size: 14px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Yorug‘ rejim: sarlavha fonlari #120d53; ichki matn / $ / material nomlari mos rang */
+[data-theme='light'] #pc-wrap .filter-main .filter-section .section-header {
+	min-height: 56px;
+	padding: 12px 24px !important;
+	background: #120d53 !important;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+[data-theme='light'] #pc-wrap .filter-main {
+	.category-list .category-item span,
+	.category-list .category-item .MuiTypography-root,
+	.category-list .category-item p {
+		color: #120d53 !important;
+	}
+	.category-list .category-item.selected span,
+	.category-list .category-item.selected .MuiTypography-root {
+		color: #0a0840 !important;
+		font-weight: 600;
+	}
+	.search-content .search-input .MuiInputBase-input {
+		color: #120d53 !important;
+	}
+	.search-content .search-input .MuiInputAdornment-root,
+	.search-content .search-input .MuiSvgIcon-root {
+		color: #120d53 !important;
+	}
+	.search-content .search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+		color: rgba(18, 13, 83, 0.55) !important;
+		opacity: 1;
+	}
+	.price-range-content .price-input .MuiInputBase-input {
+		color: #120d53 !important;
+	}
+	.price-range-content .price-input .MuiInputAdornment-root {
+		color: #120d53 !important;
+	}
+	.price-range-content .price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+		color: rgba(18, 13, 83, 0.55) !important;
+		opacity: 1;
+	}
+	.filter-section--availability .availability-content {
+		.MuiFormControlLabel-label,
+		.availability-radio-group label span,
+		.availability-radio-group .MuiTypography-root {
+			color: #120d53 !important;
 		}
 	}
 }

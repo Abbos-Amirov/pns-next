@@ -327,20 +327,7 @@ const Filter = (props: FilterType) => {
 					<Stack direction={'row'} alignItems={'center'} gap={'12px'} flexWrap={'wrap'}>
 						{onSortClick && sortKeyToLabel && (
 							<Stack direction={'row'} alignItems={'center'} gap={'10px'} className={'filter-sort-block'}>
-								<span className={'filter-sort-label'}>{t('SortBy')}</span>
-								<Button onClick={onSortClick} endIcon={<KeyboardArrowDownRoundedIcon />} className={'filter-sort-btn'}>
-									{t(sortKeyToLabel[filterSortName || 'date_new_old'] || 'SortDateNewOld')}
-								</Button>
-								<Menu anchorEl={anchorEl || null} open={!!sortingOpen} onClose={onSortClose}>
-									<MenuItem onClick={onSortSelect} id="featured" disableRipple>{t('SortFeatured')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="best_selling" disableRipple>{t('SortBestSelling')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="alphabetical_az" disableRipple>{t('SortAlphabeticalAZ')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="alphabetical_za" disableRipple>{t('SortAlphabeticalZA')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="price_low_high" disableRipple>{t('SortPriceLowHigh')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="price_high_low" disableRipple>{t('SortPriceHighLow')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="date_old_new" disableRipple>{t('SortDateOldNew')}</MenuItem>
-									<MenuItem onClick={onSortSelect} id="date_new_old" disableRipple>{t('SortDateNewOld')}</MenuItem>
-								</Menu>
+								
 							</Stack>
 						)}
 					</Stack>
@@ -348,7 +335,9 @@ const Filter = (props: FilterType) => {
 
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{ color: '#ffffff' }}>Search</Typography>
+						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+							Search
+						</Typography>
 					</Box>
 					<Stack className={'search-content'}>
 						<TextField
@@ -359,7 +348,7 @@ const Filter = (props: FilterType) => {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position="start">
-										<SearchIcon style={{ color: '#8B4513' }} />
+										<SearchIcon />
 									</InputAdornment>
 								),
 							}}
@@ -370,7 +359,9 @@ const Filter = (props: FilterType) => {
 
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{ color: '#ffffff' }}>Price Range</Typography>
+						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+							Price Range
+						</Typography>
 					</Box>
 					<Stack className={'price-range-content'}>
 						<Stack className={'price-inputs'} direction={'row'} gap={'12px'}>
@@ -407,7 +398,9 @@ const Filter = (props: FilterType) => {
 				</Stack>
 				<Stack className={'filter-section'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{ color: '#ffffff' }}>Material</Typography>
+						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+							Material
+						</Typography>
 					</Box>
 					<Stack className={'category-list'}>
 						{/* All materials (clear filter) */}
@@ -435,9 +428,11 @@ const Filter = (props: FilterType) => {
 					</Stack>
 				</Stack>
 
-				<Stack className={'filter-section'}>
+				<Stack className={'filter-section filter-section--availability'} mb={'24px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{ color: '#ffffff' }}>Availability</Typography>
+						<Typography className={'section-header__title'} style={{marginLeft:'10px'}} component={'span'}>
+							Availability
+						</Typography>
 					</Box>
 					<Stack className={'availability-content'}>
 						<RadioGroup
