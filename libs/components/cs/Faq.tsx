@@ -194,7 +194,7 @@ const Faq = () => {
 				<Box className={'wrap'} component={'div'}>
 					{noticeLoading ? (
 						<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-							<CircularProgress sx={{ color: '#8B4513' }} />
+							<CircularProgress sx={{ color: '#120d53' }} />
 							<Typography sx={{ mt: 2, color: '#717171' }}>Loading FAQs...</Typography>
 						</Stack>
 					) : noticeError ? (

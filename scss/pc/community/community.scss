@@ -50,7 +50,7 @@
 							height: 100px;
 							border-radius: 50%;
 							object-fit: cover;
-							box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.2);
+							box-shadow: 0px 4px 12px rgba(18, 13, 83, 0.22);
 						}
 
 						.community-name {
@@ -92,22 +92,22 @@
 						text-transform: none;
 
 						&:hover {
-							border-color: #8B4513;
-							background: rgba(139, 69, 19, 0.05);
-							color: #8B4513;
+							border-color: #120d53;
+							background: rgba(18, 13, 83, 0.06);
+							color: #120d53;
 							transform: translateX(4px);
 						}
 					}
 
 					.tab-button.active {
-						background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-						border-color: #8B4513;
+						background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+						border-color: #120d53;
 						color: #fff;
-						box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+						box-shadow: 0px 4px 14px rgba(18, 13, 83, 0.35);
 						font-weight: 600;
 
 						&:hover {
-							background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+							background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%);
 							transform: translateX(4px);
 						}
 					}
@@ -131,9 +131,10 @@
 							justify-content: space-between;
 							align-items: flex-start;
 							padding: 30px;
-							background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+							background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
 							border-radius: 16px;
-							box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.2);
+							box-shadow: 0px 4px 20px rgba(18, 13, 83, 0.28);
+							border: 1px solid rgba(255, 255, 255, 0.1);
 
 							.left {
 								flex: 1;
@@ -166,19 +167,21 @@
 								padding: 12px 24px;
 								border-radius: 8px;
 								background: #fff;
-								color: #8B4513;
+								color: #120d53;
 								font-family: $font;
 								font-size: 15px;
 								font-weight: 600;
 								line-height: normal;
 								text-transform: none;
-								box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+								box-shadow: 0px 2px 10px rgba(18, 13, 83, 0.15);
 								transition: all 0.3s ease;
+								border: 1px solid rgba(18, 13, 83, 0.12);
 
 								&:hover {
-									background: rgba(255, 255, 255, 0.95);
+									background: #f8f9ff;
+									color: #0d0a47;
 									transform: translateY(-2px);
-									box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+									box-shadow: 0px 4px 16px rgba(18, 13, 83, 0.22);
 								}
 							}
 						}
@@ -239,16 +242,16 @@
 					.MuiPagination-root {
 						.MuiPaginationItem-root {
 							&.Mui-selected {
-								background-color: #8B4513;
+								background: linear-gradient(135deg, #120d53 0%, #16206e 100%);
 								color: #fff;
 
 								&:hover {
-									background-color: #A0522D;
+									background: linear-gradient(135deg, #0d0a47 0%, #121a5c 100%);
 								}
 							}
 
 							&:hover {
-								background-color: rgba(139, 69, 19, 0.1);
+								background-color: rgba(18, 13, 83, 0.1);
 							}
 						}
 					}
@@ -289,26 +292,33 @@
 				border-color: #30363d !important;
 				color: rgba(255, 255, 255, 0.8);
 				&:hover {
-					border-color: #8B4513;
-					background: rgba(139, 69, 19, 0.2);
-					color: #8B4513;
+					border-color: #16206e;
+					background: rgba(18, 13, 83, 0.35);
+					color: #a5b4fc;
 				}
 			}
 			.tab-button.active {
-				background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-				border-color: #8B4513;
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+				border-color: rgba(201, 169, 98, 0.35);
 				color: #fff;
+				box-shadow: 0 4px 14px rgba(18, 13, 83, 0.45);
 			}
 		}
 		.right-config .panel-config {
 			.title-box {
-				background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+				border: 1px solid rgba(201, 169, 98, 0.22);
+				box-shadow: 0 6px 22px rgba(18, 13, 83, 0.4);
 				.left .title { color: #fff !important; }
 				.left .sub-title { color: rgba(255, 255, 255, 0.9) !important; }
 				.right {
-					background: #21262d !important;
-					color: #e6edf3 !important;
-					&:hover { background: #30363d !important; }
+					background: rgba(15, 23, 42, 0.65) !important;
+					color: #e8edf4 !important;
+					border: 1px solid rgba(255, 255, 255, 0.12) !important;
+					&:hover {
+						background: rgba(30, 41, 59, 0.85) !important;
+						color: #fff !important;
+					}
 				}
 			}
 			.list-box {
@@ -332,6 +342,15 @@
 		.pagination-config {
 			background: #161b22 !important;
 			.total-result .MuiTypography-root { color: rgba(255, 255, 255, 0.7) !important; }
+			.MuiPagination-root .MuiPaginationItem-root {
+				&.Mui-selected {
+					background: linear-gradient(135deg, #120d53 0%, #16206e 100%) !important;
+					color: #fff !important;
+				}
+				&:hover:not(.Mui-selected) {
+					background: rgba(18, 13, 83, 0.35) !important;
+				}
+			}
 		}
 	}
 }

@@ -415,7 +415,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 							<div className="config">
 								{boardArticleLoading ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-										<CircularProgress sx={{ color: '#8B4513' }} />
+										<CircularProgress sx={{ color: '#120d53' }} />
 										<Typography sx={{ mt: 2, color: '#717171' }}>Loading article...</Typography>
 									</Stack>
 								) : boardArticleError ? (
@@ -522,7 +522,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 								</Stack>
 								{commentsLoading ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
-										<CircularProgress sx={{ color: '#8B4513' }} size={24} />
+										<CircularProgress sx={{ color: '#120d53' }} size={24} />
 										<Typography sx={{ mt: 1, color: '#717171', fontSize: '14px' }}>Loading comments...</Typography>
 									</Stack>
 								) : commentsError ? (

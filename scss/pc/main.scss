@@ -1569,11 +1569,11 @@ body::-webkit-scrollbar {
 		}
 	}
 
-	// Dark Theme Navigation for LayoutBasic
+	// LayoutBasic navbar — default: oq fon, qorong‘i matn (dark theme app.scss da)
 	.navbar-dark {
 		position: relative;
 		width: 100%;
-		background-color: #0a0a0a;
+		background: #ffffff;
 		padding: 20px 0;
 		z-index: 100;
 		.container {
@@ -1597,7 +1597,7 @@ body::-webkit-scrollbar {
 						height: 40px;
 					}
 					.logo-text-dark {
-						color: #ffffff;
+						color: #120d53;
 						font-family: $font;
 						font-size: 20px;
 						font-style: normal;
@@ -1617,7 +1617,7 @@ body::-webkit-scrollbar {
 				justify-content: center;
 				gap: 8px;
 				.nav-link-dark {
-					color: #ffffff;
+					color: #252420;
 					font-family: $font;
 					font-size: 14px;
 					font-style: normal;
@@ -1642,7 +1642,7 @@ body::-webkit-scrollbar {
 						cursor: pointer;
 						.dropdown-icon-dark {
 							font-size: 16px;
-							color: #ffffff;
+							color: #252420;
 							transition: transform 0.3s ease;
 						}
 					}
@@ -1665,7 +1665,7 @@ body::-webkit-scrollbar {
 							padding: 10px 20px;
 							&:hover {
 								background-color: #2a2a2a;
-								color: #8B4513;
+								color: #a5b4fc;
 							}
 						}
 						&.measurer-menu-with-images-dark {
@@ -1735,7 +1735,7 @@ body::-webkit-scrollbar {
 						gap: 6px;
 						cursor: pointer;
 						line-height: 1;
-						.dropdown-icon-dark { font-size: 16px; color: #ffffff; transition: transform 0.3s ease; }
+						.dropdown-icon-dark { font-size: 16px; color: #252420; transition: transform 0.3s ease; }
 					}
 					&:hover .support-link-dark .dropdown-icon-dark { transform: rotate(180deg); }
 					.support-menu-dark.support-menu-with-images-dark {
@@ -1794,11 +1794,11 @@ body::-webkit-scrollbar {
 					}
 				}
 					&:hover {
-						color: #dcaf69;
+						color: #a5b4fc;
 					}
 				}
 				.nav-separator-dark {
-					color: #ffffff;
+					color: #9ca3af;
 					font-family: $font;
 					font-size: 14px;
 					font-weight: 500;
@@ -1821,37 +1821,38 @@ body::-webkit-scrollbar {
 					width: 40px;
 					height: 40px;
 					border-radius: 50%;
-					background: rgba(255, 255, 255, 0.12);
-					color: #ffffff;
+					background: rgba(18, 13, 83, 0.1);
+					color: #120d53;
 					transition: all 0.3s;
 					&:hover {
-						background: rgba(255, 255, 255, 0.22);
+						background: rgba(18, 13, 83, 0.18);
 						transform: scale(1.08);
 					}
-					svg { font-size: 22px; }
+					svg { font-size: 22px; color: #120d53; }
 				}
 				.lang-switcher-btn {
 					width: 40px;
 					height: 40px;
 					border-radius: 50%;
-					background-color: rgba(255, 255, 255, 0.1);
-					color: #ffffff;
+					background-color: rgba(18, 13, 83, 0.1);
+					color: #120d53;
 					padding: 0;
 					transition: all 0.3s ease;
 					&:hover {
-						background-color: rgba(255, 255, 255, 0.2);
+						background-color: rgba(18, 13, 83, 0.18);
 						transform: scale(1.1);
 					}
 					svg {
 						font-size: 20px;
+						color: #120d53;
 					}
 				}
 				.login-signup-btn-dark {
 					padding: 10px 24px;
 					border-radius: 8px;
-					background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
-					border: 1px solid rgba(255, 255, 255, 0.25);
-					color: #ffffff;
+					background: rgba(18, 13, 83, 0.04);
+					border: 1px solid rgba(18, 13, 83, 0.28);
+					color: #120d53;
 					font-family: $font;
 					font-size: 13px;
 					font-weight: 600;
@@ -1860,10 +1861,10 @@ body::-webkit-scrollbar {
 					cursor: pointer;
 					transition: all 0.3s ease;
 					&:hover {
-						background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
-						border-color: rgba(255, 255, 255, 0.4);
+						background: rgba(18, 13, 83, 0.08);
+						border-color: rgba(18, 13, 83, 0.45);
 						transform: translateY(-2px);
-						box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+						box-shadow: 0 4px 16px rgba(18, 13, 83, 0.12);
 					}
 				}
 				.auth-buttons-dark {
@@ -1932,11 +1933,11 @@ body::-webkit-scrollbar {
 						height: 40px;
 						border-radius: 50%;
 						overflow: hidden;
-						border: 2px solid rgba(255, 255, 255, 0.5);
+						border: 2px solid rgba(18, 13, 83, 0.2);
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						background: rgba(255, 255, 255, 0.1);
+						background: rgba(18, 13, 83, 0.06);
 						transition: all 0.3s ease;
 
 						img {
@@ -1950,19 +1951,19 @@ body::-webkit-scrollbar {
 						font-family: $font;
 						font-size: 14px;
 						font-weight: 600;
-						color: #ffffff;
+						color: #252420;
 						transition: color 0.3s ease;
 					}
 
 					&:hover {
 						.user-avatar-small-dark {
-							border-color: rgba(255, 255, 255, 0.8);
+							border-color: rgba(18, 13, 83, 0.4);
 							transform: scale(1.05);
-							box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+							box-shadow: 0 4px 12px rgba(18, 13, 83, 0.15);
 						}
 
 						.user-name-text-dark {
-							color: rgba(255, 255, 255, 0.9);
+							color: #120d53;
 						}
 					}
 				}

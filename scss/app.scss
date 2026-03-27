@@ -97,40 +97,60 @@ hr {
 		.top-bar-right .close-icon { color: #252420 !important; }
 	}
 	.navbar-dark {
-		background-color: #ffffff !important;
-		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
-		.logo-text-dark { color: #252420 !important; }
+		/* to‘liq oq fon — main.scss gradient/shorthand ustidan chiqadi */
+		background: #ffffff !important;
+		background-image: none !important;
+		box-shadow: 0 2px 12px rgba(18, 13, 83, 0.08) !important;
+		.logo-text-dark { color: #120d53 !important; }
 		.nav-link-dark,
 		.nav-separator-dark,
 		.measurer-link-dark .dropdown-icon-dark,
 		.support-link-dark .dropdown-icon-dark { color: #252420 !important; }
-		.nav-link-dark:hover { color: #8b4513 !important; }
+		.nav-link-dark:hover { color: #16206e !important; }
 		.nav-right-dark {
 			.call-us-btn .call-icon,
 			.call-us-btn span,
 			.call-us-btn .phone-number { color: #252420 !important; }
 			.dark-mode-btn-dark {
-				background: rgba(37, 36, 32, 0.18) !important;
-				color: #252420 !important;
-				svg { color: #252420 !important; }
+				background: rgba(18, 13, 83, 0.1) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
 				&:hover {
-					background: rgba(37, 36, 32, 0.28) !important;
-					color: #181a20 !important;
-					svg { color: #181a20 !important; }
+					background: rgba(18, 13, 83, 0.18) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
 				}
 			}
 			.lang-switcher-btn {
-				background: rgba(37, 36, 32, 0.18) !important;
-				color: #252420 !important;
-				svg { color: #252420 !important; }
+				background: rgba(18, 13, 83, 0.1) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
 				&:hover {
-					background: rgba(37, 36, 32, 0.28) !important;
-					color: #181a20 !important;
-					svg { color: #181a20 !important; }
+					background: rgba(18, 13, 83, 0.18) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
 				}
 			}
-			.login-signup-btn-dark { color: #252420 !important; border-color: rgba(37, 36, 32, 0.25) !important; }
+			.login-signup-btn-dark {
+				color: #120d53 !important;
+				border-color: rgba(18, 13, 83, 0.28) !important;
+				background: rgba(18, 13, 83, 0.04) !important;
+				&:hover {
+					border-color: rgba(18, 13, 83, 0.45) !important;
+					background: rgba(18, 13, 83, 0.08) !important;
+				}
+			}
 			.user-profile-section-dark .user-name-text-dark { color: #252420 !important; }
+			.hamburger-btn-dark {
+				background: rgba(18, 13, 83, 0.12) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
+				&:hover {
+					background: rgba(18, 13, 83, 0.22) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
+				}
+			}
 		}
 		.measurer-menu-card-label-dark { background: #f0f0f0 !important; color: #252420 !important; }
 	}
@@ -147,7 +167,10 @@ hr {
 	#property-list-page { background: #f6f6f6 !important; }
 	#property-detail-page { background: #ffffff !important; }
 	.filter-config .filter-main .filter-section {
-		.section-header { background: #8b4513 !important; }
+		.section-header {
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			box-shadow: 0 2px 8px rgba(18, 13, 83, 0.22) !important;
+		}
 		.category-list, .search-content, .price-range-content,
 		.availability-content, .hot-deals-wrapper { background: #fff !important; }
 		.category-list .category-item {
@@ -155,7 +178,7 @@ hr {
 			padding: 12px 0 !important;
 			&:last-child { border-bottom: none !important; }
 			&.selected { font-weight: 600 !important; }
-			&.selected .MuiTypography-root, &.selected span { color: #8b4513 !important; }
+			&.selected .MuiTypography-root, &.selected span { color: #120d53 !important; }
 			.MuiTypography-root, span, p { color: #181a20 !important; }
 		}
 		.search-content .search-input .MuiOutlinedInput-root,
@@ -188,7 +211,11 @@ hr {
 				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 				.filter-main .filter-section {
 					padding: 14px 0 0 !important;
-					.section-header { background: #8b4513 !important; color: #fff !important; }
+					.section-header {
+						background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+						box-shadow: 0 2px 8px rgba(18, 13, 83, 0.22) !important;
+						color: #fff !important;
+					}
 					.category-list, .search-content, .price-range-content,
 					.availability-content, .hot-deals-wrapper {
 						background: #fff !important;
@@ -203,8 +230,8 @@ hr {
 						border-bottom: 1px solid #e8e8e8 !important;
 						padding: 14px 0 !important;
 						&:last-child { border-bottom: none !important; }
-						&.selected { font-weight: 600 !important; color: #8b4513 !important; }
-						&.selected .MuiTypography-root { color: #8b4513 !important; }
+						&.selected { font-weight: 600 !important; color: #120d53 !important; }
+						&.selected .MuiTypography-root { color: #120d53 !important; }
 					}
 					.search-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder,
 					.price-input .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
@@ -323,10 +350,17 @@ hr {
 		.stack-location-thumbs-row .stack-location-thumb {
 			border-color: rgba(0,0,0,0.12) !important;
 		}
-		.stack-like-btn .stack-like-icon { color: #8b4513 !important; }
+		.stack-like-btn .stack-like-icon { color: rgba(255, 255, 255, 0.92) !important; }
 		.stack-like-btn .stack-like-icon.liked { color: #eb6753 !important; fill: #eb6753 !important; }
-		.stack-views-icon { color: #555 !important; }
-		.stack-image-actions .stack-action-count { color: #181a20 !important; }
+		.stack-views-icon { color: rgba(255, 255, 255, 0.85) !important; }
+		.stack-image-actions {
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+		}
+		.stack-image-actions .stack-action-count { color: #fff !important; }
+		.stack-image-actions .stack-like-icon { color: rgba(255, 255, 255, 0.92) !important; }
+		.stack-image-actions .stack-like-icon.liked { color: #eb6753 !important; fill: #eb6753 !important; }
+		.stack-image-actions .stack-views-icon { color: rgba(255, 255, 255, 0.85) !important; }
 	}
 }
 
@@ -414,60 +448,70 @@ hr {
 			&:hover { color: #e3360a !important; }
 		}
 	}
-	/* LayoutBasic navbar-dark - dark mode: qora fon, oq matn */
+	/* LayoutBasic navbar-dark — dark rejimda ham asosiy qator oq fon (o‘qilish + PNSWINDOW) */
 	.navbar-dark {
-		background-color: #1a1a1a !important;
-		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
-		.logo-text-dark { color: #ffffff !important; }
+		background: #ffffff !important;
+		background-image: none !important;
+		box-shadow: 0 2px 12px rgba(18, 13, 83, 0.08) !important;
+		.logo-text-dark { color: #120d53 !important; }
 		.nav-link-dark,
 		.nav-separator-dark,
 		.measurer-link-dark .dropdown-icon-dark,
-		.support-link-dark .dropdown-icon-dark { color: #e0e0e0 !important; }
-		.nav-link-dark:hover { color: #c9a962 !important; }
+		.support-link-dark .dropdown-icon-dark { color: #252420 !important; }
+		.nav-link-dark:hover { color: #16206e !important; }
 		.nav-right-dark {
 			.call-us-btn {
-				background-color: rgba(255, 255, 255, 0.08) !important;
+				background-color: transparent !important;
 				.call-icon,
 				span,
-				.phone-number { color: #e0e0e0 !important; }
+				.phone-number { color: #252420 !important; }
 				&:hover {
-					background-color: rgba(255, 255, 255, 0.15) !important;
+					background-color: rgba(18, 13, 83, 0.06) !important;
 				}
 			}
 			.dark-mode-btn-dark {
-				background: rgba(255, 213, 79, 0.25) !important;
-				color: #ffd54f !important;
-				svg { color: #ffd54f !important; }
+				background: rgba(18, 13, 83, 0.1) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
 				&:hover {
-					background: rgba(255, 213, 79, 0.4) !important;
-					color: #fff !important;
-					svg { color: #fff !important; }
+					background: rgba(18, 13, 83, 0.18) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
 				}
 			}
 			.lang-switcher-btn {
-				background-color: rgba(255, 255, 255, 0.15) !important;
-				color: #e0e0e0 !important;
-				svg { color: #e0e0e0 !important; }
+				background: rgba(18, 13, 83, 0.1) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
 				&:hover {
-					background-color: rgba(255, 255, 255, 0.25) !important;
-					color: #fff !important;
-					svg { color: #fff !important; }
+					background: rgba(18, 13, 83, 0.18) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
 				}
 			}
 			.login-signup-btn-dark {
-				background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
-				border-color: rgba(255, 255, 255, 0.25) !important;
-				color: #ffffff !important;
+				color: #120d53 !important;
+				border-color: rgba(18, 13, 83, 0.28) !important;
+				background: rgba(18, 13, 83, 0.04) !important;
 				&:hover {
-					background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
-					border-color: rgba(255, 255, 255, 0.4) !important;
-					color: #ffffff !important;
+					border-color: rgba(18, 13, 83, 0.45) !important;
+					background: rgba(18, 13, 83, 0.08) !important;
 				}
 			}
 			.user-profile-section-dark {
-				.user-name-text-dark { color: #e0e0e0 !important; }
+				.user-name-text-dark { color: #252420 !important; }
 				.user-avatar-small-dark {
-					border-color: rgba(255, 255, 255, 0.2) !important;
+					border-color: rgba(18, 13, 83, 0.22) !important;
+				}
+			}
+			.hamburger-btn-dark {
+				background: rgba(18, 13, 83, 0.12) !important;
+				color: #120d53 !important;
+				svg { color: #120d53 !important; }
+				&:hover {
+					background: rgba(18, 13, 83, 0.22) !important;
+					color: #16206e !important;
+					svg { color: #16206e !important; }
 				}
 			}
 		}
@@ -486,10 +530,10 @@ hr {
 		box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4) !important;
 		.lang-menu-item {
 			color: #e0e0e0 !important;
-			&:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+			&:hover { background-color: rgba(18, 13, 83, 0.35) !important; }
 			&.Mui-selected {
-				background-color: rgba(201, 169, 98, 0.2) !important;
-				color: #c9a962 !important;
+				background-color: rgba(18, 13, 83, 0.45) !important;
+				color: #a5b4fc !important;
 			}
 		}
 	}
@@ -738,8 +782,10 @@ hr {
 	.filter-config .filter-main {
 		.filter-section {
 			.section-header {
-				background: #2a2a2a !important;
-				.MuiTypography-root { color: #ffffff !important; }
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+				box-shadow: 0 2px 10px rgba(18, 13, 83, 0.35) !important;
+				.MuiTypography-root,
+				span { color: #ffffff !important; }
 			}
 			.category-list {
 				background: #1e1e1e !important;
@@ -1124,12 +1170,13 @@ hr {
 			background: rgba(148, 133, 133, 0.06) !important;
 		}
 		.stack-image-actions {
-			background: rgba(255,255,255,0.8) !important;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 		}
-		.stack-image-actions .stack-action-count { color: #181a20 !important; }
-		.stack-image-actions .stack-like-icon { color: #8b4513 !important; }
+		.stack-image-actions .stack-action-count { color: #fff !important; }
+		.stack-image-actions .stack-like-icon { color: rgba(255, 255, 255, 0.92) !important; }
 		.stack-image-actions .stack-like-icon.liked { color: #eb6753 !important; fill: #eb6753 !important; }
-		.stack-image-actions .stack-views-icon { color: #181a20 !important; }
+		.stack-image-actions .stack-views-icon { color: rgba(255, 255, 255, 0.85) !important; }
 	}
 
 	/* Agent list page (legacy) - dark mode: yozuvlar oq, search input qora */

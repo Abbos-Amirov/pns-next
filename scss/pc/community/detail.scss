@@ -64,8 +64,9 @@
 						padding: 0;
 						justify-content: center;
 						align-items: center;
-						background-color: #000000;
+						background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
 						color: #ffffff;
+						border: 1px solid rgba(18, 13, 83, 0.35);
 						border-radius: 6px;
 						margin-bottom: 10px;
 						font-family: $font;
@@ -74,6 +75,7 @@
 						font-weight: 500;
 						line-height: 150%;
 						letter-spacing: -0.266px;
+						box-shadow: 0 2px 10px rgba(18, 13, 83, 0.25);
 					}
 				}
 				.community-detail-config {
@@ -110,7 +112,7 @@
 							width: 91px;
 							height: 32px;
 							border-radius: 4px;
-							background: #eb6753;
+							background: linear-gradient(135deg, #120d53 0%, #16206e 100%);
 							color: #fff;
 							font-family: $font;
 							font-size: 13px;
@@ -233,8 +235,8 @@
 										height: 45px;
 										gap: 5px;
 										border-radius: 2px;
-										border: 1px solid #eee;
-										background: #eb6753;
+										border: 1px solid rgba(18, 13, 83, 0.2);
+										background: linear-gradient(135deg, #120d53 0%, #16206e 100%);
 										p {
 											color: #fff;
 											font-family: $font;
@@ -303,7 +305,7 @@
 										width: 100.077px;
 										height: 100%;
 										border-radius: 0;
-										background: #eb6753;
+										background: linear-gradient(135deg, #120d53 0%, #16206e 100%);
 										color: #fff;
 										font-family: $font;
 										font-size: 14px;
@@ -326,8 +328,8 @@
 								align-items: center;
 								justify-content: center;
 								padding: 16px 15px;
-								border-bottom: 2px solid #eb6753;
-								color: #eb6753;
+								border-bottom: 2px solid #120d53;
+								color: #120d53;
 								font-family: $font;
 								font-size: 14px;
 								font-style: normal;
@@ -454,9 +456,10 @@
 				color: #e6edf3;
 			}
 			.tab-button.active {
-				background-color: #8B4513 !important;
-				border-color: #8B4513 !important;
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+				border-color: rgba(201, 169, 98, 0.35) !important;
 				color: #fff !important;
+				box-shadow: 0 4px 14px rgba(18, 13, 83, 0.4);
 			}
 		}
 		.community-detail-config .title-box {
@@ -487,7 +490,7 @@
 				p { color: #e6edf3 !important; }
 			}
 		}
-		.comments .comments-title { color: #eb6753 !important; }
+		.comments .comments-title { color: #a5b4fc !important; border-bottom-color: #16206e !important; }
 		.comments-box .main-comment {
 			border-color: #30363d !important;
 			background: #21262d !important;

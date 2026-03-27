@@ -231,7 +231,9 @@ const Filter = (props: FilterType) => {
 				{/* Search Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Search</Typography>
+						<Typography component="span" variant="subtitle2">
+							Search
+						</Typography>
 					</Box>
 					<Stack className={'search-content'}>
 						<TextField
@@ -242,7 +244,7 @@ const Filter = (props: FilterType) => {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position="start">
-										<SearchIcon style={{ color: '#8B4513' }} />
+										<SearchIcon />
 									</InputAdornment>
 								),
 							}}
@@ -254,7 +256,9 @@ const Filter = (props: FilterType) => {
 				{/* Category Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Category</Typography>
+						<Typography component="span" variant="subtitle2">
+							Category
+						</Typography>
 					</Box>
 					<Stack className={'category-list'}>
 						{(() => {
@@ -291,7 +295,9 @@ const Filter = (props: FilterType) => {
 				{/* Hot Deals Section */}
 				<Stack className={'filter-section'} mb={'30px'}>
 					<Box component={'div'} className={'section-header'}>
-						<Typography style={{color: "#ffffff"}}>Hot Deals</Typography>
+						<Typography component="span" variant="subtitle2">
+							Hot Deals
+						</Typography>
 					</Box>
 					{hotDeals.length > 0 && (
 						<Stack className={'hot-deals-wrapper'}>

@@ -430,10 +430,7 @@ const withLayoutBasic = (Component: any) => {
 											height: 40,
 											minWidth: 40,
 											borderRadius: '50%',
-											backgroundColor: 'rgba(201, 169, 98, 0.4) !important',
-											color: '#c9a962 !important',
-											'&:hover': { backgroundColor: 'rgba(201, 169, 98, 0.6) !important', color: '#e8dcc8 !important' },
-											'& svg': { fontSize: 22 }
+											'& svg': { fontSize: 22 },
 										}}
 									>
 										<MenuIcon />
@@ -455,9 +452,11 @@ const withLayoutBasic = (Component: any) => {
 									maxWidth: '100%',
 									height: 'auto',
 									maxHeight: '50vh',
-									background: 'rgba(41, 125, 222, 0.04)',
+									background:
+										'linear-gradient(180deg, rgba(18, 13, 83, 0.07) 0%, rgba(22, 32, 110, 0.09) 100%)',
 									backdropFilter: 'blur(12px)',
 									boxSizing: 'border-box',
+									borderBottom: '1px solid rgba(18, 13, 83, 0.14)',
 								},
 							}}
 						>

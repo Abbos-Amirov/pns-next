@@ -281,12 +281,12 @@ a.support-menu-card {
 	transform: rotate(180deg);
 }
 
-/* Product, Experts, Support, Home – ajralib turishi (LayoutBasic navbar-dark) */
+/* Product, Experts, Support, Home – LayoutBasic navbar (oq fon ustida) */
 .product-link-dark,
 .home-link-dark,
 .measurer-link-dark,
 .support-link-dark {
-	color: rgba(201, 169, 98, 0.95) !important;
+	color: #252420 !important;
 	font-weight: 600 !important;
 }
 
@@ -294,13 +294,13 @@ a.support-menu-card {
 .home-link-dark.is-open,
 .measurer-link-dark.is-open,
 .support-link-dark.is-open {
-	color: #c9a962 !important;
+	color: #120d53 !important;
 }
 
 .home-link-dark .dropdown-icon-dark {
-	color: rgba(201, 169, 98, 0.95) !important;
+	color: #252420 !important;
 }
 
 .home-link-dark.is-open .dropdown-icon-dark {
-	color: #c9a962 !important;
+	color: #120d53 !important;
 }

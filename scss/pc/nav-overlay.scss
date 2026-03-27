@@ -8,6 +8,11 @@
 	}
 }
 
+[data-theme='dark'] .nav-overlay-drawer .MuiDrawer-paper {
+	background: linear-gradient(180deg, rgba(18, 13, 83, 0.22) 0%, rgba(10, 8, 20, 0.92) 100%) !important;
+	border-bottom: 1px solid rgba(165, 180, 252, 0.15) !important;
+}
+
 .nav-overlay-panel {
 	display: flex;
 	flex-direction: column;
@@ -40,7 +45,7 @@
 			color: #e8e6e3 !important;
 		}
 		&:hover {
-			background: rgba(41, 125, 222, 0.1) !important;
+			background: rgba(18, 13, 83, 0.12) !important;
 		}
 	}
 }
@@ -71,14 +76,14 @@
 	background: rgba(255, 255, 255, 0.6);
 	border-radius: 12px;
 	overflow: hidden;
-	border: 1px solid rgba(41, 125, 222, 0.12);
+	border: 1px solid rgba(18, 13, 83, 0.12);
 	transition: all 0.3s ease;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+	box-shadow: 0 4px 12px rgba(18, 13, 83, 0.06);
 
 	&:hover {
 		transform: translateY(-4px);
-		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-		border-color: rgba(41, 125, 222, 0.25);
+		box-shadow: 0 12px 24px rgba(18, 13, 83, 0.14);
+		border-color: rgba(18, 13, 83, 0.28);
 		background: rgba(255, 255, 255, 0.85);
 
 		.nav-overlay-card-image img {
@@ -91,16 +96,16 @@
 .nav-overlay-panel[data-theme='dark'] {
 	.nav-overlay-card {
 		background: rgba(255, 255, 255, 0.05);
-		border-color: rgba(255, 255, 255, 0.08);
+		border-color: rgba(165, 180, 252, 0.12);
 
 		&:hover {
 			background: rgba(255, 255, 255, 0.1);
-			border-color: rgba(201, 169, 98, 0.3);
+			border-color: rgba(165, 180, 252, 0.35);
 		}
 	}
 	.nav-overlay-close { color: #e8e6e3 !important; }
 	.nav-overlay-card-label { color: #e8e6e3 !important; background: rgba(0, 0, 0, 0.15); }
-	.nav-overlay-tagline { color: #c9a962 !important; }
+	.nav-overlay-tagline { color: #a5b4fc !important; }
 }
 
 .nav-overlay-card-image {
@@ -127,7 +132,7 @@
 	letter-spacing: 0.8px !important;
 	text-align: center;
 	color: #252420 !important;
-	background: rgba(0, 0, 0, 0.02);
+	background: rgba(18, 13, 83, 0.04);
 
 	[data-theme='dark'] & {
 		color: #e8e6e3 !important;
@@ -140,17 +145,17 @@
 	padding-top: 32px;
 	text-align: center;
 	flex-shrink: 0;
-	border-top: 1px solid rgba(41, 125, 222, 0.12);
+	border-top: 1px solid rgba(18, 13, 83, 0.14);
 }
 
 .nav-overlay-tagline {
 	font-family: $font !important;
 	font-size: 18px !important;
 	font-weight: 600 !important;
-	color: #1a5f9e !important;
+	color: #120d53 !important;
 	letter-spacing: 0.5px;
 
 	[data-theme='dark'] & {
-		color: #c9a962 !important;
+		color: #a5b4fc !important;
 	}
 }
