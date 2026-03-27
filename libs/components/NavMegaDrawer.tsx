@@ -73,6 +73,9 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 		};
 	}, [open, panel]);
 
+	const enterEase = 'cubic-bezier(0.16, 1, 0.3, 1)';
+	const exitEase = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
 	return (
 		<Drawer
 			anchor="top"
@@ -80,6 +83,13 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 			onClose={onClose}
 			className="nav-overlay-drawer nav-mega-drawer"
 			disableScrollLock={false}
+			transitionDuration={{ enter: 480, exit: 300 }}
+			SlideProps={{
+				easing: {
+					enter: enterEase,
+					exit: exitEase,
+				},
+			}}
 			ModalProps={{
 				keepMounted: false,
 				disableEnforceFocus: true,
@@ -93,8 +103,8 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 					right: 0,
 					pointerEvents: 'auto',
 					backgroundColor: 'rgba(8, 10, 16, 0.58)',
-					backdropFilter: 'blur(3px)',
-					WebkitBackdropFilter: 'blur(3px)',
+					backdropFilter: 'blur(4px)',
+					WebkitBackdropFilter: 'blur(4px)',
 				},
 			}}
 			sx={{
@@ -112,13 +122,15 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 					right: 0,
 					bottom: 'auto',
 					margin: 0,
-					borderRadius: 0,
+					borderRadius: '0 0 20px 20px',
 					boxSizing: 'border-box',
 					background: 'linear-gradient(180deg, #2f3541 0%, #2a2f3a 48%, #262b35 100%)',
 					color: '#e8eaef',
 					borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-					boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)',
+					boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04)',
 					overflowY: 'auto',
+					transformOrigin: 'top center',
+					willChange: 'transform',
 				},
 			}}
 		>

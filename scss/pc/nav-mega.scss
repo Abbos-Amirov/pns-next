@@ -14,6 +14,28 @@
 	min-height: 0;
 }
 
+@keyframes navMegaHeaderIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes navMegaCardIn {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 .nav-mega-header {
 	display: flex;
 	align-items: center;
@@ -22,6 +44,8 @@
 	flex-shrink: 0;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	margin-bottom: 8px;
+	animation: navMegaHeaderIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation-delay: 0.08s;
 }
 
 .nav-mega-header-left {
@@ -106,6 +130,14 @@
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 		background: rgba(255, 255, 255, 0.06);
+		opacity: 0;
+		animation: navMegaCardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+		@for $i from 1 through 8 {
+			&:nth-child(#{$i}) {
+				animation-delay: #{0.1 + $i * 0.055}s;
+			}
+		}
 
 		&:hover {
 			border-color: rgba(255, 255, 255, 0.22);
@@ -113,6 +145,15 @@
 			transform: translateY(-3px);
 		}
 	}
+}
+
+/* Mega menyuda rasm hover — silliq zoom (nav-overlay bilan mos) */
+.nav-mega-grid .nav-mega-card.nav-overlay-card .nav-mega-card-image img {
+	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-mega-grid .nav-mega-card.nav-overlay-card:hover .nav-mega-card-image img {
+	transform: scale(1.05);
 }
 
 .nav-mega-card-image.nav-overlay-card-image {
