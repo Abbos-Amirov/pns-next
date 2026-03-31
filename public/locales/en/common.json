@@ -186,7 +186,6 @@
   "FooterSupportCenter": "Support Center",
   "FooterCopyright": "©{{year}} PNS DEV. All Rights Reserved.",
   "UyDizayneri": "Interior Designer",
-
   "OurServicesSubtitle": "Request professional service based on your property type. We deliver excellence for every home.",
   "ServiceTypeApartment": "Apartment / High-rise Building",
   "ServiceTypeHouse": "Private House / Single-floor House",
@@ -208,7 +207,6 @@
   "ImageUploadMax": "Up to 4 images (JPG, PNG)",
   "ImageUploadSuccess": "Uploaded",
   "SubmitServiceRequest": "Submit request",
-
   "OurServicesHeroBadge": "TRUSTED SERVICES",
   "OurServicesHeroTitle": "Our Services",
   "OurServicesHeroSubtitle": "Professional window and door solutions for every property type.",
@@ -235,7 +233,6 @@
   "OurServicesCTATitle": "Need help with your windows or doors?",
   "OurServicesCTASubtitle": "Request a service today and our team will contact you.",
   "OurServicesCTABtn": "Request Service Today",
-
   "ServiceNewWindow": "New Window Installation",
   "ServiceNewWindowDesc": "Professional installation of new windows for better comfort, insulation, and modern appearance.",
   "ServiceNewDoor": "New Door Installation",
@@ -256,7 +253,6 @@
   "ServiceSlidingDoorDesc": "Installation and repair service for sliding door systems.",
   "ServiceAfterSupport": "After-Installation Support",
   "ServiceAfterSupportDesc": "Ongoing support if any issue appears after installation.",
-
   "AboutHeroTitle": "About PNS Window",
   "AboutHeroSubtitle": "Delivering reliable window and door solutions for modern homes and buildings.",
   "AboutHeroDesc": "PNS Window specializes in professional window and door installation, replacement, and maintenance. We focus on quality craftsmanship, durable materials, and reliable service for every customer.",
@@ -313,7 +309,6 @@
   "JoinPromoSubtitle": "Quality You See. Comfort You Feel. Experience durable, stylish, and energy-efficient doors and windows crafted for every home.",
   "JoinPromoMain": "Open your home the smart way.",
   "JoinPromoSecondary": "Experience the world your way!",
-
   "AdminWelcomeBack": "Welcome back, {{name}}! 👋",
   "AdminHereIsWhatsHappening": "Here's what's happening with your platform today.",
   "AdminTotalUsers": "Total Users",
@@ -341,7 +336,6 @@
   "Admin1to1Inquiry": "1:1 Inquiry",
   "AdminCs": "Support",
   "AdminNoPhone": "No phone",
-
   "MyPageManageListings": "MANAGE LISTINGS",
   "MyPageAddProperty": "Add Property",
   "MyPageMyProperties": "My Properties",
@@ -356,12 +350,10 @@
   "MyPageManageAccount": "MANAGE ACCOUNT",
   "MyPageNoPhone": "No phone",
   "MyPageLogoutConfirm": "Do you want to logout?",
-
   "WindowLineupTitle": "All premium wide view window system",
   "WindowLineupSubtitle": "The renewed product lineup",
   "WindowLineupDesc": "Enhanced window performance with a stronger frame application",
   "WindowLineupProductSlimTT": "Slim T/T window",
-
   "HardwareShowcaseTitle": "Hardware refined down to the details",
   "HardwareShowcaseSubtitle": "Anodized handles, auto-locking, easy-open, and clean bumpers — carefully selected accessory hardware applied as standard throughout.",
   "HardwareShowcaseItem1": "LINEA handle as standard: straight, simple anodized design with built-in push auto-lock",
@@ -369,7 +361,6 @@
   "HardwareShowcaseItem3": "System kitchen window supplied as standard",
   "HardwareShowcaseItem4": "White sash clean bumpers",
   "HardwareShowcaseItem5": "Automatic-handle easy-open supplied as standard",
-
   "PnsPdfSectionTitle": "Product & catalog PDFs",
   "PnsPdfSectionSubtitle": "Official PNS Window documentation",
   "PnsPdfSectionDesc": "Open brochures and technical sheets in your browser. Each file opens in a new tab.",
@@ -382,7 +373,6 @@
   "PnsPdfItem6Title": "Documentation · volume 4",
   "PnsPdfItem7Title": "Documentation · volume 5",
   "PnsPdfItem8Title": "Documentation · volume 6",
-
   "CsHeroTitle": "Customer Service Center",
   "CsHeroSubtitle": "We're here to help you with any questions",
   "CsTabNotice": "Notice",
@@ -410,7 +400,73 @@
   "FaqBadgeA": "A",
   "CsPageMobile": "Support (mobile view coming soon)",
   "CsNoticeMobile": "Notices (mobile view coming soon)",
-  "CsFaqMobile": "FAQ (mobile view coming soon)"
+  "CsFaqMobile": "FAQ (mobile view coming soon)",
+  "PnsHistoryNav": "PNS history",
+  "PnsHistoryPageTitle": "PNS history",
+  "PnsHistoryPageSubtitle": "Eco-friendly milestones in PNS windows — from materials to certification and beyond.",
+  "PnsHistoryNewsSectionTitle": "Eco-friendly NEWS",
+  "PnsHistoryNewsMore": "Learn more",
+  "PnsHistoryNews1Meta": "Maeil Business Newspaper (2014.02.17)",
+  "PnsHistoryNews1Title": "PNS Deojon Sash rises as a new leader in windows with eco-friendly sash",
+  "PnsHistoryNews1Body": "A TV ad featuring Kim Tae-hee highlights PNS Deojon Sash. The company leads the Busan–Gyeongnam market with eco-friendly PVC windows, in-house R&D since 2010, and a dedicated plant in Cheonan.",
+  "PnsHistoryNews2Meta": "Chemical Journal (2014.08.18)",
+  "PnsHistoryNews2Title": "LG and KCC pushed by PNS toward “non-toxic” transition",
+  "PnsHistoryNews2Body": "The domestic PVC stabilizer market is shifting from lead to non-toxic products. Major sash makers have accelerated non-toxic stabilizers since 2014 as environmental requirements tighten.",
+  "PnsHistoryYear2013": [
+    "Industry-first lead-free stabilizer (eco-friendly raw material) introduced in Korea",
+    "Korea Consumer Trust Representative Brand Grand Prize",
+    "Largest single-site PVC window factory in Korea established (Cheonan)",
+    "45 extrusion lines — 50,400 tons/year production capacity"
+  ],
+  "PnsHistoryYear2014": [
+    "Green technology and carbon emission certifications obtained",
+    "Korea Consumer Trust Representative Brand Grand Prize — two years in a row",
+    "Industry-first eco-friendly themed terrestrial and viral advertising"
+  ],
+  "PnsHistoryYear2015": [
+    "“Plastic Industry Day” — Minister of Trade, Industry and Energy Commendation",
+    "Industry-first eco-friendly themed terrestrial and viral advertising"
+  ],
+  "PnsHistoryYear2016": [
+    "Presidential Commendation at the Korea Green Management Awards"
+  ],
+  "PnsHistoryYear2017": [
+    "Agreement signed for environmental footprint (carbon footprint) calculation support project"
+  ],
+  "PnsHistoryYear2018": [
+    "ISO 14001 environmental management system scope expanded across plants",
+    "Smart factory pilot line and digital production monitoring introduced"
+  ],
+  "PnsHistoryYear2019": [
+    "Contributed to green building and low-carbon building material programs",
+    "Export channels expanded in Southeast Asia"
+  ],
+  "PnsHistoryYear2020": [
+    "Non-toxic PVC stabilizer portfolio aligned with EU REACH expectations",
+    "Remote customer service and digital consultation scaled up"
+  ],
+  "PnsHistoryYear2021": [
+    "Carbon reduction roadmap toward 2030 published",
+    "Energy-efficient window line recognized in industry assessments"
+  ],
+  "PnsHistoryYear2022": [
+    "First ESG disclosure highlighting eco-innovation and governance",
+    "Partnerships for recycled and traceable raw materials strengthened"
+  ],
+  "PnsHistoryYear2023": [
+    "Zero-waste and circular initiatives expanded at the Cheonan plant",
+    "Sustainable manufacturing award in the building materials sector"
+  ],
+  "PnsHistoryYear2024": [
+    "Smart energy monitoring deployed across major production lines",
+    "Major Korean certifications and eco labels renewed"
+  ],
+  "PnsHistoryYear2025": [
+    "Next-generation low-carbon window profiles in mass production",
+    "Green innovation award for eco product development"
+  ],
+  "PnsHistoryYear2026": [
+    "Scope 3 carbon disclosure roadmap and supplier engagement program",
+    "Asia–Pacific eco-innovation partnerships for sustainable windows"
+  ]
 }
-
-

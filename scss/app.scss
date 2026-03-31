@@ -1439,4 +1439,37 @@ hr {
 			color: rgba(255, 255, 255, 0.92) !important;
 		}
 	}
+
+	/* PNS History — dark mode */
+	#pc-wrap .pns-history-page-root,
+	#mobile-wrap .pns-history-page-root {
+		background: #0d0d0d !important;
+	}
+	.pns-history-page {
+		.pns-history-hero-title {
+			color: #e6edf3 !important;
+		}
+		.pns-history-hero-subtitle {
+			color: rgba(255, 255, 255, 0.68) !important;
+		}
+		.pns-history-year-label {
+			color: #e6edf3 !important;
+		}
+		.pns-history-event-line {
+			color: rgba(255, 255, 255, 0.78) !important;
+		}
+		.pns-history-rail {
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+		}
+		.pns-history-rail::before {
+			background: #d4a574 !important;
+			box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.25) !important;
+		}
+		.pns-history-news-section {
+			border-top-color: rgba(255, 255, 255, 0.1) !important;
+		}
+		.pns-history-news-heading {
+			color: #e6edf3 !important;
+		}
+	}
 }

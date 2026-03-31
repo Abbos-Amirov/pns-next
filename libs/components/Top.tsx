@@ -626,6 +626,12 @@ const Top = () => {
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('Support')}</span>
 							</Link>
+							<Link href={'/pns-history/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/banner/properties.png'} alt={t('PnsHistoryNav')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('PnsHistoryNav')}</span>
+							</Link>
 							<Link href={'/repair-maintenance'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
 									<img src={'/img/support/our-services.png'} alt={t('RepairMaintenanceService')} />

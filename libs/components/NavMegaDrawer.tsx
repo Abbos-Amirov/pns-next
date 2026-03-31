@@ -26,6 +26,7 @@ export const MEGA_ITEMS: Record<
 	support: [
 		{ href: '/our-services', labelKey: 'OurServices', img: '/img/support/our-services.png' },
 		{ href: '/cs', labelKey: 'Support', img: '/img/support/support.png' },
+		{ href: '/pns-history/', labelKey: 'PnsHistoryNav', img: '/img/banner/properties.png' },
 		{ href: '/repair-maintenance', labelKey: 'RepairMaintenanceService', img: '/img/support/our-services.png' },
 		{ href: '/about-me', labelKey: 'AboutMe', img: '/img/support/about-me.png' },
 		{ href: '/contact-us', labelKey: 'ContactUs', img: '/img/contact/contact-hero.png' },
@@ -58,7 +59,7 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 						: '';
 
 	const gridClass =
-		panel === 'support' ? 'nav-mega-grid nav-mega-grid--5' : 'nav-mega-grid nav-mega-grid--2';
+		panel === 'support' ? 'nav-mega-grid nav-mega-grid--6' : 'nav-mega-grid nav-mega-grid--2';
 
 	useLayoutEffect(() => {
 		if (!open) return;
