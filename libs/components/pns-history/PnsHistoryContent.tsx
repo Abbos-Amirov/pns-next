@@ -25,10 +25,16 @@ const NEWS: NewsItem[] = [
 ];
 
 const PnsHistoryContent: React.FC = () => {
-	const { t } = useTranslation('common');
+	const { t, i18n } = useTranslation('common');
 
 	const linesForYear = (year: number): string[] => {
 		const key = `PnsHistoryYear${year}`;
+		// Massivlar ba'zan faqat `t(returnObjects)` bilan emas, to'g'ridan-to'g'ri resursdan o'qilishi kerak
+		const bundle = i18n.getResourceBundle(i18n.language, 'common') as Record<string, unknown> | undefined;
+		const fromBundle = bundle?.[key];
+		if (Array.isArray(fromBundle)) {
+			return fromBundle as string[];
+		}
 		const raw = t(key, { returnObjects: true });
 		return Array.isArray(raw) ? (raw as string[]) : [];
 	};

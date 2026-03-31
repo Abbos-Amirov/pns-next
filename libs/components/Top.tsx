@@ -596,7 +596,7 @@ const Top = () => {
 							</Link>
 							<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/banner/properties.png'} alt={t('City')} />
+									<img src={'/img/banner/city pns.avif'} alt={t('City')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('City')}</span>
 							</Link>
@@ -628,7 +628,7 @@ const Top = () => {
 							</Link>
 							<Link href={'/pns-history/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/banner/properties.png'} alt={t('PnsHistoryNav')} />
+									<img src={'/img/contact/contact-hero.png'} alt={t('PnsHistoryNav')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('PnsHistoryNav')}</span>
 							</Link>
@@ -646,7 +646,7 @@ const Top = () => {
 							</Link>
 							<Link href={'/contact-us'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/contact/contact-hero.png'} alt={t('ContactUs')} />
+									<img src={'/img/support/images.jpeg'} alt={t('ContactUs')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('ContactUs')}</span>
 							</Link>

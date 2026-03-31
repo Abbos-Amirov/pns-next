@@ -26,10 +26,10 @@ export const MEGA_ITEMS: Record<
 	support: [
 		{ href: '/our-services', labelKey: 'OurServices', img: '/img/support/our-services.png' },
 		{ href: '/cs', labelKey: 'Support', img: '/img/support/support.png' },
-		{ href: '/pns-history/', labelKey: 'PnsHistoryNav', img: '/img/banner/properties.png' },
+		{ href: '/pns-history/', labelKey: 'PnsHistoryNav', img: '/img/contact/contact-hero.png' },
 		{ href: '/repair-maintenance', labelKey: 'RepairMaintenanceService', img: '/img/support/our-services.png' },
 		{ href: '/about-me', labelKey: 'AboutMe', img: '/img/support/about-me.png' },
-		{ href: '/contact-us', labelKey: 'ContactUs', img: '/img/contact/contact-hero.png' },
+		{ href: '/contact-us', labelKey: 'ContactUs', img: '/img/support/images.jpeg' },
 	],
 };
 
