@@ -344,5 +344,10 @@
   "MyPageWriteArticle": "글쓰기",
   "MyPageManageAccount": "계정 관리",
   "MyPageNoPhone": "전화번호 없음",
-  "MyPageLogoutConfirm": "로그아웃하시겠습니까?"
+  "MyPageLogoutConfirm": "로그아웃하시겠습니까?",
+
+  "WindowLineupTitle": "올 프리미엄 와이드 뷰 윈도우 시스템",
+  "WindowLineupSubtitle": "새로워진 제품 라인업",
+  "WindowLineupDesc": "더욱더 강력해진 Frame 적용으로 향상된 창의 성능",
+  "WindowLineupProductSlimTT": "슬림 T/T창"
 }

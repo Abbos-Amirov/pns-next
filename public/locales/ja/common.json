@@ -415,5 +415,10 @@
 	"MyPageWriteArticle": "記事を書く",
 	"MyPageManageAccount": "アカウント管理",
 	"MyPageNoPhone": "電話番号なし",
-	"MyPageLogoutConfirm": "ログアウトしますか？"
+	"MyPageLogoutConfirm": "ログアウトしますか？",
+
+	"WindowLineupTitle": "オールプレミアム ワイドビュー窓システム",
+	"WindowLineupSubtitle": "生まれ変わった製品ラインナップ",
+	"WindowLineupDesc": "より強力なフレーム適用で向上した窓の性能",
+	"WindowLineupProductSlimTT": "スリム T/T窓"
 }

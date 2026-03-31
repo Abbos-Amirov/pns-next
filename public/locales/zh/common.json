@@ -190,5 +190,10 @@
   "MyPageWriteArticle": "写文章",
   "MyPageManageAccount": "账户管理",
   "MyPageNoPhone": "无电话",
-  "MyPageLogoutConfirm": "确定要退出登录吗？"
+  "MyPageLogoutConfirm": "确定要退出登录吗？",
+
+  "WindowLineupTitle": "全系列高级宽视野窗系统",
+  "WindowLineupSubtitle": "焕然一新的产品阵容",
+  "WindowLineupDesc": "更强的型材应用，提升窗户性能",
+  "WindowLineupProductSlimTT": "纤薄 T/T 窗"
 }

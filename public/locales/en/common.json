@@ -354,7 +354,12 @@
   "MyPageWriteArticle": "Write Article",
   "MyPageManageAccount": "MANAGE ACCOUNT",
   "MyPageNoPhone": "No phone",
-  "MyPageLogoutConfirm": "Do you want to logout?"
+  "MyPageLogoutConfirm": "Do you want to logout?",
+
+  "WindowLineupTitle": "All premium wide view window system",
+  "WindowLineupSubtitle": "The renewed product lineup",
+  "WindowLineupDesc": "Enhanced window performance with a stronger frame application",
+  "WindowLineupProductSlimTT": "Slim T/T window"
 }
 
 

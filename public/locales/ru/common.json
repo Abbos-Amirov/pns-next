@@ -345,5 +345,10 @@
   "MyPageWriteArticle": "Написать статью",
   "MyPageManageAccount": "АККАУНТ",
   "MyPageNoPhone": "Нет телефона",
-  "MyPageLogoutConfirm": "Выйти из аккаунта?"
+  "MyPageLogoutConfirm": "Выйти из аккаунта?",
+
+  "WindowLineupTitle": "Премиальная широкообзорная оконная система",
+  "WindowLineupSubtitle": "Обновлённая линейка продуктов",
+  "WindowLineupDesc": "Повышенная эффективность окон благодаря более прочному каркасу",
+  "WindowLineupProductSlimTT": "Slim T/T окно"
 }

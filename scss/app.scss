@@ -1342,4 +1342,23 @@ hr {
 			border-bottom-color: #444 !important;
 		}
 	}
+
+	/* Homepage: window lineup (Advertisement) — dark mode */
+	#pc-wrap .home-page .window-lineup-section,
+	#mobile-wrap .window-lineup-section {
+		background: #0d0d0d !important;
+		.window-lineup-title,
+		.window-lineup-subtitle {
+			color: #e6edf3 !important;
+		}
+		.window-lineup-desc {
+			color: rgba(255, 255, 255, 0.68) !important;
+		}
+		.window-lineup-card-media {
+			background: #252525 !important;
+		}
+		.window-lineup-card-label {
+			color: #e6edf3 !important;
+		}
+	}
 }
