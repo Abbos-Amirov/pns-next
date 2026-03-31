@@ -203,5 +203,18 @@
   "HardwareShowcaseItem2": "对开联动窗标配双向自动锁拉手",
   "HardwareShowcaseItem3": "标配系统厨房窗",
   "HardwareShowcaseItem4": "白色窗扇防撞条",
-  "HardwareShowcaseItem5": "标配自动拉手易开启"
+  "HardwareShowcaseItem5": "标配自动拉手易开启",
+
+  "PnsPdfSectionTitle": "产品与目录 PDF",
+  "PnsPdfSectionSubtitle": "PNS Window 官方资料",
+  "PnsPdfSectionDesc": "在浏览器中打开手册与技术资料，将在新标签页中显示。",
+  "PnsPdfOpenPdf": "打开 PDF",
+  "PnsPdfItem1Title": "目录概览（#11）",
+  "PnsPdfItem2Title": "主产品手册",
+  "PnsPdfItem3Title": "Garman 系列",
+  "PnsPdfItem4Title": "资料 · 第2册",
+  "PnsPdfItem5Title": "资料 · 第3册",
+  "PnsPdfItem6Title": "资料 · 第4册",
+  "PnsPdfItem7Title": "资料 · 第5册",
+  "PnsPdfItem8Title": "资料 · 第6册"
 }

@@ -12,6 +12,7 @@ import { Stack } from '@mui/material';
 import Advertisement from '../libs/components/homepage/Advertisement';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Hendel from '../libs/components/homepage/Hendel';
+import PnsPdf from '../libs/components/homepage/PnsPdf';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -32,6 +33,7 @@ const Home: NextPage = () => {
 				<Advertisement />
 				<TopProperties />
 				<TopMeasurers />
+				<PnsPdf />
 			</Stack>
 		);
 	} else {
@@ -40,11 +42,13 @@ const Home: NextPage = () => {
 				<Brand />
 				<PopularProducts />
 				<TrendProperties />
-				<Hendel />
+				
 				<Advertisement />
+				<Hendel />
 				<TopMeasurers />
 				<Events />
-				<CommunityBoards />
+				<PnsPdf />
+				{/* <CommunityBoards /> */}
 			</Stack>
 		);
 	}

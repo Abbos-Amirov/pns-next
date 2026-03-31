@@ -358,5 +358,18 @@
   "HardwareShowcaseItem2": "분합창의 양방향 오토라킹 핸들 기본적용",
   "HardwareShowcaseItem3": "시스템 주방창 기본적용",
   "HardwareShowcaseItem4": "흰색의 창짝 클린범퍼",
-  "HardwareShowcaseItem5": "자동핸들 이지오픈 기본 적용"
+  "HardwareShowcaseItem5": "자동핸들 이지오픈 기본 적용",
+
+  "PnsPdfSectionTitle": "제품 및 카탈로그 PDF",
+  "PnsPdfSectionSubtitle": "PNS Window 공식 문서",
+  "PnsPdfSectionDesc": "브로슈어와 기술 자료를 브라우저에서 바로 확인하세요. 새 탭에서 열립니다.",
+  "PnsPdfOpenPdf": "PDF 열기",
+  "PnsPdfItem1Title": "카탈로그 개요 (#11)",
+  "PnsPdfItem2Title": "메인 제품 브로슈어",
+  "PnsPdfItem3Title": "Garman 시리즈",
+  "PnsPdfItem4Title": "Documentation · 2권",
+  "PnsPdfItem5Title": "Documentation · 3권",
+  "PnsPdfItem6Title": "Documentation · 4권",
+  "PnsPdfItem7Title": "Documentation · 5권",
+  "PnsPdfItem8Title": "Documentation · 6권"
 }

@@ -368,7 +368,20 @@
   "HardwareShowcaseItem2": "Two-way auto-locking handle for coupled sashes supplied as standard",
   "HardwareShowcaseItem3": "System kitchen window supplied as standard",
   "HardwareShowcaseItem4": "White sash clean bumpers",
-  "HardwareShowcaseItem5": "Automatic-handle easy-open supplied as standard"
+  "HardwareShowcaseItem5": "Automatic-handle easy-open supplied as standard",
+
+  "PnsPdfSectionTitle": "Product & catalog PDFs",
+  "PnsPdfSectionSubtitle": "Official PNS Window documentation",
+  "PnsPdfSectionDesc": "Open brochures and technical sheets in your browser. Each file opens in a new tab.",
+  "PnsPdfOpenPdf": "Open PDF",
+  "PnsPdfItem1Title": "Catalog overview (#11)",
+  "PnsPdfItem2Title": "Main product brochure",
+  "PnsPdfItem3Title": "Garman series",
+  "PnsPdfItem4Title": "Documentation · volume 2",
+  "PnsPdfItem5Title": "Documentation · volume 3",
+  "PnsPdfItem6Title": "Documentation · volume 4",
+  "PnsPdfItem7Title": "Documentation · volume 5",
+  "PnsPdfItem8Title": "Documentation · volume 6"
 }
 
 

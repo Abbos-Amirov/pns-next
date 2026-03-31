@@ -429,5 +429,18 @@
 	"HardwareShowcaseItem2": "連結窓用の双方向オートラッチハンドルを標準装備",
 	"HardwareShowcaseItem3": "システムキッチン窓を標準装備",
 	"HardwareShowcaseItem4": "白いサッシュのクリーンバンパー",
-	"HardwareShowcaseItem5": "オートハンドル・イージーオープンを標準適用"
+	"HardwareShowcaseItem5": "オートハンドル・イージーオープンを標準適用",
+
+	"PnsPdfSectionTitle": "製品・カタログPDF",
+	"PnsPdfSectionSubtitle": "PNS Window 公式ドキュメント",
+	"PnsPdfSectionDesc": "ブラウザでブロシュアや技術資料を開けます。新しいタブで表示されます。",
+	"PnsPdfOpenPdf": "PDFを開く",
+	"PnsPdfItem1Title": "カタログ概要（#11）",
+	"PnsPdfItem2Title": "メイン製品ブロシュア",
+	"PnsPdfItem3Title": "Garmanシリーズ",
+	"PnsPdfItem4Title": "資料 · 第2巻",
+	"PnsPdfItem5Title": "資料 · 第3巻",
+	"PnsPdfItem6Title": "資料 · 第4巻",
+	"PnsPdfItem7Title": "資料 · 第5巻",
+	"PnsPdfItem8Title": "資料 · 第6巻"
 }

@@ -1408,4 +1408,35 @@ hr {
 			color: rgba(230, 237, 243, 0.88) !important;
 		}
 	}
+
+	#pc-wrap .home-page .pns-pdf-section,
+	#mobile-wrap .pns-pdf-section {
+		background: #0d0d0d !important;
+		border-top-color: rgba(255, 255, 255, 0.08) !important;
+		.pns-pdf-title {
+			color: #e6edf3 !important;
+		}
+		.pns-pdf-subtitle {
+			color: #d4a574 !important;
+		}
+		.pns-pdf-desc {
+			color: rgba(255, 255, 255, 0.68) !important;
+		}
+		.pns-pdf-gallery {
+			scrollbar-color: rgba(212, 165, 116, 0.5) rgba(255, 255, 255, 0.08) !important;
+		}
+		.pns-pdf-card:hover .pns-pdf-card-visual {
+			box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55) !important;
+		}
+		.pns-pdf-card-visual {
+			border-color: rgba(212, 165, 116, 0.28) !important;
+			background: #141414 !important;
+		}
+		.pns-pdf-card-title {
+			color: #ffffff !important;
+		}
+		.pns-pdf-card-cta {
+			color: rgba(255, 255, 255, 0.92) !important;
+		}
+	}
 }

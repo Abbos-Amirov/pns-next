@@ -359,5 +359,18 @@
   "HardwareShowcaseItem2": "Двусторонняя автозапирающая ручка для парных створок в базовой комплектации",
   "HardwareShowcaseItem3": "Системное кухонное окно в базовой комплектации",
   "HardwareShowcaseItem4": "Белые чистые отбойники на створке",
-  "HardwareShowcaseItem5": "Easy-open с автоматической ручкой в базовой комплектации"
+  "HardwareShowcaseItem5": "Easy-open с автоматической ручкой в базовой комплектации",
+
+  "PnsPdfSectionTitle": "PDF каталоги и документация",
+  "PnsPdfSectionSubtitle": "Официальные материалы PNS Window",
+  "PnsPdfSectionDesc": "Откройте брошюры и технические листы в браузере. Файл откроется в новой вкладке.",
+  "PnsPdfOpenPdf": "Открыть PDF",
+  "PnsPdfItem1Title": "Обзор каталога (#11)",
+  "PnsPdfItem2Title": "Основная брошюра",
+  "PnsPdfItem3Title": "Серия Garman",
+  "PnsPdfItem4Title": "Документация · том 2",
+  "PnsPdfItem5Title": "Документация · том 3",
+  "PnsPdfItem6Title": "Документация · том 4",
+  "PnsPdfItem7Title": "Документация · том 5",
+  "PnsPdfItem8Title": "Документация · том 6"
 }
