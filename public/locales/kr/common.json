@@ -25,6 +25,7 @@
   "TotalProducts": "총 {{count}}개 제품",
   "PropertyDescDefault": "우수한 기능을 갖춘 고품질 제품입니다.",
   "MeasurerDescDefault": "전문 측정사",
+  "MeasurerEducationPlaceholder": "미입력",
   "PropertiesMobile": "제품 모바일",
   "Home": "홈",
   "Products": "제품",

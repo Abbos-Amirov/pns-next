@@ -14,6 +14,10 @@ export interface Member {
 	memberImage?: string;
 	memberAddress?: string;
 	memberDesc?: string;
+	/** Professional experience (API / admin). Shown on Top Measurers cards. */
+	memberExperience?: string;
+	/** Education background (API / admin). Shown on Top Measurers cards. */
+	memberEducation?: string;
 	memberProducts: number;
 	memberRank: number;
 	memberArticles: number;

@@ -763,10 +763,40 @@ hr {
 			&:hover { background: #3a3a3a !important; }
 		}
 		.top-agent-card {
-			strong, span { color: #e0e0e0 !important; }
-			img {
-				border: 2px solid rgba(255, 255, 255, 0.2);
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+			strong,
+			span {
+				color: #e0e0e0 !important;
+			}
+			.top-agent-card-frame {
+				border-color: rgba(255, 255, 255, 0.12) !important;
+				background: linear-gradient(165deg, #2e2e2e 0%, #252525 100%) !important;
+				box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45) !important;
+			}
+			.top-agent-card-excerpt {
+				color: rgba(255, 255, 255, 0.72) !important;
+			}
+			.top-agent-card-excerpt-label {
+				color: #d4a574 !important;
+			}
+			.top-agent-card-hover-panel {
+				background: #2a2a2a !important;
+				border-color: rgba(139, 69, 19, 0.45) !important;
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+			}
+			.top-agent-card-hover-arrow {
+				border-left-color: transparent !important;
+				border-right-color: transparent !important;
+				border-top-color: #2a2a2a !important;
+				border-bottom: none !important;
+			}
+			.top-agent-card-hover-block + .top-agent-card-hover-block {
+				border-top-color: rgba(255, 255, 255, 0.1) !important;
+			}
+			.top-agent-card-hover-label {
+				color: #d4a574 !important;
+			}
+			.top-agent-card-hover-text {
+				color: rgba(230, 237, 243, 0.92) !important;
 			}
 		}
 		.wrapper .card-wrapper { background: transparent !important; }

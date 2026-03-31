@@ -242,9 +242,9 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 				<CardContent>
 					<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
 						<Stack direction={'row'} alignItems={'center'} spacing={2}>
-							<Box
+							<div
 								className={'products-icon-box'}
-								sx={{
+								style={{
 									width: 56,
 									height: 56,
 									borderRadius: '12px',
@@ -256,15 +256,15 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 								}}
 							>
 								<HomeWorkIcon sx={{ fontSize: 32 }} />
-							</Box>
-							<Box>
+							</div>
+							<div>
 								<Typography variant={'h4'} className={'page-title'} sx={{ fontWeight: 700, mb: 0.5 }}>
 									Product Management
 								</Typography>
 								<Typography variant={'body2'} sx={{ color: '#717171' }}>
 									Manage and monitor all products in the platform
 								</Typography>
-							</Box>
+							</div>
 						</Stack>
 						<Stack direction={'row'} spacing={2} alignItems={'center'}>
 							<Chip 
@@ -424,9 +424,9 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 										},
 									}}
 									startAdornment={
-										<Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+										<span style={{ marginRight: 8, display: 'flex', alignItems: 'center' }}>
 											<FilterListIcon sx={{ color: '#8B4513', fontSize: 20 }} />
-										</Box>
+										</span>
 									}
 								>
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
@@ -448,15 +448,15 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 			<Card className={'table-card'}>
 				<CardContent sx={{ p: 0 }}>
 					{loading ? (
-						<Box sx={{ p: 4, textAlign: 'center' }}>
+						<div style={{ padding: 32, textAlign: 'center' }}>
 							<Typography variant={'body2'}>Loading products...</Typography>
-						</Box>
+						</div>
 					) : error ? (
-						<Box sx={{ p: 4, textAlign: 'center' }}>
+						<div style={{ padding: 32, textAlign: 'center' }}>
 							<Typography variant={'body2'} color={'error'}>
 								Error loading products: {error.message}
 							</Typography>
-						</Box>
+						</div>
 					) : (
 						<>
 							<ProductPanelList
@@ -468,7 +468,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 								removeProductHandler={removeProductHandler}
 							/>
 
-							<Box className={'products-pagination-box'}>
+							<div className={'products-pagination-box'}>
 								<TablePagination
 									rowsPerPageOptions={[10, 20, 40, 60]}
 									component="div"
@@ -479,7 +479,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 									onRowsPerPageChange={changeRowsPerPageHandler}
 									className={'products-pagination'}
 								/>
-							</Box>
+							</div>
 						</>
 					)}
 				</CardContent>
@@ -501,8 +501,8 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 				<DialogTitle sx={{ pb: 1 }}>
 					<Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
 						<Stack direction={'row'} alignItems={'center'} spacing={1.5}>
-							<Box
-								sx={{
+							<div
+								style={{
 									width: 48,
 									height: 48,
 									borderRadius: '12px',
@@ -514,7 +514,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 								}}
 							>
 								<WarningAmberIcon sx={{ fontSize: 28 }} />
-							</Box>
+							</div>
 							<Typography variant={'h6'} sx={{ fontWeight: 700, color: '#181a20', fontFamily: '$font' }}>
 								Delete Product
 							</Typography>
