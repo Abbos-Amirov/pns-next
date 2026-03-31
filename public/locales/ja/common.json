@@ -420,5 +420,13 @@
 	"WindowLineupTitle": "オールプレミアム ワイドビュー窓システム",
 	"WindowLineupSubtitle": "生まれ変わった製品ラインナップ",
 	"WindowLineupDesc": "より強力なフレーム適用で向上した窓の性能",
-	"WindowLineupProductSlimTT": "スリム T/T窓"
+	"WindowLineupProductSlimTT": "スリム T/T窓",
+
+	"HardwareShowcaseTitle": "ディテールまで仕上げたハードウェア",
+	"HardwareShowcaseSubtitle": "アノダイズドハンドル、オートラッチ、イージーオープン、クリーンバンパーまで、厳選した付属金具を標準で全体に適用。",
+	"HardwareShowcaseItem1": "LINEAハンドル標準：直線的なシンプルなアノダイズドハンドル、プッシュオートロック内蔵",
+	"HardwareShowcaseItem2": "連結窓用の双方向オートラッチハンドルを標準装備",
+	"HardwareShowcaseItem3": "システムキッチン窓を標準装備",
+	"HardwareShowcaseItem4": "白いサッシュのクリーンバンパー",
+	"HardwareShowcaseItem5": "オートハンドル・イージーオープンを標準適用"
 }

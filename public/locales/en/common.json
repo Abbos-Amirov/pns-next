@@ -359,7 +359,15 @@
   "WindowLineupTitle": "All premium wide view window system",
   "WindowLineupSubtitle": "The renewed product lineup",
   "WindowLineupDesc": "Enhanced window performance with a stronger frame application",
-  "WindowLineupProductSlimTT": "Slim T/T window"
+  "WindowLineupProductSlimTT": "Slim T/T window",
+
+  "HardwareShowcaseTitle": "Hardware refined down to the details",
+  "HardwareShowcaseSubtitle": "Anodized handles, auto-locking, easy-open, and clean bumpers — carefully selected accessory hardware applied as standard throughout.",
+  "HardwareShowcaseItem1": "LINEA handle as standard: straight, simple anodized design with built-in push auto-lock",
+  "HardwareShowcaseItem2": "Two-way auto-locking handle for coupled sashes supplied as standard",
+  "HardwareShowcaseItem3": "System kitchen window supplied as standard",
+  "HardwareShowcaseItem4": "White sash clean bumpers",
+  "HardwareShowcaseItem5": "Automatic-handle easy-open supplied as standard"
 }
 
 

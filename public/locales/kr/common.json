@@ -349,5 +349,13 @@
   "WindowLineupTitle": "올 프리미엄 와이드 뷰 윈도우 시스템",
   "WindowLineupSubtitle": "새로워진 제품 라인업",
   "WindowLineupDesc": "더욱더 강력해진 Frame 적용으로 향상된 창의 성능",
-  "WindowLineupProductSlimTT": "슬림 T/T창"
+  "WindowLineupProductSlimTT": "슬림 T/T창",
+
+  "HardwareShowcaseTitle": "디테일까지 완성된 하드웨어",
+  "HardwareShowcaseSubtitle": "아노다이징 핸들, 오토라킹, 이지오픈, 클린범퍼까지 세심하게 선별된 부속 하드웨어 전체 기본 적용",
+  "HardwareShowcaseItem1": "LINEA Handle 기본적용, 직선형 심플 디자인의 아노다이징 핸들, 푸시오토락 내장",
+  "HardwareShowcaseItem2": "분합창의 양방향 오토라킹 핸들 기본적용",
+  "HardwareShowcaseItem3": "시스템 주방창 기본적용",
+  "HardwareShowcaseItem4": "흰색의 창짝 클린범퍼",
+  "HardwareShowcaseItem5": "자동핸들 이지오픈 기본 적용"
 }

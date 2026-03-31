@@ -350,5 +350,13 @@
   "WindowLineupTitle": "Премиальная широкообзорная оконная система",
   "WindowLineupSubtitle": "Обновлённая линейка продуктов",
   "WindowLineupDesc": "Повышенная эффективность окон благодаря более прочному каркасу",
-  "WindowLineupProductSlimTT": "Slim T/T окно"
+  "WindowLineupProductSlimTT": "Slim T/T окно",
+
+  "HardwareShowcaseTitle": "Фурнитура, доведённая до мелочей",
+  "HardwareShowcaseSubtitle": "Анодированные ручки, автозапирание, лёгкое открывание и чистые отбойники — тщательно отобранная комплектующая фурнитура в базовой комплектации.",
+  "HardwareShowcaseItem1": "Ручка LINEA в базе: прямой лаконичный анодированный дизайн со встроенным push auto-lock",
+  "HardwareShowcaseItem2": "Двусторонняя автозапирающая ручка для парных створок в базовой комплектации",
+  "HardwareShowcaseItem3": "Системное кухонное окно в базовой комплектации",
+  "HardwareShowcaseItem4": "Белые чистые отбойники на створке",
+  "HardwareShowcaseItem5": "Easy-open с автоматической ручкой в базовой комплектации"
 }

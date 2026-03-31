@@ -11,6 +11,7 @@ import TopProperties from '../libs/components/homepage/TopProperties';
 import { Stack } from '@mui/material';
 import Advertisement from '../libs/components/homepage/Advertisement';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Hendel from '../libs/components/homepage/Hendel';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -27,6 +28,7 @@ const Home: NextPage = () => {
 				<Brand />
 				<PopularProducts />
 				<TrendProperties />
+				<Hendel />
 				<Advertisement />
 				<TopProperties />
 				<TopMeasurers />
@@ -38,7 +40,7 @@ const Home: NextPage = () => {
 				<Brand />
 				<PopularProducts />
 				<TrendProperties />
-				<TopProperties />
+				<Hendel />
 				<Advertisement />
 				<TopMeasurers />
 				<Events />

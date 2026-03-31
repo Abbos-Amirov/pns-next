@@ -195,5 +195,13 @@
   "WindowLineupTitle": "全系列高级宽视野窗系统",
   "WindowLineupSubtitle": "焕然一新的产品阵容",
   "WindowLineupDesc": "更强的型材应用，提升窗户性能",
-  "WindowLineupProductSlimTT": "纤薄 T/T 窗"
+  "WindowLineupProductSlimTT": "纤薄 T/T 窗",
+
+  "HardwareShowcaseTitle": "细节同样精致的五金",
+  "HardwareShowcaseSubtitle": "阳极氧化拉手、自动锁闭、易开启与防撞条——精选配件五金，全套标准配置。",
+  "HardwareShowcaseItem1": "标配 LINEA 拉手：直线简约阳极氧化设计，内置按压式自动锁",
+  "HardwareShowcaseItem2": "对开联动窗标配双向自动锁拉手",
+  "HardwareShowcaseItem3": "标配系统厨房窗",
+  "HardwareShowcaseItem4": "白色窗扇防撞条",
+  "HardwareShowcaseItem5": "标配自动拉手易开启"
 }

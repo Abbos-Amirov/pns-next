@@ -1361,4 +1361,21 @@ hr {
 			color: #e6edf3 !important;
 		}
 	}
+
+	#pc-wrap .home-page .hardware-showcase-section,
+	#mobile-wrap .hardware-showcase-section {
+		background: #0d0d0d !important;
+		.hardware-showcase-title {
+			color: #e6edf3 !important;
+		}
+		.hardware-showcase-subtitle {
+			color: rgba(255, 255, 255, 0.68) !important;
+		}
+		.hardware-showcase-card-media {
+			background: #252525 !important;
+		}
+		.hardware-showcase-card-caption {
+			color: rgba(230, 237, 243, 0.88) !important;
+		}
+	}
 }
