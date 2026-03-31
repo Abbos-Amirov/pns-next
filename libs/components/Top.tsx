@@ -25,7 +25,6 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import { REACT_APP_API_URL } from '../config';
 import NavMegaDrawer, { MegaPanel } from './NavMegaDrawer';
-import HomeNavDropdown from './HomeNavDropdown';
 import { useThemeMode } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -278,7 +277,33 @@ const Top = () => {
 							</Link>
 						</Box>
 						<Box component={'div'} className={'nav-menu'}>
-							<HomeNavDropdown />
+							<Box
+								component={'div'}
+								className={'home-dropdown'}
+								onClick={(e: React.MouseEvent) => {
+									e.stopPropagation();
+									setNavOverlayOpen(false);
+									toggleMega('home');
+								}}
+							>
+								<Box
+									component={'span'}
+									role={'button'}
+									tabIndex={0}
+									onKeyDown={(e: React.KeyboardEvent) => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											e.preventDefault();
+											setNavOverlayOpen(false);
+											toggleMega('home');
+										}
+									}}
+									className={`nav-link home-link ${megaPanel === 'home' ? 'is-open' : ''}`}
+									sx={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+								>
+									{t('Home')}
+									<KeyboardArrowDownIcon className={'dropdown-icon'} />
+								</Box>
+							</Box>
 							<span className={'nav-separator'}>/</span>
 							<Box
 								component={'div'}

@@ -28,7 +28,6 @@ import { REACT_APP_API_URL } from '../../config';
 import { useThemeMode } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import NavMegaDrawer, { MegaPanel } from '../NavMegaDrawer';
-import HomeNavDropdown from '../HomeNavDropdown';
 
 const getUserImageSrc = (img?: string) => {
 	if (!img) return '/img/profile/defaultUser.svg';
@@ -248,7 +247,33 @@ const withLayoutBasic = (Component: any) => {
 
 								{/* Navigation Links - Center */}
 								<Box component={'div'} className={'nav-menu-dark'}>
-									<HomeNavDropdown variant="dark" />
+									<Box
+										component={'div'}
+										className={'home-dropdown-dark product-dropdown-dark'}
+										onClick={(e: React.MouseEvent) => {
+											e.stopPropagation();
+											setNavOverlayOpen(false);
+											toggleMega('home');
+										}}
+									>
+										<Box
+											component={'span'}
+											role={'button'}
+											tabIndex={0}
+											onKeyDown={(e: React.KeyboardEvent) => {
+												if (e.key === 'Enter' || e.key === ' ') {
+													e.preventDefault();
+													setNavOverlayOpen(false);
+													toggleMega('home');
+												}
+											}}
+											className={`nav-link-dark home-link-dark ${megaPanel === 'home' ? 'is-open' : ''}`}
+											sx={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+										>
+											{t('Home')}
+											<KeyboardArrowDownIcon className={'dropdown-icon-dark'} />
+										</Box>
+									</Box>
 									<span className={'nav-separator-dark'}>/</span>
 									<Box
 										component={'div'}

@@ -42,7 +42,6 @@ const Home: NextPage = () => {
 				<Brand />
 				<PopularProducts />
 				<TrendProperties />
-				
 				<Advertisement />
 				<Hendel />
 				<TopMeasurers />

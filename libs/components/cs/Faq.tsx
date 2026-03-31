@@ -2,7 +2,6 @@ import React, { SyntheticEvent, useState, useEffect, useMemo } from 'react';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import { AccordionDetails, Box, Stack, Typography, CircularProgress } from '@mui/material';
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary';
-import { useRouter } from 'next/router';
 import { styled } from '@mui/material/styles';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -13,6 +12,7 @@ import { Notice } from '../../types/notice/notice';
 import { NoticeCategory, NoticeCategoryType, NoticeStatus } from '../../enums/notice.enum';
 import { Direction } from '../../enums/common.enum';
 import { sweetErrorHandling } from '../../sweetAlert';
+import { useTranslation } from 'next-i18next';
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -38,8 +38,8 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 }));
 
 const Faq = () => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
-	const router = useRouter();
 	const [category, setCategory] = useState<string>('product');
 	const [expanded, setExpanded] = useState<string | false>(false);
 	const [faqList, setFaqList] = useState<Notice[]>([]);
@@ -120,7 +120,7 @@ const Faq = () => {
 
 
 	if (device === 'mobile') {
-		return <div>FAQ MOBILE</div>;
+		return <div>{t('CsFaqMobile')}</div>;
 	} else {
 		return (
 			<Stack className={'faq-content'}>
@@ -131,7 +131,7 @@ const Faq = () => {
 							changeCategoryHandler('product');
 						}}
 					>
-						PRODUCT
+						{t('FaqCategoryProduct')}
 					</div>
 					<div
 						className={category === 'location' ? 'active' : ''}
@@ -139,7 +139,7 @@ const Faq = () => {
 							changeCategoryHandler('location');
 						}}
 					>
-						LOCATION
+						{t('FaqCategoryLocation')}
 					</div>
 					<div
 						className={category === 'measurer' ? 'active' : ''}
@@ -147,7 +147,7 @@ const Faq = () => {
 							changeCategoryHandler('measurer');
 						}}
 					>
-						MEASURER
+						{t('FaqCategoryMeasurer')}
 					</div>
 					<div
 						className={category === 'installer' ? 'active' : ''}
@@ -155,7 +155,7 @@ const Faq = () => {
 							changeCategoryHandler('installer');
 						}}
 					>
-						INSTALLER
+						{t('FaqCategoryInstaller')}
 					</div>
 					<div
 						className={category === 'members' ? 'active' : ''}
@@ -163,7 +163,7 @@ const Faq = () => {
 							changeCategoryHandler('members');
 						}}
 					>
-						MEMBERS
+						{t('FaqCategoryMembers')}
 					</div>
 					<div
 						className={category === 'system' ? 'active' : ''}
@@ -171,7 +171,7 @@ const Faq = () => {
 							changeCategoryHandler('system');
 						}}
 					>
-						SYSTEM
+						{t('FaqCategorySystem')}
 					</div>
 
 					<div
@@ -180,7 +180,7 @@ const Faq = () => {
 							changeCategoryHandler('community');
 						}}
 					>
-					 Community
+						{t('FaqCategoryCommunity')}
 					</div>
 					<div
 						className={category === 'other' ? 'active' : ''}
@@ -188,22 +188,22 @@ const Faq = () => {
 							changeCategoryHandler('other');
 						}}
 					>
-						OTHER
+						{t('FaqCategoryOther')}
 					</div>
 				</Box>
 				<Box className={'wrap'} component={'div'}>
 					{noticeLoading ? (
 						<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
 							<CircularProgress sx={{ color: '#120d53' }} />
-							<Typography sx={{ mt: 2, color: '#717171' }}>Loading FAQs...</Typography>
+							<Typography sx={{ mt: 2, color: '#717171' }}>{t('CsLoadingFaqs')}</Typography>
 						</Stack>
 					) : noticeError ? (
 						<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-							<Typography color="error">Error loading FAQs: {noticeError.message}</Typography>
+							<Typography color="error">{t('CsErrorLoadingFaqs', { message: noticeError.message })}</Typography>
 						</Stack>
 					) : faqList.length === 0 ? (
 						<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-							<Typography sx={{ color: '#717171' }}>No FAQs found for this category.</Typography>
+							<Typography sx={{ color: '#717171' }}>{t('CsNoFaqsForCategory')}</Typography>
 						</Stack>
 					) : (
 						faqList.map((notice: Notice) => (
@@ -214,14 +214,14 @@ const Faq = () => {
 							>
 								<AccordionSummary id="panel1d-header" className="question" aria-controls="panel1d-content">
 									<Typography className="badge" variant={'h4'}>
-										Q
+										{t('FaqBadgeQ')}
 									</Typography>
 									<Typography>{notice.noticeTitle}</Typography>
 								</AccordionSummary>
 								<AccordionDetails>
 									<Stack className={'answer flex-box'}>
 										<Typography className="badge" variant={'h4'} color={'primary'}>
-											A
+											{t('FaqBadgeA')}
 										</Typography>
 										<Typography>{notice.noticeContent}</Typography>
 									</Stack>

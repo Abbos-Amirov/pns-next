@@ -381,7 +381,36 @@
   "PnsPdfItem5Title": "Documentation · volume 3",
   "PnsPdfItem6Title": "Documentation · volume 4",
   "PnsPdfItem7Title": "Documentation · volume 5",
-  "PnsPdfItem8Title": "Documentation · volume 6"
+  "PnsPdfItem8Title": "Documentation · volume 6",
+
+  "CsHeroTitle": "Customer Service Center",
+  "CsHeroSubtitle": "We're here to help you with any questions",
+  "CsTabNotice": "Notice",
+  "CsTabFaq": "FAQ",
+  "CsNoticeTitle": "Notice",
+  "CsTableNo": "NO.",
+  "CsTableTitle": "TITLE",
+  "CsTableDate": "DATE",
+  "CsNoNotices": "No notices found.",
+  "CsLoadingNotices": "Loading notices...",
+  "CsErrorLoadingNotices": "Error loading notices: {{message}}",
+  "CsTermsLabel": "Terms",
+  "CsLoadingFaqs": "Loading FAQs...",
+  "CsErrorLoadingFaqs": "Error loading FAQs: {{message}}",
+  "CsNoFaqsForCategory": "No FAQs found for this category.",
+  "FaqCategoryProduct": "Product",
+  "FaqCategoryLocation": "Location",
+  "FaqCategoryMeasurer": "Measurer",
+  "FaqCategoryInstaller": "Installer",
+  "FaqCategoryMembers": "Members",
+  "FaqCategorySystem": "System",
+  "FaqCategoryCommunity": "Community",
+  "FaqCategoryOther": "Other",
+  "FaqBadgeQ": "Q",
+  "FaqBadgeA": "A",
+  "CsPageMobile": "Support (mobile view coming soon)",
+  "CsNoticeMobile": "Notices (mobile view coming soon)",
+  "CsFaqMobile": "FAQ (mobile view coming soon)"
 }
 
 

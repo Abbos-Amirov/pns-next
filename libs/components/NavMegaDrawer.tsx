@@ -5,12 +5,16 @@ import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'next-i18next';
 
-export type MegaPanel = 'product' | 'experts' | 'support';
+export type MegaPanel = 'home' | 'product' | 'experts' | 'support';
 
 export const MEGA_ITEMS: Record<
 	MegaPanel,
 	{ href: string; labelKey: string; img: string }[]
 > = {
+	home: [
+		{ href: '/', labelKey: 'Home', img: '/img/nav-overlay/home.png' },
+		{ href: '/configurator', labelKey: 'Configurator', img: '/img/configurator/hero-1.png' },
+	],
 	product: [
 		{ href: '/property/window', labelKey: 'Windows', img: '/img/property/menu-product-window.png' },
 		{ href: '/property/door', labelKey: 'Doors', img: '/img/property/menu-product-door.png' },
@@ -43,7 +47,15 @@ const NavMegaDrawer: React.FC<NavMegaDrawerProps> = ({ panel, onClose, mode }) =
 	const [navBottom, setNavBottom] = useState(NAV_FALLBACK_TOP);
 
 	const sectionTitle =
-		panel === 'product' ? t('Product') : panel === 'experts' ? t('Experts') : panel === 'support' ? t('Support') : '';
+		panel === 'home'
+			? t('Home')
+			: panel === 'product'
+				? t('Product')
+				: panel === 'experts'
+					? t('Experts')
+					: panel === 'support'
+						? t('Support')
+						: '';
 
 	const gridClass =
 		panel === 'support' ? 'nav-mega-grid nav-mega-grid--5' : 'nav-mega-grid nav-mega-grid--2';

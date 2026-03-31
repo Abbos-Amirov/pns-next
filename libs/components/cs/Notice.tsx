@@ -10,8 +10,10 @@ import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
 import { Direction } from '../../enums/common.enum';
 import { sweetErrorHandling } from '../../sweetAlert';
 import moment from 'moment';
+import { useTranslation } from 'next-i18next';
 
 const Notice = () => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const [noticeList, setNoticeList] = useState<NoticeType[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -57,24 +59,24 @@ const Notice = () => {
 	/** HANDLERS **/
 
 	if (device === 'mobile') {
-		return <div>NOTICE MOBILE</div>;
+		return <div>{t('CsNoticeMobile')}</div>;
 	} else {
 		return (
 			<Stack className={'notice-content'}>
 				<Typography className={'title'} variant="h5">
-					Notice
+					{t('CsNoticeTitle')}
 				</Typography>
 				<Stack className={'main'}>
 					{/* Table Header */}
 					<Box component={'div'} className={'notice-header'}>
 						<Box component={'div'} className={'header-item'}>
-							<Typography className={'header-text'}>No.</Typography>
+							<Typography className={'header-text'}>{t('CsTableNo')}</Typography>
 						</Box>
 						<Box component={'div'} className={'header-item header-title'}>
-							<Typography className={'header-text'}>Title</Typography>
+							<Typography className={'header-text'}>{t('CsTableTitle')}</Typography>
 						</Box>
 						<Box component={'div'} className={'header-item'}>
-							<Typography className={'header-text'}>Date</Typography>
+							<Typography className={'header-text'}>{t('CsTableDate')}</Typography>
 						</Box>
 					</Box>
 					{/* Notice Cards */}
@@ -82,15 +84,15 @@ const Notice = () => {
 						{noticeLoading ? (
 							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
 								<CircularProgress sx={{ color: '#120d53' }} />
-								<Typography sx={{ mt: 2, color: '#717171' }}>Loading notices...</Typography>
+								<Typography sx={{ mt: 2, color: '#717171' }}>{t('CsLoadingNotices')}</Typography>
 							</Stack>
 						) : noticeError ? (
 							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-								<Typography color="error">Error loading notices: {noticeError.message}</Typography>
+								<Typography color="error">{t('CsErrorLoadingNotices', { message: noticeError.message })}</Typography>
 							</Stack>
 						) : noticeList.length === 0 ? (
 							<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-								<Typography sx={{ color: '#717171' }}>No notices found.</Typography>
+								<Typography sx={{ color: '#717171' }}>{t('CsNoNotices')}</Typography>
 							</Stack>
 						) : (
 							noticeList.map((notice: NoticeType, index: number) => (
@@ -103,7 +105,7 @@ const Notice = () => {
 										{notice.noticeCategory === NoticeCategory.TERMS ? (
 											<Chip
 												icon={<EventIcon />}
-												label="Terms"
+												label={t('CsTermsLabel')}
 												className={'event-badge'}
 												size="small"
 											/>
