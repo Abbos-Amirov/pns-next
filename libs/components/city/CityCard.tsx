@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Stack, Typography, Box } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -12,6 +12,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { LIKE_TARGET_LOCATION } from '../../../apollo/user/mutation';
 import { sweetTopSuccessAlert, sweetErrorHandling } from '../../sweetAlert';
 import IconButton from '@mui/material/IconButton';
+import { useTranslation } from 'next-i18next';
 
 interface CityCardType {
 	city: Location;
@@ -22,6 +23,7 @@ interface CityCardType {
 
 const CityCard = (props: CityCardType) => {
 	const { city, likeCityHandler, myFavorites, recentlyVisited } = props;
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const likedLocationsByUser = useReactiveVar(likedLocationsVar);
@@ -137,6 +139,10 @@ const CityCard = (props: CityCardType) => {
 	};
 
 	const imagePath: string = getImagePath();
+	const detailHref = {
+		pathname: '/city/detail',
+		query: { id: city?._id },
+	};
 
 
 	if (device === 'mobile') {
@@ -149,24 +155,22 @@ const CityCard = (props: CityCardType) => {
 				onMouseLeave={() => setIsHovered(false)}
 			>
 				<Stack className="top">
-					<Link
-						href={{
-							pathname: '/city/detail',
-							query: { id: city?._id },
-						}}
-					>
+					<Link href={detailHref}>
 						<img src={imagePath} alt="" />
 					</Link>
+					<div className={`hover-actions ${isHovered ? 'active' : ''}`}>
+						<Link href={detailHref} className="view-action" aria-label={t('ViewDetails')}>
+							<span className="action-btn">
+								<RemoveRedEyeIcon />
+							</span>
+							<span className="view-count">{t('ViewDetails')}</span>
+						</Link>
+					</div>
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
 						<Stack className="name">
-							<Link
-								href={{
-									pathname: '/city/detail',
-									query: { id: city?._id },
-								}}
-							>
+							<Link href={detailHref}>
 								<Typography>{city.locationName}</Typography>
 							</Link>
 						</Stack>

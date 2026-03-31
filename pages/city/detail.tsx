@@ -27,6 +27,16 @@ import 'swiper/css/navigation';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
+const CITY_DETAIL_SHOWCASE_IMAGES = [
+	'/img/city-detail-gallery/1.png',
+	'/img/city-detail-gallery/2.png',
+	'/img/city-detail-gallery/3.png',
+	'/img/city-detail-gallery/4.png',
+	'/img/city-detail-gallery/5.png',
+	'/img/city-detail-gallery/6.png',
+	'/img/city-detail-gallery/7.png',
+];
+
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
@@ -239,6 +249,14 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 											<img src="/img/property/window.jpg" alt={location.locationName} />
 										</div>
 									)}
+								</div>
+
+								<div className="city-showcase-gallery">
+									{CITY_DETAIL_SHOWCASE_IMAGES.map((image, index) => (
+										<div className="city-showcase-card" key={image}>
+											<img src={image} alt={`${location.locationName} showcase ${index + 1}`} />
+										</div>
+									))}
 								</div>
 
 								{/* Location Info */}
