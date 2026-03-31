@@ -9,12 +9,14 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { T } from '../../libs/types/common';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { BoardArticlesInquiry } from '../../libs/types/board-article/board-article.input';
 import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
 import { useQuery } from '@apollo/client';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import { Direction } from '../../libs/enums/common.enum';
 import { sweetErrorHandling } from '../../libs/sweetAlert';
+import { communityBoardTitleKey, communitySubKey } from '../../libs/i18n/communityBoardKeys';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -23,6 +25,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const Community: NextPage = ({ initialInput, ...props }: T) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
@@ -123,8 +126,35 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
 
+	const activeCategory = searchCommunity.search.articleCategory || 'FREE';
+
+	const articleListPanel = (
+		<Stack className="list-box">
+			{boardArticlesLoading ? (
+				<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
+					<CircularProgress sx={{ color: '#120d53' }} />
+					<Typography sx={{ mt: 2, color: '#717171' }}>{t('CommunityLoadingArticles')}</Typography>
+				</Stack>
+			) : boardArticlesError ? (
+				<Stack className={'no-data'}>
+					<img src="/img/icons/icoAlert.svg" alt="" />
+					<p>{t('CommunityErrorArticles', { message: boardArticlesError.message })}</p>
+				</Stack>
+			) : boardArticles.length === 0 ? (
+				<Stack className={'no-data'}>
+					<img src="/img/icons/icoAlert.svg" alt="" />
+					<p>{t('CommunityNoArticles')}</p>
+				</Stack>
+			) : (
+				boardArticles.map((boardArticle: BoardArticle) => {
+					return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
+				})
+			)}
+		</Stack>
+	);
+
 	if (device === 'mobile') {
-		return <h1>COMMUNITY PAGE MOBILE</h1>;
+		return <h1>{t('CommunityPageMobile')}</h1>;
 	} else {
 		return (
 			<div id="community-list-page">
@@ -133,15 +163,15 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 						<Stack className="main-box">
 							<Stack className="left-config">
 								<Stack className={'image-info'}>
-									<img src={'/img/logo/logoText.svg'} />
+									<img src={'/img/logo/logoText.svg'} alt="" />
 									<Stack className={'community-name'}>
-										<Typography className={'name'}>Nestar Community</Typography>
+										<Typography className={'name'}>{t('CommunityPageTitle')}</Typography>
 									</Stack>
 								</Stack>
 
 								<TabList
 									orientation="vertical"
-									aria-label="lab API tabs example"
+									aria-label={t('CommunityPageTitle')}
 									TabIndicatorProps={{
 										style: { display: 'none' },
 									}}
@@ -149,23 +179,23 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								>
 									<Tab
 										value={'FREE'}
-										label={'Free Board'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'FREE' ? 'active' : ''}`}
+										label={t('CommunityTabFree')}
+										className={`tab-button ${activeCategory == 'FREE' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'RECOMMEND'}
-										label={'Recommendation'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'RECOMMEND' ? 'active' : ''}`}
+										label={t('CommunityTabRecommend')}
+										className={`tab-button ${activeCategory == 'RECOMMEND' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'NEWS'}
-										label={'News'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'NEWS' ? 'active' : ''}`}
+										label={t('CommunityTabNews')}
+										className={`tab-button ${activeCategory == 'NEWS' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'HUMOR'}
-										label={'Humor'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'HUMOR' ? 'active' : ''}`}
+										label={t('CommunityTabHumor')}
+										className={`tab-button ${activeCategory == 'HUMOR' ? 'active' : ''}`}
 									/>
 								</TabList>
 							</Stack>
@@ -173,10 +203,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								<Stack className="panel-config">
 									<Stack className="title-box">
 										<Stack className="left">
-											<Typography className="title">{searchCommunity.search.articleCategory} BOARD</Typography>
-											<Typography className="sub-title">
-												Express your opinions freely here without content restrictions
-											</Typography>
+											<Typography className="title">{t(communityBoardTitleKey(activeCategory))}</Typography>
+											<Typography className="sub-title">{t(communitySubKey(activeCategory))}</Typography>
 										</Stack>
 										<Button
 											onClick={() =>
@@ -189,106 +217,14 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 											}
 											className="right"
 										>
-											Write
+											{t('CommunityWrite')}
 										</Button>
 									</Stack>
 
-									<TabPanel value="FREE">
-										<Stack className="list-box">
-											{boardArticlesLoading ? (
-												<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-													<CircularProgress sx={{ color: '#120d53' }} />
-													<Typography sx={{ mt: 2, color: '#717171' }}>Loading articles...</Typography>
-												</Stack>
-											) : boardArticlesError ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>Error loading articles: {boardArticlesError.message}</p>
-												</Stack>
-											) : boardArticles.length === 0 ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											) : (
-												boardArticles.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
-												})
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="RECOMMEND">
-										<Stack className="list-box">
-											{boardArticlesLoading ? (
-												<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-													<CircularProgress sx={{ color: '#120d53' }} />
-													<Typography sx={{ mt: 2, color: '#717171' }}>Loading articles...</Typography>
-												</Stack>
-											) : boardArticlesError ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>Error loading articles: {boardArticlesError.message}</p>
-												</Stack>
-											) : boardArticles.length === 0 ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											) : (
-												boardArticles.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
-												})
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="NEWS">
-										<Stack className="list-box">
-											{boardArticlesLoading ? (
-												<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-													<CircularProgress sx={{ color: '#120d53' }} />
-													<Typography sx={{ mt: 2, color: '#717171' }}>Loading articles...</Typography>
-												</Stack>
-											) : boardArticlesError ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>Error loading articles: {boardArticlesError.message}</p>
-												</Stack>
-											) : boardArticles.length === 0 ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											) : (
-												boardArticles.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
-												})
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="HUMOR">
-										<Stack className="list-box">
-											{boardArticlesLoading ? (
-												<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-													<CircularProgress sx={{ color: '#120d53' }} />
-													<Typography sx={{ mt: 2, color: '#717171' }}>Loading articles...</Typography>
-												</Stack>
-											) : boardArticlesError ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>Error loading articles: {boardArticlesError.message}</p>
-												</Stack>
-											) : boardArticles.length === 0 ? (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											) : (
-												boardArticles.map((boardArticle: BoardArticle) => {
-													return <CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />;
-												})
-											)}
-										</Stack>
-									</TabPanel>
+									<TabPanel value="FREE">{articleListPanel}</TabPanel>
+									<TabPanel value="RECOMMEND">{articleListPanel}</TabPanel>
+									<TabPanel value="NEWS">{articleListPanel}</TabPanel>
+									<TabPanel value="HUMOR">{articleListPanel}</TabPanel>
 								</Stack>
 							</Stack>
 						</Stack>
@@ -298,7 +234,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 						<Stack className="pagination-config">
 							<Stack className="pagination-box">
 								<Pagination
-									count={Math.ceil(totalCount / searchCommunity.limit)}
+									count={Math.ceil(totalCount / (searchCommunity.limit || 10))}
 									page={searchCommunity.page}
 									shape="circular"
 									color="primary"
@@ -306,9 +242,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								/>
 							</Stack>
 							<Stack className="total-result">
-								<Typography>
-									Total {totalCount} article{totalCount > 1 ? 's' : ''} available
-								</Typography>
+								<Typography>{t('CommunityTotalArticles', { count: totalCount })}</Typography>
 							</Stack>
 						</Stack>
 					)}

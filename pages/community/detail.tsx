@@ -21,10 +21,12 @@ import { CommentStatus, CommentGroup } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
 import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, UPDATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { communityBoardTitleKey, communitySubKey } from '../../libs/i18n/communityBoardKeys';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { Direction } from '../../libs/enums/common.enum';
 const ToastViewerComponent = dynamic(() => import('../../libs/components/community/TViewer'), { ssr: false });
@@ -36,6 +38,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
@@ -137,7 +140,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		onCompleted: (data) => {
 			console.log('Create Comment Response:', data);
 			if (data?.createComment) {
-				sweetTopSmallSuccessAlert('Comment created successfully!', 700).then();
+				sweetTopSmallSuccessAlert(t('CommunityCommentCreated'), 700).then();
 				setComment('');
 				setWordsCnt(0);
 				// Refetch comments
@@ -157,7 +160,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		onCompleted: (data) => {
 			console.log('Update Comment Response:', data);
 			if (data?.updateComment) {
-				sweetTopSmallSuccessAlert('Comment updated successfully!', 700).then();
+				sweetTopSmallSuccessAlert(t('CommunityCommentUpdated'), 700).then();
 				setOpenBackdrop(false);
 				setUpdatedComment('');
 				setUpdatedCommentWordsCnt(0);
@@ -213,17 +216,17 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
 	const creteCommentHandler = async () => {
 		if (!user?._id) {
-			sweetTopSmallSuccessAlert('Please login to leave a comment', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityLoginToComment'), 700).then();
 			return;
 		}
 
 		if (!comment.trim()) {
-			sweetTopSmallSuccessAlert('Please enter a comment', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityEnterComment'), 700).then();
 			return;
 		}
 
 		if (!articleId) {
-			sweetTopSmallSuccessAlert('Article ID is missing', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityArticleIdMissing'), 700).then();
 			return;
 		}
 
@@ -247,7 +250,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		if (commentStatus === CommentStatus.DELETE) {
 			// Delete comment - update with DELETE status
 			if (!commentId) {
-				sweetTopSmallSuccessAlert('Comment ID is missing', 700).then();
+				sweetTopSmallSuccessAlert(t('CommunityCommentIdMissing'), 700).then();
 				return;
 			}
 
@@ -269,12 +272,12 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
 		// Update comment content
 		if (!updatedComment.trim()) {
-			sweetTopSmallSuccessAlert('Please enter a comment', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityEnterComment'), 700).then();
 			return;
 		}
 
 		if (!commentId) {
-			sweetTopSmallSuccessAlert('Comment ID is missing', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityCommentIdMissing'), 700).then();
 			return;
 		}
 
@@ -321,12 +324,12 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
 	const likeButtonHandler = async () => {
 		if (!user?._id) {
-			sweetTopSmallSuccessAlert('Please login to like this article', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityLoginToLikeArticle'), 700).then();
 			return;
 		}
 
 		if (!articleId) {
-			sweetTopSmallSuccessAlert('Article ID is missing', 700).then();
+			sweetTopSmallSuccessAlert(t('CommunityArticleIdMissing'), 700).then();
 			return;
 		}
 
@@ -346,7 +349,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>COMMUNITY DETAIL PAGE MOBILE</div>;
+		return <div>{t('CommunityDetailPageMobile')}</div>;
 	} else {
 		return (
 			<div id="community-detail-page">
@@ -356,12 +359,12 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 							<Stack className={'image-info'}>
 								<img src={'/img/logo/logoText.svg'} />
 								<Stack className={'community-name'}>
-									<Typography className={'name'}>Community Board Article</Typography>
+									<Typography className={'name'}>{t('CommunityDetailPageTitle')}</Typography>
 								</Stack>
 							</Stack>
 							<Tabs
 								orientation="vertical"
-								aria-label="lab API tabs example"
+								aria-label={t('CommunityPageTitle')}
 								TabIndicatorProps={{
 									style: { display: 'none' },
 								}}
@@ -370,22 +373,22 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 							>
 								<Tab
 									value={'FREE'}
-									label={'Free Board'}
+									label={t('CommunityTabFree')}
 									className={`tab-button ${articleCategory === 'FREE' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'RECOMMEND'}
-									label={'Recommendation'}
+									label={t('CommunityTabRecommend')}
 									className={`tab-button ${articleCategory === 'RECOMMEND' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'NEWS'}
-									label={'News'}
+									label={t('CommunityTabNews')}
 									className={`tab-button ${articleCategory === 'NEWS' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'HUMOR'}
-									label={'Humor'}
+									label={t('CommunityTabHumor')}
 									className={`tab-button ${articleCategory === 'HUMOR' ? 'active' : ''}`}
 								/>
 							</Tabs>
@@ -393,9 +396,11 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 						<div className="community-detail-config">
 								<Stack className="title-box">
 								<Stack className="left">
-									<Typography className="title">{(boardArticle?.articleCategory || articleCategory || 'COMMUNITY').toUpperCase()} BOARD</Typography>
+									<Typography className="title">
+										{t(communityBoardTitleKey(boardArticle?.articleCategory || articleCategory))}
+									</Typography>
 									<Typography className="sub-title">
-										Express your opinions freely here without content restrictions
+										{t(communitySubKey(boardArticle?.articleCategory || articleCategory))}
 									</Typography>
 								</Stack>
 								<Button
@@ -409,22 +414,24 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									}
 									className="right"
 								>
-									Write
+									{t('CommunityWrite')}
 								</Button>
 							</Stack>
 							<div className="config">
 								{boardArticleLoading ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
 										<CircularProgress sx={{ color: '#120d53' }} />
-										<Typography sx={{ mt: 2, color: '#717171' }}>Loading article...</Typography>
+										<Typography sx={{ mt: 2, color: '#717171' }}>{t('CommunityLoadingArticle')}</Typography>
 									</Stack>
 								) : boardArticleError ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-										<Typography color="error">Error loading article: {boardArticleError.message}</Typography>
+										<Typography color="error">
+											{t('CommunityErrorArticle', { message: boardArticleError.message })}
+										</Typography>
 									</Stack>
 								) : !boardArticle ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 8 }}>
-										<Typography sx={{ color: '#717171' }}>Article not found.</Typography>
+										<Typography sx={{ color: '#717171' }}>{t('CommunityArticleNotFound')}</Typography>
 									</Stack>
 								) : (
 									<Stack className="first-box-config">
@@ -496,11 +503,13 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									className="second-box-config"
 									sx={{ borderBottom: total > 0 ? 'none' : '1px solid #eee', border: '1px solid #eee' }}
 								>
-									<Typography className="title-text">Comments ({total})</Typography>
+									<Typography className="title-text">{t('CommunityCommentsHeading', { count: total })}</Typography>
 									<Stack className="leave-comment">
 										<input
 											type="text"
-											placeholder={user?._id ? "Leave a comment" : "Please login to leave a comment"}
+											placeholder={
+												user?._id ? t('CommunityLeaveComment') : t('CommunityLoginToCommentPlaceholder')
+											}
 											value={comment}
 											onChange={(e) => {
 												if (e.target.value.length > 100) return;
@@ -515,7 +524,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 												onClick={creteCommentHandler}
 												disabled={!user?._id || !comment.trim() || createCommentLoading}
 											>
-												{createCommentLoading ? 'Posting...' : 'comment'}
+												{createCommentLoading ? t('CommunityPosting') : t('CommunityCommentSubmit')}
 											</Button>
 										</Stack>
 									</Stack>
@@ -523,21 +532,25 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 								{commentsLoading ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
 										<CircularProgress sx={{ color: '#120d53' }} size={24} />
-										<Typography sx={{ mt: 1, color: '#717171', fontSize: '14px' }}>Loading comments...</Typography>
+										<Typography sx={{ mt: 1, color: '#717171', fontSize: '14px' }}>
+											{t('CommunityLoadingComments')}
+										</Typography>
 									</Stack>
 								) : commentsError ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
-										<Typography color="error" sx={{ fontSize: '14px' }}>Error loading comments: {commentsError.message}</Typography>
+										<Typography color="error" sx={{ fontSize: '14px' }}>
+											{t('CommunityErrorComments', { message: commentsError.message })}
+										</Typography>
 									</Stack>
 								) : comments.length === 0 ? (
 									<Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
-										<Typography sx={{ color: '#717171', fontSize: '14px' }}>No comments yet. Be the first to comment!</Typography>
+										<Typography sx={{ color: '#717171', fontSize: '14px' }}>{t('CommunityNoCommentsYet')}</Typography>
 									</Stack>
 								) : (
 									<>
 										{total > 0 && (
 											<Stack className="comments">
-												<Typography className="comments-title">Comments</Typography>
+												<Typography className="comments-title">{t('CommunityCommentsSection')}</Typography>
 											</Stack>
 										)}
 										{comments?.map((commentData, index) => {
@@ -606,7 +619,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																	}}
 																>
 																	<Typography variant="h4" color={'#b9b9b9'}>
-																		Update comment
+																		{t('CommunityUpdateCommentTitle')}
 																	</Typography>
 																	<Stack gap={'20px'}>
 																		<input
@@ -632,14 +645,14 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																					color="inherit"
 																					onClick={() => cancelButtonHandler()}
 																				>
-																					Cancel
+																					{t('CommunityCancel')}
 																				</Button>
 																				<Button
 																					variant="contained"
 																					color="inherit"
 																					onClick={() => updateButtonHandler(updatedCommentId, undefined)}
 																				>
-																					Update
+																					{t('CommunityUpdate')}
 																				</Button>
 																			</Stack>
 																		</Stack>
