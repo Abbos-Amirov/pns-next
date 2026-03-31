@@ -118,6 +118,47 @@
 									font-weight: 400;
 								}
 							}
+
+							.detail-feature-grid {
+								display: grid;
+								grid-template-columns: repeat(2, minmax(0, 1fr));
+								gap: 14px;
+								margin-top: 6px;
+
+								@media (max-width: 720px) {
+									grid-template-columns: 1fr;
+								}
+							}
+
+							.detail-feature-card {
+								display: flex;
+								flex-direction: column;
+								gap: 8px;
+								padding: 16px 18px;
+								border-radius: 14px;
+								background: linear-gradient(180deg, #fbf7f2 0%, #fffaf4 100%);
+								border: 1px solid rgba(139, 69, 19, 0.12);
+								box-shadow: 0 10px 24px rgba(24, 26, 32, 0.06);
+							}
+
+							.detail-feature-label {
+								color: #8b4513;
+								font-family: $font;
+								font-size: 12px;
+								font-weight: 700;
+								letter-spacing: 0.08em;
+								text-transform: uppercase;
+								line-height: 1.2;
+							}
+
+							.detail-feature-value {
+								color: #181a20;
+								font-family: $font;
+								font-size: 15px;
+								font-weight: 600;
+								line-height: 1.55;
+								word-break: break-word;
+							}
 						}
 						
 						.agent-description {

@@ -26,6 +26,7 @@ import { CommentGroup } from '../../libs/enums/comment.enum';
 import { Direction } from '../../libs/enums/common.enum';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { GET_COMMENTS, GET_LOCATIONS, GET_MEMBER } from '../../apollo/user/query';
 import { LIKE_TARGET_MEMBER, CREATE_COMMENT } from '../../apollo/user/mutation';
 import moment from 'moment';
@@ -40,6 +41,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
@@ -104,7 +106,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					meLiked: updatedMember.meLiked || agent.meLiked,
 				});
 				
-				const message = newLikedState ? 'Member liked successfully!' : 'Member unliked successfully!';
+				const message = newLikedState ? t('AgentDetailLikeSuccess') : t('AgentDetailUnlikeSuccess');
 				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
@@ -179,7 +181,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					refetchComments();
 				}
 				
-				sweetTopSuccessAlert('Review submitted successfully!', 700).then();
+				sweetTopSuccessAlert(t('AgentDetailReviewSuccess'), 700).then();
 			}
 		},
 		onError: (err) => {
@@ -247,7 +249,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 	const likeMemberHandler = async () => {
 		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to like members', 700).then();
+			sweetTopSuccessAlert(t('AgentDetailLoginToLike'), 700).then();
 			return;
 		}
 
@@ -285,17 +287,17 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 	const createCommentHandler = async () => {
 		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to leave a review', 700).then();
+			sweetTopSuccessAlert(t('AgentDetailLoginToReview'), 700).then();
 			return;
 		}
 
 		if (!insertCommentData.commentContent.trim()) {
-			sweetTopSuccessAlert('Please enter a review', 700).then();
+			sweetTopSuccessAlert(t('AgentDetailEnterReview'), 700).then();
 			return;
 		}
 
 		if (!agent?._id) {
-			sweetTopSuccessAlert('Agent not found', 700).then();
+			sweetTopSuccessAlert(t('AgentDetailNotFoundReview'), 700).then();
 			return;
 		}
 
@@ -316,7 +318,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	};
 
 	if (device === 'mobile') {
-		return <div>AGENT DETAIL PAGE MOBILE</div>;
+		return <div>{t('AgentDetailPageMobile')}</div>;
 	} else {
 		// Show loading state
 		if (memberLoading) {
@@ -324,7 +326,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 				<Stack className={'agent-detail-page'}>
 					<Stack className={'container'}>
 						<Stack sx={{ py: 5, alignItems: 'center' }}>
-							<Typography>Loading agent...</Typography>
+							<Typography>{t('AgentDetailLoading')}</Typography>
 						</Stack>
 					</Stack>
 				</Stack>
@@ -338,7 +340,9 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					<Stack className={'container'}>
 						<Stack sx={{ py: 5, alignItems: 'center' }}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<Typography color={'error'}>Error loading agent or agent not found!</Typography>
+							<Typography color={'error'}>
+								{memberError ? t('AgentDetailError', { message: memberError.message }) : t('AgentDetailNotFound')}
+							</Typography>
 						</Stack>
 					</Stack>
 				</Stack>
@@ -366,7 +370,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 								/>
 								{agent?.memberProducts && (
 									<Chip 
-										label={`${agent.memberProducts} Products`}
+										label={t('AgentDetailProductsBadge', { count: agent.memberProducts })}
 										className="agent-badge-chip"
 										sx={{
 											position: 'absolute',
@@ -402,7 +406,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 									<Box component={'div'} className={'stat-item'}>
 										<RemoveRedEyeIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 										<Typography className={'stat-value'}>{agent?.memberViews || 0}</Typography>
-										<Typography className={'stat-label'}>Views</Typography>
+										<Typography className={'stat-label'}>{t('Views')}</Typography>
 									</Box>
 									<Box component={'div'} className={'stat-item'}>
 										{isLiked ? (
@@ -411,17 +415,17 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 											<FavoriteBorderIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 										)}
 										<Typography className={'stat-value'}>{agent?.memberLikes || 0}</Typography>
-										<Typography className={'stat-label'}>Likes</Typography>
+										<Typography className={'stat-label'}>{t('Likes')}</Typography>
 									</Box>
 									<Box component={'div'} className={'stat-item'}>
 										<PersonIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 										<Typography className={'stat-value'}>{agent?.memberFollowers || 0}</Typography>
-										<Typography className={'stat-label'}>Followers</Typography>
+										<Typography className={'stat-label'}>{t('Followers')}</Typography>
 									</Box>
 									<Box component={'div'} className={'stat-item'}>
 										<PersonIcon sx={{ color: '#8B4513', fontSize: '20px' }} />
 										<Typography className={'stat-value'}>{agent?.memberFollowings || 0}</Typography>
-										<Typography className={'stat-label'}>Following</Typography>
+										<Typography className={'stat-label'}>{t('Following')}</Typography>
 									</Box>
 								</Stack>
 
@@ -440,17 +444,33 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 									)}
 									{agent?.createdAt && (
 										<Box component={'div'} className={'detail-item'}>
-											<Typography className={'detail-label'}>Member since:</Typography>
+											<Typography className={'detail-label'}>{t('AgentDetailMemberSince')}</Typography>
 											<Typography className={'detail-text'}>
 												{moment(agent.createdAt).format('MMMM YYYY')}
 											</Typography>
+										</Box>
+									)}
+									{(agent?.memberExperience || agent?.memberEducation) && (
+										<Box component={'div'} className={'detail-feature-grid'}>
+											{agent?.memberExperience && (
+												<Box component={'div'} className={'detail-feature-card'}>
+													<Typography className={'detail-feature-label'}>{t('Experience')}</Typography>
+													<Typography className={'detail-feature-value'}>{agent.memberExperience}</Typography>
+												</Box>
+											)}
+											{agent?.memberEducation && (
+												<Box component={'div'} className={'detail-feature-card'}>
+													<Typography className={'detail-feature-label'}>{t('Education')}</Typography>
+													<Typography className={'detail-feature-value'}>{agent.memberEducation}</Typography>
+												</Box>
+											)}
 										</Box>
 									)}
 								</Stack>
 
 								{agent?.memberDesc && (
 									<Box component={'div'} className={'agent-description'}>
-										<Typography className={'description-title'}>About</Typography>
+										<Typography className={'description-title'}>{t('AgentDetailAbout')}</Typography>
 										<Typography className={'description-text'}>{agent.memberDesc}</Typography>
 									</Box>
 								)}
@@ -472,7 +492,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 											},
 										}}
 									>
-										{isLiked ? 'Liked' : 'Like'}
+										{isLiked ? t('Liked') : t('Like')}
 									</Button>
 									<Button
 										className={'view-profile-button'}
@@ -486,7 +506,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 											},
 										}}
 									>
-										View Full Profile
+										{t('InstallerDetailViewFullProfile')}
 									</Button>
 								</Stack>
 							</Stack>
@@ -495,16 +515,16 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 					{/* Agent Properties Section */}
 					<Stack className={'agent-properties-section'}>
-						<Typography className={'section-title'}> Working Locations</Typography>
+						<Typography className={'section-title'}>{t('AgentDetailWorkingLocations')}</Typography>
 						<Stack className={'card-wrap locations-grid'}>
 							{locationsLoading ? (
 								<div className={'no-data'}>
-									<Typography>Loading locations...</Typography>
+									<Typography>{t('AgentDetailLoadingLocations')}</Typography>
 								</div>
 							) : locationsError ? (
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>Error loading locations: {locationsError.message}</p>
+									<p>{t('AgentDetailLocationsError', { message: locationsError.message })}</p>
 								</div>
 							) : pagedAgentLocations.length > 0 ? (
 								pagedAgentLocations.map((city: Location) => {
@@ -517,7 +537,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 							) : (
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No Locations found!</p>
+									<p>{t('AgentDetailNoLocations')}</p>
 								</div>
 							)}
 						</Stack>
@@ -532,9 +552,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 										color="primary"
 									/>
 								</Stack>
-								<span>
-									Total {agentLocationsAll.length} location{agentLocationsAll.length > 1 ? 's' : ''} available
-								</span>
+								<span>{t('AgentDetailLocationsTotal', { count: agentLocationsAll.length })}</span>
 							</Stack>
 						)}
 					</Stack>
@@ -542,20 +560,20 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					{/* Reviews Section */}
 					<Stack className={'review-section'}>
 						<Stack className={'review-header'}>
-							<Typography className={'section-title'}>Reviews</Typography>
-							<Typography className={'section-subtitle'}>We are glad to see you Measurer</Typography>
+							<Typography className={'section-title'}>{t('Reviews')}</Typography>
+							<Typography className={'section-subtitle'}>{t('AgentDetailReviewsSubtitle')}</Typography>
 						</Stack>
 						
 						{commentsLoading ? (
 							<Stack sx={{ py: 3, alignItems: 'center' }}>
-								<Typography sx={{ color: '#717171' }}>Loading reviews...</Typography>
+								<Typography sx={{ color: '#717171' }}>{t('AgentDetailLoadingReviews')}</Typography>
 							</Stack>
 						) : commentTotal > 0 ? (
 							<Stack className={'review-wrap'}>
 								<Box component={'div'} className={'review-title-box'}>
 									<StarIcon sx={{ color: '#FFD700', fontSize: '24px' }} />
 									<Typography className={'review-count'}>
-										{commentTotal} review{commentTotal > 1 ? 's' : ''}
+										{t('AgentDetailReviewCount', { count: commentTotal })}
 									</Typography>
 								</Box>
 								{agentComments?.map((comment: Comment) => {
@@ -575,7 +593,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 							</Stack>
 						) : (
 							<Stack sx={{ py: 3, alignItems: 'center' }}>
-								<Typography sx={{ color: '#717171' }}>No reviews yet. Be the first to leave a review!</Typography>
+								<Typography sx={{ color: '#717171' }}>{t('AgentDetailNoReviews')}</Typography>
 							</Stack>
 						)}
 
@@ -583,14 +601,14 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 
 						{user?._id && (
 							<Stack className={'leave-review-config'}>
-								<Typography className={'main-title'}>Leave A Review</Typography>
-								<Typography className={'review-title'}>Review</Typography>
+								<Typography className={'main-title'}>{t('Leave A Review')}</Typography>
+								<Typography className={'review-title'}>{t('Review')}</Typography>
 								<textarea
 									onChange={({ target: { value } }: any) => {
 										setInsertCommentData({ ...insertCommentData, commentContent: value });
 									}}
 									value={insertCommentData.commentContent}
-									placeholder="Write your review here..."
+									placeholder={t('AgentDetailReviewPlaceholder')}
 								></textarea>
 								<Box className={'submit-btn'} component={'div'}>
 									<Button
@@ -608,7 +626,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 											},
 										}}
 									>
-										<Typography className={'title'}>Submit Review</Typography>
+										<Typography className={'title'}>{t('Submit Review')}</Typography>
 										<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
 											<g clipPath="url(#clip0_6975_3642)">
 												<path

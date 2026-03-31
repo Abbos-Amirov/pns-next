@@ -328,7 +328,8 @@ hr {
 		.stack-section { background: #f6f6f6 !important; }
 		.stack-section-unified,
 		.stack-section-unified .stack-section-info,
-		.stack-section-unified .stack-section-image {
+		.stack-section-unified .stack-section-image,
+		.stack-section-unified .installer-card-body {
 			background: #f6f6f6 !important;
 		}
 		.stack-h2, .stack-desc, .stack-meta-value { color: #181a20 !important; }
@@ -345,6 +346,16 @@ hr {
 		.stack-desc-input-box {
 			border-color: #e0e0e0 !important;
 			background: #fff !important;
+		}
+		.installer-card-desc-panel {
+			border-color: #e0e0e0 !important;
+			background: #fff !important;
+		}
+		.installer-card-desc-text {
+			color: #181a20 !important;
+		}
+		.installer-card-image-col {
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
 		}
 		.stack-hot-deals-row .stack-hot-deal-thumb,
 		.stack-location-thumbs-row .stack-location-thumb {
@@ -1286,7 +1297,8 @@ hr {
 		}
 		.stack-section-unified,
 		.stack-section-unified .stack-section-info,
-		.stack-section-unified .stack-section-image {
+		.stack-section-unified .stack-section-image,
+		.stack-section-unified .installer-card-body {
 			background: #0d0d0d !important;
 		}
 		/* Dark mode: white text */
@@ -1296,6 +1308,13 @@ hr {
 		.stack-desc-input-box {
 			border-color: rgba(255,255,255,0.2) !important;
 			background: rgba(148, 133, 133, 0.06) !important;
+		}
+		.installer-card-desc-panel {
+			border-color: rgba(255, 255, 255, 0.18) !important;
+			background: rgba(255, 255, 255, 0.05) !important;
+		}
+		.installer-card-desc-text {
+			color: #e8e8e8 !important;
 		}
 		.stack-image-actions {
 			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
@@ -1350,6 +1369,20 @@ hr {
 	/* Agent detail page - dark mode */
 	.agent-detail-page {
 		background-color: #0d0d0d !important;
+
+		.detail-feature-card {
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+			border-color: rgba(212, 165, 116, 0.22) !important;
+			box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24) !important;
+		}
+
+		.detail-feature-label {
+			color: #d4a574 !important;
+		}
+
+		.detail-feature-value {
+			color: #e6edf3 !important;
+		}
 	}
 
 	/* ReviewCard - dark mode: memberNick, date, content oq */

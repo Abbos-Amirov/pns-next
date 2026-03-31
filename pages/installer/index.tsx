@@ -6,7 +6,7 @@ import { Stack, Box, Pagination, Typography, TextField, Select, MenuItem, FormCo
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -326,18 +326,52 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 						<div className="stack-loading">{t('PropertyNoProducts') || 'No installers found'}</div>
 					) : (
 						<>
-							{installers.map((installer, i) => (
+							{installers.map((installer, i) => {
+								const detailHref = `/installer/detail?installerId=${installer._id}`;
+								return (
 								<section
 									key={installer._id}
-									className="stack-section stack-section-unified agent-stack-section"
+									className="stack-section stack-section-unified agent-stack-section installer-card-unified"
 									style={{ zIndex: i + 1 }}
 								>
-									<div className="stack-section-info">
+									<div className="installer-card-body">
 										<h2 className="stack-h2">{installer?.memberFullName || installer?.memberNick || 'Installer'}</h2>
-										<div className="stack-desc-input-box">
-											<span className="stack-meta-label">{t('Description')}</span>
-											<span className="stack-meta-value stack-desc-value">{installer?.memberDesc || t('InstallerDescDefault') || 'Professional installer'}</span>
+
+										<div className="installer-card-gallery-row">
+											<div className="installer-card-image-col">
+												<Link href={detailHref} className="stack-main-image-link">
+													<img src={getInstallerImageUrl(installer)} alt={installer?.memberNick || 'Installer'} />
+												</Link>
+												<div className="stack-image-actions">
+													<button
+														type="button"
+														className="stack-like-btn"
+														onClick={(e) => {
+															e.preventDefault();
+															e.stopPropagation();
+															likeMemberHandler(user, installer._id);
+														}}
+														aria-label={installer?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
+													>
+														{installer?.meLiked?.[0]?.myFavorite ? (
+															<FavoriteIcon className="stack-like-icon liked" />
+														) : (
+															<FavoriteBorderIcon className="stack-like-icon" />
+														)}
+													</button>
+													<span className="stack-action-count">{installer?.memberLikes ?? 0}</span>
+													<VisibilityIcon className="stack-views-icon" />
+													<span className="stack-action-count">{installer?.memberViews ?? 0}</span>
+												</div>
+											</div>
+											<div className="installer-card-desc-panel">
+												<span className="stack-meta-label">{t('Description')}</span>
+												<p className="stack-desc-value installer-card-desc-text">
+													{installer?.memberDesc || t('InstallerDescDefault') || 'Professional installer'}
+												</p>
+											</div>
 										</div>
+
 										<div className="stack-meta-cards stack-meta-horizontal">
 											<div className="stack-meta-input-row">
 												<div className="stack-meta-input-box">
@@ -346,11 +380,11 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 												</div>
 												<div className="stack-meta-input-box">
 													<span className="stack-meta-label">{t('Experience')}</span>
-													<span className="stack-meta-value">{(installer as any)?.memberExperience || '—'}</span>
+													<span className="stack-meta-value">{installer?.memberExperience || '—'}</span>
 												</div>
 												<div className="stack-meta-input-box">
 													<span className="stack-meta-label">{t('Education')}</span>
-													<span className="stack-meta-value">{(installer as any)?.memberEducation || '—'}</span>
+													<span className="stack-meta-value">{installer?.memberEducation || '—'}</span>
 												</div>
 											</div>
 											<div className="stack-meta-input-row">
@@ -389,22 +423,16 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 												</div>
 											</div>
 										</div>
-										<div className="stack-demo-products-row">
-											<button
-												className="stack-demo-btn"
-												onClick={() => router.push(`/installer/detail?installerId=${installer._id}`)}
-											>
-												<PlayArrowIcon />
-												{t('Demo')}
-											</button>
+
+										<div className="installer-card-footer-row">
+											<Link href={detailHref} className="installer-view-details-btn">
+												<RemoveRedEyeIcon sx={{ fontSize: 22 }} />
+												{t('ViewDetails')}
+											</Link>
 											{installerArticleImages[installer._id]?.length > 0 && (
 												<div className="stack-location-thumbs-row stack-article-thumbs-row">
 													{installerArticleImages[installer._id].slice(0, 3).map((src, idx) => (
-														<Link
-															key={idx}
-															href={`/installer/detail?installerId=${installer._id}`}
-															style={{ display: 'block' }}
-														>
+														<Link key={idx} href={detailHref} style={{ display: 'block' }}>
 															<div className="stack-location-thumb">
 																<img src={src} alt={`Article ${idx + 1}`} />
 															</div>
@@ -414,34 +442,9 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 											)}
 										</div>
 									</div>
-									<div className="stack-section-image">
-										<Link href={`/installer/detail?installerId=${installer._id}`} className="stack-main-image-link">
-											<img src={getInstallerImageUrl(installer)} alt={installer?.memberNick || 'Installer'} />
-										</Link>
-										<div className="stack-image-actions">
-											<button
-												type="button"
-												className="stack-like-btn"
-												onClick={(e) => {
-													e.preventDefault();
-													e.stopPropagation();
-													likeMemberHandler(user, installer._id);
-												}}
-												aria-label={installer?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
-											>
-												{installer?.meLiked?.[0]?.myFavorite ? (
-													<FavoriteIcon className="stack-like-icon liked" />
-												) : (
-													<FavoriteBorderIcon className="stack-like-icon" />
-												)}
-											</button>
-											<span className="stack-action-count">{installer?.memberLikes ?? 0}</span>
-											<VisibilityIcon className="stack-views-icon" />
-											<span className="stack-action-count">{installer?.memberViews ?? 0}</span>
-										</div>
-									</div>
 								</section>
-							))}
+								);
+							})}
 							{installers.length > 0 && (
 								<div className="stack-pagination-row">
 									<Pagination

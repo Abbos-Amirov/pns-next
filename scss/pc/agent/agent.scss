@@ -382,6 +382,138 @@
 	}
 }
 
+/* Installer list only: name on top; image + description one row; meta; View details */
+#pc-wrap #installer-list-page.agent-scroll-stack .container.agent-stack-container {
+	.stack-section-unified.installer-card-unified {
+		flex-direction: column;
+		align-items: stretch;
+		.installer-card-body {
+			width: 100%;
+			padding: 36px 40px 40px;
+			box-sizing: border-box;
+		}
+		.stack-h2 {
+			margin-bottom: 0;
+		}
+		.installer-card-gallery-row {
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
+			gap: 20px;
+			margin-top: 20px;
+			min-height: 0;
+		}
+		.installer-card-image-col {
+			flex: 0 1 42%;
+			max-width: 440px;
+			min-width: 200px;
+			display: flex;
+			flex-direction: column;
+			border-radius: 16px;
+			overflow: hidden;
+			box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+			.stack-main-image-link {
+				display: block;
+				height: 240px;
+				flex-shrink: 0;
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+				}
+			}
+		}
+		.installer-card-desc-panel {
+			flex: 1 1 58%;
+			min-width: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			padding: 18px 22px;
+			border-radius: 16px;
+			border: 1px solid rgba(255, 255, 255, 0.22);
+			background: rgba(255, 255, 255, 0.06);
+			.installer-card-desc-text {
+				margin: 0;
+				font-size: 15px;
+				line-height: 1.55;
+				flex: 1;
+				overflow-y: auto;
+				max-height: 240px;
+			}
+		}
+		.stack-meta-cards {
+			margin-top: 24px;
+		}
+		.installer-card-footer-row {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 20px;
+			margin-top: 24px;
+		}
+		.installer-view-details-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 14px 28px;
+			border-radius: 12px;
+			font-size: 15px;
+			font-weight: 700;
+			text-decoration: none;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			color: #fff !important;
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			cursor: pointer;
+			transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+			box-shadow: 0 4px 14px rgba(18, 13, 83, 0.35);
+			&:hover {
+				transform: translateY(-1px);
+				background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%);
+				box-shadow: 0 6px 18px rgba(18, 13, 83, 0.45);
+				color: #fff !important;
+			}
+		}
+	}
+	@media (max-width: 900px) {
+		.stack-section-unified.installer-card-unified .installer-card-gallery-row {
+			flex-direction: column;
+		}
+		.stack-section-unified.installer-card-unified .installer-card-image-col {
+			max-width: none;
+			width: 100%;
+		}
+	}
+}
+
+/* Agent / measurer list: View details CTA (same navy gradient as image action bar) */
+#pc-wrap #agent-list-page.agent-scroll-stack .container.agent-stack-container {
+	.agent-view-details-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 14px 28px;
+		border-radius: 12px;
+		font-size: 15px;
+		font-weight: 700;
+		text-decoration: none;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		color: #fff !important;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		cursor: pointer;
+		transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+		box-shadow: 0 4px 14px rgba(18, 13, 83, 0.35);
+		&:hover {
+			transform: translateY(-1px);
+			background: linear-gradient(135deg, #0d0a47 0%, #121a5c 50%, #151c6e 100%);
+			box-shadow: 0 6px 18px rgba(18, 13, 83, 0.45);
+			color: #fff !important;
+		}
+	}
+}
+
 #pc-wrap {
 	.agent-list-page {
 		position: relative;

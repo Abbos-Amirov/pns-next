@@ -98,7 +98,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 					meLiked: updatedMember.meLiked || installer.meLiked,
 				});
 				
-				const message = newLikedState ? 'Installer liked successfully!' : 'Installer unliked successfully!';
+				const message = newLikedState ? t('InstallerDetailLikeSuccess') : t('InstallerDetailUnlikeSuccess');
 				sweetTopSuccessAlert(message, 700).then();
 			}
 		},
@@ -165,7 +165,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 					refetchComments();
 				}
 				
-				sweetTopSuccessAlert('Review submitted successfully!', 700).then();
+				sweetTopSuccessAlert(t('InstallerDetailReviewSuccess'), 700).then();
 			}
 		},
 		onError: (err) => {
@@ -228,7 +228,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const likeInstallerHandler = async () => {
 		if (!installer?._id) return;
 		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to like installers', 700).then();
+			sweetTopSuccessAlert(t('InstallerDetailLoginToLike'), 700).then();
 			return;
 		}
 
@@ -261,17 +261,17 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 	const submitCommentHandler = async () => {
 		if (!user?._id) {
-			sweetTopSuccessAlert('Please login to leave a review', 700).then();
+			sweetTopSuccessAlert(t('InstallerDetailLoginToReview'), 700).then();
 			return;
 		}
 
 		if (!insertCommentData.commentContent.trim()) {
-			sweetTopSuccessAlert('Please enter a review', 700).then();
+			sweetTopSuccessAlert(t('InstallerDetailEnterReview'), 700).then();
 			return;
 		}
 
 		if (!installer?._id) {
-			sweetTopSuccessAlert('Installer not found', 700).then();
+			sweetTopSuccessAlert(t('InstallerDetailNotFound'), 700).then();
 			return;
 		}
 
@@ -297,7 +297,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>INSTALLER DETAIL PAGE MOBILE</h1>;
+		return <h1>{t('InstallerDetailPageMobile')}</h1>;
 	}
 
 	if (memberLoading) {
@@ -305,7 +305,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 			<Stack className={'agent-detail-page'}>
 				<Stack className={'container'}>
 					<Stack sx={{ py: 5, alignItems: 'center' }}>
-						<Typography>Loading installer information...</Typography>
+						<Typography>{t('InstallerDetailLoading')}</Typography>
 					</Stack>
 				</Stack>
 			</Stack>
@@ -319,7 +319,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 					<Stack sx={{ py: 5, alignItems: 'center' }}>
 						<img src="/img/icons/icoAlert.svg" alt="" />
 						<Typography color="error">
-							{memberError ? `Error loading installer: ${memberError.message}` : 'Installer not found'}
+							{memberError ? t('InstallerDetailError', { message: memberError.message }) : t('InstallerDetailNotFound')}
 						</Typography>
 					</Stack>
 				</Stack>
@@ -348,7 +348,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 										/>
 										{installer?.memberArticles && (
 											<Chip
-												label={`${installer.memberArticles} Articles`}
+												label={t('InstallerDetailArticlesBadge', { count: installer.memberArticles })}
 												className="agent-badge-chip"
 												sx={{
 													position: 'absolute',
@@ -365,10 +365,10 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 									<Box component={'div'} className={'agent-info-content'}>
 										<Box component={'div'} className={'agent-header'}>
 											<Typography className={'agent-name'}>
-												{installer?.memberFullName || installer?.memberNick || 'Installer'}
+												{installer?.memberFullName || installer?.memberNick || t('Installer')}
 											</Typography>
 											<Chip 
-												label="INSTALLER" 
+												label={t('Installer')} 
 												sx={{ 
 													backgroundColor: '#8B4513',
 													color: '#fff',
@@ -384,31 +384,31 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<Typography className={'stat-value'}>
 													{installer?.memberViews || 0}
 												</Typography>
-												<Typography className={'stat-label'}>Views</Typography>
+												<Typography className={'stat-label'}>{t('Views')}</Typography>
 											</Box>
 											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberLikes || 0}
 												</Typography>
-												<Typography className={'stat-label'}>Likes</Typography>
+												<Typography className={'stat-label'}>{t('Likes')}</Typography>
 											</Box>
 											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberFollowers || 0}
 												</Typography>
-												<Typography className={'stat-label'}>Followers</Typography>
+												<Typography className={'stat-label'}>{t('Followers')}</Typography>
 											</Box>
 											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberFollowings || 0}
 												</Typography>
-												<Typography className={'stat-label'}>Followings</Typography>
+												<Typography className={'stat-label'}>{t('Followings')}</Typography>
 											</Box>
 											<Box component={'div'} className={'stat-item'}>
 												<Typography className={'stat-value'}>
 													{installer?.memberComments || 0}
 												</Typography>
-												<Typography className={'stat-label'}>Comments</Typography>
+												<Typography className={'stat-label'}>{t('Comments')}</Typography>
 											</Box>
 										</Box>
 
@@ -431,21 +431,21 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 													<Typography className={'detail-text'}>{installer.memberDesc}</Typography>
 												</Box>
 											)}
-											{((installer as any)?.memberExperience || (installer as any)?.memberEducation) && (
-												<>
-													{(installer as any)?.memberExperience && (
-														<Box component={'div'} className={'detail-item'}>
-															<Typography className={'detail-label'}>{t('Experience')}:</Typography>
-															<Typography className={'detail-text'}>{(installer as any).memberExperience}</Typography>
+											{(installer?.memberExperience || installer?.memberEducation) && (
+												<Box component={'div'} className={'detail-feature-grid'}>
+													{installer?.memberExperience && (
+														<Box component={'div'} className={'detail-feature-card'}>
+															<Typography className={'detail-feature-label'}>{t('Experience')}</Typography>
+															<Typography className={'detail-feature-value'}>{installer.memberExperience}</Typography>
 														</Box>
 													)}
-													{(installer as any)?.memberEducation && (
-														<Box component={'div'} className={'detail-item'}>
-															<Typography className={'detail-label'}>{t('Education')}:</Typography>
-															<Typography className={'detail-text'}>{(installer as any).memberEducation}</Typography>
+													{installer?.memberEducation && (
+														<Box component={'div'} className={'detail-feature-card'}>
+															<Typography className={'detail-feature-label'}>{t('Education')}</Typography>
+															<Typography className={'detail-feature-value'}>{installer.memberEducation}</Typography>
 														</Box>
 													)}
-												</>
+												</Box>
 											)}
 										</Box>
 
@@ -466,7 +466,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 													},
 												}}
 											>
-												{isLiked ? 'Liked' : 'Like'}
+												{isLiked ? t('Liked') : t('Like')}
 											</Button>
 											<Button
 												className={'view-profile-button'}
@@ -478,7 +478,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 													'&:hover': { background: '#6B3410' },
 												}}
 											>
-												View Full Profile
+												{t('InstallerDetailViewFullProfile')}
 											</Button>
 										</Stack>
 									</Box>
@@ -487,16 +487,16 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 							{/* My Articles Section */}
 							<Stack className={'agent-properties-section'}>
-								<Typography className={'section-title'}>My Articles</Typography>
+								<Typography className={'section-title'}>{t('InstallerDetailMyArticles')}</Typography>
 								<Stack className={'card-wrap locations-grid'}>
 									{articlesLoading ? (
 										<div className={'no-data'}>
-											<Typography>Loading articles...</Typography>
+											<Typography>{t('InstallerDetailLoadingArticles')}</Typography>
 										</div>
 									) : articlesError ? (
 										<div className={'no-data'}>
 											<img src="/img/icons/icoAlert.svg" alt="" />
-											<p>Error loading articles: {articlesError.message}</p>
+											<p>{t('InstallerDetailArticlesError', { message: articlesError.message })}</p>
 										</div>
 									) : installerArticles.length > 0 ? (
 										installerArticles.map((article: BoardArticle) => (
@@ -507,7 +507,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 									) : (
 										<div className={'no-data'}>
 											<img src="/img/icons/icoAlert.svg" alt="" />
-											<p>No articles yet.</p>
+											<p>{t('InstallerDetailNoArticles')}</p>
 										</div>
 									)}
 								</Stack>
@@ -516,20 +516,20 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 							{/* Reviews Section */}
 							<Stack className={'review-section'}>
 								<Stack className={'review-header'}>
-									<Typography className={'section-title'}>Reviews</Typography>
-									<Typography className={'section-subtitle'}>Share your experience with this installer</Typography>
+									<Typography className={'section-title'}>{t('Reviews')}</Typography>
+									<Typography className={'section-subtitle'}>{t('InstallerDetailReviewsSubtitle')}</Typography>
 								</Stack>
 								
 								{commentsLoading ? (
 									<Stack sx={{ py: 3, alignItems: 'center' }}>
-										<Typography sx={{ color: '#717171' }}>Loading reviews...</Typography>
+										<Typography sx={{ color: '#717171' }}>{t('InstallerDetailLoadingReviews')}</Typography>
 									</Stack>
 								) : commentTotal > 0 ? (
 									<Stack className={'review-wrap'}>
 										<Box component={'div'} className={'review-title-box'}>
 											<StarIcon sx={{ color: '#FFD700', fontSize: '24px' }} />
 											<Typography className={'review-count'}>
-												{commentTotal} review{commentTotal > 1 ? 's' : ''}
+												{t('InstallerDetailReviewCount', { count: commentTotal })}
 											</Typography>
 										</Box>
 										{installerComments?.map((comment: Comment) => {
@@ -558,21 +558,21 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 									</Stack>
 								) : (
 									<Stack sx={{ py: 3, alignItems: 'center' }}>
-										<Typography sx={{ color: '#717171' }}>No reviews yet. Be the first to leave a review!</Typography>
+										<Typography sx={{ color: '#717171' }}>{t('InstallerDetailNoReviews')}</Typography>
 									</Stack>
 								)}
 
 								{/* Comment Form */}
 								{user?._id && (
 									<Stack className={'leave-review-config'}>
-										<Typography className={'main-title'}>Leave A Review</Typography>
-										<Typography className={'review-title'}>Review</Typography>
+										<Typography className={'main-title'}>{t('Leave A Review')}</Typography>
+										<Typography className={'review-title'}>{t('Review')}</Typography>
 										<textarea
 											onChange={({ target: { value } }: any) => {
 												setInsertCommentData({ ...insertCommentData, commentContent: value });
 											}}
 											value={insertCommentData.commentContent}
-											placeholder="Write your review here..."
+											placeholder={t('InstallerDetailReviewPlaceholder')}
 											disabled={createCommentLoading}
 										></textarea>
 										<Box className={'submit-btn'} component={'div'}>
@@ -592,7 +592,7 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 												}}
 											>
 												<Typography className={'title'}>
-													{createCommentLoading ? 'Submitting...' : 'Submit Review'}
+													{createCommentLoading ? t('InstallerDetailSubmitting') : t('Submit Review')}
 												</Typography>
 												{!createCommentLoading && (
 													<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">

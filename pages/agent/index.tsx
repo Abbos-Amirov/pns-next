@@ -5,7 +5,7 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Pagination, Typography } from '@mui/material';
 import { Menu, MenuItem } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -278,7 +278,9 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 						<div className="stack-loading">{t('PropertyNoProducts') || 'No agents found'}</div>
 					) : (
 						<>
-							{agents.map((agent, i) => (
+							{agents.map((agent, i) => {
+								const detailHref = `/agent/detail?agentId=${agent._id}`;
+								return (
 								<section
 									key={agent._id}
 									className="stack-section stack-section-unified agent-stack-section"
@@ -298,11 +300,11 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 												</div>
 												<div className="stack-meta-input-box">
 													<span className="stack-meta-label">{t('Experience')}</span>
-													<span className="stack-meta-value">{(agent as any)?.memberExperience || '—'}</span>
+													<span className="stack-meta-value">{agent?.memberExperience || '—'}</span>
 												</div>
 												<div className="stack-meta-input-box">
 													<span className="stack-meta-label">{t('Education')}</span>
-													<span className="stack-meta-value">{(agent as any)?.memberEducation || '—'}</span>
+													<span className="stack-meta-value">{agent?.memberEducation || '—'}</span>
 												</div>
 											</div>
 											<div className="stack-meta-input-row">
@@ -342,19 +344,16 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 											</div>
 										</div>
 										<div className="stack-demo-products-row">
-											<button
-												className="stack-demo-btn"
-												onClick={() => router.push(`/agent/detail?agentId=${agent._id}`)}
-											>
-												<PlayArrowIcon />
-												{t('Demo')}
-											</button>
+											<Link href={detailHref} className="agent-view-details-btn">
+												<RemoveRedEyeIcon sx={{ fontSize: 22 }} />
+												{t('ViewDetails')}
+											</Link>
 											{agentLocationImages[agent._id]?.length > 0 && (
 												<div className="stack-location-thumbs-row">
 													{agentLocationImages[agent._id].slice(0, 3).map((src, idx) => (
 														<Link
 															key={idx}
-															href={`/agent/detail?agentId=${agent._id}`}
+															href={detailHref}
 															style={{ display: 'block' }}
 														>
 															<div className="stack-location-thumb">
@@ -367,7 +366,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 										</div>
 									</div>
 									<div className="stack-section-image">
-										<Link href={`/agent/detail?agentId=${agent._id}`} className="stack-main-image-link">
+										<Link href={detailHref} className="stack-main-image-link">
 											<img src={getAgentImageUrl(agent)} alt={agent?.memberNick || 'Agent'} />
 										</Link>
 										<div className="stack-image-actions">
@@ -393,7 +392,8 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 										</div>
 									</div>
 								</section>
-							))}
+								);
+							})}
 							{agents.length > 0 && (
 								<div className="stack-pagination-row">
 									<Pagination
