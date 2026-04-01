@@ -334,6 +334,8 @@ const withLayoutBasic = (Component: any) => {
 										</>
 									)}
 									<span className={'nav-separator-dark'}>/</span>
+									
+									<span className={'nav-separator-dark'}>/</span>
 									<Box
 										component={'div'}
 										className={'support-dropdown-dark'}
@@ -556,6 +558,12 @@ const withLayoutBasic = (Component: any) => {
 												<span className={'nav-overlay-card-label'}>{t('Login/Signup')}</span>
 											</Box>
 										)}
+										<Link href={'/about'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+											<div className={'nav-overlay-card-image'}>
+												<img src={'/img/nav-overlay/factory-locations-pin.png'} alt={t('FactoryLocations')} />
+											</div>
+											<span className={'nav-overlay-card-label'}>{t('FactoryLocations')}</span>
+										</Link>
 										<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 											<div className={'nav-overlay-card-image'}>
 												<img src={'/img/support/our-services.png'} alt={t('OurServices')} />

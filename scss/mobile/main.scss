@@ -8,6 +8,19 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    .top-basic-factory-locs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      line-height: 1.2;
+      text-align: center;
+      img {
+        flex-shrink: 0;
+        object-fit: contain;
+      }
+    }
   }
 
   .info-box {

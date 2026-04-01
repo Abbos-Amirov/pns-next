@@ -146,6 +146,33 @@
 			background: transparent;
 		}
 	}
+
+	/* Support: 7 ta kartochka (Factory Locations + …) */
+	&--7 {
+		grid-template-columns: repeat(7, minmax(130px, 1fr));
+		max-width: 100%;
+		margin: 0 auto;
+		gap: 16px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		padding-bottom: 8px;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+		-webkit-overflow-scrolling: touch;
+
+		&::-webkit-scrollbar {
+			height: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: rgba(255, 255, 255, 0.28);
+			border-radius: 999px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+	}
 }
 
 .nav-mega-card {
@@ -194,7 +221,8 @@
 /* Product / Experts (2 ustun) va Support (5 ustun): rasm balandligi ~1.3 */
 .nav-mega-grid--2 .nav-mega-card-image.nav-overlay-card-image,
 .nav-mega-grid--5 .nav-mega-card-image.nav-overlay-card-image,
-.nav-mega-grid--6 .nav-mega-card-image.nav-overlay-card-image {
+.nav-mega-grid--6 .nav-mega-card-image.nav-overlay-card-image,
+.nav-mega-grid--7 .nav-mega-card-image.nav-overlay-card-image {
 	height: 156px; /* 120 * 1.3 */
 	min-height: 156px;
 
@@ -204,8 +232,9 @@
 	}
 }
 
-.nav-mega-grid--6 .nav-mega-card.nav-overlay-card {
-	min-width: 150px;
+.nav-mega-grid--6 .nav-mega-card.nav-overlay-card,
+.nav-mega-grid--7 .nav-mega-card.nav-overlay-card {
+	min-width: 130px;
 }
 
 /* Pastki label — och kulrang panel, qora matn (namuna) */

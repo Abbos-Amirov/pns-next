@@ -190,6 +190,12 @@ const Top = () => {
 				<Link href={'/installer'}><div>{t('Installers')}</div></Link>
 				<Link href={'/community?articleCategory=FREE'}><div>{t('Community')}</div></Link>
 				<Link href={'/cs'}><div>{t('CS')}</div></Link>
+				<Link href={'/about'}>
+					<div className={'top-basic-factory-locs'}>
+						<img src={'/img/nav-overlay/factory-locations-pin.png'} alt="" width={18} height={18} />
+						<span>{t('FactoryLocations')}</span>
+					</div>
+				</Link>
 				<IconButton size="small" onClick={toggleTheme} sx={{ color: '#1a5f9e', p: 0.5 }} title={mode === 'dark' ? 'Light' : 'Dark'}>
 					{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
 				</IconButton>
@@ -365,6 +371,8 @@ const Top = () => {
 								</>
 							)}
 							<span className={'nav-separator'}>/</span>
+							
+							
 							<Box
 								component={'div'}
 								className={'support-dropdown'}
@@ -596,7 +604,7 @@ const Top = () => {
 							</Link>
 							<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src={'/img/banner/city pns.avif'} alt={t('City')} />
+									<img src="/img/banner/city%20pns.avif" alt={t('City')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('City')}</span>
 							</Link>
@@ -614,6 +622,12 @@ const Top = () => {
 									<span className={'nav-overlay-card-label'}>{t('My Page')}</span>
 								</Link>
 							)}
+							<Link href={'/about'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+								<div className={'nav-overlay-card-image'}>
+									<img src={'/img/nav-overlay/factory-locations-pin.png'} alt={t('FactoryLocations')} />
+								</div>
+								<span className={'nav-overlay-card-label'}>{t('FactoryLocations')}</span>
+							</Link>
 							<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
 									<img src={'/img/support/our-services.png'} alt={t('OurServices')} />

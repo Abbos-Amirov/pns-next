@@ -304,3 +304,29 @@ a.support-menu-card {
 .home-link-dark.is-open .dropdown-icon-dark {
 	color: #120d53 !important;
 }
+
+/* Factory Locations — Korea pin icon (Top.tsx / LayoutBasic) */
+.nav-link.nav-link--factory-locs,
+.nav-link-dark.nav-link-dark--factory-locs {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 6px !important;
+	font-weight: 600 !important;
+	line-height: 1 !important;
+}
+.nav-factory-loc-icon {
+	width: 20px;
+	height: 20px;
+	object-fit: contain;
+	flex-shrink: 0;
+	display: block;
+}
+.navbar-main:not([data-theme='dark']) .nav-link.nav-link--factory-locs {
+	color: #0d0d0d !important;
+}
+.navbar-main[data-theme='dark'] .nav-link.nav-link--factory-locs {
+	color: rgba(201, 169, 98, 0.95) !important;
+}
+.nav-link-dark.nav-link-dark--factory-locs {
+	color: #252420 !important;
+}
