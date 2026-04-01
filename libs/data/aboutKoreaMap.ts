@@ -1,4 +1,4 @@
-/** Percent positions for markers on the Korea map image (desktop). Adjust in SCSS if needed. */
+/** Percent positions for markers on the Korea map image (desktop). */
 export const ABOUT_KOREA_MAP_MARKERS: { labelKey: string; top: string; left: string }[] = [
 	{ labelKey: 'AboutMapLocPocheon', top: '11%', left: '54%' },
 	{ labelKey: 'AboutMapLocCheonanFactory', top: '30%', left: '47%' },

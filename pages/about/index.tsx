@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Stack, Box, Button } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import { ABOUT_OFFICES, getAboutOfficeById, type AboutOfficeDef } from '../../libs/data/aboutOffices';
 import { ABOUT_KOREA_MAP_MARKERS } from '../../libs/data/aboutKoreaMap';
+import AboutOfficeMapModal from '../../libs/components/about/AboutOfficeMapModal';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -17,6 +19,9 @@ export const getStaticProps = async ({ locale }: any) => ({
 const About: NextPage = () => {
 	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
+	const [mapModalOffice, setMapModalOffice] = useState<AboutOfficeDef | null>(null);
+	const openMapModal = useCallback((office: AboutOfficeDef) => setMapModalOffice(office), []);
+	const closeMapModal = useCallback(() => setMapModalOffice(null), []);
 
 	if (device === 'mobile') {
 		return <div>{t('AboutPageMobile')}</div>;
@@ -157,105 +162,106 @@ const About: NextPage = () => {
 					</Stack>
 				</Stack>
 				<section className={'about-map-section'}>
-					<div className={'about-map-section-inner'}>
-						<h2 className={'about-map-heading'}>{t('AboutMapSectionTitle')}</h2>
-						<div className={'about-map-visual'}>
-							<img
-								className={'about-map-image'}
-								src="/img/about/korea-locations-map.png"
-								alt=""
-								loading="lazy"
-							/>
-							{ABOUT_KOREA_MAP_MARKERS.map((m) => (
-								<div
-									key={m.labelKey}
-									className={'about-map-marker'}
-									style={{ top: m.top, left: m.left }}
-								>
-									<span className={'about-map-dot'} aria-hidden />
-									<span className={'about-map-label'}>{t(m.labelKey)}</span>
-								</div>
-							))}
-
-							<div className={'about-map-card about-map-card--seoul'}>
-								<div className={'about-map-card-head'}>
-									<span className={'about-map-card-pill'}>{t('AboutOfficeSeoulTitle')}</span>
-									<Button
-										component={Link}
-										href={t('AboutOfficeSeoulMapUrl')}
-										target="_blank"
-										rel="noopener noreferrer"
-										className={'about-map-card-map-btn'}
-										size="small"
+					<div className={'about-map-hero'}>
+						<div className={'about-map-hero-inner'}>
+							<header className={'about-map-hero-header'}>
+								<h2 className={'about-map-hero-title'}>{t('AboutMapHeroTitle')}</h2>
+								<p className={'about-map-hero-sub'}>{t('AboutMapHeroSubtitle')}</p>
+							</header>
+							<div className={'about-map-visual'}>
+								<img
+									className={'about-map-image'}
+									src="/img/about/korea-locations-map.png"
+									alt=""
+									loading="lazy"
+								/>
+								{ABOUT_KOREA_MAP_MARKERS.map((m) => (
+									<div
+										key={m.labelKey}
+										className={'about-map-marker'}
+										style={{ top: m.top, left: m.left }}
 									>
-										{t('AboutMapViewMap')}
-									</Button>
-								</div>
-								<div className={'about-map-card-rows'}>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelAddress')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeSeoulAddress')}</span>
+										<span className={'about-map-dot'} aria-hidden />
+										<span className={'about-map-label'}>{t(m.labelKey)}</span>
 									</div>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelPhoneFax')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeSeoulTel')}</span>
-									</div>
-								</div>
-							</div>
+								))}
 
-							<div className={'about-map-card about-map-card--cheonan'}>
-								<div className={'about-map-card-head'}>
-									<span className={'about-map-card-pill'}>{t('AboutOfficeCheonanTitle')}</span>
-									<Button
-										component={Link}
-										href={t('AboutOfficeCheonanMapUrl')}
-										target="_blank"
-										rel="noopener noreferrer"
-										className={'about-map-card-map-btn'}
-										size="small"
-									>
-										{t('AboutMapViewMap')}
-									</Button>
-								</div>
-								<div className={'about-map-card-rows'}>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelAddress')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeCheonanAddress')}</span>
-									</div>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelPhoneFax')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeCheonanTel')}</span>
-									</div>
-								</div>
-							</div>
-
-							<div className={'about-map-card about-map-card--busan'}>
-								<div className={'about-map-card-head'}>
-									<span className={'about-map-card-pill'}>{t('AboutOfficeBusanTitle')}</span>
-									<Button
-										component={Link}
-										href={t('AboutOfficeBusanMapUrl')}
-										target="_blank"
-										rel="noopener noreferrer"
-										className={'about-map-card-map-btn'}
-										size="small"
-									>
-										{t('AboutMapViewMap')}
-									</Button>
-								</div>
-								<div className={'about-map-card-rows'}>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelAddress')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeBusanAddress')}</span>
-									</div>
-									<div className={'about-map-card-row'}>
-										<span className={'about-map-k'}>{t('AboutMapLabelPhoneFax')}</span>
-										<span className={'about-map-v'}>{t('AboutOfficeBusanTel')}</span>
-									</div>
-								</div>
+								{(['seoul', 'cheonan', 'busanFactory'] as const).map((fid) => {
+									const o = getAboutOfficeById(fid);
+									if (!o) return null;
+									const cardClass =
+										fid === 'seoul'
+											? 'about-map-card about-map-card--seoul'
+											: fid === 'cheonan'
+												? 'about-map-card about-map-card--cheonan'
+												: 'about-map-card about-map-card--busan';
+									return (
+										<div key={fid} className={cardClass}>
+											<div className={'about-map-card-head'}>
+												<span className={'about-map-card-pill'}>{t(o.titleKey)}</span>
+												<button
+													type="button"
+													className={'about-map-card-map-btn'}
+													onClick={() => openMapModal(o)}
+												>
+													{t('AboutMapViewMap')}
+												</button>
+											</div>
+											<div className={'about-map-card-rows'}>
+												<div className={'about-map-card-row'}>
+													<span className={'about-map-k'}>{t('AboutMapLabelAddress')}</span>
+													<span className={'about-map-v'}>{t(o.addressKey)}</span>
+												</div>
+												<div className={'about-map-card-row'}>
+													<span className={'about-map-k'}>{t('AboutMapLabelPhoneFax')}</span>
+													<span className={'about-map-v'}>{t(o.telKey)}</span>
+												</div>
+											</div>
+										</div>
+									);
+								})}
 							</div>
 						</div>
 					</div>
+
+					<div className={'about-map-grid-block'}>
+						<div className={'about-map-section-inner'}>
+							<h2 className={'about-map-grid-title'}>{t('AboutMapOfficesGridTitle')}</h2>
+							<div className={'about-offices-grid'}>
+								{ABOUT_OFFICES.map((office) => (
+									<article key={office.id} className={'about-office-card'}>
+										<div className={'about-office-card-head'}>
+											<h3 className={'about-office-card-title'}>{t(office.titleKey)}</h3>
+											<button
+												type="button"
+												className={'about-office-map-btn'}
+												onClick={() => openMapModal(office)}
+											>
+												{t('AboutMapViewMap')}
+											</button>
+										</div>
+										<ul className={'about-office-card-list'}>
+											<li>
+												<span className={'about-office-card-bullet'} aria-hidden />
+												<span className={'about-office-card-line'}>
+													<span className={'about-office-card-k'}>{t('AboutMapLabelAddress')}</span>
+													{t(office.addressKey)}
+												</span>
+											</li>
+											<li>
+												<span className={'about-office-card-bullet'} aria-hidden />
+												<span className={'about-office-card-line'}>
+													<span className={'about-office-card-k'}>{t('AboutMapLabelPhoneFax')}</span>
+													{t(office.telKey)}
+												</span>
+											</li>
+										</ul>
+									</article>
+								))}
+							</div>
+						</div>
+					</div>
+					<AboutOfficeMapModal open={!!mapModalOffice} onClose={closeMapModal} office={mapModalOffice} />
 				</section>
 
 				<Stack className={'partners'}>
