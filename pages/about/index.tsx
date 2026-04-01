@@ -23,43 +23,13 @@ const About: NextPage = () => {
 	} else {
 		return (
 			<Stack className={'about-page'}>
-				<Stack className={'intro'}>
-					<Stack className={'container about-intro-container'}>
-						<Stack className={'left about-intro-left'}>
-							<span className={'about-intro-kicker'}>{t('AboutIntroKicker')}</span>
-							<strong className={'about-intro-headline'}>{t('AboutIntroHeadline')}</strong>
-						</Stack>
-						<Stack className={'right about-intro-right'}>
-							<div className={'about-intro-copy'}>
-								<p>{t('AboutIntroPara1')}</p>
-								<p>{t('AboutIntroPara2')}</p>
-								<p>{t('AboutIntroPara3')}</p>
-							</div>
-							<div className={'about-intro-cards'}>
-								<div className={'about-intro-card'}>
-									<div className={'about-intro-card-icon'}>
-										<img src="/img/icons/garden.svg" alt="" />
-									</div>
-									<div className={'about-intro-card-body'}>
-										<span className={'about-intro-card-title'}>{t('AboutIntroCard1Title')}</span>
-										<p>{t('AboutIntroCard1Body')}</p>
-									</div>
-								</div>
-								<div className={'about-intro-card'}>
-									<div className={'about-intro-card-icon'}>
-										<img src="/img/icons/securePayment.svg" alt="" />
-									</div>
-									<div className={'about-intro-card-body'}>
-										<span className={'about-intro-card-title'}>{t('AboutIntroCard2Title')}</span>
-										<p>{t('AboutIntroCard2Body')}</p>
-									</div>
-								</div>
-							</div>
-						</Stack>
-					</Stack>
-				</Stack>
 				<Stack className={'statistics'}>
 					<Stack className={'container'}>
+						<header className={'about-stats-hero'}>
+							<span className={'about-stats-hero-kicker'}>{t('AboutStatsHeroKicker')}</span>
+							<h1 className={'about-stats-hero-title'}>{t('AboutStatsHeroTitle')}</h1>
+							<p className={'about-stats-hero-sub'}>{t('AboutStatsHeroSub')}</p>
+						</header>
 						<Stack className={'banner'}>
 							<img src="/img/banner/city%20pns.avif" alt="" />
 						</Stack>
@@ -150,7 +120,42 @@ const About: NextPage = () => {
 						<div className={'about-options-banner-accent about-options-banner-accent--right'} />
 					</div>
 				</section>
-
+				<Stack className={'intro'}>
+					<Stack className={'container about-intro-container'}>
+						<Stack className={'left about-intro-left'}>
+							<span className={'about-intro-kicker'}>{t('AboutIntroKicker')}</span>
+							<strong className={'about-intro-headline'}>{t('AboutIntroHeadline')}</strong>
+							<p className={'about-intro-headline-sub'}>{t('AboutIntroHeadlineSub')}</p>
+						</Stack>
+						<Stack className={'right about-intro-right'}>
+							<div className={'about-intro-copy'}>
+								<p>{t('AboutIntroPara1')}</p>
+								<p>{t('AboutIntroPara2')}</p>
+								<p>{t('AboutIntroPara3')}</p>
+							</div>
+							<div className={'about-intro-cards'}>
+								<div className={'about-intro-card'}>
+									<div className={'about-intro-card-icon'}>
+										<img src="/img/icons/garden.svg" alt="" />
+									</div>
+									<div className={'about-intro-card-body'}>
+										<span className={'about-intro-card-title'}>{t('AboutIntroCard1Title')}</span>
+										<p>{t('AboutIntroCard1Body')}</p>
+									</div>
+								</div>
+								<div className={'about-intro-card'}>
+									<div className={'about-intro-card-icon'}>
+										<img src="/img/icons/securePayment.svg" alt="" />
+									</div>
+									<div className={'about-intro-card-body'}>
+										<span className={'about-intro-card-title'}>{t('AboutIntroCard2Title')}</span>
+										<p>{t('AboutIntroCard2Body')}</p>
+									</div>
+								</div>
+							</div>
+						</Stack>
+					</Stack>
+				</Stack>
 				<section className={'about-map-section'}>
 					<div className={'about-map-section-inner'}>
 						<h2 className={'about-map-heading'}>{t('AboutMapSectionTitle')}</h2>
