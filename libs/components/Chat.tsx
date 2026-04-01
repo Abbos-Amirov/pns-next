@@ -150,6 +150,8 @@ const Chat = () => {
 
 	useEffect(() => {
 		setOpenButton(false);
+		const timeoutId = setTimeout(() => setOpenButton(true), 120);
+		return () => clearTimeout(timeoutId);
 	}, [router.pathname]);
 
 	/** HANDLERS **/
@@ -217,8 +219,6 @@ const Chat = () => {
 			sweetErrorAlert('Failed to send message. Please try again.');
 		}
 	}
-
-		
 
 	return (
 		<Stack className="chatting">

@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 const PNS_MAIN_URL = 'https://www.pnswindow.co.kr/html/00_main/';
 const NAVER_BLOG_URL = 'https://blog.naver.com/pnshomes';
@@ -55,10 +56,32 @@ function NaverIconSvg() {
   );
 }
 
-/** Floating social links - right side, stacked vertically above "I am PNS AI" */
+/** Floating social links - right side; entrance animation on home only */
 export default function SocialLinksFloating() {
+  const router = useRouter();
+  const [homeIn, setHomeIn] = useState(false);
+
+  useEffect(() => {
+    if (router.pathname !== '/') {
+      setHomeIn(false);
+      return;
+    }
+    setHomeIn(false);
+    const t = window.setTimeout(() => setHomeIn(true), 32);
+    return () => window.clearTimeout(t);
+  }, [router.pathname]);
+
+  const isHome = router.pathname === '/';
+  const rootClass = [
+    'social-links-floating',
+    isHome ? 'social-links-floating--home' : '',
+    isHome && homeIn ? 'social-links-floating--home-in' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className="social-links-floating">
+    <div className={rootClass}>
       <a
         href={NAVER_BLOG_URL}
         target="_blank"

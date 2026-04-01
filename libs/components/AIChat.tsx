@@ -42,6 +42,8 @@ const AIChat = () => {
 
   useEffect(() => {
     setOpenButton(false);
+    const timeoutId = setTimeout(() => setOpenButton(true), 120);
+    return () => clearTimeout(timeoutId);
   }, [router.pathname]);
 
   const callAiChat = useCallback(
