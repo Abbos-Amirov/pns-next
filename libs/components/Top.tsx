@@ -604,7 +604,7 @@ const Top = () => {
 							</Link>
 							<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 								<div className={'nav-overlay-card-image'}>
-									<img src="/img/banner/city%20pns.avif" alt={t('City')} />
+									<img src="/img/nav-overlay/city-aerial.png" alt={t('City')} />
 								</div>
 								<span className={'nav-overlay-card-label'}>{t('City')}</span>
 							</Link>

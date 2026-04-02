@@ -528,7 +528,7 @@ const withLayoutBasic = (Component: any) => {
 										</Link>
 										<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 											<div className={'nav-overlay-card-image'}>
-												<img src={'/img/banner/properties.png'} alt={t('City')} />
+												<img src={'/img/nav-overlay/city-aerial.png'} alt={t('City')} />
 											</div>
 											<span className={'nav-overlay-card-label'}>{t('City')}</span>
 										</Link>
@@ -578,7 +578,7 @@ const withLayoutBasic = (Component: any) => {
 										</Link>
 										<Link href={'/pns-history/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
 											<div className={'nav-overlay-card-image'}>
-												<img src={'/img/banner/properties.png'} alt={t('PnsHistoryNav')} />
+												<img src={'/img/contact/contact-hero.png'} alt={t('PnsHistoryNav')} />
 											</div>
 											<span className={'nav-overlay-card-label'}>{t('PnsHistoryNav')}</span>
 										</Link>
