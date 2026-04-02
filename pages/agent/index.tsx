@@ -288,81 +288,83 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 								>
 									<div className="stack-section-info">
 										<h2 className="stack-h2">{agent?.memberFullName || agent?.memberNick || 'Measurer'}</h2>
-										<div className="stack-desc-input-box">
-											<span className="stack-meta-label">{t('Description')}</span>
-											<span className="stack-meta-value stack-desc-value">{agent?.memberDesc || t('MeasurerDescDefault')}</span>
-										</div>
-										<div className="stack-meta-cards stack-meta-horizontal">
-											<div className="stack-meta-input-row">
-												<div className="stack-meta-input-box">
-													<span className="stack-meta-label">{t('LabelRole')}</span>
-													<span className="stack-meta-value">{agent?.memberType || '—'}</span>
-												</div>
-												<div className="stack-meta-input-box">
-													<span className="stack-meta-label">{t('Experience')}</span>
-													<span className="stack-meta-value">{agent?.memberExperience || '—'}</span>
-												</div>
-												<div className="stack-meta-input-box">
-													<span className="stack-meta-label">{t('Education')}</span>
-													<span className="stack-meta-value">{agent?.memberEducation || '—'}</span>
-												</div>
+										<div className="stack-agent-info-body">
+											<div className="stack-desc-input-box">
+												<span className="stack-meta-label">{t('Description')}</span>
+												<span className="stack-meta-value stack-desc-value">{agent?.memberDesc || t('MeasurerDescDefault')}</span>
 											</div>
-											<div className="stack-meta-input-row">
-												<div className="stack-meta-input-box stack-meta-like-box">
-													<span className="stack-meta-label">{t('Likes')}</span>
-													<div className="stack-meta-value-row">
-														<button
-															type="button"
-															className="stack-like-btn"
-															onClick={(e) => {
-																e.preventDefault();
-																e.stopPropagation();
-																likeMemberHandler(user, agent._id);
-															}}
-															aria-label={agent?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
-														>
-															{agent?.meLiked?.[0]?.myFavorite ? (
-																<FavoriteIcon className="stack-like-icon liked" />
-															) : (
-																<FavoriteBorderIcon className="stack-like-icon" />
-															)}
-														</button>
-														<span className="stack-meta-value">{agent?.memberLikes ?? 0}</span>
+											<div className="stack-meta-cards stack-meta-horizontal">
+												<div className="stack-meta-input-row">
+													<div className="stack-meta-input-box">
+														<span className="stack-meta-label">{t('LabelRole')}</span>
+														<span className="stack-meta-value">{agent?.memberType || '—'}</span>
+													</div>
+													<div className="stack-meta-input-box">
+														<span className="stack-meta-label">{t('Experience')}</span>
+														<span className="stack-meta-value">{agent?.memberExperience || '—'}</span>
+													</div>
+													<div className="stack-meta-input-box">
+														<span className="stack-meta-label">{t('Education')}</span>
+														<span className="stack-meta-value">{agent?.memberEducation || '—'}</span>
 													</div>
 												</div>
-												<div className="stack-meta-input-box stack-meta-views-box">
-													<span className="stack-meta-label">{t('Views')}</span>
-													<div className="stack-meta-value-row">
-														<VisibilityIcon className="stack-views-icon" />
-														<span className="stack-meta-value">{agent?.memberViews ?? 0}</span>
+												<div className="stack-meta-input-row">
+													<div className="stack-meta-input-box stack-meta-like-box">
+														<span className="stack-meta-label">{t('Likes')}</span>
+														<div className="stack-meta-value-row">
+															<button
+																type="button"
+																className="stack-like-btn"
+																onClick={(e) => {
+																	e.preventDefault();
+																	e.stopPropagation();
+																	likeMemberHandler(user, agent._id);
+																}}
+																aria-label={agent?.meLiked?.[0]?.myFavorite ? 'Unlike' : 'Like'}
+															>
+																{agent?.meLiked?.[0]?.myFavorite ? (
+																	<FavoriteIcon className="stack-like-icon liked" />
+																) : (
+																	<FavoriteBorderIcon className="stack-like-icon" />
+																)}
+															</button>
+															<span className="stack-meta-value">{agent?.memberLikes ?? 0}</span>
+														</div>
+													</div>
+													<div className="stack-meta-input-box stack-meta-views-box">
+														<span className="stack-meta-label">{t('Views')}</span>
+														<div className="stack-meta-value-row">
+															<VisibilityIcon className="stack-views-icon" />
+															<span className="stack-meta-value">{agent?.memberViews ?? 0}</span>
+														</div>
+													</div>
+													<div className="stack-meta-input-box">
+														<span className="stack-meta-label">{t('Comments')}</span>
+														<span className="stack-meta-value">{agent?.memberComments ?? 0}</span>
 													</div>
 												</div>
-												<div className="stack-meta-input-box">
-													<span className="stack-meta-label">{t('Comments')}</span>
-													<span className="stack-meta-value">{agent?.memberComments ?? 0}</span>
-												</div>
 											</div>
-										</div>
-										<div className="stack-demo-products-row">
-											<Link href={detailHref} className="agent-view-details-btn">
-												<RemoveRedEyeIcon sx={{ fontSize: 22 }} />
-												{t('ViewDetails')}
-											</Link>
-											{agentLocationImages[agent._id]?.length > 0 && (
-												<div className="stack-location-thumbs-row">
-													{agentLocationImages[agent._id].slice(0, 3).map((src, idx) => (
-														<Link
-															key={idx}
-															href={detailHref}
-															style={{ display: 'block' }}
-														>
-															<div className="stack-location-thumb">
-																<img src={src} alt={`Location ${idx + 1}`} />
-															</div>
-														</Link>
-													))}
-												</div>
-											)}
+											<div className="stack-demo-products-row">
+												<Link href={detailHref} className="agent-view-details-btn">
+													<RemoveRedEyeIcon sx={{ fontSize: 22 }} />
+													{t('ViewDetails')}
+												</Link>
+												{agentLocationImages[agent._id]?.length > 0 && (
+													<div className="stack-location-thumbs-row">
+														{agentLocationImages[agent._id].slice(0, 3).map((src, idx) => (
+															<Link
+																key={idx}
+																href={detailHref}
+																style={{ display: 'block' }}
+															>
+																<div className="stack-location-thumb">
+																	<img src={src} alt={`Location ${idx + 1}`} />
+																</div>
+															</Link>
+														))}
+													</div>
+												)}
+											</div>
 										</div>
 									</div>
 									<div className="stack-section-image">
