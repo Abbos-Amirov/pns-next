@@ -35,6 +35,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 				memberPhone: user.memberPhone || '',
 				memberAddress: user.memberAddress || '',
 				memberImage: user.memberImage || '',
+				memberDesc: user.memberDesc || '',
 				memberExperience: user.memberExperience || '',
 				memberEducation: user.memberEducation || '',
 			});
@@ -110,6 +111,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 				memberPhone: updateData.memberPhone,
 				memberAddress: updateData.memberAddress,
 				memberImage: updateData.memberImage,
+				memberDesc: updateData.memberDesc,
 			});
 
 			const result = await updateMemberMutation({
@@ -118,10 +120,11 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						_id: user._id,
 						memberNick: updateData.memberNick?.trim() || '',
 						memberPhone: updateData.memberPhone?.trim() || '',
-						memberAddress: updateData.memberAddress?.trim() || '',
-						memberImage: updateData.memberImage || '',
-						memberExperience: updateData.memberExperience?.trim() || '',
-						memberEducation: updateData.memberEducation?.trim() || '',
+				memberAddress: updateData.memberAddress?.trim() || '',
+				memberImage: updateData.memberImage || '',
+				memberDesc: updateData.memberDesc?.trim() || '',
+				memberExperience: updateData.memberExperience?.trim() || '',
+				memberEducation: updateData.memberEducation?.trim() || '',
 					},
 				},
 			});
@@ -304,6 +307,19 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
 						/>
 					</Stack>
+					<Stack className="member-desc-box">
+						<Typography className="title">{t('MemberDescription')}</Typography>
+						<textarea
+							className="member-desc-textarea"
+							placeholder={t('PlaceholderMemberDescription')}
+							value={updateData.memberDesc || ''}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberDesc: value })}
+							rows={5}
+							spellCheck={true}
+							maxLength={2000}
+							aria-label={t('MemberDescription')}
+						/>
+					</Stack>
 					<Stack className="small-input-box">
 						<Stack className="input-box">
 							<Typography className="title">{t('Experience')}</Typography>
@@ -367,6 +383,7 @@ MyProfile.defaultProps = {
 		memberNick: '',
 		memberPhone: '',
 		memberAddress: '',
+		memberDesc: '',
 		memberExperience: '',
 		memberEducation: '',
 	},

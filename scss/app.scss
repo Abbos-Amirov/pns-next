@@ -865,7 +865,8 @@ hr {
 			box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.3) !important;
 			.photo-box .title,
 			.small-input-box .input-box .title,
-			.address-box .title { color: #e0e0e0 !important; }
+			.address-box .title,
+			.member-desc-box .title { color: #e0e0e0 !important; }
 			.upload-big-box {
 				.labeler {
 					border-color: #666 !important;
@@ -874,12 +875,17 @@ hr {
 				}
 				.upload-text { color: #b0b0b0 !important; }
 			}
-			input {
+			input,
+			textarea.member-desc-textarea {
 				background: #252525 !important;
 				border-color: #444 !important;
 				color: #e0e0e0 !important;
 				caret-color: #fff !important;
 				&::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
+			}
+			textarea.member-desc-textarea:focus {
+				border-color: #8b4513 !important;
+				box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.25) !important;
 			}
 			.update-button {
 				background-color: #8b4513 !important;

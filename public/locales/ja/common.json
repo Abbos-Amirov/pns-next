@@ -56,6 +56,8 @@
   "PlaceholderAddress": "住所を入力",
   "PlaceholderExperience": "経験を入力",
   "PlaceholderEducation": "学歴を入力",
+  "MemberDescription": "プロフィール説明",
+  "PlaceholderMemberDescription": "サービス内容や経験・専門分野を簡潔に記入してください",
   "UploadProfileImage": "プロフィール画像をアップロード",
   "PhotoFormatHint": "写真はJPG、JPEG、PNG形式である必要があります！",
   "UpdateProfile": "プロフィールを更新",

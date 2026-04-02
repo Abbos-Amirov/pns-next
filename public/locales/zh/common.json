@@ -56,6 +56,8 @@
   "PlaceholderAddress": "请输入地址",
   "PlaceholderExperience": "请输入经验",
   "PlaceholderEducation": "请输入学历",
+  "MemberDescription": "个人简介",
+  "PlaceholderMemberDescription": "简要描述您的服务、经验或专长",
   "UploadProfileImage": "上传个人照片",
   "PhotoFormatHint": "照片必须是 JPG、JPEG 或 PNG 格式！",
   "UpdateProfile": "更新资料",

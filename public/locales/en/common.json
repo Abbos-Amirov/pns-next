@@ -56,6 +56,8 @@
   "PlaceholderAddress": "Your address",
   "PlaceholderExperience": "Your experience",
   "PlaceholderEducation": "Your education",
+  "MemberDescription": "Member description",
+  "PlaceholderMemberDescription": "Briefly describe your services, experience, or expertise",
   "UploadProfileImage": "Upload Profile Image",
   "PhotoFormatHint": "A photo must be in JPG, JPEG or PNG format!",
   "UpdateProfile": "Update Profile",

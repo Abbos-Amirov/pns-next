@@ -55,6 +55,8 @@
   "PlaceholderAddress": "Ваш адрес",
   "PlaceholderExperience": "Ваш опыт",
   "PlaceholderEducation": "Ваше образование",
+  "MemberDescription": "Описание профиля",
+  "PlaceholderMemberDescription": "Кратко опишите услуги, опыт или специализацию",
   "UploadProfileImage": "Загрузить фото профиля",
   "PhotoFormatHint": "Фото должно быть в формате JPG, JPEG или PNG!",
   "UpdateProfile": "Обновить профиль",

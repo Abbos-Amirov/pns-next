@@ -52,6 +52,8 @@
   "PlaceholderAddress": "주소 입력",
   "PlaceholderExperience": "경력 입력",
   "PlaceholderEducation": "학력 입력",
+  "MemberDescription": "프로필 설명",
+  "PlaceholderMemberDescription": "제공 서비스, 경력 또는 전문 분야를 간단히 입력하세요",
   "UploadProfileImage": "프로필 이미지 업로드",
   "PhotoFormatHint": "사진은 JPG, JPEG 또는 PNG 형식이어야 합니다!",
   "UpdateProfile": "프로필 업데이트",

@@ -170,6 +170,49 @@
 						}
 					}
 				}
+				.member-desc-box {
+					gap: 10px;
+					width: 100%;
+					.title {
+						color: #181a20;
+						font-family: $font;
+						font-size: 12px;
+						font-style: normal;
+						font-weight: 600;
+						line-height: normal;
+					}
+					.member-desc-textarea {
+						width: 100%;
+						min-height: 130px;
+						box-sizing: border-box;
+						outline: none;
+						padding: 14px 15px;
+						border-radius: 8px;
+						border: 1px solid #ddd;
+						background: #fff;
+						color: #181a20;
+						font-family: $font;
+						font-size: 13px;
+						font-style: normal;
+						font-weight: 400;
+						line-height: 1.5;
+						resize: vertical;
+						transition: border-color 0.2s ease, box-shadow 0.2s ease;
+						&::placeholder {
+							color: #717171;
+							font-family: $font;
+							font-size: 12px;
+							font-weight: 400;
+						}
+						&:hover {
+							border-color: #c4c4c4;
+						}
+						&:focus {
+							border-color: #8b4513;
+							box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+						}
+					}
+				}
 				.about-me-box {
 					gap: 10px;
 					.title {
