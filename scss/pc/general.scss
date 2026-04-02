@@ -376,6 +376,11 @@
 	}
 }
 
+// SweetAlert2 — auth modal (z-index ~9999) va MUI overlaylar ustida ko'rinsin
+.swal2-container {
+	z-index: 20000 !important;
+}
+
 // SweetAlert Confirm Dialog Styles
 :global(.sweet-confirm-popup) {
 	border-radius: 16px !important;

@@ -1000,11 +1000,16 @@
 							opacity: 0.95;
 						}
 						.filter-sort-btn {
-							background: #2563eb !important;
+							background: linear-gradient(145deg, #1e3a5f 0%, #152238 50%, #101827 100%) !important;
 							color: #fff !important;
 							font-weight: 600;
 							text-transform: none;
 							padding: 10px 14px;
+							border: 1px solid rgba(255, 255, 255, 0.12) !important;
+							box-shadow: 0 2px 8px rgba(16, 24, 39, 0.35);
+							&:hover {
+								filter: brightness(1.06);
+							}
 						}
 					}
 				}

@@ -77,6 +77,25 @@ hr {
 	height: 40px !important;
 }
 
+/** Admin header: theme toggle — oq AppBar ustida doim ko‘rinadi */
+#pc-wrap.admin .MuiToolbar-root .MuiIconButton-root[aria-label='toggle theme'] {
+	color: #1e3a5f !important;
+	background-color: rgba(30, 58, 95, 0.1) !important;
+	border: 1px solid rgba(30, 58, 95, 0.22) !important;
+	svg {
+		color: #1e3a5f !important;
+		fill: currentColor !important;
+	}
+	&:hover {
+		color: #152238 !important;
+		background-color: rgba(30, 58, 95, 0.18) !important;
+		border-color: rgba(30, 58, 95, 0.35) !important;
+		svg {
+			color: #152238 !important;
+		}
+	}
+}
+
 /** Light mode - oq rangda hamma narsa **/
 [data-theme="light"] {
 	body { background-color: #f5f5f5 !important; color: #181a20; }
@@ -114,10 +133,17 @@ hr {
 			.dark-mode-btn-dark {
 				background: rgba(18, 13, 83, 0.1) !important;
 				color: #120d53 !important;
-				svg { color: #120d53 !important; }
+				border: 1px solid rgba(18, 13, 83, 0.22) !important;
+				box-shadow: 0 1px 2px rgba(18, 13, 83, 0.06);
+				svg {
+					color: #120d53 !important;
+					fill: currentColor !important;
+					opacity: 1 !important;
+				}
 				&:hover {
 					background: rgba(18, 13, 83, 0.18) !important;
 					color: #16206e !important;
+					border-color: rgba(18, 13, 83, 0.35) !important;
 					svg { color: #16206e !important; }
 				}
 			}
@@ -483,10 +509,17 @@ hr {
 			.dark-mode-btn-dark {
 				background: rgba(18, 13, 83, 0.1) !important;
 				color: #120d53 !important;
-				svg { color: #120d53 !important; }
+				border: 1px solid rgba(18, 13, 83, 0.22) !important;
+				box-shadow: 0 1px 2px rgba(18, 13, 83, 0.06);
+				svg {
+					color: #120d53 !important;
+					fill: currentColor !important;
+					opacity: 1 !important;
+				}
 				&:hover {
 					background: rgba(18, 13, 83, 0.18) !important;
 					color: #16206e !important;
+					border-color: rgba(18, 13, 83, 0.35) !important;
 					svg { color: #16206e !important; }
 				}
 			}

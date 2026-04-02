@@ -85,7 +85,25 @@ const withAdminLayout = (Component: ComponentType) => {
 						<Toolbar sx={{ justifyContent: 'space-between', px: 3, minHeight: '64px !important' }}>
 							<Box component="div" sx={{ flexGrow: 1 }} />
 							<Stack direction={'row'} alignItems={'center'} spacing={2.5}>
-								<IconButton onClick={toggleTheme} size="medium" aria-label="toggle theme" sx={{ color: 'inherit' }}>
+								<IconButton
+									onClick={toggleTheme}
+									size="medium"
+									aria-label="toggle theme"
+									title={mode === 'dark' ? 'Light mode' : 'Dark mode'}
+									sx={{
+										color: '#1e3a5f',
+										backgroundColor: 'rgba(30, 58, 95, 0.1)',
+										border: '1px solid rgba(30, 58, 95, 0.22)',
+										'&:hover': {
+											color: '#152238',
+											backgroundColor: 'rgba(30, 58, 95, 0.18)',
+											borderColor: 'rgba(30, 58, 95, 0.35)',
+										},
+										'& svg': {
+											color: 'currentColor',
+										},
+									}}
+								>
 									{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
 								</IconButton>
 								{/* User Info Card */}
@@ -98,14 +116,14 @@ const withAdminLayout = (Component: ComponentType) => {
 										px: 2,
 										py: 1,
 										borderRadius: '12px',
-										background: 'linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(160, 82, 45, 0.03) 100%)',
-										border: '1px solid rgba(139, 69, 19, 0.1)',
+										background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.08) 0%, rgba(21, 34, 56, 0.05) 100%)',
+										border: '1px solid rgba(30, 58, 95, 0.14)',
 										transition: 'all 0.3s ease',
 										'&:hover': {
-											background: 'linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(160, 82, 45, 0.05) 100%)',
-											borderColor: 'rgba(139, 69, 19, 0.2)',
+											background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.12) 0%, rgba(21, 34, 56, 0.08) 100%)',
+											borderColor: 'rgba(30, 58, 95, 0.22)',
 											transform: 'translateY(-1px)',
-											boxShadow: '0px 4px 12px rgba(139, 69, 19, 0.1)',
+											boxShadow: '0px 4px 14px rgba(16, 24, 39, 0.12)',
 										},
 									}}
 								>
@@ -117,7 +135,7 @@ const withAdminLayout = (Component: ComponentType) => {
 											width: 44,
 											height: 44,
 											border: '2px solid #ffffff',
-											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.15)',
+											boxShadow: '0px 2px 8px rgba(16, 24, 39, 0.12)',
 										}}
 									/>
 									<Box component="div" sx={{ minWidth: 0 }}>
@@ -140,7 +158,7 @@ const withAdminLayout = (Component: ComponentType) => {
 										<Typography
 											variant={'caption'}
 											sx={{
-												color: '#8B4513',
+												color: '#1e3a5f',
 												fontSize: '11px',
 												fontWeight: 500,
 												display: 'flex',
@@ -166,22 +184,22 @@ const withAdminLayout = (Component: ComponentType) => {
 										textTransform: 'none',
 										
 										borderRadius: '10px',
-										background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+										background: 'linear-gradient(135deg, #1e3a5f 0%, #152238 50%, #101827 100%)',
 										color: '#ffffff',
 										fontWeight: 600,
 										fontSize: '13px',
 										px: 2.5,
 										py: 1.2,
-										boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.25)',
+										boxShadow: '0px 2px 12px rgba(16, 24, 39, 0.35)',
 										transition: 'all 0.3s ease',
 										'&:hover': {
-											background: 'linear-gradient(135deg, #6B3410 0%, #8B4513 100%)',
-											boxShadow: '0px 4px 16px rgba(139, 69, 19, 0.35)',
+											background: 'linear-gradient(135deg, #152238 0%, #101827 55%, #0a0f18 100%)',
+											boxShadow: '0px 4px 18px rgba(16, 24, 39, 0.45)',
 											transform: 'translateY(-2px)',
 										},
 										'&:active': {
 											transform: 'translateY(0px)',
-											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.25)',
+											boxShadow: '0px 2px 10px rgba(16, 24, 39, 0.3)',
 										},
 									}}
 								>
@@ -214,17 +232,17 @@ const withAdminLayout = (Component: ComponentType) => {
 								className="user"
 								sx={{
 									width: '100%',
-									background: 'linear-gradient(135deg, rgba(139, 69, 19, 0.08) 0%, rgba(160, 82, 45, 0.05) 100%)',
+									background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.1) 0%, rgba(21, 34, 56, 0.06) 100%)',
 									borderRadius: '12px',
 									padding: '16px',
 									marginTop: '8px',
-									border: '1px solid rgba(139, 69, 19, 0.1)',
+									border: '1px solid rgba(30, 58, 95, 0.14)',
 									transition: 'all 0.3s ease',
 									'&:hover': {
-										background: 'linear-gradient(135deg, rgba(139, 69, 19, 0.12) 0%, rgba(160, 82, 45, 0.08) 100%)',
-										borderColor: 'rgba(139, 69, 19, 0.2)',
+										background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.14) 0%, rgba(21, 34, 56, 0.1) 100%)',
+										borderColor: 'rgba(30, 58, 95, 0.22)',
 										transform: 'translateY(-2px)',
-										boxShadow: '0px 4px 12px rgba(139, 69, 19, 0.15)',
+										boxShadow: '0px 4px 14px rgba(16, 24, 39, 0.14)',
 									},
 								}}
 							>
@@ -237,7 +255,7 @@ const withAdminLayout = (Component: ComponentType) => {
 											width: 56,
 											height: 56,
 											border: '3px solid #ffffff',
-											boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.2)',
+											boxShadow: '0px 2px 8px rgba(16, 24, 39, 0.14)',
 										}}
 									/>
 									<Box component="div" sx={{ flex: 1, minWidth: 0 }}>
@@ -259,7 +277,7 @@ const withAdminLayout = (Component: ComponentType) => {
 										<Typography
 											variant={'caption'}
 											sx={{
-												color: '#8B4513',
+												color: '#1e3a5f',
 												fontSize: '12px',
 												fontWeight: 500,
 												display: 'flex',
@@ -276,14 +294,14 @@ const withAdminLayout = (Component: ComponentType) => {
 												px: 1.5,
 												py: 0.5,
 												borderRadius: '6px',
-												backgroundColor: 'rgba(139, 69, 19, 0.1)',
+												backgroundColor: 'rgba(30, 58, 95, 0.12)',
 												display: 'inline-block',
 											}}
 										>
 											<Typography
 												variant={'caption'}
 												sx={{
-													color: '#8B4513',
+													color: '#152238',
 													fontSize: '11px',
 													fontWeight: 600,
 													textTransform: 'uppercase',
@@ -336,11 +354,11 @@ const withAdminLayout = (Component: ComponentType) => {
 								width: 48,
 								height: 48,
 								borderRadius: '12px',
-								background: 'linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%)',
+								background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.15) 0%, rgba(16, 24, 39, 0.2) 100%)',
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center',
-								color: '#FF9800',
+								color: '#1e3a5f',
 							}}
 						>
 							<WarningAmberIcon sx={{ fontSize: 28 }} />
@@ -397,15 +415,15 @@ const withAdminLayout = (Component: ComponentType) => {
 							sx={{
 								textTransform: 'none',
 								borderRadius: '8px',
-								background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+								background: 'linear-gradient(135deg, #1e3a5f 0%, #152238 50%, #101827 100%)',
 								color: '#ffffff',
 								fontWeight: 600,
 								px: 3,
 								py: 1,
-								boxShadow: '0px 2px 8px rgba(139, 69, 19, 0.25)',
+								boxShadow: '0px 2px 12px rgba(16, 24, 39, 0.35)',
 								'&:hover': {
-									background: 'linear-gradient(135deg, #6B3410 0%, #8B4513 100%)',
-									boxShadow: '0px 4px 16px rgba(139, 69, 19, 0.35)',
+									background: 'linear-gradient(135deg, #152238 0%, #101827 55%, #0a0f18 100%)',
+									boxShadow: '0px 4px 18px rgba(16, 24, 39, 0.45)',
 								},
 							}}
 						>

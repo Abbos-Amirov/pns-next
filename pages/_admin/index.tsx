@@ -158,48 +158,55 @@ const AdminHome: NextPage = (props: any) => {
 		}
 	};
 
+	/** Brand: navy harmony #1e3a5f → #152238 → #101827 */
+	const brand = {
+		navy1: '#1e3a5f',
+		navy2: '#152238',
+		navy3: '#101827',
+	} as const;
+
 	const statCards = [
 		{
 			titleKey: 'AdminTotalUsers',
 			value: stats.totalUsers,
 			icon: <PeopleIcon sx={{ fontSize: 40 }} />,
-			color: '#8B4513',
-			bgColor: 'rgba(139, 69, 19, 0.1)',
+			color: brand.navy1,
+			bgColor: 'rgba(30, 58, 95, 0.14)',
 			path: '/_admin/users',
 		},
 		{
 			titleKey: 'AdminProducts',
 			value: stats.totalProperties,
 			icon: <HomeWorkIcon sx={{ fontSize: 40 }} />,
-			color: '#1646C1',
-			bgColor: 'rgba(22, 70, 193, 0.1)',
+			color: brand.navy2,
+			bgColor: 'rgba(21, 34, 56, 0.14)',
 			path: '/_admin/products',
 		},
 		{
 			titleKey: 'AdminCommunityArticles',
 			value: stats.totalArticles,
 			icon: <ArticleIcon sx={{ fontSize: 40 }} />,
-			color: '#E92C28',
-			bgColor: 'rgba(233, 44, 40, 0.1)',
+			color: '#2d4d7a',
+			bgColor: 'rgba(45, 77, 122, 0.12)',
 			path: '/_admin/community',
 		},
 		{
 			titleKey: 'AdminCSInquiries',
 			value: stats.totalInquiries,
 			icon: <SupportAgentIcon sx={{ fontSize: 40 }} />,
-			color: '#229a16',
-			bgColor: 'rgba(34, 154, 22, 0.1)',
+			color: brand.navy3,
+			bgColor: 'rgba(16, 24, 39, 0.12)',
 			path: '/_admin/cs/inquiry',
 		},
 	];
 
 	const quickLinks = [
-		{ titleKey: 'AdminUserManagement', path: '/_admin/users', icon: <PeopleIcon />, color: '#8B4513' },
-		{ titleKey: 'AdminProductManagement', path: '/_admin/products', icon: <HomeWorkIcon />, color: '#1646C1' },
-		{ titleKey: 'AdminCommunityManagement', path: '/_admin/community', icon: <ArticleIcon />, color: '#E92C28' },
-		{ titleKey: 'AdminFAQManagement', path: '/_admin/cs/faq', icon: <SupportAgentIcon />, color: '#229a16' },
-		{ titleKey: 'AdminNoticeManagement', path: '/_admin/cs/notice', icon: <ArticleIcon />, color: '#8B4513' },
-		{ titleKey: 'AdminInquiryManagement', path: '/_admin/cs/inquiry', icon: <SupportAgentIcon />, color: '#1646C1' },
+		{ titleKey: 'AdminUserManagement', path: '/_admin/users', icon: <PeopleIcon />, color: brand.navy1 },
+		{ titleKey: 'AdminProductManagement', path: '/_admin/products', icon: <HomeWorkIcon />, color: brand.navy2 },
+		{ titleKey: 'AdminCommunityManagement', path: '/_admin/community', icon: <ArticleIcon />, color: '#2d4d7a' },
+		{ titleKey: 'AdminFAQManagement', path: '/_admin/cs/faq', icon: <SupportAgentIcon />, color: brand.navy3 },
+		{ titleKey: 'AdminNoticeManagement', path: '/_admin/cs/notice', icon: <ArticleIcon />, color: brand.navy1 },
+		{ titleKey: 'AdminInquiryManagement', path: '/_admin/cs/inquiry', icon: <SupportAgentIcon />, color: brand.navy2 },
 	];
 
 	return (
@@ -236,7 +243,7 @@ const AdminHome: NextPage = (props: any) => {
 									<CardContent>
 								<Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
 									<Box component="div">
-										<Typography variant={'body2'} className={'stat-label'} sx={{ color: '#717171', mb: 1 }}>
+										<Typography variant={'body2'} className={'stat-label'} sx={{ color: 'rgba(24, 26, 32, 0.55)', mb: 1 }}>
 											{t(card.titleKey)}
 										</Typography>
 										<Typography variant={'h4'} className={'stat-value'} sx={{ color: card.color, fontWeight: 700 }}>
@@ -272,7 +279,7 @@ const AdminHome: NextPage = (props: any) => {
 						<Typography variant={'h5'} className={'section-title'} sx={{ fontWeight: 600 }}>
 							{t('AdminQuickLinks')}
 						</Typography>
-						<TrendingUpIcon sx={{ color: '#8B4513', fontSize: 28 }} />
+						<TrendingUpIcon sx={{ color: '#1e3a5f', fontSize: 28, opacity: 0.95 }} />
 					</Stack>
 					<Grid container spacing={2}>
 						{quickLinks.map((link, index) => (
@@ -283,21 +290,21 @@ const AdminHome: NextPage = (props: any) => {
 									className={'quick-link-btn'}
 									onClick={() => handleNavigate(link.path)}
 									startIcon={<Box component="span" sx={{ color: link.color }}>{link.icon}</Box>}
-									endIcon={<ArrowForwardIcon sx={{ fontSize: 20, color: '#bdbdbd' }} />}
+									endIcon={<ArrowForwardIcon sx={{ fontSize: 20, color: 'rgba(30, 58, 95, 0.35)' }} />}
 									sx={{
 										p: 2,
 										justifyContent: 'space-between',
 										borderRadius: '12px',
-										borderColor: '#e0e0e0',
+										borderColor: 'rgba(30, 58, 95, 0.18)',
 										color: '#181a20',
 										textTransform: 'none',
 										'&:hover': {
 											borderColor: link.color,
-											backgroundColor: `${link.color}15`,
+											backgroundColor: `${link.color}18`,
 											transform: 'translateX(4px)',
 										},
 									transition: 'all 0.3s ease',
-								}}
+									}}
 							>
 								<Typography variant={'body1'} sx={{ fontWeight: 500 }}>
 									{t(link.titleKey)}

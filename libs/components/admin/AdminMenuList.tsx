@@ -84,25 +84,25 @@ const AdminMenuList = (props: any) => {
 		{
 			title: 'Users',
 			labelKey: 'AdminUsers',
-			icon: <User size={20} color="#bdbdbd" weight="fill" />,
+			icon: <User size={20} color="#5c6d8c" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Users'),
 		},
 		{
 			title: 'Products',
 			labelKey: 'AdminProducts',
-			icon: <UserCircleGear size={20} color="#bdbdbd" weight="fill" />,
+			icon: <UserCircleGear size={20} color="#5c6d8c" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Products'),
 		},
 		{
 			title: 'Community',
 			labelKey: 'AdminCommunity',
-			icon: <ChatsCircle size={20} color="#bdbdbd" weight="fill" />,
+			icon: <ChatsCircle size={20} color="#5c6d8c" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Community'),
 		},
 		{
 			title: 'Cs',
 			labelKey: 'AdminCs',
-			icon: <Headset size={20} color="#bdbdbd" weight="fill" />,
+			icon: <Headset size={20} color="#5c6d8c" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Cs'),
 		},
 	];

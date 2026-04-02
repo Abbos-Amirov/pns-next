@@ -50,7 +50,7 @@
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.2);
+      box-shadow: 0px 4px 14px rgba(16, 24, 39, 0.25);
     }
   }
   .user {
@@ -65,10 +65,10 @@
     }
     li.on {
       font-weight: 600;
-      background: #FDF4F4;
-      color: #F54D56;
+      background: rgba(30, 58, 95, 0.09);
+      color: $brand-navy-1;
       span {
-        color: #212121;
+        color: $brand-navy-2;
       }
     }
   }
@@ -96,9 +96,10 @@
       .welcome-section {
         margin-bottom: 40px;
         padding: 32px;
-        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        background: $brand-gradient-primary;
         border-radius: 16px;
-        box-shadow: 0px 4px 20px rgba(139, 69, 19, 0.2);
+        box-shadow: 0px 8px 28px rgba(16, 24, 39, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -153,8 +154,8 @@
       
       .stat-card {
         border-radius: 16px;
-        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #f0f0f0;
+        box-shadow: 0px 2px 8px rgba(16, 24, 39, 0.06);
+        border: 1px solid rgba(30, 58, 95, 0.1);
         transition: all 0.3s ease;
         background: #ffffff;
         
@@ -180,8 +181,8 @@
       
       .quick-links-card {
         border-radius: 16px;
-        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #f0f0f0;
+        box-shadow: 0px 2px 8px rgba(16, 24, 39, 0.06);
+        border: 1px solid rgba(30, 58, 95, 0.1);
         background: #ffffff;
         
         .MuiCardContent-root {
@@ -290,16 +291,16 @@
             width: 56px;
             height: 56px;
             border-radius: 12px;
-            background-color: rgba(139, 69, 19, 0.1);
+            background-color: rgba(30, 58, 95, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8B4513;
+            color: $brand-navy-1;
           }
           
           .products-total-chip {
-            background-color: rgba(139, 69, 19, 0.1);
-            color: #8B4513;
+            background-color: rgba(30, 58, 95, 0.1);
+            color: $brand-navy-1;
             font-weight: 600;
             font-size: 14px;
             height: 36px;
@@ -309,18 +310,18 @@
           .products-add-btn {
             text-transform: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: $brand-gradient-primary;
             color: #ffffff;
             font-weight: 600;
             font-size: 14px;
             padding: 12px 24px;
-            box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+            box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
             transition: all 0.3s ease;
             font-family: $font;
             
             &:hover {
-              background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-              box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+              background: $brand-gradient-hover;
+              box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
               transform: translateY(-2px);
             }
           }
@@ -347,12 +348,12 @@
               
               &.products-tab {
                 &.active {
-                  background-color: #8B4513;
+                  background-color: $brand-navy-1;
                   color: #fff;
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: #6B3410;
+                    background-color: $brand-navy-3;
                   }
                 }
                 
@@ -361,8 +362,8 @@
                   color: #424242;
                   
                   &:hover {
-                    border-color: #8B4513;
-                    background-color: rgba(139, 69, 19, 0.05);
+                    border-color: $brand-navy-1;
+                    background-color: rgba(30, 58, 95, 0.05);
                   }
                 }
               }
@@ -380,7 +381,7 @@
               }
               
               .MuiSelect-icon {
-                color: #8B4513;
+                color: $brand-navy-1;
               }
             }
           }
@@ -433,7 +434,7 @@
                 transition: background-color 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.02);
+                  background-color: rgba(30, 58, 95, 0.02);
                 }
                 
                 td {
@@ -450,7 +451,7 @@
                       transition: color 0.2s ease;
                       
                       &:hover {
-                        color: #8B4513;
+                        color: $brand-navy-1;
                       }
                     }
                   }
@@ -459,11 +460,11 @@
               
               .product-edit-btn,
               .article-edit-btn {
-                color: #8B4513;
+                color: $brand-navy-1;
                 transition: all 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.1);
+                  background-color: rgba(30, 58, 95, 0.1);
                   transform: scale(1.1);
                 }
               }
@@ -483,8 +484,8 @@
           
           .products-pagination-box {
             padding: 24px;
-            border-top: 1px solid rgba(139, 69, 19, 0.1);
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, rgba(160, 82, 45, 0.02) 100%);
+            border-top: 1px solid rgba(30, 58, 95, 0.1);
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(21, 34, 56, 0.02) 100%);
             border-radius: 0 0 16px 16px;
             
             .products-pagination {
@@ -498,7 +499,7 @@
               .MuiTablePagination-displayedRows {
                 font-weight: 600;
                 font-family: $font;
-                color: #8B4513;
+                color: $brand-navy-1;
               }
               
               .MuiTablePagination-displayedRows {
@@ -511,11 +512,11 @@
                 border-radius: 8px;
                 
                 &:hover {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                 }
                 
                 .MuiSelect-icon {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                 }
               }
               
@@ -524,12 +525,12 @@
                 gap: 8px;
                 
                 button {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                   transition: all 0.2s ease;
                   border-radius: 8px;
                   
                   &:hover {
-                    background-color: rgba(139, 69, 19, 0.1);
+                    background-color: rgba(30, 58, 95, 0.1);
                     transform: scale(1.05);
                   }
                   
@@ -570,11 +571,11 @@
             width: 56px;
             height: 56px;
             border-radius: 12px;
-            background-color: rgba(139, 69, 19, 0.1);
+            background-color: rgba(30, 58, 95, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8B4513;
+            color: $brand-navy-1;
             
             .notice-icon {
               font-size: 32px;
@@ -582,8 +583,8 @@
           }
           
           .notice-total-chip {
-            background-color: rgba(139, 69, 19, 0.1);
-            color: #8B4513;
+            background-color: rgba(30, 58, 95, 0.1);
+            color: $brand-navy-1;
             font-weight: 600;
             font-size: 14px;
             height: 36px;
@@ -593,18 +594,18 @@
           .notice-add-btn {
             text-transform: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: $brand-gradient-primary;
             color: #ffffff;
             font-weight: 600;
             font-size: 14px;
             padding: 12px 24px;
-            box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+            box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
             transition: all 0.3s ease;
             font-family: $font;
             
             &:hover {
-              background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-              box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+              background: $brand-gradient-hover;
+              box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
               transform: translateY(-2px);
             }
           }
@@ -635,12 +636,12 @@
               
               &.notice-tab {
                 &.active {
-                  background-color: #8B4513;
+                  background-color: $brand-navy-1;
                   color: #fff;
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: #6B3410;
+                    background-color: $brand-navy-3;
                   }
                 }
                 
@@ -649,8 +650,8 @@
                   color: #424242;
                   
                   &:hover {
-                    border-color: #8B4513;
-                    background-color: rgba(139, 69, 19, 0.05);
+                    border-color: $brand-navy-1;
+                    background-color: rgba(30, 58, 95, 0.05);
                   }
                 }
               }
@@ -672,11 +673,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
             }
             
@@ -690,11 +691,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
               
@@ -704,7 +705,7 @@
             }
             
             .notice-search-icon {
-              color: #8B4513;
+              color: $brand-navy-1;
             }
             
             .notice-cancel-icon {
@@ -721,14 +722,14 @@
               border-radius: 8px;
               padding: 8px 24px;
               text-transform: none;
-              border-color: #8B4513;
-              color: #8B4513;
+              border-color: $brand-navy-1;
+              color: $brand-navy-1;
               font-weight: 600;
               font-family: $font;
               
               &:hover {
-                border-color: #6B3410;
-                background-color: rgba(139, 69, 19, 0.05);
+                border-color: $brand-navy-3;
+                background-color: rgba(30, 58, 95, 0.05);
               }
             }
           }
@@ -767,7 +768,7 @@
                 transition: background-color 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.02);
+                  background-color: rgba(30, 58, 95, 0.02);
                 }
                 
                 td {
@@ -784,7 +785,7 @@
                       transition: color 0.2s ease;
                       
                       &:hover {
-                        color: #8B4513;
+                        color: $brand-navy-1;
                       }
                     }
                   }
@@ -809,12 +810,12 @@
               transition: all 0.2s ease;
               
               &:hover {
-                background-color: rgba(139, 69, 19, 0.03);
+                background-color: rgba(30, 58, 95, 0.03);
                 transform: translateX(2px);
               }
               
               &.Mui-selected {
-                background-color: rgba(139, 69, 19, 0.08);
+                background-color: rgba(30, 58, 95, 0.08);
               }
             }
             
@@ -832,8 +833,8 @@
                 }
                 
                 &.category-general {
-                  background-color: rgba(139, 69, 19, 0.1);
-                  color: #8B4513;
+                  background-color: rgba(30, 58, 95, 0.1);
+                  color: $brand-navy-1;
                 }
                 
                 &.category-update {
@@ -873,7 +874,7 @@
                 transition: color 0.2s ease;
                 
                 &:hover {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                 }
               }
             }
@@ -895,7 +896,7 @@
                 transition: border-color 0.2s ease;
                 
                 &:hover {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                 }
               }
               
@@ -925,11 +926,11 @@
             
             .notice-action-cell {
               .notice-edit-btn {
-                color: #8B4513;
+                color: $brand-navy-1;
                 transition: all 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.1);
+                  background-color: rgba(30, 58, 95, 0.1);
                   transform: scale(1.1);
                 }
               }
@@ -967,10 +968,10 @@
               
               .MuiTablePagination-actions {
                 button {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: rgba(139, 69, 19, 0.1);
+                    background-color: rgba(30, 58, 95, 0.1);
                   }
                   
                   &:disabled {
@@ -1000,11 +1001,11 @@
             width: 56px;
             height: 56px;
             border-radius: 12px;
-            background-color: rgba(139, 69, 19, 0.1);
+            background-color: rgba(30, 58, 95, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8B4513;
+            color: $brand-navy-1;
             
             .inquiry-icon {
               font-size: 32px;
@@ -1012,8 +1013,8 @@
           }
           
           .inquiry-total-chip {
-            background-color: rgba(139, 69, 19, 0.1);
-            color: #8B4513;
+            background-color: rgba(30, 58, 95, 0.1);
+            color: $brand-navy-1;
             font-weight: 600;
             font-size: 14px;
             height: 36px;
@@ -1046,12 +1047,12 @@
               
               &.inquiry-tab {
                 &.active {
-                  background-color: #8B4513;
+                  background-color: $brand-navy-1;
                   color: #fff;
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: #6B3410;
+                    background-color: $brand-navy-3;
                   }
                 }
                 
@@ -1060,8 +1061,8 @@
                   color: #424242;
                   
                   &:hover {
-                    border-color: #8B4513;
-                    background-color: rgba(139, 69, 19, 0.05);
+                    border-color: $brand-navy-1;
+                    background-color: rgba(30, 58, 95, 0.05);
                   }
                 }
               }
@@ -1083,11 +1084,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
             }
             
@@ -1101,11 +1102,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
               
@@ -1115,7 +1116,7 @@
             }
             
             .inquiry-search-icon {
-              color: #8B4513;
+              color: $brand-navy-1;
             }
             
             .inquiry-cancel-icon {
@@ -1132,14 +1133,14 @@
               border-radius: 8px;
               padding: 8px 24px;
               text-transform: none;
-              border-color: #8B4513;
-              color: #8B4513;
+              border-color: $brand-navy-1;
+              color: $brand-navy-1;
               font-weight: 600;
               font-family: $font;
               
               &:hover {
-                border-color: #6B3410;
-                background-color: rgba(139, 69, 19, 0.05);
+                border-color: $brand-navy-3;
+                background-color: rgba(30, 58, 95, 0.05);
               }
             }
           }
@@ -1178,7 +1179,7 @@
                 transition: background-color 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.02);
+                  background-color: rgba(30, 58, 95, 0.02);
                 }
                 
                 td {
@@ -1195,7 +1196,7 @@
                       transition: color 0.2s ease;
                       
                       &:hover {
-                        color: #8B4513;
+                        color: $brand-navy-1;
                       }
                     }
                   }
@@ -1220,7 +1221,7 @@
               transition: all 0.2s ease;
               
               &:hover {
-                background-color: rgba(139, 69, 19, 0.03);
+                background-color: rgba(30, 58, 95, 0.03);
                 transform: translateX(2px);
               }
             }
@@ -1244,8 +1245,8 @@
                 }
                 
                 &.category-service {
-                  background-color: rgba(139, 69, 19, 0.1);
-                  color: #8B4513;
+                  background-color: rgba(30, 58, 95, 0.1);
+                  color: $brand-navy-1;
                 }
                 
                 &.category-technical {
@@ -1280,7 +1281,7 @@
                 transition: color 0.2s ease;
                 
                 &:hover {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                 }
               }
             }
@@ -1293,7 +1294,7 @@
                 transition: border-color 0.2s ease;
                 
                 &:hover {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                 }
               }
               
@@ -1359,11 +1360,11 @@
               }
               
               &.status-default {
-                background-color: rgba(139, 69, 19, 0.1);
-                color: #8B4513;
+                background-color: rgba(30, 58, 95, 0.1);
+                color: $brand-navy-1;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.15);
+                  background-color: rgba(30, 58, 95, 0.15);
                 }
               }
               
@@ -1395,10 +1396,10 @@
               
               .MuiTablePagination-actions {
                 button {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: rgba(139, 69, 19, 0.1);
+                    background-color: rgba(30, 58, 95, 0.1);
                   }
                   
                   &:disabled {
@@ -1413,6 +1414,10 @@
       
       // FAQ Page Specific Styles
       &.faq-page {
+        .faq-table-state-msg {
+          padding: 32px 16px;
+          text-align: center;
+        }
         .page-header-card {
           border-radius: 16px;
           box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
@@ -1428,11 +1433,11 @@
             width: 56px;
             height: 56px;
             border-radius: 12px;
-            background-color: rgba(139, 69, 19, 0.1);
+            background-color: rgba(30, 58, 95, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8B4513;
+            color: $brand-navy-1;
             
             .faq-icon {
               font-size: 32px;
@@ -1440,8 +1445,8 @@
           }
           
           .faq-total-chip {
-            background-color: rgba(139, 69, 19, 0.1);
-            color: #8B4513;
+            background-color: rgba(30, 58, 95, 0.1);
+            color: $brand-navy-1;
             font-weight: 600;
             font-size: 14px;
             height: 36px;
@@ -1451,18 +1456,18 @@
           .faq-add-btn {
             text-transform: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: $brand-gradient-primary;
             color: #ffffff;
             font-weight: 600;
             font-size: 14px;
             padding: 12px 24px;
-            box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+            box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
             transition: all 0.3s ease;
             font-family: $font;
             
             &:hover {
-              background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-              box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+              background: $brand-gradient-hover;
+              box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
               transform: translateY(-2px);
             }
           }
@@ -1493,12 +1498,12 @@
               
               &.faq-tab {
                 &.active {
-                  background-color: #8B4513;
+                  background-color: $brand-navy-1;
                   color: #fff;
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   
                   &:hover {
-                    background-color: #6B3410;
+                    background-color: $brand-navy-3;
                   }
                 }
                 
@@ -1507,8 +1512,8 @@
                   color: #424242;
                   
                   &:hover {
-                    border-color: #8B4513;
-                    background-color: rgba(139, 69, 19, 0.05);
+                    border-color: $brand-navy-1;
+                    background-color: rgba(30, 58, 95, 0.05);
                   }
                 }
               }
@@ -1530,11 +1535,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
             }
             
@@ -1548,11 +1553,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
               
@@ -1562,7 +1567,7 @@
             }
             
             .faq-search-icon {
-              color: #8B4513;
+              color: $brand-navy-1;
             }
             
             .faq-cancel-icon {
@@ -1579,14 +1584,14 @@
               border-radius: 8px;
               padding: 8px 24px;
               text-transform: none;
-              border-color: #8B4513;
-              color: #8B4513;
+              border-color: $brand-navy-1;
+              color: $brand-navy-1;
               font-weight: 600;
               font-family: $font;
               
               &:hover {
-                border-color: #6B3410;
-                background-color: rgba(139, 69, 19, 0.05);
+                border-color: $brand-navy-3;
+                background-color: rgba(30, 58, 95, 0.05);
               }
             }
           }
@@ -1625,7 +1630,7 @@
                 transition: background-color 0.2s ease;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.02);
+                  background-color: rgba(30, 58, 95, 0.02);
                 }
                 
                 td {
@@ -1642,7 +1647,7 @@
                       transition: color 0.2s ease;
                       
                       &:hover {
-                        color: #8B4513;
+                        color: $brand-navy-1;
                       }
                     }
                   }
@@ -1667,7 +1672,7 @@
               transition: all 0.2s ease;
               
               &:hover {
-                background-color: rgba(139, 69, 19, 0.03);
+                background-color: rgba(30, 58, 95, 0.03);
                 transform: translateX(2px);
               }
             }
@@ -1691,8 +1696,8 @@
                 }
                 
                 &.category-buyers {
-                  background-color: rgba(139, 69, 19, 0.1);
-                  color: #8B4513;
+                  background-color: rgba(30, 58, 95, 0.1);
+                  color: $brand-navy-1;
                 }
                 
                 &.category-agents {
@@ -1761,11 +1766,11 @@
               }
               
               &.status-default {
-                background-color: rgba(139, 69, 19, 0.1);
-                color: #8B4513;
+                background-color: rgba(30, 58, 95, 0.1);
+                color: $brand-navy-1;
                 
                 &:hover {
-                  background-color: rgba(139, 69, 19, 0.15);
+                  background-color: rgba(30, 58, 95, 0.15);
                 }
               }
               
@@ -1789,7 +1794,7 @@
                 transition: color 0.2s ease;
                 
                 &:hover {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                 }
               }
             }
@@ -1802,7 +1807,7 @@
                 transition: border-color 0.2s ease;
                 
                 &:hover {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                 }
               }
               
@@ -1856,8 +1861,8 @@
           
           .faq-pagination-box {
             padding: 20px 24px;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, rgba(160, 82, 45, 0.02) 100%);
-            border-top: 1px solid rgba(139, 69, 19, 0.1);
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(21, 34, 56, 0.02) 100%);
+            border-top: 1px solid rgba(30, 58, 95, 0.1);
             border-radius: 0 0 16px 16px;
             
             .faq-pagination {
@@ -1871,7 +1876,7 @@
               .MuiTablePagination-selectLabel {
                 font-weight: 600;
                 font-family: $font;
-                color: #8B4513;
+                color: $brand-navy-1;
                 font-size: 14px;
                 margin-right: 16px;
               }
@@ -1895,21 +1900,21 @@
                 background-color: #ffffff;
                 border-radius: 8px;
                 padding: 6px 12px;
-                border: 1.5px solid rgba(139, 69, 19, 0.2);
+                border: 1.5px solid rgba(30, 58, 95, 0.2);
                 transition: all 0.2s ease;
                 
                 &:hover {
-                  border-color: #8B4513;
-                  background-color: rgba(139, 69, 19, 0.05);
+                  border-color: $brand-navy-1;
+                  background-color: rgba(30, 58, 95, 0.05);
                 }
                 
                 &:focus {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   background-color: #ffffff;
                 }
                 
                 .MuiSelect-icon {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                 }
               }
               
@@ -1919,14 +1924,14 @@
                 margin-left: 4px;
                 
                 button {
-                  color: #8B4513;
+                  color: $brand-navy-1;
                   border-radius: 8px;
                   padding: 8px;
                   transition: all 0.2s ease;
                   font-weight: 600;
                   
                   &:hover {
-                    background-color: rgba(139, 69, 19, 0.1);
+                    background-color: rgba(30, 58, 95, 0.1);
                     transform: scale(1.1);
                   }
                   
@@ -1965,12 +1970,12 @@
         
         .back-btn {
           text-transform: none;
-          color: #8B4513;
-          border-color: #8B4513;
+          color: $brand-navy-1;
+          border-color: $brand-navy-1;
           font-family: $font;
           
           &:hover {
-            background-color: rgba(139, 69, 19, 0.05);
+            background-color: rgba(30, 58, 95, 0.05);
           }
         }
         
@@ -1979,12 +1984,12 @@
           width: 56px;
           height: 56px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(160, 82, 45, 0.15) 100%);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.15) 0%, rgba(21, 34, 56, 0.15) 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #8B4513;
-          border: 2px solid rgba(139, 69, 19, 0.2);
+          color: $brand-navy-1;
+          border: 2px solid rgba(30, 58, 95, 0.2);
           
           .product-create-icon,
           .product-edit-icon {
@@ -2002,14 +2007,14 @@
         border-radius: 16px;
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
         border: 1px solid #f0f0f0;
-        background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, rgba(160, 82, 45, 0.02) 100%);
+        background: linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(21, 34, 56, 0.02) 100%);
         height: fit-content;
         position: sticky;
         top: 24px;
         
         .info-item {
           padding: 12px 0;
-          border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+          border-bottom: 1px solid rgba(30, 58, 95, 0.1);
           
           &:last-child {
             border-bottom: none;
@@ -2031,11 +2036,11 @@
           }
           
           &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
           
           &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
         }
         
@@ -2047,11 +2052,11 @@
           }
           
           &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
           
           &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
         }
         
@@ -2063,25 +2068,25 @@
           
           .upload-images-btn {
             text-transform: none;
-            border-color: #8B4513;
-            color: #8B4513;
+            border-color: $brand-navy-1;
+            color: $brand-navy-1;
             font-family: $font;
             font-weight: 600;
             
             &:hover {
-              background-color: rgba(139, 69, 19, 0.05);
+              background-color: rgba(30, 58, 95, 0.05);
             }
           }
           
           .upload-images-submit-btn {
             text-transform: none;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: $brand-gradient-primary;
             color: #ffffff;
             font-family: $font;
             font-weight: 600;
             
             &:hover {
-              background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
+              background: $brand-gradient-hover;
             }
             
             &:disabled {
@@ -2144,16 +2149,16 @@
         
         .submit-btn {
           text-transform: none;
-          background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+          background: $brand-gradient-primary;
           color: #ffffff;
           font-family: $font;
           font-weight: 600;
           padding: 12px 32px;
-          box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+          box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
           
           &:hover {
-            background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-            box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+            background: $brand-gradient-hover;
+            box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
             transform: translateY(-2px);
           }
           
@@ -2184,7 +2189,7 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 background-color: #ffffff;
               }
               
@@ -2192,7 +2197,7 @@
                 background-color: #ffffff;
                 
                 .MuiOutlinedInput-notchedOutline {
-                  border-color: #8B4513;
+                  border-color: $brand-navy-1;
                   border-width: 2px;
                 }
               }
@@ -2218,12 +2223,12 @@
         
         .back-btn {
           text-transform: none;
-          color: #8B4513;
-          border-color: #8B4513;
+          color: $brand-navy-1;
+          border-color: $brand-navy-1;
           font-family: $font;
           
           &:hover {
-            background-color: rgba(139, 69, 19, 0.05);
+            background-color: rgba(30, 58, 95, 0.05);
           }
         }
         
@@ -2231,11 +2236,11 @@
           width: 56px;
           height: 56px;
           border-radius: 12px;
-          background-color: rgba(139, 69, 19, 0.1);
+          background-color: rgba(30, 58, 95, 0.1);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #8B4513;
+          color: $brand-navy-1;
           
           .faq-create-icon {
             font-size: 32px;
@@ -2257,13 +2262,13 @@
         .faq-select-section {
           padding: 24px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
-          border: 1px solid rgba(139, 69, 19, 0.1);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(21, 34, 56, 0.03) 100%);
+          border: 1px solid rgba(30, 58, 95, 0.1);
           height: 100%;
           
           .faq-section-title {
             font-family: $font;
-            color: #8B4513;
+            color: $brand-navy-1;
             font-size: 16px;
             margin-bottom: 16px;
           }
@@ -2284,11 +2289,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2303,24 +2308,24 @@
           }
           
           &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
           
           &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
         }
         
         .faq-title-section {
           padding: 24px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
-          border: 1px solid rgba(139, 69, 19, 0.1);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(21, 34, 56, 0.03) 100%);
+          border: 1px solid rgba(30, 58, 95, 0.1);
           margin-bottom: 16px;
           
           .faq-section-title {
             font-family: $font;
-            color: #8B4513;
+            color: $brand-navy-1;
             font-size: 18px;
             margin-bottom: 16px;
           }
@@ -2338,11 +2343,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2357,12 +2362,12 @@
         .faq-content-section {
           padding: 24px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
-          border: 1px solid rgba(139, 69, 19, 0.1);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(21, 34, 56, 0.03) 100%);
+          border: 1px solid rgba(30, 58, 95, 0.1);
           
           .faq-section-title {
             font-family: $font;
-            color: #8B4513;
+            color: $brand-navy-1;
             font-size: 18px;
             margin-bottom: 16px;
           }
@@ -2380,11 +2385,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2404,11 +2409,11 @@
           }
           
           &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
           
           &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
           }
         }
         
@@ -2428,16 +2433,16 @@
         
         .submit-btn {
           text-transform: none;
-          background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+          background: $brand-gradient-primary;
           color: #ffffff;
           font-family: $font;
           font-weight: 600;
           padding: 12px 32px;
-          box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+          box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
           
           &:hover {
-            background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-            box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+            background: $brand-gradient-hover;
+            box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
             transform: translateY(-2px);
           }
           
@@ -2461,12 +2466,12 @@
         
         .back-btn {
           text-transform: none;
-          color: #8B4513;
-          border-color: #8B4513;
+          color: $brand-navy-1;
+          border-color: $brand-navy-1;
           font-family: $font;
           
           &:hover {
-            background-color: rgba(139, 69, 19, 0.05);
+            background-color: rgba(30, 58, 95, 0.05);
           }
         }
         
@@ -2474,11 +2479,11 @@
           width: 56px;
           height: 56px;
           border-radius: 12px;
-          background-color: rgba(139, 69, 19, 0.1);
+          background-color: rgba(30, 58, 95, 0.1);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #8B4513;
+          color: $brand-navy-1;
           
           .notice-create-icon {
             font-size: 32px;
@@ -2508,13 +2513,13 @@
         .notice-select-section {
           padding: 24px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
-          border: 1px solid rgba(139, 69, 19, 0.1);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(21, 34, 56, 0.03) 100%);
+          border: 1px solid rgba(30, 58, 95, 0.1);
           height: 100%;
           
           .notice-section-title {
             font-family: $font;
-            color: #8B4513;
+            color: $brand-navy-1;
             font-size: 16px;
             margin-bottom: 16px;
           }
@@ -2535,11 +2540,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2549,13 +2554,13 @@
         .notice-title-section, .notice-content-section {
           padding: 24px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.03) 0%, rgba(160, 82, 45, 0.03) 100%);
-          border: 1px solid rgba(139, 69, 19, 0.1);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(21, 34, 56, 0.03) 100%);
+          border: 1px solid rgba(30, 58, 95, 0.1);
           margin-bottom: 16px;
           
           .notice-section-title {
             font-family: $font;
-            color: #8B4513;
+            color: $brand-navy-1;
             font-size: 18px;
             margin-bottom: 16px;
           }
@@ -2573,11 +2578,11 @@
               }
               
               &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
               }
               
               &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2610,16 +2615,16 @@
         
         .submit-btn {
           text-transform: none;
-          background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+          background: $brand-gradient-primary;
           color: #ffffff;
           font-family: $font;
           font-weight: 600;
           padding: 12px 32px;
-          box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+          box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
           
           &:hover {
-            background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-            box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+            background: $brand-gradient-hover;
+            box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
             transform: translateY(-2px);
           }
           
@@ -2644,12 +2649,12 @@
         
         .back-btn {
           text-transform: none;
-          color: #8B4513;
-          border-color: #8B4513;
+          color: $brand-navy-1;
+          border-color: $brand-navy-1;
           font-family: $font;
           
           &:hover {
-            background-color: rgba(139, 69, 19, 0.05);
+            background-color: rgba(30, 58, 95, 0.05);
           }
         }
         
@@ -2658,12 +2663,12 @@
           width: 56px;
           height: 56px;
           border-radius: 12px;
-          background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(160, 82, 45, 0.15) 100%);
+          background: linear-gradient(135deg, rgba(30, 58, 95, 0.15) 0%, rgba(21, 34, 56, 0.15) 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #8B4513;
-          border: 2px solid rgba(139, 69, 19, 0.2);
+          color: $brand-navy-1;
+          border: 2px solid rgba(30, 58, 95, 0.2);
           
           .faq-edit-icon,
           .article-edit-icon {
@@ -2681,14 +2686,14 @@
         border-radius: 16px;
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
         border: 1px solid #f0f0f0;
-        background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, rgba(160, 82, 45, 0.02) 100%);
+        background: linear-gradient(135deg, rgba(30, 58, 95, 0.02) 0%, rgba(21, 34, 56, 0.02) 100%);
         height: fit-content;
         position: sticky;
         top: 24px;
         
         .info-item {
           padding: 12px 0;
-          border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+          border-bottom: 1px solid rgba(30, 58, 95, 0.1);
           
           &:last-child {
             border-bottom: none;
@@ -2718,7 +2723,7 @@
             }
             
             &:hover .MuiOutlinedInput-notchedOutline {
-              border-color: #8B4513;
+              border-color: $brand-navy-1;
               background-color: #ffffff;
             }
             
@@ -2726,7 +2731,7 @@
               background-color: #ffffff;
               
               .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2755,7 +2760,7 @@
             }
             
             &:hover .MuiOutlinedInput-notchedOutline {
-              border-color: #8B4513;
+              border-color: $brand-navy-1;
               background-color: #ffffff;
             }
             
@@ -2763,7 +2768,7 @@
               background-color: #ffffff;
               
               .MuiOutlinedInput-notchedOutline {
-                border-color: #8B4513;
+                border-color: $brand-navy-1;
                 border-width: 2px;
               }
             }
@@ -2790,7 +2795,7 @@
           }
           
           &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: #8B4513;
+            border-color: $brand-navy-1;
             background-color: #ffffff;
           }
           
@@ -2798,7 +2803,7 @@
             background-color: #ffffff;
             
             .MuiOutlinedInput-notchedOutline {
-              border-color: #8B4513;
+              border-color: $brand-navy-1;
               border-width: 2px;
             }
           }
@@ -2820,26 +2825,26 @@
           .upload-image-btn,
           .upload-images-btn {
             text-transform: none;
-            border-color: #8B4513;
-            color: #8B4513;
+            border-color: $brand-navy-1;
+            color: $brand-navy-1;
             font-family: $font;
             font-weight: 600;
             
             &:hover {
-              background-color: rgba(139, 69, 19, 0.05);
+              background-color: rgba(30, 58, 95, 0.05);
             }
           }
           
           .upload-image-submit-btn,
           .upload-images-submit-btn {
             text-transform: none;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: $brand-gradient-primary;
             color: #ffffff;
             font-family: $font;
             font-weight: 600;
             
             &:hover {
-              background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
+              background: $brand-gradient-hover;
             }
             
             &:disabled {
@@ -2903,16 +2908,16 @@
         
         .submit-btn {
           text-transform: none;
-          background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+          background: $brand-gradient-primary;
           color: #ffffff;
           font-family: $font;
           font-weight: 600;
           padding: 12px 32px;
-          box-shadow: 0px 2px 8px rgba(139, 69, 19, 0.25);
+          box-shadow: 0px 2px 8px rgba(30, 58, 95, 0.25);
           
           &:hover {
-            background: linear-gradient(135deg, #6B3410 0%, #8B4513 100%);
-            box-shadow: 0px 4px 16px rgba(139, 69, 19, 0.35);
+            background: $brand-gradient-hover;
+            box-shadow: 0px 4px 16px rgba(30, 58, 95, 0.35);
             transform: translateY(-2px);
           }
           
@@ -3431,8 +3436,8 @@
           background: #21262d;
         }
         &.on {
-          background: rgba(245, 77, 86, 0.15) !important;
-          color: #f54d56;
+          background: rgba(30, 58, 95, 0.22) !important;
+          color: #8b9dc9;
           span { color: #e6edf3 !important; }
         }
       }
@@ -3447,8 +3452,8 @@
       }
       .admin-dashboard {
         .welcome-section {
-          background: linear-gradient(135deg, #21262d 0%, #30363d 100%) !important;
-          border: 1px solid #30363d;
+          background: $brand-gradient-primary !important;
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .stat-card,
         .quick-links-card,
@@ -3470,7 +3475,7 @@
           border-color: #30363d !important;
           &:hover {
             background: #21262d !important;
-            border-color: #8B4513 !important;
+            border-color: $brand-navy-1 !important;
           }
         }
       }
@@ -3489,7 +3494,7 @@
         }
         .products-icon-box {
           background: #21262d !important;
-          color: #8B4513 !important;
+          color: $brand-navy-1 !important;
         }
       }
       .MuiTable-root,
