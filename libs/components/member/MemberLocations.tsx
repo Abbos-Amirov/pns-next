@@ -57,7 +57,48 @@ const MemberLocations: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>MEMBER LOCATIONS MOBILE</div>;
+		return (
+			<Stack className={'mobile-member-locations-page'}>
+				<Stack className={'mobile-locations-header'}>
+					<Typography className={'mobile-locations-title'}>Locations</Typography>
+					{memberLocationsAll.length > 0 && (
+						<Typography className={'mobile-locations-count'}>{memberLocationsAll.length}</Typography>
+					)}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading locations...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>Error loading locations</Typography>
+					</Stack>
+				) : memberLocationsAll.length === 0 ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>No Locations found!</Typography>
+					</Stack>
+				) : (
+					<>
+						<div className={'mobile-locations-grid'}>
+							{pagedLocations.map((loc: Location) => (
+								<CityCard city={loc} key={loc._id} />
+							))}
+						</div>
+						<Stack className={'mobile-pagination'}>
+							<Pagination
+								count={Math.ceil(memberLocationsAll.length / limit) || 1}
+								page={page}
+								shape="circular"
+								color="primary"
+								onChange={paginationHandler}
+							/>
+						</Stack>
+					</>
+				)}
+			</Stack>
+		);
 	}
 
 	return (

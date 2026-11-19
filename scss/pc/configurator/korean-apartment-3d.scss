@@ -1,0 +1,253 @@
+/** 3D Korean apartment walkthrough (configurator hero) **/
+
+.window-pricing-hero .window-pricing-hero-main {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+#mobile-wrap .window-pricing-hero .window-pricing-hero-main {
+  aspect-ratio: auto;
+  height: 78vh;
+  min-height: 460px;
+}
+
+.kapt3d {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #cfe4f3;
+  user-select: none;
+
+  canvas {
+    display: block;
+    touch-action: none;
+  }
+}
+
+.kapt3d-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a5563;
+  font-size: 14px;
+}
+
+/* price badge moved to the top-left corner */
+.kapt3d-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  pointer-events: none;
+
+  .window-pricing-hero-badge,
+  #mobile-wrap & .window-pricing-hero-badge {
+    position: static;
+    transform: none;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 10px 16px;
+    font-size: 11px;
+  }
+}
+
+.kapt3d-overview-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d2733;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: #fff;
+  }
+}
+
+.kapt3d-hint {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(20, 28, 38, 0.55);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: kapt3dFade 0.4s ease both;
+}
+
+.kapt3d-label {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1d2733;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
+
+.kapt3d-color-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 78px;
+  transform: translateX(-50%);
+  z-index: 6;
+  width: min(460px, calc(100% - 32px));
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  animation: kapt3dRise 0.35s ease both;
+}
+
+.kapt3d-color-title {
+  font-size: 13px;
+  color: #4a5563;
+  margin-bottom: 10px;
+  text-align: center;
+
+  strong {
+    color: #111827;
+  }
+}
+
+.kapt3d-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.kapt3d-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    border-color: #1a1780;
+    box-shadow: 0 0 0 2px rgba(26, 23, 128, 0.15);
+  }
+}
+
+.kapt3d-swatch-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.kapt3d-swatch-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+.kapt3d-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+
+  button {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 8px;
+    background: #f9fafb;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+    cursor: pointer;
+
+    &:hover {
+      background: #eef0f3;
+    }
+  }
+}
+
+.kapt3d-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  z-index: 6;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  button {
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 999px;
+    padding: 9px 14px;
+    background: rgba(20, 28, 38, 0.6);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(20, 28, 38, 0.8);
+    }
+
+    &.active {
+      background: #fff;
+      color: #1a1780;
+    }
+  }
+}
+
+#mobile-wrap .kapt3d-nav {
+  justify-content: flex-start;
+}
+
+@keyframes kapt3dRise {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes kapt3dFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

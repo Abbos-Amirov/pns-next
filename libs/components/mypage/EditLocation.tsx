@@ -224,7 +224,145 @@ const EditLocation = ({ initialValues, ...props }: any) => {
 	}
 
 	if (device === 'mobile') {
-		return <div>EDIT LOCATION MOBILE PAGE</div>;
+		return (
+			<Stack className={'mobile-form-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>Edit Location</Typography>
+					<Typography className={'mobile-mypage-tab-subtitle'}>Update your location information</Typography>
+				</Stack>
+
+				{locationLoading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading location data...</Typography>
+					</Stack>
+				) : (
+					<>
+						<Stack className={'mobile-form-body'}>
+							<Stack className={'mobile-field'}>
+								<Typography className={'mobile-field-label'}>Location Name</Typography>
+								<input
+									type="text"
+									placeholder={'Location Name'}
+									value={updateLocationData.locationName || ''}
+									onChange={({ target: { value } }) =>
+										setUpdateLocationData({ ...updateLocationData, locationName: value })
+									}
+								/>
+							</Stack>
+
+							<Stack className={'mobile-field'}>
+								<Typography className={'mobile-field-label'}>Location Type</Typography>
+								<select
+									className={'mobile-select'}
+									value={updateLocationData.locationType || 'select'}
+									onChange={({ target: { value } }) =>
+										setUpdateLocationData({ ...updateLocationData, locationType: value as LocationType })
+									}
+								>
+									<option disabled value={'select'}>
+										Select
+									</option>
+									{locationType.map((type: LocationType) => (
+										<option value={`${type}`} key={type}>
+											{type}
+										</option>
+									))}
+								</select>
+							</Stack>
+
+							<Stack className={'mobile-field'}>
+								<Typography className={'mobile-field-label'}>Address</Typography>
+								<input
+									type="text"
+									placeholder={'Address'}
+									value={updateLocationData.address || ''}
+									onChange={({ target: { value } }) => setUpdateLocationData({ ...updateLocationData, address: value })}
+								/>
+							</Stack>
+
+							<Stack className={'mobile-field-row'}>
+								<Stack className={'mobile-field'}>
+									<Typography className={'mobile-field-label'}>Latitude</Typography>
+									<input
+										type="number"
+										placeholder={'Latitude'}
+										value={updateLocationData.latitude || ''}
+										onChange={({ target: { value } }) =>
+											setUpdateLocationData({ ...updateLocationData, latitude: parseFloat(value) || 0 })
+										}
+									/>
+								</Stack>
+								<Stack className={'mobile-field'}>
+									<Typography className={'mobile-field-label'}>Longitude</Typography>
+									<input
+										type="number"
+										placeholder={'Longitude'}
+										value={updateLocationData.longitude || ''}
+										onChange={({ target: { value } }) =>
+											setUpdateLocationData({ ...updateLocationData, longitude: parseFloat(value) || 0 })
+										}
+									/>
+								</Stack>
+							</Stack>
+
+							<Stack className={'mobile-field'}>
+								<Typography className={'mobile-field-label'}>Description</Typography>
+								<textarea
+									className={'mobile-textarea'}
+									placeholder={'Description'}
+									value={updateLocationData.description || ''}
+									onChange={({ target: { value } }) =>
+										setUpdateLocationData({ ...updateLocationData, description: value })
+									}
+									rows={4}
+								/>
+							</Stack>
+
+							<Typography className={'mobile-form-section-label'}>Upload photos of your location</Typography>
+							<Stack className={'mobile-upload-box'}>
+								<Typography className={'mobile-upload-title'}>Drag and drop, or browse images</Typography>
+								<Typography className={'mobile-upload-hint'}>JPEG or PNG, at least 2048x768</Typography>
+								<Button
+									className={'mobile-btn-accent mobile-browse-btn'}
+									onClick={() => {
+										inputRef.current.click();
+									}}
+								>
+									Browse Files
+									<input
+										ref={inputRef}
+										type="file"
+										hidden={true}
+										onChange={uploadImages}
+										multiple={true}
+										accept="image/jpg, image/jpeg, image/png"
+									/>
+								</Button>
+							</Stack>
+							{(updateLocationData?.images?.length ?? 0) > 0 && (
+								<Stack className={'mobile-gallery'} direction={'row'}>
+									{updateLocationData?.images?.map((image: string) => (
+										<div className={'mobile-gallery-item'} key={image}>
+											<img src={`${REACT_APP_API_URL}/${image}`} alt="" />
+										</div>
+									))}
+								</Stack>
+							)}
+						</Stack>
+
+						<Stack className={'mobile-form-actions'}>
+							<Button
+								className={'mobile-btn-primary'}
+								disabled={doDisabledCheck() || updateLocationLoading || locationLoading}
+								onClick={updateLocationHandler}
+							>
+								{updateLocationLoading ? 'Updating...' : 'Update'}
+							</Button>
+						</Stack>
+					</>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="edit-location-page">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
+import Link from 'next/link';
 import { Pagination, Stack, Typography, Box, Card, CardContent, IconButton, Tooltip } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
@@ -89,7 +90,50 @@ const MyLocations: NextPage = ({ initialInput, ...props }: any) => {
 
 
 	if (device === 'mobile') {
-		return <div>MY LOCATIONS MOBILE</div>;
+		return (
+			<Stack className={'mobile-mylocations-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>My Locations</Typography>
+					{total > 0 && <Typography className={'mobile-mypage-tab-count'}>{total}</Typography>}
+				</Stack>
+				<Link
+					href={{ pathname: '/mypage', query: { category: 'addLocation' } }}
+					scroll={false}
+					className={'mobile-btn-primary mobile-mylocations-add'}
+				>
+					+ Add New Location
+				</Link>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading...</Typography>
+					</Stack>
+				) : locations?.length === 0 ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>No locations found!</Typography>
+					</Stack>
+				) : (
+					<>
+						<Stack className={'mobile-mylocations-list'}>
+							{locations.map((location: Location) => (
+								<LocationCard key={location._id} location={location} deleteLocation={deleteLocation} refetch={refetch} />
+							))}
+						</Stack>
+						{locations.length !== 0 && (
+							<Stack className={'mobile-pagination'}>
+								<Pagination
+									count={Math.ceil(total / searchFilter.limit)}
+									page={searchFilter.page}
+									shape="circular"
+									color="primary"
+									onChange={paginationHandler}
+								/>
+							</Stack>
+						)}
+					</>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="my-locations-page">

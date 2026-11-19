@@ -135,7 +135,75 @@ const CityList: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>CITIES MOBILE</h1>;
+		return (
+			<Stack className="mobile-city-page">
+				<Stack className="mobile-section-head">
+					<span className="mobile-eyebrow">Explore PNSWINDOW</span>
+					<h2 className="mobile-title">Our City Locations</h2>
+					<p className="mobile-subtitle">Find a PNSWINDOW showroom or service point near you</p>
+				</Stack>
+
+				<Stack className="mobile-city-filterbar" direction="row">
+					<Button
+						className="mobile-city-filter-btn"
+						onClick={sortingClickHandler}
+						endIcon={<KeyboardArrowDownRoundedIcon />}
+					>
+						{filterSortName}
+					</Button>
+					<Menu
+						anchorEl={anchorEl}
+						open={sortingOpen}
+						onClose={sortingCloseHandler}
+						className="mobile-city-menu"
+					>
+						<MenuItem onClick={sortingHandler} id={'all_cities'} disableRipple>
+							All Cities
+						</MenuItem>
+						{Object.values(LocationCity).map((city) => (
+							<MenuItem key={city} onClick={sortingHandler} id={city} disableRipple>
+								{city}
+							</MenuItem>
+						))}
+					</Menu>
+				</Stack>
+
+				<Stack className="mobile-city-list">
+					{loading ? (
+						<Stack className="mobile-city-empty">
+							<Typography>Loading locations...</Typography>
+						</Stack>
+					) : error ? (
+						<Stack className="mobile-city-empty">
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<Typography>Error loading locations: {error.message}</Typography>
+						</Stack>
+					) : cities?.length === 0 ? (
+						<Stack className="mobile-city-empty">
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<Typography>No locations found!</Typography>
+						</Stack>
+					) : (
+						cities.map((city: Location) => <CityCard city={city} key={city?._id} />)
+					)}
+				</Stack>
+
+				{cities.length !== 0 && (
+					<Stack className="mobile-city-pagination">
+						<Pagination
+							page={currentPage}
+							count={Math.ceil(total / searchFilter.limit)}
+							onChange={handlePaginationChange}
+							shape="circular"
+							color="primary"
+						/>
+						<Typography className="mobile-city-total">
+							Total {total} cit{total > 1 ? 'ies' : 'y'} available
+						</Typography>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="city-list-page" style={{ position: 'relative' }}>

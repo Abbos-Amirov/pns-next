@@ -172,7 +172,144 @@ const AddLocation = ({ initialValues, ...props }: any) => {
 	}
 
 	if (device === 'mobile') {
-		return <div>ADD NEW LOCATION MOBILE PAGE</div>;
+		return (
+			<Stack className={'mobile-form-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>Add New Location</Typography>
+					<Typography className={'mobile-mypage-tab-subtitle'}>Create a new location for measurements</Typography>
+				</Stack>
+
+				<Stack className={'mobile-form-body'}>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>Location Name</Typography>
+						<select
+							className={'mobile-select'}
+							value={insertLocationData.locationCity || 'select'}
+							onChange={({ target: { value } }) => {
+								const city = value as LocationCity;
+								setInsertLocationData({ ...insertLocationData, locationCity: city, locationName: city });
+							}}
+						>
+							<option disabled value={'select'}>
+								Select City
+							</option>
+							{locationCities.map((city) => (
+								<option value={city} key={city}>
+									{city}
+								</option>
+							))}
+						</select>
+					</Stack>
+
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>Location Type</Typography>
+						<select
+							className={'mobile-select'}
+							value={insertLocationData.locationType || 'select'}
+							onChange={({ target: { value } }) =>
+								setInsertLocationData({ ...insertLocationData, locationType: value as LocationType })
+							}
+						>
+							<option disabled value={'select'}>
+								Select
+							</option>
+							{locationType.map((type: LocationType) => (
+								<option value={`${type}`} key={type}>
+									{type}
+								</option>
+							))}
+						</select>
+					</Stack>
+
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>Address</Typography>
+						<input
+							type="text"
+							placeholder={'Address'}
+							value={insertLocationData.address}
+							onChange={({ target: { value } }) => setInsertLocationData({ ...insertLocationData, address: value })}
+						/>
+					</Stack>
+
+					<Stack className={'mobile-field-row'}>
+						<Stack className={'mobile-field'}>
+							<Typography className={'mobile-field-label'}>Latitude</Typography>
+							<input
+								type="number"
+								placeholder={'Latitude'}
+								value={insertLocationData.latitude || ''}
+								onChange={({ target: { value } }) =>
+									setInsertLocationData({ ...insertLocationData, latitude: parseFloat(value) || 0 })
+								}
+							/>
+						</Stack>
+						<Stack className={'mobile-field'}>
+							<Typography className={'mobile-field-label'}>Longitude</Typography>
+							<input
+								type="number"
+								placeholder={'Longitude'}
+								value={insertLocationData.longitude || ''}
+								onChange={({ target: { value } }) =>
+									setInsertLocationData({ ...insertLocationData, longitude: parseFloat(value) || 0 })
+								}
+							/>
+						</Stack>
+					</Stack>
+
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>Description</Typography>
+						<textarea
+							className={'mobile-textarea'}
+							placeholder={'Description'}
+							value={insertLocationData.description || ''}
+							onChange={({ target: { value } }) => setInsertLocationData({ ...insertLocationData, description: value })}
+							rows={4}
+						/>
+					</Stack>
+
+					<Typography className={'mobile-form-section-label'}>Upload photos of your location</Typography>
+					<Stack className={'mobile-upload-box'}>
+						<Typography className={'mobile-upload-title'}>Drag and drop, or browse images</Typography>
+						<Typography className={'mobile-upload-hint'}>JPEG or PNG, at least 2048x768</Typography>
+						<Button
+							className={'mobile-btn-accent mobile-browse-btn'}
+							onClick={() => {
+								inputRef.current.click();
+							}}
+						>
+							Browse Files
+							<input
+								ref={inputRef}
+								type="file"
+								hidden={true}
+								onChange={uploadImages}
+								multiple={true}
+								accept="image/jpg, image/jpeg, image/png"
+							/>
+						</Button>
+					</Stack>
+					{(insertLocationData?.images?.length ?? 0) > 0 && (
+						<Stack className={'mobile-gallery'} direction={'row'}>
+							{insertLocationData?.images?.map((image: string) => (
+								<div className={'mobile-gallery-item'} key={image}>
+									<img src={`${REACT_APP_API_URL}/${image}`} alt="" />
+								</div>
+							))}
+						</Stack>
+					)}
+				</Stack>
+
+				<Stack className={'mobile-form-actions'}>
+					<Button
+						className={'mobile-btn-primary'}
+						disabled={doDisabledCheck() || createLocationLoading}
+						onClick={insertLocationHandler}
+					>
+						{createLocationLoading ? 'Creating...' : 'Save'}
+					</Button>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="add-location-page">

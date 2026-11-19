@@ -1,0 +1,187 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — Repair & Maintenance page (pages/repair-maintenance/index.tsx)
+ * No device branch and no dedicated pc scss file — this page reuses the
+ * `our-services-*` classnames that scss/pc/our-services/our-services.scss
+ * (unscoped) already styles for the *other* mobile-services-request page.
+ * We give this page its own tuned #mobile-wrap layout here.
+ * ========================================================================== */
+
+#mobile-wrap {
+	.our-services-page {
+		padding: 28px 16px 56px !important;
+		background: linear-gradient(180deg, #fafbfc 0%, #f0f4f8 100%) !important;
+	}
+
+	.our-services-container {
+		max-width: 100% !important;
+	}
+
+	/* ---------- Header ---------- */
+	.our-services-header {
+		margin-bottom: 28px !important;
+	}
+
+	.our-services-title {
+		font-size: 24px !important;
+		line-height: 1.22 !important;
+		margin: 0 0 10px 0 !important;
+	}
+
+	.our-services-subtitle {
+		font-size: 13.5px !important;
+		max-width: 280px !important;
+	}
+
+	/* ---------- Property type selector ---------- */
+	.our-services-selector {
+		margin-bottom: 26px !important;
+	}
+
+	.our-services-selector-grid {
+		grid-template-columns: repeat(2, 1fr) !important;
+		gap: 12px !important;
+	}
+
+	.our-services-option-card {
+		padding: 20px 14px !important;
+		border-radius: 16px !important;
+		gap: 10px !important;
+
+		&:hover {
+			transform: none;
+		}
+
+		&:active {
+			transform: scale(0.97);
+		}
+	}
+
+	.our-services-option-icon {
+		width: 46px !important;
+		height: 46px !important;
+		border-radius: 13px !important;
+
+		svg {
+			font-size: 24px !important;
+		}
+	}
+
+	.our-services-option-label {
+		font-size: 13.5px !important;
+	}
+
+	.our-services-select-hint {
+		font-size: 12.5px !important;
+	}
+
+	/* ---------- Form ---------- */
+	.our-services-form {
+		padding: 22px 16px !important;
+		border-radius: 18px !important;
+		box-shadow: 0 6px 24px rgba(18, 13, 83, 0.08) !important;
+	}
+
+	.our-services-field {
+		margin-bottom: 18px !important;
+	}
+
+	.our-services-field-row {
+		grid-template-columns: 1fr !important;
+		gap: 14px !important;
+		margin-bottom: 18px !important;
+	}
+
+	.our-services-label {
+		font-size: 12.5px !important;
+		margin-bottom: 8px !important;
+	}
+
+	.our-services-input,
+	.our-services-textarea {
+		.MuiOutlinedInput-root {
+			font-size: 14px !important;
+			border-radius: 12px !important;
+
+			&.Mui-focused .MuiOutlinedInput-notchedOutline {
+				border-color: #16206e !important;
+			}
+
+			&:hover .MuiOutlinedInput-notchedOutline {
+				border-color: rgba(18, 13, 83, 0.3) !important;
+			}
+
+			input {
+				padding: 12px 14px !important;
+			}
+
+			textarea {
+				min-height: 110px !important;
+			}
+		}
+	}
+
+	.our-services-cta {
+		margin-top: 28px !important;
+	}
+
+	.our-services-submit-btn {
+		width: 100%;
+		padding: 14px 24px !important;
+		border-radius: 12px !important;
+		font-size: 13.5px !important;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+		box-shadow: 0 8px 20px rgba(18, 13, 83, 0.28) !important;
+
+		&:active {
+			transform: scale(0.98);
+		}
+	}
+
+	/* ---------- Image upload ---------- */
+	.our-services-image-upload-grid {
+		grid-template-columns: repeat(2, 1fr) !important;
+		gap: 10px !important;
+	}
+
+	.our-services-image-preview-card,
+	.our-services-image-dropzone {
+		border-radius: 14px !important;
+	}
+
+	.our-services-image-upload-icon {
+		font-size: 30px !important;
+	}
+
+	.our-services-image-upload-hint {
+		font-size: 11.5px !important;
+		text-align: center;
+	}
+
+	.our-services-image-upload-max {
+		font-size: 10px !important;
+	}
+
+	.our-services-image-success-text {
+		font-size: 9.5px !important;
+	}
+
+	.our-services-image-remove-btn {
+		width: 26px !important;
+		height: 26px !important;
+	}
+}
+
+/** ---------- Dark mode ---------- */
+[data-theme='dark'] #mobile-wrap {
+	.our-services-page {
+		background: linear-gradient(180deg, #0d1117 0%, #161b22 50%, #0d1117 100%) !important;
+	}
+
+	.our-services-submit-btn {
+		background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%) !important;
+		color: #1a1207 !important;
+		box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3) !important;
+	}
+}

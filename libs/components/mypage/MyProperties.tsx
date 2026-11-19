@@ -39,7 +39,55 @@ const MyProperties: NextPage = ({ initialInput, ...props }: any) => {
 	}
 
 	if (device === 'mobile') {
-		return <div>NESTAR PROPERTIES MOBILE</div>;
+		return (
+			<Stack className={'mobile-myproperties-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>My Properties</Typography>
+				</Stack>
+				<Stack className={'mobile-tab-name-box'} direction={'row'}>
+					<Typography
+						onClick={() => changeStatusHandler(PropertyStatus.ACTIVE)}
+						className={searchFilter.search.propertyStatus === 'ACTIVE' ? 'active' : ''}
+					>
+						On Sale
+					</Typography>
+					<Typography
+						onClick={() => changeStatusHandler(PropertyStatus.SOLD)}
+						className={searchFilter.search.propertyStatus === 'SOLD' ? 'active' : ''}
+					>
+						On Sold
+					</Typography>
+				</Stack>
+				{agentProperties?.length === 0 ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>No Property found!</Typography>
+					</Stack>
+				) : (
+					<Stack className={'mobile-mylocations-list'}>
+						{agentProperties.map((property: Property) => (
+							<PropertyCard
+								key={property._id}
+								property={property}
+								deletePropertyHandler={deletePropertyHandler}
+								updatePropertyHandler={updatePropertyHandler}
+							/>
+						))}
+					</Stack>
+				)}
+				{agentProperties.length !== 0 && (
+					<Stack className={'mobile-pagination'}>
+						<Pagination
+							count={Math.ceil(total / searchFilter.limit)}
+							page={searchFilter.page}
+							shape="circular"
+							color="primary"
+							onChange={paginationHandler}
+						/>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="my-property-page">

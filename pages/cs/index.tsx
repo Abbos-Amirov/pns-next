@@ -37,7 +37,41 @@ const CS: NextPage = () => {
 	const tab = router.query.tab ?? 'notice';
 
 	if (device === 'mobile') {
-		return <h1>{t('CsPageMobile')}</h1>;
+		return (
+			<Stack className="mobile-cs-page">
+				<Stack className="mobile-cs-hero">
+					<span className="mobile-cs-hero-icon">
+						<HelpCenterIcon />
+					</span>
+					<Typography className="mobile-cs-hero-title">{t('CsHeroTitle')}</Typography>
+					<Typography className="mobile-cs-hero-subtitle">{t('CsHeroSubtitle')}</Typography>
+				</Stack>
+
+				<Stack className="mobile-cs-tabs" direction="row">
+					<button
+						type="button"
+						className={`mobile-cs-tab ${tab === 'notice' ? 'active' : ''}`}
+						onClick={() => changeTabHandler('notice')}
+					>
+						<NotificationsIcon />
+						{t('CsTabNotice')}
+					</button>
+					<button
+						type="button"
+						className={`mobile-cs-tab ${tab === 'faq' ? 'active' : ''}`}
+						onClick={() => changeTabHandler('faq')}
+					>
+						<QuestionAnswerIcon />
+						{t('CsTabFaq')}
+					</button>
+				</Stack>
+
+				<Box component={'div'} className="mobile-cs-content">
+					{tab === 'notice' && <Notice />}
+					{tab === 'faq' && <Faq />}
+				</Box>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack className={'cs-page'}>

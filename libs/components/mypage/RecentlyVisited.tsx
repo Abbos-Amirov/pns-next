@@ -63,7 +63,58 @@ const RecentlyVisited: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>RECENTLY VISITED MOBILE</div>;
+		return (
+			<Stack className={'mobile-recentlyvisited-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>Recently Visited</Typography>
+					{total > 0 && <Typography className={'mobile-mypage-tab-count'}>{total}</Typography>}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading recently visited...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Error loading recently visited</Typography>
+					</Stack>
+				) : recentlyVisited?.length > 0 ? (
+					<>
+						<Stack className={'mobile-product-list'}>
+							{recentlyVisited.map((product: Product) => {
+								const imagePath = product.productImages?.[0]
+									? `${process.env.REACT_APP_API_URL}/${product.productImages[0]}`
+									: '/img/property/window.jpg';
+								return (
+									<div className={'mobile-product-card'} key={product._id}>
+										<div className={'mobile-product-card-img'} style={{ backgroundImage: `url(${imagePath})` }} />
+										<div className={'mobile-product-card-body'}>
+											<Typography className={'mobile-product-card-title'}>{product.productTitle}</Typography>
+											<Typography className={'mobile-product-card-address'}>{product.productAddress}</Typography>
+											<Typography className={'mobile-product-card-price'}>${product.productPrice?.toLocaleString()}</Typography>
+										</div>
+									</div>
+								);
+							})}
+						</Stack>
+						<Stack className={'mobile-pagination'}>
+							<Pagination
+								count={Math.ceil(total / searchVisited.limit)}
+								page={searchVisited.page}
+								shape="circular"
+								color="primary"
+								onChange={paginationHandler}
+							/>
+						</Stack>
+					</>
+				) : (
+					<Stack className={'mobile-empty-state'}>
+						<VisibilityIcon />
+						<Typography>No Recently Visited Found</Typography>
+						<Typography className={'mobile-empty-hint'}>You haven't visited any products yet.</Typography>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<Box component={'div'} className={'recently-visited-page'}>

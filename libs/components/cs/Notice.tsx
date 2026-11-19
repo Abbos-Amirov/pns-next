@@ -59,7 +59,44 @@ const Notice = () => {
 	/** HANDLERS **/
 
 	if (device === 'mobile') {
-		return <div>{t('CsNoticeMobile')}</div>;
+		return (
+			<Stack className="mobile-cs-notice">
+				{noticeLoading ? (
+					<Stack className="mobile-cs-empty">
+						<CircularProgress size={26} sx={{ color: '#120d53' }} />
+						<Typography>{t('CsLoadingNotices')}</Typography>
+					</Stack>
+				) : noticeError ? (
+					<Stack className="mobile-cs-empty">
+						<Typography>{t('CsErrorLoadingNotices', { message: noticeError.message })}</Typography>
+					</Stack>
+				) : noticeList.length === 0 ? (
+					<Stack className="mobile-cs-empty">
+						<Typography>{t('CsNoNotices')}</Typography>
+					</Stack>
+				) : (
+					noticeList.map((notice: NoticeType, index: number) => (
+						<Stack className="mobile-cs-notice-card" key={notice._id || index}>
+							{notice.noticeCategory === NoticeCategory.TERMS ? (
+								<span className="mobile-cs-notice-badge">
+									<EventIcon />
+									{t('CsTermsLabel')}
+								</span>
+							) : (
+								<span className="mobile-cs-notice-index">{index + 1}</span>
+							)}
+							<Stack className="mobile-cs-notice-body">
+								<Typography className="mobile-cs-notice-title">{notice.noticeTitle}</Typography>
+								<Stack className="mobile-cs-notice-date" direction="row" alignItems="center">
+									<CalendarTodayIcon />
+									<Typography>{moment(notice.createdAt).format('DD.MM.YYYY')}</Typography>
+								</Stack>
+							</Stack>
+						</Stack>
+					))
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack className={'notice-content'}>

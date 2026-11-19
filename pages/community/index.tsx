@@ -154,7 +154,78 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	);
 
 	if (device === 'mobile') {
-		return <h1>{t('CommunityPageMobile')}</h1>;
+		return (
+			<Stack className="mobile-community-page">
+				<Stack className="mobile-section-head">
+					<span className="mobile-eyebrow">{t('CommunityPageTitle')}</span>
+					<h2 className="mobile-title">{t(communityBoardTitleKey(activeCategory))}</h2>
+					<p className="mobile-subtitle">{t(communitySubKey(activeCategory))}</p>
+				</Stack>
+
+				<Stack className="mobile-community-tabs" direction="row">
+					{(['FREE', 'RECOMMEND', 'NEWS', 'HUMOR'] as const).map((cat) => (
+						<button
+							key={cat}
+							type="button"
+							className={`mobile-community-tab ${activeCategory === cat ? 'active' : ''}`}
+							onClick={(e: any) => tabChangeHandler(e, cat)}
+						>
+							{t(`CommunityTab${cat.charAt(0)}${cat.slice(1).toLowerCase()}`)}
+						</button>
+					))}
+				</Stack>
+
+				<button
+					type="button"
+					className="mobile-btn-accent mobile-community-write-btn"
+					onClick={() =>
+						router.push({
+							pathname: '/mypage',
+							query: { category: 'writeArticle' },
+						})
+					}
+				>
+					{t('CommunityWrite')}
+				</button>
+
+				<Stack className="mobile-community-list">
+					{boardArticlesLoading ? (
+						<Stack className="mobile-community-empty">
+							<Typography>{t('CommunityLoadingArticles')}</Typography>
+						</Stack>
+					) : boardArticlesError ? (
+						<Stack className="mobile-community-empty">
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<Typography>{t('CommunityErrorArticles', { message: boardArticlesError.message })}</Typography>
+						</Stack>
+					) : boardArticles.length === 0 ? (
+						<Stack className="mobile-community-empty">
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<Typography>{t('CommunityNoArticles')}</Typography>
+						</Stack>
+					) : (
+						boardArticles.map((boardArticle: BoardArticle) => (
+							<CommunityCard boardArticle={boardArticle} key={boardArticle?._id} />
+						))
+					)}
+				</Stack>
+
+				{totalCount > 0 && (
+					<Stack className="mobile-community-pagination">
+						<Pagination
+							count={Math.ceil(totalCount / (searchCommunity.limit || 10))}
+							page={searchCommunity.page}
+							shape="circular"
+							color="primary"
+							onChange={paginationHandler}
+						/>
+						<Typography className="mobile-community-total">
+							{t('CommunityTotalArticles', { count: totalCount })}
+						</Typography>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="community-list-page">

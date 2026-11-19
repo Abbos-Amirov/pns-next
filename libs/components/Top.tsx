@@ -27,6 +27,11 @@ import { REACT_APP_API_URL } from '../config';
 import NavMegaDrawer, { MegaPanel } from './NavMegaDrawer';
 import { useThemeMode } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import WindowRoundedIcon from '@mui/icons-material/WindowRounded';
+import EngineeringRoundedIcon from '@mui/icons-material/EngineeringRounded';
+import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
+import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
 
 // Custom KakaoTalk Icon
 const KakaoTalkIcon = ({ className }: { className?: string }) => (
@@ -183,33 +188,199 @@ const Top = () => {
 	};
 
 	if (device == 'mobile') {
+		const tabs = [
+			{ href: '/', label: t('Home'), icon: HomeRoundedIcon, match: (p: string) => p === '/' },
+			{ href: '/property', label: t('Products'), icon: WindowRoundedIcon, match: (p: string) => p.startsWith('/property') || p.startsWith('/product') },
+			{ href: '/installer', label: t('Installers'), icon: EngineeringRoundedIcon, match: (p: string) => p.startsWith('/installer') || p.startsWith('/agent') },
+			{ href: '/community?articleCategory=FREE', label: t('Community'), icon: ForumRoundedIcon, match: (p: string) => p.startsWith('/community') },
+			{ href: '/cs', label: t('CS'), icon: SupportAgentRoundedIcon, match: (p: string) => p.startsWith('/cs') },
+		];
+
 		return (
-			<Stack className={'top'} direction="row" alignItems="center" justifyContent="space-around" flexWrap="wrap" sx={{ gap: 1, py: 1 }}>
-				<Link href={'/'}><div>{t('Home')}</div></Link>
-				<Link href={'/property'}><div>{t('Products')}</div></Link>
-				<Link href={'/installer'}><div>{t('Installers')}</div></Link>
-				<Link href={'/community?articleCategory=FREE'}><div>{t('Community')}</div></Link>
-				<Link href={'/cs'}><div>{t('CS')}</div></Link>
-				<Link href={'/about'}>
-					<div className={'top-basic-factory-locs'}>
-						<img src={'/img/nav-overlay/factory-locations-pin.png'} alt="" width={18} height={18} />
-						<span>{t('FactoryLocations')}</span>
-					</div>
-				</Link>
-				<IconButton size="small" onClick={toggleTheme} sx={{ color: '#1a5f9e', p: 0.5 }} title={mode === 'dark' ? 'Light' : 'Dark'}>
-					{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-				</IconButton>
-				<IconButton size="small" onClick={(e:any) => langClick(e)} sx={{ color: '#1a5f9e', p: 0.5 }}>
-					<LanguageIcon />
-				</IconButton>
-				<Menu anchorEl={anchorEl2} open={drop} onClose={langClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} MenuListProps={{ 'aria-labelledby': 'mobile-lang-btn' }}>
-					<MenuItem onClick={() => langChoice('en')} selected={lang === 'en'}>English</MenuItem>
-					<MenuItem onClick={() => langChoice('kr')} selected={lang === 'kr'}>한국어</MenuItem>
-					<MenuItem onClick={() => langChoice('ru')} selected={lang === 'ru'}>Русский</MenuItem>
-					<MenuItem onClick={() => langChoice('zh')} selected={lang === 'zh'}>中文</MenuItem>
-					<MenuItem onClick={() => langChoice('ja')} selected={lang === 'ja'}>日本語</MenuItem>
+			<>
+				<Stack className={'mobile-topbar'} data-theme={mode}>
+					<Link href={'/'} className={'mobile-topbar-brand'}>
+						<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS Window" className={'mobile-topbar-logo'} />
+						<span className={'mobile-topbar-name'}>PNSWINDOW</span>
+					</Link>
+					<Stack className={'mobile-topbar-actions'} direction="row" alignItems="center">
+						<IconButton className={'mobile-topbar-btn'} size="small" onClick={toggleTheme} title={mode === 'dark' ? 'Light' : 'Dark'}>
+							{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+						</IconButton>
+						<IconButton className={'mobile-topbar-btn'} size="small" onClick={(e: any) => langClick(e)}>
+							<LanguageIcon />
+						</IconButton>
+						{user?._id ? (
+							<Link href={'/mypage'} className={'mobile-topbar-avatar'}>
+								<img src={getUserImageSrc(user?.memberImage)} alt={user?.memberNick || t('User')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} />
+							</Link>
+						) : (
+							<IconButton className={'mobile-topbar-btn mobile-topbar-login'} size="small" onClick={() => openAuthModal('login')}>
+								<span>{t('Login')}</span>
+							</IconButton>
+						)}
+						<IconButton className={'mobile-topbar-btn mobile-topbar-burger'} size="small" onClick={openNavOverlay}>
+							<MenuIcon />
+						</IconButton>
+					</Stack>
+				</Stack>
+
+				<Menu anchorEl={anchorEl2} open={drop} onClose={langClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} className={'lang-menu'} MenuListProps={{ 'aria-labelledby': 'mobile-lang-btn' }}>
+					<MenuItem className={'lang-menu-item'} onClick={() => langChoice('en')} selected={lang === 'en'}>English</MenuItem>
+					<MenuItem className={'lang-menu-item'} onClick={() => langChoice('kr')} selected={lang === 'kr'}>한국어</MenuItem>
+					<MenuItem className={'lang-menu-item'} onClick={() => langChoice('ru')} selected={lang === 'ru'}>Русский</MenuItem>
+					<MenuItem className={'lang-menu-item'} onClick={() => langChoice('zh')} selected={lang === 'zh'}>中文</MenuItem>
+					<MenuItem className={'lang-menu-item'} onClick={() => langChoice('ja')} selected={lang === 'ja'}>日本語</MenuItem>
 				</Menu>
-			</Stack>
+
+				<Stack className={'mobile-tabbar'} direction="row" data-theme={mode}>
+					{tabs.map((tab) => {
+						const Icon = tab.icon;
+						const active = tab.match(router.pathname);
+						return (
+							<Link key={tab.href} href={tab.href} className={`mobile-tabbar-item ${active ? 'active' : ''}`}>
+								<Icon className={'mobile-tabbar-icon'} />
+								<span className={'mobile-tabbar-label'}>{tab.label}</span>
+							</Link>
+						);
+					})}
+				</Stack>
+
+				{/* Full-screen Nav Overlay (hamburger menu) — shared markup with desktop */}
+				<Drawer
+					anchor="top"
+					open={navOverlayOpen}
+					onClose={closeNavOverlay}
+					className={'nav-overlay-drawer nav-overlay-mobile'}
+					sx={{
+						zIndex: 1400,
+						'& .MuiDrawer-paper': {
+							width: '100%',
+							maxWidth: '100%',
+							height: 'auto',
+							maxHeight: '86vh',
+							top: 0,
+							left: 0,
+							right: 0,
+							background: mode === 'dark'
+								? 'linear-gradient(180deg, rgba(18, 13, 83, 0.97) 0%, rgba(10, 8, 20, 0.98) 100%)'
+								: 'linear-gradient(180deg, #ffffff 0%, #f4f6fb 100%)',
+							backdropFilter: 'blur(16px)',
+							boxSizing: 'border-box',
+						},
+					}}
+				>
+					<div className={'nav-overlay-panel'} data-theme={mode}>
+						<div className={'nav-overlay-header'}>
+							<img src={mode === 'dark' ? '/img/logo/pns-arched-door-light.svg' : '/img/logo/pns-arched-door.svg'} alt="PNS" className={'nav-overlay-logo'} />
+							<IconButton className={'nav-overlay-close'} onClick={closeNavOverlay} size="large">
+								<CloseIcon />
+							</IconButton>
+						</div>
+						<div className={'nav-overlay-content'}>
+							<div className={'nav-overlay-grid'}>
+								<Link href={'/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/nav-overlay/home.png'} alt={t('Home')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Home')}</span>
+								</Link>
+								<Link href={'/property/window'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/property/menu-product-window.png'} alt={t('Windows')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Windows')}</span>
+								</Link>
+								<Link href={'/property/door'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/property/menu-product-door.png'} alt={t('Doors')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Doors')}</span>
+								</Link>
+								<Link href={'/agent'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/experts/measurers.png'} alt={t('Measurers')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Measurers')}</span>
+								</Link>
+								<Link href={'/installer'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/experts/installers.png'} alt={t('Installers')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Installers')}</span>
+								</Link>
+								<Link href={'/city'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src="/img/nav-overlay/city-aerial.png" alt={t('City')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('City')}</span>
+								</Link>
+								<Link href={'/community'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/nav-overlay/community.png'} alt={t('Community')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Community')}</span>
+								</Link>
+								{user?._id && (
+									<Link href={'/mypage'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+										<div className={'nav-overlay-card-image'}>
+											<img src={getUserImageSrc(user?.memberImage)} alt={t('My Page')} onError={(e) => { (e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }} />
+										</div>
+										<span className={'nav-overlay-card-label'}>{t('My Page')}</span>
+									</Link>
+								)}
+								<Link href={'/about'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/nav-overlay/factory-locations-pin.png'} alt={t('FactoryLocations')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('FactoryLocations')}</span>
+								</Link>
+								<Link href={'/our-services'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/support/our-services.png'} alt={t('OurServices')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('OurServices')}</span>
+								</Link>
+								<Link href={'/cs'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/support/support.png'} alt={t('Support')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('Support')}</span>
+								</Link>
+								<Link href={'/pns-history/'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/contact/contact-hero.png'} alt={t('PnsHistoryNav')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('PnsHistoryNav')}</span>
+								</Link>
+								<Link href={'/repair-maintenance'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/support/our-services.png'} alt={t('RepairMaintenanceService')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('RepairMaintenanceService')}</span>
+								</Link>
+								<Link href={'/about-me'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/support/about-me.png'} alt={t('AboutMe')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('AboutMe')}</span>
+								</Link>
+								<Link href={'/contact-us'} className={'nav-overlay-card'} onClick={closeNavOverlay}>
+									<div className={'nav-overlay-card-image'}>
+										<img src={'/img/support/images.jpeg'} alt={t('ContactUs')} />
+									</div>
+									<span className={'nav-overlay-card-label'}>{t('ContactUs')}</span>
+								</Link>
+							</div>
+						</div>
+						<div className={'nav-overlay-footer'}>
+							<span className={'nav-overlay-tagline'}>{t('Live your view')}</span>
+						</div>
+					</div>
+				</Drawer>
+
+				<NavMegaDrawer panel={megaPanel} onClose={closeMega} mode={mode} />
+			</>
 		);
 	} else {
 		return (

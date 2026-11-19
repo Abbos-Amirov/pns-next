@@ -231,7 +231,145 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>AGENTS PAGE MOBILE</h1>;
+		return (
+			<div className="mobile-agent-list-page">
+				<div className="mobile-section-head mobile-agent-head">
+					<span className="mobile-eyebrow">{t('Experts') || 'EXPERTS'}</span>
+					<h1 className="mobile-title">{t('FindMeasurer') || 'Find a Measurer'}</h1>
+					<p className="mobile-subtitle">
+						{t('AgentListSubtitle') || 'Verified window & door measurers near you'}
+					</p>
+				</div>
+
+				<div className="mobile-agent-toolbar">
+					<div className="mobile-agent-search">
+						<input
+							type="text"
+							placeholder={t('SearchMeasurer') as string}
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									setSearchFilter({
+										...searchFilter,
+										search: { ...searchFilter.search, text: searchText },
+									});
+								}
+							}}
+						/>
+					</div>
+					<button type="button" className="mobile-agent-sort-btn" onClick={sortingClickHandler}>
+						<span>{t(filterSortName)}</span>
+						<KeyboardArrowDownRoundedIcon />
+					</button>
+					<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} className="mobile-agent-sort-menu">
+						<MenuItem onClick={sortingHandler} id="recent" disableRipple>{t('SortRecent')}</MenuItem>
+						<MenuItem onClick={sortingHandler} id="old" disableRipple>{t('SortOldest')}</MenuItem>
+						<MenuItem onClick={sortingHandler} id="likes" disableRipple>{t('Likes')}</MenuItem>
+						<MenuItem onClick={sortingHandler} id="views" disableRipple>{t('Views')}</MenuItem>
+					</Menu>
+				</div>
+
+				<div className="mobile-agent-list">
+					{loading ? (
+						<div className="mobile-agent-state">{t('PropertyLoading') || 'Loading...'}</div>
+					) : error ? (
+						<div className="mobile-agent-state mobile-agent-state-error">
+							{t('PropertyError')}: {error?.message}
+						</div>
+					) : agents?.length === 0 ? (
+						<div className="mobile-agent-state">{t('PropertyNoProducts') || 'No agents found'}</div>
+					) : (
+						agents.map((agent) => {
+							const detailHref = `/agent/detail?agentId=${agent._id}`;
+							const liked = agent?.meLiked?.[0]?.myFavorite;
+							const thumbs = agentLocationImages[agent._id] || [];
+							return (
+								<div key={agent._id} className="mobile-agent-card mobile-card">
+									<Link href={detailHref} className="mobile-agent-card-media">
+										<img src={getAgentImageUrl(agent)} alt={agent?.memberNick || 'Agent'} />
+										<button
+											type="button"
+											className="mobile-agent-like-btn"
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												likeMemberHandler(user, agent._id);
+											}}
+											aria-label={liked ? 'Unlike' : 'Like'}
+										>
+											{liked ? (
+												<FavoriteIcon className="mobile-agent-like-icon liked" />
+											) : (
+												<FavoriteBorderIcon className="mobile-agent-like-icon" />
+											)}
+										</button>
+									</Link>
+									<div className="mobile-agent-card-body">
+										<h3 className="mobile-agent-card-name">
+											{agent?.memberFullName || agent?.memberNick || 'Measurer'}
+										</h3>
+										<span className="mobile-agent-card-role">{agent?.memberType || t('LabelRole')}</span>
+										<p className="mobile-agent-card-desc">{agent?.memberDesc || t('MeasurerDescDefault')}</p>
+
+										<div className="mobile-agent-card-meta-row">
+											<div className="mobile-agent-meta-chip">
+												<span className="mobile-agent-meta-label">{t('Experience')}</span>
+												<span className="mobile-agent-meta-value">{agent?.memberExperience || '—'}</span>
+											</div>
+											<div className="mobile-agent-meta-chip">
+												<span className="mobile-agent-meta-label">{t('Education')}</span>
+												<span className="mobile-agent-meta-value">{agent?.memberEducation || '—'}</span>
+											</div>
+										</div>
+
+										<div className="mobile-agent-card-stats-row">
+											<span className="mobile-agent-stat">
+												<VisibilityIcon className="mobile-agent-stat-icon" /> {agent?.memberViews ?? 0}
+											</span>
+											<span className="mobile-agent-stat">
+												<FavoriteIcon className="mobile-agent-stat-icon" /> {agent?.memberLikes ?? 0}
+											</span>
+											<span className="mobile-agent-stat">{agent?.memberComments ?? 0} {t('Comments')}</span>
+										</div>
+
+										{thumbs.length > 0 && (
+											<div className="mobile-agent-thumbs-row">
+												{thumbs.slice(0, 3).map((src, idx) => (
+													<Link key={idx} href={detailHref} className="mobile-agent-thumb">
+														<img src={src} alt={`Location ${idx + 1}`} />
+													</Link>
+												))}
+											</div>
+										)}
+
+										<Link href={detailHref} className="mobile-agent-view-btn mobile-btn-primary">
+											<RemoveRedEyeIcon sx={{ fontSize: 18 }} />
+											{t('ViewDetails')}
+										</Link>
+									</div>
+								</div>
+							);
+						})
+					)}
+				</div>
+
+				{agents.length > 0 && (
+					<div className="mobile-agent-pagination">
+						<Pagination
+							page={currentPage}
+							count={Math.ceil(total / (searchFilter.limit || 10))}
+							onChange={paginationChangeHandler}
+							shape="circular"
+							color="primary"
+						/>
+						<Typography className="mobile-agent-total">
+							{t('Total') || 'Total'} {total} {t('agent') || 'agent'}{total !== 1 ? 's' : ''}
+						</Typography>
+					</div>
+				)}
+			</div>
+		);
 	}
 
 	return (

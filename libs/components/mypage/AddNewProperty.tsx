@@ -126,7 +126,16 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 	console.log('+insertPropertyData', insertPropertyData);
 
 	if (device === 'mobile') {
-		return <div>ADD NEW PROPERTY MOBILE PAGE</div>;
+		return (
+			<Stack className={'mobile-form-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>Add New Property</Typography>
+				</Stack>
+				<Stack className={'mobile-empty-state'}>
+					<Typography>This section is only available for agent accounts.</Typography>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="add-property-page">

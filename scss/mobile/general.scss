@@ -1,0 +1,574 @@
+/** ==========================================================================
+ * MOBILE SHELL — shared chrome for every mobile page
+ * Sticky top bar + bottom tab bar + full-screen nav overlay + footer.
+ * Design language matches the existing brand: deep indigo gradient
+ * (#120d53 → #16206e → #1a1780) + warm gold/brown accent (#D4A574 / #8b4513).
+ * ========================================================================== */
+
+#mobile-wrap {
+	position: relative;
+	width: 100%;
+	min-height: 100vh;
+	background: #f5f5f5;
+	overflow-x: hidden;
+	padding-bottom: 74px; // room for the fixed bottom tab bar
+
+	#top {
+		position: sticky;
+		top: 0;
+		z-index: 1200;
+	}
+
+	#main {
+		position: relative;
+		min-height: 60vh;
+	}
+
+	// Generic reusable primitives other page partials can lean on
+	.mobile-section {
+		padding: 32px 18px;
+	}
+
+	.mobile-section-head {
+		text-align: center;
+		margin-bottom: 22px;
+
+		.mobile-eyebrow {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 5px 14px;
+			border-radius: 20px;
+			background: rgba(18, 13, 83, 0.08);
+			color: #16206e;
+			font-family: $font;
+			font-size: 10px;
+			font-weight: 700;
+			letter-spacing: 1.2px;
+			text-transform: uppercase;
+			margin-bottom: 10px;
+		}
+
+		.mobile-title {
+			font-family: $font;
+			font-size: 24px;
+			font-weight: 700;
+			color: #181a20;
+			line-height: 1.25;
+			margin: 0 0 6px;
+		}
+
+		.mobile-subtitle {
+			font-family: $font;
+			font-size: 13px;
+			font-weight: 400;
+			color: #6b7280;
+			line-height: 1.5;
+			margin: 0;
+		}
+	}
+
+	.mobile-card {
+		background: #ffffff;
+		border-radius: 16px;
+		box-shadow: 0 6px 24px rgba(18, 13, 83, 0.08);
+		border: 1px solid rgba(18, 13, 83, 0.06);
+	}
+
+	.mobile-btn-primary {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 13px 22px;
+		border-radius: 12px;
+		border: none;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		color: #ffffff;
+		font-family: $font;
+		font-size: 14px;
+		font-weight: 600;
+		box-shadow: 0 8px 20px rgba(18, 13, 83, 0.28);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+		&:active {
+			transform: scale(0.97);
+			box-shadow: 0 4px 12px rgba(18, 13, 83, 0.3);
+		}
+	}
+
+	.mobile-btn-accent {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 13px 22px;
+		border-radius: 12px;
+		border: none;
+		background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+		color: #1a1207;
+		font-family: $font;
+		font-size: 14px;
+		font-weight: 700;
+		box-shadow: 0 8px 20px rgba(139, 69, 19, 0.25);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+		&:active {
+			transform: scale(0.97);
+		}
+	}
+}
+
+/** ---------- Sticky top bar ---------- */
+#mobile-wrap .mobile-topbar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	height: 60px;
+	padding: 0 14px;
+	background: rgba(255, 255, 255, 0.86);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border-bottom: 1px solid rgba(18, 13, 83, 0.08);
+	box-shadow: 0 2px 16px rgba(18, 13, 83, 0.06);
+
+	&[data-theme='dark'] {
+		background: rgba(13, 13, 13, 0.86);
+		border-bottom-color: rgba(212, 165, 116, 0.14);
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+	}
+
+	.mobile-topbar-brand {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		text-decoration: none;
+		min-width: 0;
+
+		.mobile-topbar-logo {
+			height: 30px;
+			width: auto;
+			object-fit: contain;
+			flex-shrink: 0;
+		}
+
+		.mobile-topbar-name {
+			font-family: $font;
+			font-size: 14px;
+			font-weight: 800;
+			letter-spacing: 0.4px;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+
+	&[data-theme='dark'] .mobile-topbar-brand .mobile-topbar-name {
+		background: linear-gradient(135deg, #d4a574 0%, #f0cb98 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.mobile-topbar-actions {
+		gap: 6px;
+		flex-shrink: 0;
+	}
+
+	.mobile-topbar-btn {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		background: rgba(18, 13, 83, 0.06);
+		color: #16206e;
+
+		svg {
+			font-size: 19px;
+		}
+
+		&.mobile-topbar-login {
+			width: auto;
+			padding: 0 12px;
+			border-radius: 18px;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			span {
+				font-family: $font;
+				font-size: 12px;
+				font-weight: 700;
+				color: #ffffff;
+				text-transform: uppercase;
+				letter-spacing: 0.4px;
+			}
+		}
+
+		&.mobile-topbar-burger {
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			color: #ffffff;
+		}
+	}
+
+	&[data-theme='dark'] .mobile-topbar-btn {
+		background: rgba(212, 165, 116, 0.14);
+		color: #d4a574;
+
+		&.mobile-topbar-login,
+		&.mobile-topbar-burger {
+			background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+			color: #1a1207;
+		}
+	}
+
+	.mobile-topbar-avatar {
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 2px solid rgba(18, 13, 83, 0.18);
+		flex-shrink: 0;
+		display: block;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&[data-theme='dark'] .mobile-topbar-avatar {
+		border-color: rgba(212, 165, 116, 0.4);
+	}
+}
+
+/** ---------- Fixed bottom tab bar ---------- */
+#mobile-wrap .mobile-tabbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1300;
+	height: 68px;
+	padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+	background: rgba(255, 255, 255, 0.92);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border-top: 1px solid rgba(18, 13, 83, 0.08);
+	box-shadow: 0 -6px 24px rgba(18, 13, 83, 0.1);
+	display: flex;
+	align-items: stretch;
+	justify-content: space-between;
+
+	&[data-theme='dark'] {
+		background: rgba(13, 13, 13, 0.94);
+		border-top-color: rgba(212, 165, 116, 0.14);
+		box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.4);
+	}
+
+	.mobile-tabbar-item {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 3px;
+		text-decoration: none;
+		border-radius: 12px;
+		margin: 0 2px;
+		transition: background 0.2s ease, transform 0.2s ease;
+
+		.mobile-tabbar-icon {
+			font-size: 21px;
+			color: #9599a8;
+			transition: color 0.2s ease;
+		}
+
+		.mobile-tabbar-label {
+			font-family: $font;
+			font-size: 10px;
+			font-weight: 600;
+			color: #9599a8;
+			letter-spacing: 0.2px;
+			transition: color 0.2s ease;
+		}
+
+		&.active {
+			background: rgba(18, 13, 83, 0.07);
+			transform: translateY(-2px);
+
+			.mobile-tabbar-icon,
+			.mobile-tabbar-label {
+				color: #16206e;
+			}
+		}
+
+		&:active {
+			transform: scale(0.94);
+		}
+	}
+
+	&[data-theme='dark'] .mobile-tabbar-item {
+		.mobile-tabbar-icon,
+		.mobile-tabbar-label {
+			color: #6b7280;
+		}
+
+		&.active {
+			background: rgba(212, 165, 116, 0.14);
+
+			.mobile-tabbar-icon,
+			.mobile-tabbar-label {
+				color: #d4a574;
+			}
+		}
+	}
+}
+
+/** ---------- Full-screen nav overlay — mobile-sized grid ---------- */
+@media (max-width: 768px) {
+	.nav-overlay-mobile .nav-overlay-panel {
+		padding: 18px 16px 24px;
+	}
+
+	.nav-overlay-mobile .nav-overlay-header {
+		margin-bottom: 20px;
+
+		.nav-overlay-logo {
+			height: 40px;
+		}
+	}
+
+	.nav-overlay-mobile .nav-overlay-content {
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.nav-overlay-mobile .nav-overlay-grid {
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: unset;
+		gap: 10px;
+	}
+
+	.nav-overlay-mobile .nav-overlay-card-image {
+		width: 100%;
+		height: 72px;
+		margin-top: 0;
+		border-radius: 8px;
+	}
+
+	.nav-overlay-mobile .nav-overlay-card-label {
+		padding: 8px 4px;
+		font-size: 9.5px !important;
+		letter-spacing: 0.3px !important;
+	}
+
+	.nav-overlay-mobile .nav-overlay-footer {
+		margin-top: 14px;
+	}
+}
+
+/** ---------- Footer ---------- */
+#mobile-wrap {
+	#footer {
+		padding-bottom: 8px;
+	}
+
+	.footer-container {
+		position: relative;
+		width: 100%;
+		overflow: hidden;
+		background: #14131f;
+
+		.watermark-text {
+			display: none;
+		}
+
+		.background-text {
+			display: none;
+		}
+
+		.footer-content-box {
+			position: relative;
+			z-index: 2;
+			padding: 40px 20px 24px;
+
+			.blue-line {
+				height: 4px;
+				width: 56px;
+				border-radius: 4px;
+				background: linear-gradient(90deg, #d4a574, #16206e);
+				margin-bottom: 24px;
+			}
+
+			.main-content {
+				display: flex;
+				flex-direction: column;
+				gap: 30px;
+			}
+
+			.left-section {
+				display: flex;
+				flex-direction: column;
+				gap: 26px;
+
+				.logo-section {
+					.logo-wrapper {
+						width: 46px;
+						height: 46px;
+						border-radius: 12px;
+						background: rgba(212, 165, 116, 0.12);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						margin-bottom: 14px;
+
+						img {
+							width: 28px;
+							height: 28px;
+							filter: brightness(0) invert(1);
+						}
+					}
+
+					.brand-name {
+						font-family: $font;
+						font-size: 20px;
+						font-weight: 800;
+						color: #ffffff;
+						margin: 0 0 8px;
+						letter-spacing: 0.4px;
+					}
+
+					.description {
+						font-family: $font;
+						font-size: 13px;
+						line-height: 1.6;
+						color: rgba(255, 255, 255, 0.6);
+						margin: 0;
+						max-width: 320px;
+					}
+				}
+
+				.navigation-columns {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: 20px 12px;
+
+					.nav-column {
+						display: flex;
+						flex-direction: column;
+						gap: 12px;
+
+						a,
+						span {
+							font-family: $font;
+							font-size: 12.5px;
+							font-weight: 500;
+							color: rgba(255, 255, 255, 0.72);
+							text-decoration: none;
+						}
+					}
+				}
+			}
+
+			.right-section {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				padding-top: 20px;
+				border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+				.contact-info {
+					display: flex;
+					flex-direction: column;
+					gap: 10px;
+
+					.contact-item {
+						display: flex;
+						align-items: center;
+						gap: 10px;
+
+						.contact-icon {
+							width: 32px;
+							height: 32px;
+							border-radius: 50%;
+							background: rgba(212, 165, 116, 0.14);
+							color: #d4a574;
+							padding: 7px;
+							box-sizing: border-box;
+						}
+
+						a {
+							font-family: $font;
+							font-size: 13px;
+							color: rgba(255, 255, 255, 0.85);
+							text-decoration: none;
+						}
+					}
+				}
+
+				.map-placeholder {
+					width: 100%;
+					height: 150px;
+					border-radius: 12px;
+					overflow: hidden;
+					border: 1px solid rgba(255, 255, 255, 0.1);
+				}
+
+				.social-icons {
+					display: flex;
+					gap: 10px;
+
+					.social-icon {
+						width: 36px;
+						height: 36px;
+						border-radius: 50%;
+						background: rgba(255, 255, 255, 0.06);
+						color: rgba(255, 255, 255, 0.85);
+						padding: 8px;
+						box-sizing: border-box;
+					}
+				}
+			}
+		}
+
+		.copyright {
+			margin-top: 26px;
+			padding-top: 18px;
+			border-top: 1px solid rgba(255, 255, 255, 0.08);
+			text-align: center;
+
+			span {
+				font-family: $font;
+				font-size: 11px;
+				color: rgba(255, 255, 255, 0.45);
+			}
+		}
+	}
+}
+
+/** ---------- Floating social links (Blog / PNS / YouTube / KakaoTalk / Naver) ----------
+ * Shared with #pc-wrap (scss/pc/main.scss); shrink + reposition here so the 5-button
+ * stack clears the fixed bottom tab bar (68px) and the AIChat pill (bottom:28px, h:56px). */
+#mobile-wrap .social-links-floating {
+	bottom: 150px;
+	right: 10px;
+	gap: 8px;
+
+	.social-floating-btn {
+		width: 40px;
+		height: 40px;
+
+		svg {
+			width: 18px;
+			height: 18px;
+		}
+	}
+
+	.social-floating-blog-text {
+		font-size: 10px;
+	}
+}

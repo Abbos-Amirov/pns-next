@@ -156,7 +156,41 @@ const CommunityCard = (props: CommunityCardProps) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>COMMUNITY CARD MOBILE</div>;
+		return (
+			<Stack className="mobile-community-card" onClick={(e: any) => chooseArticleHandler(e, boardArticle)}>
+				<div className="mobile-community-card-img" style={{ backgroundImage: `url(${imagePath})` }}>
+					<span className="mobile-community-card-date">
+						<Moment format={'MMM'}>{boardArticle?.createdAt}</Moment>
+						<b>
+							<Moment format={'DD'}>{boardArticle?.createdAt}</Moment>
+						</b>
+					</span>
+				</div>
+				<Stack className="mobile-community-card-body">
+					<Typography className="mobile-community-card-title">{boardArticle?.articleTitle}</Typography>
+					<Stack className="mobile-community-card-meta" direction="row" alignItems="center">
+						<Typography
+							className="mobile-community-card-author"
+							onClick={(e: any) => {
+								e.stopPropagation();
+								goMemberPage(boardArticle?.memberData?._id as string);
+							}}
+						>
+							{boardArticle?.memberData?.memberNick}
+						</Typography>
+						<span className="mobile-community-card-dot" />
+						<span className="mobile-community-card-stat">
+							<RemoveRedEyeIcon />
+							{boardArticle?.articleViews || 0}
+						</span>
+						<IconButton className="mobile-community-card-like" onClick={likeArticleHandler} disabled={likeLoading}>
+							{isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+						</IconButton>
+						<span className="mobile-community-card-stat">{likesCount}</span>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack

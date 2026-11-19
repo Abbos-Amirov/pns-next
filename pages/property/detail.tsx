@@ -387,7 +387,298 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>PROPERTY DETAIL PAGE</div>;
+		if (productLoading) {
+			return (
+				<div className={'property-detail-mobile-state'}>
+					<CircularProgress size={30} sx={{ color: '#16206e' }} />
+					<Typography>Loading product...</Typography>
+				</div>
+			);
+		}
+
+		if (productError || !property) {
+			return (
+				<div className={'property-detail-mobile-state'}>
+					<Typography color={'error'}>
+						{productError ? `Error loading product: ${productError.message}` : 'Product not found!'}
+					</Typography>
+				</div>
+			);
+		}
+
+		const mobileGalleryImages = [...(property?.productImages || []), ...PRODUCT_DETAIL_EXTRA_THUMBNAILS];
+		const mobileMainImage = resolveProductGallerySrc(slideImage || property?.productImages?.[0]);
+
+		return (
+			<div className={'property-detail-mobile-page'}>
+				<div className={'pdm-gallery'}>
+					<div className={'pdm-main-image'}>
+						<img src={mobileMainImage} alt={property?.productTitle} />
+						<button
+							type={'button'}
+							className={`pdm-like-btn ${isLiked ? 'liked' : ''}`}
+							onClick={() => likePropertyHandler(user, property?._id)}
+						>
+							{isLiked ? <FavoriteIcon fontSize={'small'} /> : <FavoriteBorderIcon fontSize={'small'} />}
+						</button>
+					</div>
+					<div className={'pdm-thumbs'}>
+						{mobileGalleryImages.map((subImg: string, index: number) => (
+							<div
+								key={`${subImg}-${index}`}
+								className={`pdm-thumb ${slideImage === subImg ? 'active' : ''}`}
+								onClick={() => changeImageHandler(subImg)}
+							>
+								<img src={resolveProductGallerySrc(subImg)} alt={'sub-image'} />
+							</div>
+						))}
+					</div>
+				</div>
+
+				<div className={'pdm-header mobile-section'}>
+					<Typography className={'pdm-title'}>{property?.productTitle}</Typography>
+					<div className={'pdm-meta-row'}>
+						<span className={'pdm-location'}>{property?.productLocation}</span>
+						<span className={'pdm-dot'} />
+						<span className={'pdm-date'}>{moment().diff(property?.createdAt, 'days')} days ago</span>
+					</div>
+					<div className={'pdm-price-row'}>
+						<span className={'pdm-price'}>${formatterStr(property?.productPrice)}</span>
+						<div className={'pdm-stats'}>
+							<span>
+								<RemoveRedEyeIcon fontSize={'inherit'} /> {property?.productViews}
+							</span>
+							<span>
+								<FavoriteIcon fontSize={'inherit'} /> {property?.productLikes}
+							</span>
+						</div>
+					</div>
+
+					<div className={'pdm-spec-grid'}>
+						<div className={'pdm-spec-item'}>
+							<HeightIcon className={'pdm-spec-icon'} />
+							<div className={'pdm-spec-text'}>
+								<span className={'label'}>Height</span>
+								<span className={'value'}>
+									{(property as any)?.productHeight ?? 'N/A'} {(property as any)?.productHeight ? 'cm' : ''}
+								</span>
+							</div>
+						</div>
+						<div className={'pdm-spec-item'}>
+							<AspectRatioIcon className={'pdm-spec-icon'} sx={{ transform: 'rotate(90deg)' }} />
+							<div className={'pdm-spec-text'}>
+								<span className={'label'}>Width</span>
+								<span className={'value'}>
+									{(property as any)?.productWidth ?? 'N/A'} {(property as any)?.productWidth ? 'cm' : ''}
+								</span>
+							</div>
+						</div>
+						<div className={'pdm-spec-item'}>
+							<ConstructionIcon className={'pdm-spec-icon'} />
+							<div className={'pdm-spec-text'}>
+								<span className={'label'}>Material</span>
+								<span className={'value'}>{property?.productMaterial || property?.productType || 'N/A'}</span>
+							</div>
+						</div>
+						<div className={'pdm-spec-item'}>
+							<CategoryIcon className={'pdm-spec-icon'} />
+							<div className={'pdm-spec-text'}>
+								<span className={'label'}>Category</span>
+								<span className={'value'}>{(property as any)?.productCategory || 'N/A'}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className={'pdm-desc-section mobile-section'}>
+					<Typography className={'pdm-section-title'}>Product Description</Typography>
+					<Typography className={'pdm-desc-text'}>{property?.productDesc || 'No Description!'}</Typography>
+				</div>
+
+				<div className={'pdm-details-section mobile-section'}>
+					<Typography className={'pdm-section-title'}>Product Details</Typography>
+					<div className={'pdm-details-grid'}>
+						<div className={'pdm-detail-chip'}>
+							<span>Price</span>
+							<strong>${formatterStr(property?.productPrice)}</strong>
+						</div>
+						{(property as any)?.productHeight && (
+							<div className={'pdm-detail-chip'}>
+								<span>Height</span>
+								<strong>{(property as any).productHeight} cm</strong>
+							</div>
+						)}
+						{(property as any)?.productWidth && (
+							<div className={'pdm-detail-chip'}>
+								<span>Width</span>
+								<strong>{(property as any).productWidth} cm</strong>
+							</div>
+						)}
+						{(property as any)?.productColor && (
+							<div className={'pdm-detail-chip'}>
+								<span>Color</span>
+								<strong>{(property as any).productColor}</strong>
+							</div>
+						)}
+						{(property as any)?.productMaterial && (
+							<div className={'pdm-detail-chip'}>
+								<span>Material</span>
+								<strong>{(property as any).productMaterial}</strong>
+							</div>
+						)}
+						{(property as any)?.productGlassType && (
+							<div className={'pdm-detail-chip'}>
+								<span>Glass Type</span>
+								<strong>{(property as any).productGlassType}</strong>
+							</div>
+						)}
+						{(property as any)?.productOpenType && (
+							<div className={'pdm-detail-chip'}>
+								<span>Open Type</span>
+								<strong>{(property as any).productOpenType}</strong>
+							</div>
+						)}
+						{property?.productType && (
+							<div className={'pdm-detail-chip'}>
+								<span>Product Type</span>
+								<strong>{property.productType}</strong>
+							</div>
+						)}
+					</div>
+				</div>
+
+				{property && (
+					<div className={'pdm-series-section mobile-section'}>
+						<Typography className={'pdm-section-title'}>{seriesTitle}</Typography>
+						<Typography className={'pdm-series-heading'}>Classical appeal, modern solutions</Typography>
+						<Typography className={'pdm-series-text'}>
+							Our systems combine timeless design with energy-efficient performance. Refined profiles, durable
+							hardware, and finish options help you match both interior comfort and exterior style.
+						</Typography>
+						<div
+							className={'pdm-series-toggle'}
+							role={'button'}
+							tabIndex={0}
+							onClick={() => setSeriesSpecsOpen((v) => !v)}
+							onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									setSeriesSpecsOpen((v) => !v);
+								}
+							}}
+						>
+							<span>Specifications</span>
+							<AddIcon
+								className={'pdm-series-toggle-icon'}
+								sx={{ transform: seriesSpecsOpen ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s ease' }}
+							/>
+						</div>
+						<Collapse in={seriesSpecsOpen}>
+							<div className={'pdm-series-specs-body'}>
+								{(property as any)?.productHeight != null && (
+									<Typography className={'pdm-series-spec-line'}>
+										<strong>Height:</strong> {(property as any).productHeight} cm
+									</Typography>
+								)}
+								{(property as any)?.productWidth != null && (
+									<Typography className={'pdm-series-spec-line'}>
+										<strong>Width:</strong> {(property as any).productWidth} cm
+									</Typography>
+								)}
+								{property?.productMaterial && (
+									<Typography className={'pdm-series-spec-line'}>
+										<strong>Material:</strong> {property.productMaterial}
+									</Typography>
+								)}
+								{(property as any)?.productGlassType && (
+									<Typography className={'pdm-series-spec-line'}>
+										<strong>Glass:</strong> {(property as any).productGlassType}
+									</Typography>
+								)}
+								{(property as any)?.productOpenType && (
+									<Typography className={'pdm-series-spec-line'}>
+										<strong>Open type:</strong> {(property as any).productOpenType}
+									</Typography>
+								)}
+							</div>
+						</Collapse>
+
+						<div className={'pdm-series-scroll'}>
+							{seriesLoading && seriesProducts.length === 0 ? (
+								<div className={'pdm-series-loading'}>
+									<CircularProgress size={28} sx={{ color: '#16206e' }} />
+								</div>
+							) : seriesProducts.length === 0 ? (
+								<Typography className={'pdm-series-empty'}>No other products in this series yet.</Typography>
+							) : (
+								seriesProducts.map((p: ProductDetail) => {
+									const thumb = p.productImages?.[0];
+									return (
+										<Link href={`/property/detail?id=${p._id}`} className={'pdm-series-card'} key={p._id}>
+											<div className={'pdm-series-card-img'}>
+												<img src={resolveProductGallerySrc(thumb)} alt={p.productTitle} />
+											</div>
+											<Typography className={'pdm-series-card-title'}>{p.productTitle}</Typography>
+										</Link>
+									);
+								})
+							)}
+						</div>
+					</div>
+				)}
+
+				<div className={'pdm-review-form-section mobile-section'}>
+					<Typography className={'pdm-section-title'}>Leave A Review</Typography>
+					<textarea
+						className={'pdm-review-textarea'}
+						placeholder={'Write your review...'}
+						onChange={({ target: { value } }: any) => {
+							setInsertCommentData({ ...insertCommentData, commentContent: value });
+						}}
+						value={insertCommentData.commentContent}
+					/>
+					<button
+						type={'button'}
+						className={'pdm-review-submit mobile-btn-primary'}
+						onClick={createCommentHandler}
+						disabled={createCommentLoading || !user?._id || insertCommentData.commentContent.trim() === ''}
+					>
+						Submit Review
+					</button>
+				</div>
+
+				<div className={'pdm-reviews-section mobile-section'}>
+					<div className={'pdm-reviews-head'}>
+						<Typography>{commentTotal} reviews</Typography>
+					</div>
+					<div className={'pdm-reviews-list'}>
+						{commentsLoading ? (
+							<Typography className={'pdm-reviews-msg'}>Loading reviews...</Typography>
+						) : commentsError ? (
+							<Typography className={'pdm-reviews-msg'}>Error loading reviews: {commentsError.message}</Typography>
+						) : propertyComments.length === 0 ? (
+							<Typography className={'pdm-reviews-msg'}>No reviews yet. Be the first to leave a review!</Typography>
+						) : (
+							<>
+								{propertyComments?.map((comment: Comment) => (
+									<Review comment={comment} key={comment?._id} />
+								))}
+								<div className={'pdm-reviews-pagination'}>
+									<MuiPagination
+										page={commentInquiry.page}
+										count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
+										onChange={commentPaginationChangeHandler}
+										shape={'circular'}
+										color={'primary'}
+										size={'small'}
+									/>
+								</div>
+							</>
+						)}
+					</div>
+				</div>
+			</div>
+		);
 	} else {
 		// Show loading state
 		if (productLoading) {

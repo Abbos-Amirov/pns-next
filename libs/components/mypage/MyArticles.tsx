@@ -81,7 +81,64 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	};
 
 	if (device === 'mobile') {
-		return <>ARTICLE PAGE MOBILE</>;
+		return (
+			<Stack className={'mobile-myarticles-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>My Articles</Typography>
+					{totalCount > 0 && <Typography className={'mobile-mypage-tab-count'}>{totalCount}</Typography>}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading articles...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Error loading articles</Typography>
+					</Stack>
+				) : boardArticles?.length > 0 ? (
+					<>
+						<Stack className={'mobile-articles-list'}>
+							{boardArticles.map((boardArticle: BoardArticle) => {
+								const imagePath = boardArticle?.articleImage
+									? boardArticle.articleImage.startsWith('http')
+										? boardArticle.articleImage
+										: boardArticle.articleImage.startsWith('/img/')
+										? boardArticle.articleImage
+										: `${process.env.REACT_APP_API_URL}/${boardArticle.articleImage}`
+									: '/img/community/communityImg.png';
+								return (
+									<div className={'mobile-article-card'} key={boardArticle._id}>
+										<div className={'mobile-article-card-img'} style={{ backgroundImage: `url(${imagePath})` }} />
+										<div className={'mobile-article-card-body'}>
+											<Typography className={'mobile-article-card-title'}>{boardArticle?.articleTitle}</Typography>
+											<Stack className={'mobile-article-card-meta'} direction={'row'}>
+												<span>{boardArticle?.articleViews ?? 0} views</span>
+												<span>{boardArticle?.articleLikes ?? 0} likes</span>
+											</Stack>
+										</div>
+									</div>
+								);
+							})}
+						</Stack>
+						<Stack className={'mobile-pagination'}>
+							<Pagination
+								count={Math.max(1, Math.ceil((totalCount || boardArticles.length) / searchCommunity.limit))}
+								page={searchCommunity.page}
+								shape="circular"
+								color="primary"
+								onChange={paginationHandler}
+							/>
+						</Stack>
+					</>
+				) : (
+					<Stack className={'mobile-empty-state'}>
+						<ArticleIcon />
+						<Typography>No Articles Found</Typography>
+						<Typography className={'mobile-empty-hint'}>You haven't published any articles yet.</Typography>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else
 		return (
 			<Box component={'div'} className={'my-articles-page'}>

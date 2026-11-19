@@ -118,27 +118,27 @@ const ProductIndexPage: NextPage = () => {
 
 	if (loading) {
 		return (
-			<div style={styles.page}>
-				<div style={styles.loading}>Loading products...</div>
+			<div id="product-index-page" style={styles.page}>
+				<div style={styles.loading} className={'product-mobile-loading'}>Loading products...</div>
 			</div>
 		);
 	}
 
 	if (products.length === 0) {
 		return (
-			<div style={styles.page}>
-				<div style={styles.loading}>No products found.</div>
+			<div id="product-index-page" style={styles.page}>
+				<div style={styles.loading} className={'product-mobile-loading'}>No products found.</div>
 			</div>
 		);
 	}
 
 	return (
 		<div id="product-index-page" style={styles.page}>
-			<div style={styles.wrapper}>
+			<div style={styles.wrapper} className={'product-mobile-wrapper'}>
 				{/* CHAP: Sticky stacked images - scroll qilganda taxlanadi/ochiladi */}
-				<aside style={styles.left}>
-					<div style={styles.stickyBox}>
-						<div style={styles.stackFrame}>
+				<aside style={styles.left} className={'product-mobile-aside'}>
+					<div style={styles.stickyBox} className={'product-mobile-stickybox'}>
+						<div style={styles.stackFrame} className={'product-mobile-stackframe'}>
 							{products.map((p, i) => {
 								const diff = i - activeIndex;
 								const translateY = diff === 0 ? 0 : diff < 0 ? diff * 18 : diff * 28;
@@ -149,6 +149,7 @@ const ProductIndexPage: NextPage = () => {
 								return (
 									<div
 										key={p.id}
+										className={'product-mobile-card'}
 										style={{
 											...styles.card,
 											transform: `translateY(${translateY}px) scale(${scale})`,
@@ -158,20 +159,21 @@ const ProductIndexPage: NextPage = () => {
 										}}
 										aria-hidden={diff !== 0}
 									>
-										<img src={p.image} alt={p.title} style={styles.image} />
-										<div style={styles.cardOverlay}>
-											<div style={styles.badge}>{String(i + 1).padStart(2, '0')}</div>
-											<div style={styles.cardTitle}>{p.title}</div>
-											<div style={styles.cardSub}>{p.subtitle}</div>
+										<img src={p.image} alt={p.title} style={styles.image} className={'product-mobile-card-img'} />
+										<div style={styles.cardOverlay} className={'product-mobile-card-overlay'}>
+											<div style={styles.badge} className={'product-mobile-card-badge'}>{String(i + 1).padStart(2, '0')}</div>
+											<div style={styles.cardTitle} className={'product-mobile-card-title'}>{p.title}</div>
+											<div style={styles.cardSub} className={'product-mobile-card-sub'}>{p.subtitle}</div>
 										</div>
 									</div>
 								);
 							})}
 						</div>
-						<div style={styles.dots}>
+						<div style={styles.dots} className={'product-mobile-dots'}>
 							{products.map((_, i) => (
 								<span
 									key={i}
+									className={'product-mobile-dot'}
 									style={{
 										...styles.dot,
 										opacity: i === activeIndex ? 1 : 0.35,
@@ -184,34 +186,40 @@ const ProductIndexPage: NextPage = () => {
 				</aside>
 
 				{/* O'NG: Mahsulot ma'lumotlari - scroll qilganda yangilanadi */}
-				<main style={styles.right}>
+				<main style={styles.right} className={'product-mobile-main'}>
 					{products.map((p, i) => (
 						<section
 							key={p.id}
 							data-index={i}
 							ref={(el) => { sectionRefs.current[i] = el; }}
 							style={styles.section}
+							className={'product-mobile-section'}
 						>
-							<div style={styles.kicker}>PRODUCT {String(i + 1).padStart(2, '0')}</div>
-							<h2 style={styles.h2}>{p.title}</h2>
-							<div style={styles.subtitle}>{p.subtitle}</div>
-							<p style={styles.desc}>{p.description}</p>
+							{/* Mobile-only inline photo (hidden on desktop, the sticky stack covers desktop) */}
+							<div className={'product-mobile-section-photo'}>
+								<img src={p.image} alt={p.title} />
+							</div>
+							<div style={styles.kicker} className={'product-mobile-kicker'}>PRODUCT {String(i + 1).padStart(2, '0')}</div>
+							<h2 style={styles.h2} className={'product-mobile-h2'}>{p.title}</h2>
+							<div style={styles.subtitle} className={'product-mobile-subtitle'}>{p.subtitle}</div>
+							<p style={styles.desc} className={'product-mobile-desc'}>{p.description}</p>
 							{p.price != null && (
-								<div style={styles.price}>${p.price.toLocaleString()}</div>
+								<div style={styles.price} className={'product-mobile-price'}>${p.price.toLocaleString()}</div>
 							)}
 							{p.features.length > 0 && (
-								<div style={styles.featureBox}>
-									<div style={styles.featureTitle}>Key Features</div>
-									<ul style={styles.ul}>
+								<div style={styles.featureBox} className={'product-mobile-feature-box'}>
+									<div style={styles.featureTitle} className={'product-mobile-feature-title'}>Key Features</div>
+									<ul style={styles.ul} className={'product-mobile-ul'}>
 										{p.features.map((f) => (
-											<li key={f} style={styles.li}>{f}</li>
+											<li key={f} style={styles.li} className={'product-mobile-li'}>{f}</li>
 										))}
 									</ul>
 								</div>
 							)}
-							<div style={styles.ctaRow}>
+							<div style={styles.ctaRow} className={'product-mobile-cta-row'}>
 								<button
 									style={styles.primaryBtn}
+									className={'product-mobile-primary-btn'}
 									onClick={() => router.push(`/property/detail?id=${p.id}`)}
 								>
 									View Details

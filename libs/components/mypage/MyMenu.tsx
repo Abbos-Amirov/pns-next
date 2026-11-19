@@ -30,7 +30,148 @@ const MyMenu = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>MY MENU</div>;
+		return (
+			<Stack className={'mobile-mypage-menu'}>
+				<Stack className={'mobile-mypage-profile-card'}>
+					<Box component={'div'} className={'mobile-mypage-avatar'}>
+						<img
+							src={user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+							alt={'member-photo'}
+						/>
+					</Box>
+					<Stack className={'mobile-mypage-info'}>
+						<Typography className={'mobile-mypage-name'}>{user?.memberNick || t('User')}</Typography>
+						<Box component={'div'} className={'mobile-mypage-phone'}>
+							<img src={'/img/icons/call.svg'} alt={'icon'} />
+							<Typography>{user?.memberPhone || t('MyPageNoPhone')}</Typography>
+						</Box>
+					</Stack>
+					<Stack className={'mobile-mypage-side'}>
+						{user?.memberType === 'ADMIN' ? (
+							<a href="/_admin/users" target={'_blank'} rel={'noreferrer'}>
+								<Typography className={'mobile-mypage-badge'}>{user?.memberType}</Typography>
+							</a>
+						) : (
+							<Typography className={'mobile-mypage-badge'}>{user?.memberType || 'USER'}</Typography>
+						)}
+						<IconButton className={'mobile-mypage-logout'} onClick={logoutHandler}>
+							<img src={'/img/icons/logout.svg'} alt={'logout'} />
+						</IconButton>
+					</Stack>
+				</Stack>
+
+				<Stack className={'mobile-mypage-tabs'} direction={'row'}>
+					{user.memberType === 'AGENT' && (
+						<>
+							<Link
+								href={{ pathname: '/mypage', query: { category: 'addProperty' } }}
+								scroll={false}
+								className={`mobile-mypage-tab ${pathname === 'addProperty' ? 'active' : ''}`}
+							>
+								<img src={pathname === 'addProperty' ? '/img/icons/whiteTab.svg' : '/img/icons/newTab.svg'} alt={'icon'} />
+								<Typography>{t('MyPageAddProperty')}</Typography>
+							</Link>
+							<Link
+								href={{ pathname: '/mypage', query: { category: 'myProperties' } }}
+								scroll={false}
+								className={`mobile-mypage-tab ${pathname === 'myProperties' ? 'active' : ''}`}
+							>
+								<img src={pathname === 'myProperties' ? '/img/icons/homeWhite.svg' : '/img/icons/home.svg'} alt={'icon'} />
+								<Typography>{t('MyPageMyProperties')}</Typography>
+							</Link>
+						</>
+					)}
+					{user.memberType === 'MEASURER' && (
+						<>
+							<Link
+								href={{ pathname: '/mypage', query: { category: 'myLocations' } }}
+								scroll={false}
+								className={`mobile-mypage-tab ${pathname === 'myLocations' ? 'active' : ''}`}
+							>
+								<img src={pathname === 'myLocations' ? '/img/icons/homeWhite.svg' : '/img/icons/home.svg'} alt={'icon'} />
+								<Typography>{t('MyPageMyLocations')}</Typography>
+							</Link>
+							<Link
+								href={{ pathname: '/mypage', query: { category: 'addLocation' } }}
+								scroll={false}
+								className={`mobile-mypage-tab ${pathname === 'addLocation' ? 'active' : ''}`}
+							>
+								<img src={pathname === 'addLocation' ? '/img/icons/whiteTab.svg' : '/img/icons/newTab.svg'} alt={'icon'} />
+								<Typography>{t('MyPageAddLocation')}</Typography>
+							</Link>
+						</>
+					)}
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'myFavorites' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'myFavorites' ? 'active' : ''}`}
+					>
+						<img src={pathname === 'myFavorites' ? '/img/icons/likeWhite.svg' : '/img/icons/like.svg'} alt={'icon'} />
+						<Typography>{t('MyPageMyFavorites')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'recentlyVisited' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'recentlyVisited' ? 'active' : ''}`}
+					>
+						<img src={pathname === 'recentlyVisited' ? '/img/icons/searchWhite.svg' : '/img/icons/search.svg'} alt={'icon'} />
+						<Typography>{t('MyPageRecentlyVisited')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'followers' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'followers' ? 'active' : ''}`}
+					>
+						<svg fill={pathname === 'followers' ? '#ffffff' : '#120d53'} height="18px" width="18px" viewBox="0 0 328 328">
+							<g>
+								<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749 S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
+								<path d="M217.394,262.357c2.929,2.928,6.768,4.393,10.606,4.393c3.839,0,7.678-1.465,10.607-4.394 c5.857-5.858,5.857-15.356-0.001-21.214l-19.393-19.391l19.395-19.396c5.857-5.858,5.857-15.356-0.001-21.214 c-5.858-5.857-15.356-5.856-21.214,0.001l-30,30.002c-2.813,2.814-4.393,6.629-4.393,10.607c0,3.979,1.58,7.794,4.394,10.607 L217.394,262.357z" />
+								<path d="M15,286.75h125.596c19.246,24.348,49.031,40,82.404,40c57.896,0,105-47.103,105-105 c0-57.896-47.104-105-105-105c-34.488,0-65.145,16.716-84.297,42.47c-7.764-1.628-15.695-2.47-23.703-2.47 c-63.411,0-115,51.589-115,115C0,280.034,6.716,286.75,15,286.75z M223,146.75c41.355,0,75,33.645,75,75s-33.645,75-75,75 s-75-33.645-75-75S181.644,146.75,223,146.75z" />
+							</g>
+						</svg>
+						<Typography>{t('MyPageMyFollowers')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'followings' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'followings' ? 'active' : ''}`}
+					>
+						<svg fill={pathname === 'followings' ? '#ffffff' : '#120d53'} height="18px" width="18px" viewBox="0 0 328 328">
+							<g>
+								<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751 S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />
+								<path d="M228.606,181.144c-5.858-5.857-15.355-5.858-21.214-0.001c-5.857,5.857-5.857,15.355,0,21.214 l19.393,19.396l-19.393,19.391c-5.857,5.857-5.857,15.355,0,21.214c2.93,2.929,6.768,4.394,10.607,4.394 c3.838,0,7.678-1.465,10.605-4.393l30-29.998c2.813-2.814,4.395-6.629,4.395-10.607c0-3.978-1.58-7.793-4.394-10.607 L228.606,181.144z" />
+								<path d="M223,116.75c-34.488,0-65.145,16.716-84.298,42.47c-7.763-1.628-15.694-2.47-23.702-2.47 c-63.412,0-115,51.589-115,115c0,8.284,6.715,15,15,15h125.596c19.246,24.348,49.03,40,82.404,40c57.896,0,105-47.103,105-105 C328,163.854,280.896,116.75,223,116.75z M223,296.75c-41.356,0-75-33.645-75-75s33.644-75,75-75c41.354,0,75,33.645,75,75 S264.354,296.75,223,296.75z" />
+							</g>
+						</svg>
+						<Typography>{t('MyPageMyFollowings')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'myArticles' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'myArticles' ? 'active' : ''}`}
+					>
+						<img src={pathname === 'myArticles' ? '/img/icons/discoveryWhite.svg' : '/img/icons/discovery.svg'} alt={'icon'} />
+						<Typography>{t('MyPageArticles')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'writeArticle' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'writeArticle' ? 'active' : ''}`}
+					>
+						<img src={pathname === 'writeArticle' ? '/img/icons/whiteTab.svg' : '/img/icons/newTab.svg'} alt={'icon'} />
+						<Typography>{t('MyPageWriteArticle')}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/mypage', query: { category: 'myProfile' } }}
+						scroll={false}
+						className={`mobile-mypage-tab ${pathname === 'myProfile' ? 'active' : ''}`}
+					>
+						<img src={pathname === 'myProfile' ? '/img/icons/userWhite.svg' : '/img/icons/user.svg'} alt={'icon'} />
+						<Typography>{t('MyProfile')}</Typography>
+					</Link>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack width={'100%'} className={'mypage-sidebar'}>

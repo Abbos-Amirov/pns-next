@@ -116,7 +116,83 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR FOLLOWS MOBILE</div>;
+		return (
+			<Stack className={'mobile-follows-page'}>
+				<Stack className={'mobile-follows-header'}>
+					<Typography className={'mobile-follows-title'}>Followings</Typography>
+					{total > 0 && <Typography className={'mobile-follows-count'}>{total}</Typography>}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading followings...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>Error loading followings</Typography>
+					</Stack>
+				) : memberFollowings?.length === 0 ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>No Followings yet!</Typography>
+					</Stack>
+				) : (
+					<Stack className={'mobile-follows-list'}>
+						{memberFollowings.map((follower: Following) => {
+							const imagePath: string = follower?.followingData?.memberImage
+								? `${REACT_APP_API_URL}/${follower?.followingData?.memberImage}`
+								: '/img/profile/defaultUser.svg';
+							const isMe = user?._id === follower?.followingId;
+							const following = follower.meFollowed && follower.meFollowed[0]?.myFollowing;
+							return (
+								<Stack className={'mobile-follow-card'} key={follower._id}>
+									<Stack
+										className={'mobile-follow-info'}
+										onClick={() => redirectToMemberPageHandler(follower?.followingData?._id)}
+									>
+										<Box component={'div'} className={'mobile-follow-avatar'}>
+											<img src={imagePath} alt="" />
+										</Box>
+										<Stack className={'mobile-follow-text'}>
+											<Typography className={'mobile-follow-name'}>{follower?.followingData?.memberNick}</Typography>
+											<Stack className={'mobile-follow-stats'} direction={'row'}>
+												<span className={'mobile-follow-stat'}>{follower?.followingData?.memberFollowers} followers</span>
+												<span className={'mobile-follow-stat'}>{follower?.followingData?.memberFollowings} following</span>
+											</Stack>
+										</Stack>
+									</Stack>
+									{!isMe && follower?.followingData?._id && (
+										<Button
+											disableRipple
+											className={`mobile-follow-action ${following ? 'following' : ''}`}
+											disabled={unsubscribing || subscribing}
+											onClick={() =>
+												following
+													? handleUnsubscribe(follower.followingData!._id)
+													: handleSubscribe(follower.followingData!._id)
+											}
+										>
+											{following ? 'Unfollow' : 'Follow'}
+										</Button>
+									)}
+								</Stack>
+							);
+						})}
+					</Stack>
+				)}
+				{memberFollowings.length !== 0 && (
+					<Stack className={'mobile-pagination'}>
+						<Pagination
+							page={followInquiry.page}
+							count={Math.ceil(total / followInquiry.limit)}
+							onChange={paginationHandler}
+							shape="circular"
+							color="primary"
+						/>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="member-follows-page">

@@ -12,20 +12,13 @@ import {
   MOSQUITO_SCREEN,
 } from './data/windowPricingData';
 import type { ApartmentSizeData, ApartmentSizeKey, DoorOption, WindowProduct } from './data/windowPricingData';
+import dynamic from 'next/dynamic';
 
-/** 10 hero lifestyle images - default 1st */
-const HERO_IMAGES = [
-  '/img/configurator/hero-1.png',
-  '/img/configurator/hero-2.png',
-  '/img/configurator/hero-3.png',
-  '/img/configurator/hero-4.png',
-  '/img/configurator/hero-5.png',
-  '/img/configurator/hero-6.png',
-  '/img/configurator/hero-7.png',
-  '/img/configurator/hero-8.png',
-  '/img/configurator/hero-9.png',
-  '/img/configurator/hero-10.png',
-];
+/** 3D Korean apartment walkthrough (replaces the old hero photos) */
+const KoreanApartment3D = dynamic(() => import('../korean-apartment/KoreanApartment3D'), {
+  ssr: false,
+  loading: () => <div className="kapt3d kapt3d-loading">Loading 3D…</div>,
+});
 
 const NO_COLORS = [
   '#e74c3c', '#e67e22', '#e91e63', '#f1c40f', '#9b59b6', '#3498db',
@@ -743,7 +736,6 @@ export default function WindowPricingShowcase() {
   const [selectedFunctional, setSelectedFunctional] = useState<string | null>('클린범퍼');
   const [doorModalOption, setDoorModalOption] = useState<DoorOption | null>(null);
   const [panelExpanded, setPanelExpanded] = useState(false);
-  const [selectedHeroIndex, setSelectedHeroIndex] = useState(0);
 
   const currentData = useMemo(
     () => APARTMENT_SIZE_DATA.find((d) => d.key === selectedSize) ?? APARTMENT_SIZE_DATA[2],
@@ -765,6 +757,10 @@ export default function WindowPricingShowcase() {
 
   const externalTotal = currentData.externalPrice + optionTotal;
   const fullTotal = currentData.fullPrice + optionTotal;
+
+  const handleColorSelect = useCallback((name: string | null) => {
+    setSelectedColor(name);
+  }, []);
 
   const onSizeSelect = useCallback((k: ApartmentSizeKey) => setSelectedSize(k), []);
 
@@ -789,24 +785,9 @@ export default function WindowPricingShowcase() {
         onClick={panelExpanded ? () => setPanelExpanded(false) : undefined}
       >
         <div className="window-pricing-hero-main">
-          <div className="window-pricing-hero-image" style={{ backgroundImage: `url(${HERO_IMAGES[selectedHeroIndex]})` }} />
-          <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
-        </div>
-        <div className="window-pricing-hero-thumbnails">
-          {HERO_IMAGES.map((src, idx) => (
-            <button
-              key={idx}
-              type="button"
-              className={`window-pricing-hero-thumb ${idx === selectedHeroIndex ? 'active' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedHeroIndex(idx);
-              }}
-              aria-label={`Hero ${idx + 1}`}
-            >
-              <img src={src} alt="" />
-            </button>
-          ))}
+          <KoreanApartment3D color={selectedColor} onColorChange={handleColorSelect}>
+            <HeroBadge externalTotal={externalTotal} fullTotal={fullTotal} t={t} />
+          </KoreanApartment3D>
         </div>
         {panelExpanded && <div className="window-pricing-hero-backdrop" aria-hidden />}
       </div>
@@ -851,7 +832,7 @@ export default function WindowPricingShowcase() {
           <ColorOptionsSection
             items={COLOR_OPTIONS}
             selectedName={selectedColor}
-            onSelect={setSelectedColor}
+            onSelect={handleColorSelect}
             t={t}
           />
 

@@ -1,0 +1,223 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — Our Services page (pages/our-services/index.tsx)
+ * No device branch in the page — same JSX renders for mobile & desktop.
+ * The os-* classnames are defined globally (unscoped) in
+ * scss/pc/our-services/our-services.scss, so these #mobile-wrap rules win
+ * on both specificity (#id) and source order (mobile/main.scss loads last).
+ * ========================================================================== */
+
+#mobile-wrap {
+	.our-services-full-page {
+		background: linear-gradient(180deg, #fafbfc 0%, #f0f4f8 100%);
+	}
+
+	/* ---------- Hero ---------- */
+	.os-hero {
+		padding: 34px 18px 30px !important;
+	}
+
+	.os-hero-inner {
+		max-width: 100% !important;
+	}
+
+	.os-hero-badge {
+		font-size: 10.5px !important;
+		letter-spacing: 1.4px !important;
+		padding: 6px 14px !important;
+		margin-bottom: 14px !important;
+	}
+
+	.os-hero-title {
+		font-size: 24px !important;
+		line-height: 1.25 !important;
+		margin: 0 0 12px 0 !important;
+	}
+
+	.os-hero-subtitle {
+		font-size: 14.5px !important;
+		margin: 0 0 8px 0 !important;
+	}
+
+	.os-hero-support {
+		font-size: 12.5px !important;
+	}
+
+	/* ---------- Generic section rhythm ---------- */
+	.os-section {
+		padding: 34px 16px 40px !important;
+	}
+
+	.os-container {
+		max-width: 100% !important;
+	}
+
+	.os-section-title {
+		font-size: 20px !important;
+		margin: 0 0 22px 0 !important;
+	}
+
+	/* ---------- Service category grid ---------- */
+	.os-service-grid {
+		grid-template-columns: repeat(2, 1fr) !important;
+		gap: 12px !important;
+	}
+
+	.os-service-card {
+		padding: 20px 14px !important;
+		border-radius: 16px !important;
+
+		&:hover {
+			transform: none;
+		}
+	}
+
+	.os-service-card-icon {
+		width: 46px !important;
+		height: 46px !important;
+		margin: 0 auto 12px !important;
+
+		svg {
+			font-size: 22px !important;
+		}
+	}
+
+	.os-service-card-title {
+		font-size: 13px !important;
+	}
+
+	.os-service-card-desc {
+		font-size: 11.5px !important;
+	}
+
+	/* ---------- Property selector ---------- */
+	.os-property-grid {
+		grid-template-columns: 1fr !important;
+		max-width: 100% !important;
+		gap: 12px !important;
+	}
+
+	.os-property-card {
+		padding: 22px 20px !important;
+		border-radius: 16px !important;
+		flex-direction: row !important;
+		justify-content: flex-start !important;
+		gap: 14px !important;
+	}
+
+	.os-property-icon {
+		width: 46px !important;
+		height: 46px !important;
+		flex-shrink: 0;
+
+		svg {
+			font-size: 24px !important;
+		}
+	}
+
+	.os-property-hint {
+		font-size: 12.5px !important;
+	}
+
+	.os-cta-btn {
+		width: 100%;
+		padding: 13px 22px !important;
+		border-radius: 12px !important;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+		box-shadow: 0 8px 20px rgba(18, 13, 83, 0.28) !important;
+	}
+
+	/* ---------- Repair / issue support ---------- */
+	.os-repair-block {
+		flex-direction: column !important;
+		padding: 22px !important;
+		border-radius: 18px !important;
+		gap: 16px !important;
+	}
+
+	.os-repair-icon {
+		width: 52px !important;
+		height: 52px !important;
+		border-radius: 14px !important;
+
+		svg {
+			font-size: 26px !important;
+		}
+	}
+
+	.os-repair-title {
+		font-size: 18px !important;
+	}
+
+	.os-repair-desc {
+		font-size: 13.5px !important;
+	}
+
+	.os-repair-list {
+		font-size: 13px !important;
+		padding-left: 20px !important;
+	}
+
+	.os-repair-btn {
+		width: 100%;
+		border-color: #16206e !important;
+		color: #16206e !important;
+	}
+
+	/* ---------- Why choose us ---------- */
+	.os-why-grid {
+		grid-template-columns: 1fr !important;
+		gap: 12px !important;
+	}
+
+	.os-why-item {
+		padding: 16px 18px !important;
+		border-radius: 14px !important;
+	}
+
+	.os-why-item span {
+		font-size: 13.5px !important;
+	}
+
+	/* ---------- Final CTA ---------- */
+	.os-cta-final {
+		padding: 8px 16px 56px !important;
+	}
+
+	.os-cta-card {
+		padding: 34px 22px !important;
+		border-radius: 20px !important;
+	}
+
+	.os-cta-title {
+		font-size: 21px !important;
+	}
+
+	.os-cta-subtitle {
+		font-size: 14px !important;
+	}
+
+	.os-cta-main-btn {
+		width: 100%;
+		padding: 14px 28px !important;
+		border-radius: 12px !important;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%) !important;
+		box-shadow: 0 8px 20px rgba(18, 13, 83, 0.28) !important;
+	}
+}
+
+/** ---------- Dark mode ---------- */
+[data-theme='dark'] #mobile-wrap {
+	.os-cta-btn,
+	.os-cta-main-btn {
+		background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%) !important;
+		color: #1a1207 !important;
+		box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3) !important;
+	}
+
+	.os-repair-btn {
+		border-color: #d4a574 !important;
+		color: #d4a574 !important;
+	}
+}

@@ -81,7 +81,73 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>MEMBER ARTICLES MOBILE</div>;
+		return (
+			<Stack className={'mobile-member-articles-page'}>
+				<Stack className={'mobile-articles-header'}>
+					<Typography className={'mobile-articles-title'}>Articles</Typography>
+					{total > 0 && <Typography className={'mobile-articles-count'}>{total}</Typography>}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading articles...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>Error loading articles</Typography>
+					</Stack>
+				) : memberBoArticles?.length === 0 ? (
+					<Stack className={'mobile-empty-state'}>
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<Typography>No Articles found!</Typography>
+					</Stack>
+				) : (
+					<Stack className={'mobile-articles-list'}>
+						{memberBoArticles?.map((boardArticle: BoardArticle) => {
+							const imagePath = boardArticle?.articleImage
+								? boardArticle.articleImage.startsWith('http')
+									? boardArticle.articleImage
+									: boardArticle.articleImage.startsWith('/img/')
+									? boardArticle.articleImage
+									: `${process.env.REACT_APP_API_URL}/${boardArticle.articleImage}`
+								: '/img/community/communityImg.png';
+							return (
+								<div
+									className={'mobile-article-card'}
+									key={boardArticle?._id}
+									onClick={() =>
+										router.push({
+											pathname: '/community/detail',
+											query: { articleCategory: boardArticle?.articleCategory, id: boardArticle?._id },
+										})
+									}
+								>
+									<div className={'mobile-article-card-img'} style={{ backgroundImage: `url(${imagePath})` }} />
+									<div className={'mobile-article-card-body'}>
+										<Typography className={'mobile-article-card-title'}>{boardArticle?.articleTitle}</Typography>
+										<Stack className={'mobile-article-card-meta'} direction={'row'}>
+											<span>{boardArticle?.articleViews ?? 0} views</span>
+											<span>{boardArticle?.articleLikes ?? 0} likes</span>
+										</Stack>
+									</div>
+								</div>
+							);
+						})}
+					</Stack>
+				)}
+				{memberBoArticles?.length !== 0 && (
+					<Stack className={'mobile-pagination'}>
+						<Pagination
+							count={Math.ceil(total / searchFilter.limit) || 1}
+							page={searchFilter.page}
+							shape="circular"
+							color="primary"
+							onChange={paginationHandler}
+						/>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="member-articles-page">

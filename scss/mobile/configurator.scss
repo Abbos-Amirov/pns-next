@@ -1,0 +1,699 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — Configurator pages
+ * 1) /configurator            -> WindowPricingShowcase (.window-pricing-*)
+ * 2) /configurator/apartment-3d -> ApartmentConfigurator (.apartment-*, .room-*)
+ *
+ * The desktop partials (scss/pc/configurator/*.scss) are NOT scoped to
+ * #pc-wrap — their class selectors are global and already collapse to a
+ * single column below 1024px / 1100px / 600px. This file layers brand
+ * skin (indigo gradient + gold accent), touch-friendly sizing and a couple
+ * of structural fixes (canvas aspect-ratio, hero thumbnail strip) on top
+ * of that existing responsive foundation, scoped to #mobile-wrap so it
+ * never leaks onto #pc-wrap.
+ * ========================================================================== */
+
+#mobile-wrap {
+	.configurator-page {
+		padding: 0;
+	}
+}
+
+/** --------------------------------------------------------------------------
+ * SECTION A — Window Pricing Showcase (/configurator)
+ * ------------------------------------------------------------------------ */
+
+#mobile-wrap .window-pricing-showcase {
+	grid-template-columns: 1fr;
+	font-size: 1em; // reset desktop's 1.1em bump — compounds badly on small screens
+	background: #f5f5f5;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-showcase {
+	background: #0d0d0d;
+}
+
+// Defensive net: the "expand panel" desktop interaction (grip button) is
+// hidden below, so panel-expanded should never trigger — but guard anyway.
+#mobile-wrap .window-pricing-showcase.panel-expanded {
+	grid-template-columns: 1fr;
+
+	.window-pricing-panel {
+		position: relative !important;
+		top: auto !important;
+		right: auto !important;
+		width: auto !important;
+		max-width: 100% !important;
+		height: auto !important;
+		z-index: auto !important;
+		box-shadow: none !important;
+	}
+}
+
+/** ---------- Hero (photo + thumbnails + price badge) ---------- */
+#mobile-wrap .window-pricing-hero {
+	min-height: 0;
+	height: auto;
+	border-radius: 0 0 22px 22px;
+	box-shadow: 0 10px 28px rgba(18, 13, 83, 0.14);
+	cursor: default;
+}
+
+#mobile-wrap .window-pricing-hero-main {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	min-height: 240px;
+	overflow: hidden;
+}
+
+#mobile-wrap .window-pricing-hero-badge {
+	left: 12px;
+	right: 12px;
+	bottom: 12px;
+	transform: none;
+	width: auto;
+	padding: 12px 14px;
+	border-radius: 14px;
+	background: linear-gradient(135deg, rgba(18, 13, 83, 0.9) 0%, rgba(26, 23, 128, 0.92) 100%);
+	box-shadow: 0 8px 20px rgba(18, 13, 83, 0.3);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+#mobile-wrap .window-pricing-hero-badge-row {
+	gap: 6px;
+
+	span {
+		font-family: $font;
+		font-size: 11px;
+	}
+
+	strong {
+		font-family: $font;
+		font-size: 15px;
+		margin-left: 0;
+	}
+}
+
+// Pull the thumbnail strip out of the absolutely-positioned overlay and
+// into a normal horizontally-scrollable row below the hero photo.
+#mobile-wrap .window-pricing-hero-thumbnails {
+	position: relative;
+	bottom: auto;
+	left: auto;
+	right: auto;
+	transform: none;
+	display: flex;
+	gap: 8px;
+	padding: 10px 14px;
+	background: #ffffff;
+	border-radius: 0;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-hero-thumbnails {
+	background: #1a1a1a;
+}
+
+#mobile-wrap .window-pricing-hero-thumb {
+	width: 54px;
+	height: 40px;
+	flex-shrink: 0;
+
+	&.active {
+		border-color: #16206e;
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-hero-thumb.active {
+	border-color: #d4a574;
+}
+
+#mobile-wrap .window-pricing-hero-backdrop {
+	display: none;
+}
+
+/** ---------- Sticky panel -> normal scrolling section ---------- */
+#mobile-wrap .window-pricing-panel {
+	box-shadow: none;
+	background: #f5f5f5;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-panel {
+	background: #0d0d0d;
+}
+
+// Desktop-only "peek/expand" affordance — meaningless once already full width.
+#mobile-wrap .window-pricing-panel-grip {
+	display: none;
+}
+
+#mobile-wrap .window-pricing-panel-scroll {
+	padding: 22px 16px 34px;
+	zoom: 1; // reset desktop's zoom:1.42 which blows up every child on phones
+	overflow-y: visible;
+}
+
+#mobile-wrap .window-pricing-title {
+	font-family: $font;
+	font-size: 22px;
+	font-weight: 800;
+	letter-spacing: -0.3px;
+}
+
+#mobile-wrap .window-pricing-subtitle {
+	font-family: $font;
+	font-size: 13px;
+	margin-bottom: 20px;
+}
+
+/** ---------- Pricing summary card ---------- */
+#mobile-wrap .window-pricing-summary {
+	background: #ffffff;
+	border-radius: 16px;
+	padding: 16px 16px 14px;
+	box-shadow: 0 6px 24px rgba(18, 13, 83, 0.08);
+	border: 1px solid rgba(18, 13, 83, 0.06);
+	margin-bottom: 18px;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-summary {
+	background: #1a1a1a;
+	border-color: rgba(212, 165, 116, 0.14);
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+#mobile-wrap .window-pricing-price-row {
+	.label {
+		font-family: $font;
+		font-size: 13px;
+	}
+
+	.value {
+		font-family: $font;
+		font-size: 16px;
+		font-weight: 800;
+		color: #16206e;
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-price-row .value {
+	color: #d4a574;
+}
+
+/** ---------- Size tabs -> horizontal scroll pills ---------- */
+#mobile-wrap .window-pricing-size-tabs {
+	display: flex;
+	overflow-x: auto;
+	gap: 8px;
+	margin-bottom: 20px;
+	padding-bottom: 2px;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+#mobile-wrap .window-pricing-size-tab {
+	flex: 0 0 auto;
+	min-height: 40px;
+	padding: 10px 18px;
+	font-family: $font;
+	font-size: 13px;
+
+	&.active {
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		border-color: transparent;
+		box-shadow: 0 6px 16px rgba(18, 13, 83, 0.25);
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-size-tab.active {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+	box-shadow: 0 6px 16px rgba(212, 165, 116, 0.22);
+}
+
+/** ---------- Composition floor-plan image ---------- */
+#mobile-wrap .window-pricing-composition-image {
+	border-radius: 14px;
+}
+
+#mobile-wrap .window-pricing-section-title {
+	font-family: $font;
+	font-size: 14px;
+
+	&.centered {
+		font-size: 15px;
+	}
+}
+
+/** ---------- Product tables -> compact, brand-tinted, horizontal scroll ---------- */
+#mobile-wrap .window-pricing-table-section {
+	margin-bottom: 22px;
+}
+
+#mobile-wrap .window-pricing-table-title {
+	font-family: $font;
+	font-size: 13px;
+	color: #16206e;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-table-title {
+	color: #d4a574;
+}
+
+#mobile-wrap .window-pricing-table-wrap {
+	border-radius: 14px;
+	border-color: rgba(18, 13, 83, 0.1);
+	box-shadow: 0 4px 16px rgba(18, 13, 83, 0.06);
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-table-wrap {
+	border-color: rgba(212, 165, 116, 0.14);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#mobile-wrap .window-pricing-table {
+	font-size: 11.5px;
+
+	th,
+	td {
+		padding: 9px 10px;
+	}
+
+	th {
+		background: rgba(18, 13, 83, 0.06);
+		color: #16206e;
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-table th {
+	background: rgba(212, 165, 116, 0.1);
+	color: #d4a574;
+}
+
+/** ---------- Dividers / spec blocks ---------- */
+#mobile-wrap .window-pricing-divider {
+	background: rgba(18, 13, 83, 0.08);
+	margin: 18px 0;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-divider {
+	background: rgba(212, 165, 116, 0.12);
+}
+
+#mobile-wrap .window-pricing-spec {
+	font-family: $font;
+	font-size: 13px;
+}
+
+/** ---------- Option cards (color / glass / handle / extra) ---------- */
+#mobile-wrap .window-pricing-opt-grid,
+#mobile-wrap .window-pricing-handle-grid {
+	gap: 18px 16px;
+}
+
+#mobile-wrap .window-pricing-opt-card .window-pricing-opt-card-swatch,
+#mobile-wrap .window-pricing-handle-card .window-pricing-handle-card-thumb-wrap {
+	width: 48px;
+	height: 48px;
+}
+
+#mobile-wrap .window-pricing-opt-card .window-pricing-opt-card-label,
+#mobile-wrap .window-pricing-handle-card .window-pricing-handle-card-label {
+	font-family: $font;
+	font-size: 12.5px;
+}
+
+#mobile-wrap .window-pricing-opt-card.selected .window-pricing-opt-card-swatch,
+#mobile-wrap .window-pricing-handle-card.selected .window-pricing-handle-card-thumb-wrap {
+	border-color: #16206e;
+	box-shadow: 0 4px 14px rgba(18, 13, 83, 0.22);
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-opt-card.selected .window-pricing-opt-card-swatch,
+[data-theme='dark'] #mobile-wrap .window-pricing-handle-card.selected .window-pricing-handle-card-thumb-wrap {
+	border-color: #d4a574;
+	box-shadow: 0 4px 14px rgba(212, 165, 116, 0.28);
+}
+
+#mobile-wrap .window-pricing-opt-badge {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+	font-family: $font;
+}
+
+#mobile-wrap .window-pricing-handle-more {
+	background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+	border-radius: 10px;
+	padding: 9px 18px;
+	font-family: $font;
+	font-size: 12px;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-handle-more {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+}
+
+/** ---------- Door options ---------- */
+#mobile-wrap .window-pricing-door-card .window-pricing-door-card-thumb-wrap {
+	width: 60px;
+	height: 60px;
+
+	&.selected {
+		border-color: #16206e;
+		box-shadow: 0 4px 14px rgba(18, 13, 83, 0.22);
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-door-card .window-pricing-door-card-thumb-wrap.selected {
+	border-color: #d4a574;
+	box-shadow: 0 4px 14px rgba(212, 165, 116, 0.28);
+}
+
+#mobile-wrap .window-pricing-door-card-label {
+	font-family: $font;
+	font-size: 12.5px;
+}
+
+#mobile-wrap .window-pricing-door-card-more {
+	background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+	border-radius: 8px;
+	padding: 6px 12px;
+	font-family: $font;
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-door-card-more {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+}
+
+/** ---------- Door detail + size detail modals ---------- */
+#mobile-wrap .window-pricing-door-modal-overlay,
+#mobile-wrap .window-pricing-modal-overlay {
+	padding: 14px;
+}
+
+#mobile-wrap .window-pricing-door-modal {
+	border-radius: 18px;
+	max-height: 88vh;
+	padding: 20px 16px 22px;
+	overflow-y: auto;
+}
+
+#mobile-wrap .window-pricing-door-modal-title {
+	font-family: $font;
+	font-size: 17px;
+}
+
+#mobile-wrap .window-pricing-door-modal-close,
+#mobile-wrap .window-pricing-modal-close {
+	width: 40px;
+	height: 40px;
+	font-size: 22px;
+}
+
+#mobile-wrap .window-pricing-door-modal-body {
+	gap: 16px;
+}
+
+#mobile-wrap .window-pricing-modal {
+	border-radius: 18px;
+	max-height: 90vh;
+}
+
+#mobile-wrap .window-pricing-modal-header {
+	padding: 20px 16px 0;
+}
+
+#mobile-wrap .window-pricing-modal-title {
+	font-family: $font;
+	font-size: 18px;
+}
+
+#mobile-wrap .window-pricing-modal-size-tabs {
+	gap: 6px;
+}
+
+#mobile-wrap .window-pricing-modal-size-tab {
+	padding: 9px 14px;
+	font-family: $font;
+	font-size: 12px;
+
+	&.active {
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		border-color: transparent;
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-modal-size-tab.active {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+}
+
+#mobile-wrap .window-pricing-modal-body {
+	padding: 18px 16px 22px;
+}
+
+#mobile-wrap .window-pricing-modal-table {
+	font-size: 11px;
+
+	th,
+	td {
+		padding: 8px 9px;
+	}
+}
+
+/** ---------- CTAs ---------- */
+#mobile-wrap .window-pricing-cta.window-pricing-cta-primary {
+	background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+	border-radius: 12px;
+	padding: 15px 22px;
+	box-shadow: 0 8px 20px rgba(18, 13, 83, 0.28);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+#mobile-wrap .window-pricing-cta.window-pricing-cta-kakao {
+	border-radius: 12px;
+	padding: 15px 22px;
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+#mobile-wrap .window-pricing-detail-btn {
+	border-radius: 12px;
+	padding: 14px 22px;
+	border-color: #16206e;
+	color: #16206e;
+
+	&:active {
+		transform: scale(0.98);
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-pricing-detail-btn {
+	border-color: #d4a574;
+	color: #d4a574;
+}
+
+/** --------------------------------------------------------------------------
+ * SECTION B — Apartment 3D Configurator (/configurator/apartment-3d)
+ * ------------------------------------------------------------------------ */
+
+#mobile-wrap .configurator-page.apartment-3d-page {
+	padding: 0;
+	min-height: auto;
+	background: #f5f5f5;
+}
+
+[data-theme='dark'] #mobile-wrap .configurator-page.apartment-3d-page {
+	background: #0d0d0d;
+}
+
+#mobile-wrap .apartment-configurator {
+	grid-template-columns: 1fr;
+	grid-template-rows: auto auto auto;
+}
+
+/** 3D / image viewer — capped aspect-ratio so it never blows out the viewport */
+#mobile-wrap .apartment-configurator-main {
+	aspect-ratio: 4 / 3;
+	height: auto;
+	min-height: 280px;
+	max-height: 440px;
+	border-radius: 0 0 22px 22px;
+	overflow: hidden;
+	box-shadow: 0 10px 28px rgba(18, 13, 83, 0.14);
+}
+
+#mobile-wrap .viewer-loading {
+	min-height: 0;
+	height: 100%;
+	font-family: $font;
+	font-size: 13px;
+}
+
+[data-theme='dark'] #mobile-wrap .viewer-loading {
+	color: #9599a8;
+}
+
+#mobile-wrap .room-placeholder {
+	min-height: 0;
+	height: 100%;
+}
+
+[data-theme='dark'] #mobile-wrap .room-placeholder {
+	background: linear-gradient(135deg, #1a1a1a 0%, #1e1e1e 100%);
+}
+
+#mobile-wrap .room-placeholder-content {
+	padding: 28px 18px;
+}
+
+#mobile-wrap .room-placeholder-icon {
+	font-size: 48px;
+}
+
+#mobile-wrap .room-placeholder-title {
+	font-family: $font;
+	font-size: 18px;
+}
+
+[data-theme='dark'] #mobile-wrap .room-placeholder-title {
+	color: #e0e0e0;
+}
+
+#mobile-wrap .room-placeholder-subtitle {
+	font-family: $font;
+	font-size: 13px;
+}
+
+[data-theme='dark'] #mobile-wrap .room-placeholder-subtitle {
+	color: #9599a8;
+}
+
+/** ---------- Room tabs -> horizontal scroll strip, brand active state ---------- */
+#mobile-wrap .room-tabs {
+	padding: 12px 14px;
+	background: #ffffff;
+	border-bottom: 1px solid rgba(18, 13, 83, 0.06);
+}
+
+[data-theme='dark'] #mobile-wrap .room-tabs {
+	background: #1a1a1a;
+	border-bottom-color: rgba(212, 165, 116, 0.12);
+}
+
+#mobile-wrap .room-tabs-inner {
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	overflow-x: auto;
+	gap: 8px;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+#mobile-wrap .room-tabs-item {
+	flex: 0 0 auto;
+	min-width: 58px;
+	padding: 9px 12px;
+
+	&.active {
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		border-color: transparent;
+		box-shadow: 0 6px 16px rgba(18, 13, 83, 0.25);
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .room-tabs-item {
+	background: rgba(212, 165, 116, 0.08);
+	border-color: rgba(212, 165, 116, 0.14);
+	color: #e0e0e0;
+}
+
+[data-theme='dark'] #mobile-wrap .room-tabs-item.active {
+	background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+	color: #1a1207;
+	box-shadow: 0 6px 16px rgba(212, 165, 116, 0.22);
+}
+
+/** ---------- Room sidebar (controls panel) ---------- */
+#mobile-wrap .room-sidebar {
+	padding: 24px 18px 20px;
+	background: #ffffff;
+}
+
+[data-theme='dark'] #mobile-wrap .room-sidebar {
+	background: #1a1a1a;
+}
+
+#mobile-wrap .room-sidebar-title {
+	font-family: $font;
+	font-size: 22px;
+}
+
+#mobile-wrap .room-sidebar-subtitle {
+	font-family: $font;
+	font-size: 13px;
+}
+
+#mobile-wrap .room-sidebar-room-name {
+	font-family: $font;
+	font-size: 16px;
+}
+
+#mobile-wrap .room-sidebar-room-subtitle {
+	font-family: $font;
+	font-size: 13px;
+}
+
+#mobile-wrap .room-sidebar-note {
+	font-family: $font;
+	font-size: 13px;
+}
+
+/** ---------- Window frame color picker — bigger touch swatches ---------- */
+#mobile-wrap .window-frame-color-picker-label {
+	font-family: $font;
+	font-size: 13px;
+}
+
+#mobile-wrap .window-frame-color-swatch {
+	width: 52px;
+	height: 52px;
+
+	&.active {
+		border-color: #16206e;
+		box-shadow: 0 0 0 3px rgba(18, 13, 83, 0.12);
+	}
+
+	&:active {
+		transform: scale(0.96);
+	}
+}
+
+[data-theme='dark'] #mobile-wrap .window-frame-color-swatch.active {
+	border-color: #d4a574;
+	box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.18);
+}

@@ -120,7 +120,70 @@ const Faq = () => {
 
 
 	if (device === 'mobile') {
-		return <div>{t('CsFaqMobile')}</div>;
+		const faqCategories: { key: string; labelKey: string }[] = [
+			{ key: 'product', labelKey: 'FaqCategoryProduct' },
+			{ key: 'location', labelKey: 'FaqCategoryLocation' },
+			{ key: 'measurer', labelKey: 'FaqCategoryMeasurer' },
+			{ key: 'installer', labelKey: 'FaqCategoryInstaller' },
+			{ key: 'members', labelKey: 'FaqCategoryMembers' },
+			{ key: 'system', labelKey: 'FaqCategorySystem' },
+			{ key: 'community', labelKey: 'FaqCategoryCommunity' },
+			{ key: 'other', labelKey: 'FaqCategoryOther' },
+		];
+
+		return (
+			<Stack className="mobile-cs-faq">
+				<Stack className="mobile-cs-faq-tabs" direction="row">
+					{faqCategories.map((c) => (
+						<button
+							key={c.key}
+							type="button"
+							className={`mobile-cs-faq-tab ${category === c.key ? 'active' : ''}`}
+							onClick={() => changeCategoryHandler(c.key)}
+						>
+							{t(c.labelKey)}
+						</button>
+					))}
+				</Stack>
+
+				<Stack className="mobile-cs-faq-list">
+					{noticeLoading ? (
+						<Stack className="mobile-cs-empty">
+							<CircularProgress size={26} sx={{ color: '#120d53' }} />
+							<Typography>{t('CsLoadingFaqs')}</Typography>
+						</Stack>
+					) : noticeError ? (
+						<Stack className="mobile-cs-empty">
+							<Typography>{t('CsErrorLoadingFaqs', { message: noticeError.message })}</Typography>
+						</Stack>
+					) : faqList.length === 0 ? (
+						<Stack className="mobile-cs-empty">
+							<Typography>{t('CsNoFaqsForCategory')}</Typography>
+						</Stack>
+					) : (
+						faqList.map((notice: Notice) => (
+							<Accordion
+								className="mobile-cs-faq-accordion"
+								expanded={expanded === notice._id}
+								onChange={handleChange(notice._id)}
+								key={notice._id}
+							>
+								<AccordionSummary id="panel1d-header" className="mobile-cs-faq-question" aria-controls="panel1d-content">
+									<span className="mobile-cs-faq-badge">{t('FaqBadgeQ')}</span>
+									<Typography>{notice.noticeTitle}</Typography>
+								</AccordionSummary>
+								<AccordionDetails className="mobile-cs-faq-answer-wrap">
+									<Stack className="mobile-cs-faq-answer">
+										<span className="mobile-cs-faq-badge accent">{t('FaqBadgeA')}</span>
+										<Typography>{notice.noticeContent}</Typography>
+									</Stack>
+								</AccordionDetails>
+							</Accordion>
+						))
+					)}
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack className={'faq-content'}>

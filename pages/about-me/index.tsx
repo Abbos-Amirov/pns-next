@@ -47,6 +47,45 @@ const AboutMe: NextPage = () => {
 					<img src={ABOUT_IMAGES.different} alt="" />
 					<p>{t('AboutDifferentText1')}</p>
 					<p>{t('AboutDifferentText2')}</p>
+					<ul className="amu-mobile-list">
+						<li>{t('AboutDifferent1')}</li>
+						<li>{t('AboutDifferent2')}</li>
+						<li>{t('AboutDifferent3')}</li>
+						<li>{t('AboutDifferent4')}</li>
+						<li>{t('AboutDifferent5')}</li>
+						<li>{t('AboutDifferent6')}</li>
+					</ul>
+				</section>
+				<section className="amu-section">
+					<h2 className="amu-mobile-h2">{t('AboutProcessTitle')}</h2>
+					<p>{t('AboutProcessDesc')}</p>
+					<img src={ABOUT_IMAGES.workProcess} alt="" />
+					<ol className="amu-mobile-list amu-mobile-list--ordered">
+						<li>{t('AboutProcess1')}</li>
+						<li>{t('AboutProcess2')}</li>
+						<li>{t('AboutProcess3')}</li>
+						<li>{t('AboutProcess4')}</li>
+						<li>{t('AboutProcess5')}</li>
+					</ol>
+				</section>
+				<section className="amu-section">
+					<h2 className="amu-mobile-h2">{t('AboutAdvantagesTitle')}</h2>
+					<p>{t('AboutAdvantagesDesc')}</p>
+					<img src={ABOUT_IMAGES.advantages} alt="" />
+					<ul className="amu-mobile-list">
+						<li>{t('AboutAdvantages1')}</li>
+						<li>{t('AboutAdvantages2')}</li>
+						<li>{t('AboutAdvantages3')}</li>
+						<li>{t('AboutAdvantages4')}</li>
+						<li>{t('AboutAdvantages5')}</li>
+					</ul>
+				</section>
+				<section className="amu-section amu-trust">
+					<h2 className="amu-trust-title">{t('AboutTrustTitle')}</h2>
+					<p className="amu-trust-desc">{t('AboutTrustDesc')}</p>
+					<div className="amu-trust-img">
+						<img src={ABOUT_IMAGES.trust} alt={t('AboutTrustTitle') as string} />
+					</div>
 				</section>
 			</div>
 		);

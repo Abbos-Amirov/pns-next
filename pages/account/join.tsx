@@ -140,7 +140,175 @@ const Join: NextPage = () => {
 	}, [input, router, t]);
 
 	if (device === 'mobile') {
-		return <div>LOGIN MOBILE</div>;
+		return (
+			<Stack className={'mobile-join-page'}>
+				<Stack className={'mobile-join-card'}>
+					<Stack className={'mobile-join-logo-section'}>
+						<Typography className={'mobile-join-brand-name'}>PNS DEV</Typography>
+						<Typography className={'mobile-join-tagline'}>{t('JoinBrandTagline')}</Typography>
+					</Stack>
+
+					<Stack className={'mobile-join-toggle'} direction={'row'}>
+						<Button
+							disableRipple
+							className={`mobile-join-toggle-btn ${!loginView ? 'active' : ''}`}
+							onClick={() => viewChangeHandler(false)}
+						>
+							{t('JoinSignUp')}
+						</Button>
+						<Button
+							disableRipple
+							className={`mobile-join-toggle-btn ${loginView ? 'active' : ''}`}
+							onClick={() => viewChangeHandler(true)}
+						>
+							{t('JoinLogIn')}
+						</Button>
+					</Stack>
+
+					<Typography className={'mobile-join-heading'}>
+						{loginView ? t('JoinJourneyBegins') : t('JoinStartYourJourney')}
+					</Typography>
+
+					<Typography className={'mobile-join-social-text'}>{t('JoinLogInWithOpen')}</Typography>
+					<Stack className={'mobile-join-social'} direction={'row'}>
+						<Button
+							className={'mobile-join-social-btn google'}
+							onClick={() => (window.location.href = '/api/auth/google')}
+							startIcon={<GoogleIconSvg size={18} />}
+						>
+							Google
+						</Button>
+						<Button
+							className={'mobile-join-social-btn kakao'}
+							onClick={() => (window.location.href = '/api/auth/kakao')}
+							startIcon={<KakaoIconSvg size={18} />}
+						>
+							KakaoTalk
+						</Button>
+					</Stack>
+					<Stack className={'mobile-join-divider'} direction={'row'} alignItems={'center'}>
+						<span />
+						<Typography>{t('JoinOr')}</Typography>
+						<span />
+					</Stack>
+
+					<Stack className={'mobile-join-fields'}>
+						<TextField
+							fullWidth
+							label={t('Username')}
+							value={input.nick}
+							onChange={(e) => handleInput('nick', e.target.value)}
+							placeholder={loginView ? t('JoinPlaceholderUsernameLogin') : t('JoinPlaceholderUsername')}
+							className={'mobile-join-input'}
+							onKeyDown={(event) => {
+								if (event.key == 'Enter' && loginView) doLogin();
+								if (event.key == 'Enter' && !loginView) doSignUp();
+							}}
+						/>
+
+						{!loginView && (
+							<TextField
+								fullWidth
+								label={t('Phone')}
+								value={input.phone}
+								onChange={(e) => handleInput('phone', e.target.value)}
+								placeholder={t('JoinPlaceholderPhone')}
+								className={'mobile-join-input'}
+								onKeyDown={(event) => {
+									if (event.key == 'Enter') doSignUp();
+								}}
+							/>
+						)}
+
+						<TextField
+							fullWidth
+							type={showPassword ? 'text' : 'password'}
+							label={t('Password')}
+							value={input.password}
+							onChange={(e) => handleInput('password', e.target.value)}
+							placeholder={t('JoinPlaceholderPassword')}
+							className={'mobile-join-input'}
+							InputProps={{
+								endAdornment: (
+									<InputAdornment position="end">
+										<IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+											{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+										</IconButton>
+									</InputAdornment>
+								),
+							}}
+							onKeyDown={(event) => {
+								if (event.key == 'Enter' && loginView) doLogin();
+								if (event.key == 'Enter' && !loginView) doSignUp();
+							}}
+						/>
+					</Stack>
+
+					{loginView && (
+						<Stack className={'mobile-join-remember-row'} direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+							<FormControlLabel control={<Checkbox defaultChecked size={'small'} />} label={t('JoinRememberMe')} />
+							<Typography component="a" className={'mobile-join-forgot-link'}>
+								{t('JoinForgotPassword')}
+							</Typography>
+						</Stack>
+					)}
+
+					{!loginView && (
+						<Stack className={'mobile-join-type-selection'}>
+							<Typography className={'mobile-join-type-label'}>{t('JoinRegisterAs')}</Typography>
+							<Stack className={'mobile-join-type-checkboxes'} direction={'row'}>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.USER}
+											onChange={checkUserTypeHandler}
+											checked={input?.type == MemberType.USER}
+											size={'small'}
+										/>
+									}
+									label={t('User')}
+								/>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.MEASURER}
+											onChange={checkUserTypeHandler}
+											checked={input?.type == MemberType.MEASURER}
+											size={'small'}
+										/>
+									}
+									label={t('JoinMeasurer')}
+								/>
+								<FormControlLabel
+									control={
+										<Checkbox
+											name={MemberType.INSTALLER}
+											onChange={checkUserTypeHandler}
+											checked={input?.type == MemberType.INSTALLER}
+											size={'small'}
+										/>
+									}
+									label={t('JoinInstaller')}
+								/>
+							</Stack>
+						</Stack>
+					)}
+
+					<Button
+						className={'mobile-btn-primary mobile-join-submit'}
+						disabled={
+							isLoading ||
+							(loginView
+								? input.nick == '' || input.password == ''
+								: input.nick == '' || input.password == '' || input.phone == '')
+						}
+						onClick={loginView ? doLogin : doSignUp}
+					>
+						{isLoading ? t('JoinLoading') : loginView ? t('JoinLogIn') : t('JoinSignUp')}
+					</Button>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack className={'join-page'}>

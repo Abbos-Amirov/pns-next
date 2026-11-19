@@ -3,6 +3,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Top from '../../../libs/components/Top';
+import useDeviceDetect from '../../../libs/hooks/useDeviceDetect';
 
 const ApartmentConfiguratorDynamic = dynamic(
   () => import('../../../libs/components/configurator/apartment/ApartmentConfigurator'),
@@ -26,8 +27,9 @@ const ApartmentConfiguratorDynamic = dynamic(
 );
 
 const Apartment3DPage: NextPage = () => {
+  const device = useDeviceDetect();
   return (
-    <div id="pc-wrap" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div id={device === 'mobile' ? 'mobile-wrap' : 'pc-wrap'} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div id="top" style={{ flexShrink: 0 }}>
         <Top />
       </div>

@@ -1,0 +1,346 @@
+// mobile styles: cs
+@import '/scss/variables.scss';
+
+#mobile-wrap {
+	.mobile-cs-page {
+		padding: 26px 18px 40px;
+	}
+
+	.mobile-cs-hero {
+		align-items: center;
+		text-align: center;
+		gap: 8px;
+		margin-bottom: 22px;
+
+		.mobile-cs-hero-icon {
+			width: 54px;
+			height: 54px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+			color: #ffffff;
+			margin-bottom: 4px;
+			box-shadow: 0 8px 20px rgba(18, 13, 83, 0.24);
+
+			svg {
+				font-size: 26px;
+			}
+		}
+
+		.mobile-cs-hero-title {
+			font-family: $font;
+			font-size: 21px;
+			font-weight: 700;
+			color: #181a20;
+		}
+
+		.mobile-cs-hero-subtitle {
+			font-family: $font;
+			font-size: 12.5px;
+			color: #6b7280;
+			line-height: 1.5;
+			max-width: 280px;
+		}
+	}
+
+	.mobile-cs-tabs {
+		gap: 10px;
+		margin-bottom: 22px;
+
+		.mobile-cs-tab {
+			flex: 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 7px;
+			padding: 12px 10px;
+			border-radius: 12px;
+			border: 1px solid rgba(18, 13, 83, 0.12);
+			background: #ffffff;
+			color: #6b7280;
+			font-family: $font;
+			font-size: 12.5px;
+			font-weight: 600;
+
+			svg {
+				font-size: 17px;
+			}
+
+			&.active {
+				border-color: transparent;
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+				color: #ffffff;
+				box-shadow: 0 8px 20px rgba(18, 13, 83, 0.24);
+			}
+
+			&:active {
+				transform: scale(0.97);
+			}
+		}
+	}
+
+	.mobile-cs-empty {
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 10px;
+		padding: 50px 20px;
+		color: #6b7280;
+		font-family: $font;
+		font-size: 13px;
+	}
+
+	/** ---------- Notice list ---------- */
+	.mobile-cs-notice {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		.mobile-cs-notice-card {
+			flex-direction: row;
+			align-items: flex-start;
+			gap: 12px;
+			padding: 14px;
+			border-radius: 14px;
+			background: #ffffff;
+			box-shadow: 0 6px 24px rgba(18, 13, 83, 0.08);
+			border: 1px solid rgba(18, 13, 83, 0.06);
+
+			.mobile-cs-notice-index {
+				flex-shrink: 0;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: rgba(18, 13, 83, 0.07);
+				color: #16206e;
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+			}
+
+			.mobile-cs-notice-badge {
+				flex-shrink: 0;
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				padding: 5px 9px;
+				border-radius: 8px;
+				background: rgba(212, 165, 116, 0.16);
+				color: #8b4513;
+				font-family: $font;
+				font-size: 10px;
+				font-weight: 700;
+				text-transform: uppercase;
+
+				svg {
+					font-size: 13px;
+				}
+			}
+
+			.mobile-cs-notice-body {
+				flex: 1;
+				min-width: 0;
+				gap: 6px;
+
+				.mobile-cs-notice-title {
+					font-family: $font;
+					font-size: 13.5px;
+					font-weight: 600;
+					color: #181a20;
+					line-height: 1.4;
+				}
+
+				.mobile-cs-notice-date {
+					gap: 5px;
+					color: #9599a8;
+					font-family: $font;
+					font-size: 11px;
+
+					svg {
+						font-size: 13px;
+					}
+				}
+			}
+		}
+	}
+
+	/** ---------- FAQ ---------- */
+	.mobile-cs-faq-tabs {
+		gap: 8px;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		margin-bottom: 16px;
+		padding-bottom: 2px;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		.mobile-cs-faq-tab {
+			flex-shrink: 0;
+			padding: 9px 15px;
+			border-radius: 999px;
+			border: 1px solid rgba(18, 13, 83, 0.12);
+			background: #ffffff;
+			color: #6b7280;
+			font-family: $font;
+			font-size: 12px;
+			font-weight: 600;
+
+			&.active {
+				border-color: transparent;
+				background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+				color: #1a1207;
+			}
+
+			&:active {
+				transform: scale(0.96);
+			}
+		}
+	}
+
+	.mobile-cs-faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.mobile-cs-faq-accordion.MuiAccordion-root {
+		border-radius: 14px !important;
+		overflow: hidden;
+		border: 1px solid rgba(18, 13, 83, 0.08) !important;
+		box-shadow: 0 4px 16px rgba(18, 13, 83, 0.06);
+
+		&::before {
+			display: none;
+		}
+	}
+
+	.mobile-cs-faq-question {
+		font-family: $font;
+
+		.MuiAccordionSummary-content {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+
+			p {
+				font-family: $font;
+				font-size: 13px;
+				font-weight: 600;
+				color: #181a20;
+			}
+		}
+	}
+
+	.mobile-cs-faq-answer-wrap {
+		background: #f8f9fa;
+	}
+
+	.mobile-cs-faq-answer {
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 10px;
+
+		p {
+			font-family: $font;
+			font-size: 12.5px;
+			line-height: 1.6;
+			color: #555555;
+		}
+	}
+
+	.mobile-cs-faq-badge {
+		flex-shrink: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 6px;
+		background: rgba(18, 13, 83, 0.08);
+		color: #16206e;
+		font-family: $font;
+		font-size: 12px;
+		font-weight: 800;
+
+		&.accent {
+			background: rgba(212, 165, 116, 0.18);
+			color: #8b4513;
+		}
+	}
+}
+
+[data-theme='dark'] #mobile-wrap {
+	.mobile-cs-hero {
+		.mobile-cs-hero-title {
+			color: #e0e0e0;
+		}
+		.mobile-cs-hero-subtitle {
+			color: #9599a8;
+		}
+	}
+
+	.mobile-cs-tabs .mobile-cs-tab {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.14);
+		color: #9599a8;
+
+		&.active {
+			background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+			color: #1a1207;
+		}
+	}
+
+	.mobile-cs-empty {
+		color: #9599a8;
+	}
+
+	.mobile-cs-notice .mobile-cs-notice-card {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.12);
+		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+
+		.mobile-cs-notice-index {
+			background: rgba(212, 165, 116, 0.14);
+			color: #d4a574;
+		}
+
+		.mobile-cs-notice-body .mobile-cs-notice-title {
+			color: #e0e0e0;
+		}
+	}
+
+	.mobile-cs-faq-tabs .mobile-cs-faq-tab {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.14);
+		color: #9599a8;
+	}
+
+	.mobile-cs-faq-accordion.MuiAccordion-root {
+		background: #1a1a1a !important;
+		border-color: rgba(212, 165, 116, 0.14) !important;
+	}
+
+	.mobile-cs-faq-question .MuiAccordionSummary-content p {
+		color: #e0e0e0;
+	}
+
+	.mobile-cs-faq-answer-wrap {
+		background: #141414;
+	}
+
+	.mobile-cs-faq-answer p {
+		color: #b0b0b0;
+	}
+
+	.mobile-cs-faq-badge {
+		background: rgba(212, 165, 116, 0.16);
+		color: #d4a574;
+	}
+}

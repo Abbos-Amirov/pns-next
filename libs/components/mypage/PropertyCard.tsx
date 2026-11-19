@@ -50,10 +50,10 @@ export const PropertyCard = (props: PropertyCardProps) => {
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') {
-		return <div>MOBILE PROPERTY CARD</div>;
-	} else
-		return (
+	// NOTE: this card is only reachable from the (currently unused) AGENT
+	// member-type flow. It shares the same markup on mobile and desktop —
+	// mobile presentation is handled purely via CSS (#mobile-wrap .property-card-box).
+	return (
 			<Stack className="property-card-box">
 				<Stack className="image-box" onClick={() => pushPropertyDetail(property?._id)}>
 					<img src={`${process.env.REACT_APP_API_URL}/${property.productImages?.[0]}`} alt="" />

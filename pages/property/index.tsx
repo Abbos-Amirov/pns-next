@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState, useMemo, useCallback } from 'react';
 import { NextPage } from 'next';
-import { Pagination, Typography } from '@mui/material';
+import { Pagination, Typography, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -8,6 +8,10 @@ import Filter from '../../libs/components/property/Filter';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SearchIcon from '@mui/icons-material/Search';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { PropertiesInquiry } from '../../libs/types/product/property.input';
 import { ProductsInquiry } from '../../libs/types/product/products.input';
 import { Product } from '../../libs/types/product/property';
@@ -236,7 +240,151 @@ export const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	];
 
 	if (device === 'mobile') {
-		return <div style={{ padding: 20, textAlign: 'center' }}>{t('PropertiesMobile')}</div>;
+		const materials: ProductMaterial[] = Object.values(ProductMaterial);
+		const activeMaterial = (searchFilter?.search as any)?.productMaterial;
+		const typeList = (initialInput?.search as any)?.typeList as string[] | undefined;
+		const pageTitle =
+			typeList?.[0] === 'WINDOW' ? t('Windows') : typeList?.[0] === 'DOOR' ? t('Doors') : 'All Products';
+
+		const materialClickHandler = (material?: ProductMaterial) => {
+			setSearchFilter((prev: PropertiesInquiry) => ({
+				...prev,
+				page: 1,
+				search: { ...prev.search, productMaterial: material },
+			}));
+			setCurrentPage(1);
+		};
+
+		const searchChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+			const value = e.target.value;
+			setSearchFilter((prev: PropertiesInquiry) => ({
+				...prev,
+				page: 1,
+				search: { ...prev.search, text: value },
+			}));
+			setCurrentPage(1);
+		};
+
+		return (
+			<div className="property-mobile-page">
+				<div className="property-mobile-hero mobile-section">
+					<div className="mobile-section-head">
+						<span className="mobile-eyebrow">Catalog</span>
+						<h1 className="mobile-title">{pageTitle}</h1>
+						<p className="mobile-subtitle">Browse our premium window &amp; door collection</p>
+					</div>
+
+					<div className="property-mobile-search-row">
+						<div className="property-mobile-search-box">
+							<SearchIcon fontSize="small" />
+							<input
+								type="text"
+								placeholder="Search products..."
+								defaultValue={searchFilter?.search?.text || ''}
+								onChange={searchChangeHandler}
+							/>
+						</div>
+						<button className="property-mobile-sort-btn" onClick={sortingClickHandler} type="button">
+							<SwapVertIcon fontSize="small" />
+						</button>
+					</div>
+
+					<Menu
+						anchorEl={anchorEl}
+						open={sortingOpen}
+						onClose={sortingCloseHandler}
+						className="property-mobile-sort-menu"
+						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+						transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+					>
+						{Object.keys(sortKeyToLabel).map((key) => (
+							<MenuItem id={key} key={key} selected={filterSortName === key} onClick={sortingHandler}>
+								{t(sortKeyToLabel[key])}
+							</MenuItem>
+						))}
+					</Menu>
+
+					<div className="property-mobile-chip-row">
+						<button
+							type="button"
+							className={`property-mobile-chip ${!activeMaterial ? 'active' : ''}`}
+							onClick={() => materialClickHandler(undefined)}
+						>
+							All
+						</button>
+						{materials.map((m) => (
+							<button
+								type="button"
+								key={m}
+								className={`property-mobile-chip ${activeMaterial === m ? 'active' : ''}`}
+								onClick={() => materialClickHandler(m)}
+							>
+								{m}
+							</button>
+						))}
+					</div>
+				</div>
+
+				<div className="property-mobile-list mobile-section">
+					{loading ? (
+						<div className="property-mobile-state">{t('PropertyLoading')}</div>
+					) : error ? (
+						<div className="property-mobile-state error">
+							{t('PropertyError')}: {error?.message}
+						</div>
+					) : properties?.length === 0 ? (
+						<div className="property-mobile-state">{t('PropertyNoProducts')}</div>
+					) : (
+						<>
+							{properties.map((p) => (
+								<Link key={p._id} href={`/property/detail?id=${p._id}`} className="property-mobile-card mobile-card">
+									<div className="property-mobile-card-img">
+										<img src={getImageUrl(p)} alt={p.productTitle} />
+										{p.productStatus === ProductStatus.OUT_OF_STOCK && (
+											<span className="property-mobile-badge">Out of Stock</span>
+										)}
+										<span className="property-mobile-price">${p.productPrice}</span>
+									</div>
+									<div className="property-mobile-card-info">
+										<h3 className="property-mobile-card-title">{p.productTitle}</h3>
+										<p className="property-mobile-card-desc">{p.productDesc || t('PropertyDescDefault')}</p>
+										<div className="property-mobile-card-meta">
+											<span>{p.productType}</span>
+											<span className="dot" />
+											<span>{(p as any).productMaterial || '—'}</span>
+										</div>
+										<div className="property-mobile-card-bottom">
+											<div className="property-mobile-card-stats">
+												<span>
+													<RemoveRedEyeIcon fontSize="inherit" /> {p.productViews}
+												</span>
+												<span>
+													<FavoriteIcon fontSize="inherit" /> {p.productLikes}
+												</span>
+											</div>
+											<span className="property-mobile-detail-btn">{t('ViewDetails')}</span>
+										</div>
+									</div>
+								</Link>
+							))}
+							{properties.length > 0 && (
+								<div className="property-mobile-pagination">
+									<Pagination
+										page={currentPage}
+										count={Math.ceil(total / (searchFilter.limit || 9))}
+										onChange={handlePaginationChange}
+										shape="circular"
+										color="primary"
+										size="small"
+									/>
+									<Typography variant="body2">{t('TotalProducts', { count: total })}</Typography>
+								</div>
+							)}
+						</>
+					)}
+				</div>
+			</div>
+		);
 	}
 
 	return (

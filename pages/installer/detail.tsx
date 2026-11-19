@@ -297,7 +297,230 @@ const InstallerDetail: NextPage = ({ initialComment, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>{t('InstallerDetailPageMobile')}</h1>;
+		if (memberLoading) {
+			return (
+				<div className="mobile-installer-detail-page">
+					<div className="mobile-installer-detail-state">{t('InstallerDetailLoading')}</div>
+				</div>
+			);
+		}
+
+		if (memberError || !installer) {
+			return (
+				<div className="mobile-installer-detail-page">
+					<div className="mobile-installer-detail-state mobile-installer-detail-state-error">
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<span>
+							{memberError ? t('InstallerDetailError', { message: memberError.message }) : t('InstallerDetailNotFound')}
+						</span>
+					</div>
+				</div>
+			);
+		}
+
+		const mobileImagePath: string = installer.memberImage
+			? `${REACT_APP_API_URL}/${installer.memberImage}`
+			: '/img/profile/defaultUser.svg';
+
+		return (
+			<div className="mobile-installer-detail-page">
+				<div className="mobile-installer-detail-hero">
+					<img
+						src={mobileImagePath}
+						alt={installer?.memberFullName || installer?.memberNick || 'Installer'}
+						className="mobile-installer-detail-avatar"
+						onError={(e) => {
+							(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
+						}}
+					/>
+					{installer?.memberArticles ? (
+						<span className="mobile-installer-detail-badge">
+							{t('InstallerDetailArticlesBadge', { count: installer.memberArticles })}
+						</span>
+					) : null}
+				</div>
+
+				<div className="mobile-installer-detail-card mobile-card">
+					<div className="mobile-installer-detail-header">
+						<h1 className="mobile-installer-detail-name">
+							{installer?.memberFullName || installer?.memberNick || t('Installer')}
+						</h1>
+						<span className="mobile-installer-detail-type-chip">{t('Installer')}</span>
+					</div>
+
+					<div className="mobile-installer-detail-stats">
+						<div className="mobile-installer-detail-stat">
+							<RemoveRedEyeIcon className="mobile-installer-detail-stat-icon" />
+							<strong>{installer?.memberViews || 0}</strong>
+							<span>{t('Views')}</span>
+						</div>
+						<div className="mobile-installer-detail-stat">
+							{isLiked ? (
+								<FavoriteIcon className="mobile-installer-detail-stat-icon liked" />
+							) : (
+								<FavoriteBorderIcon className="mobile-installer-detail-stat-icon" />
+							)}
+							<strong>{installer?.memberLikes || 0}</strong>
+							<span>{t('Likes')}</span>
+						</div>
+						<div className="mobile-installer-detail-stat">
+							<PersonIcon className="mobile-installer-detail-stat-icon" />
+							<strong>{installer?.memberFollowers || 0}</strong>
+							<span>{t('Followers')}</span>
+						</div>
+						<div className="mobile-installer-detail-stat">
+							<PersonIcon className="mobile-installer-detail-stat-icon" />
+							<strong>{installer?.memberFollowings || 0}</strong>
+							<span>{t('Followings')}</span>
+						</div>
+						<div className="mobile-installer-detail-stat">
+							<strong>{installer?.memberComments || 0}</strong>
+							<span>{t('Comments')}</span>
+						</div>
+					</div>
+
+					<div className="mobile-installer-detail-info-list">
+						{installer?.memberPhone && (
+							<div className="mobile-installer-detail-info-row">
+								<PhoneIcon className="mobile-installer-detail-info-icon" />
+								<span>{installer.memberPhone}</span>
+							</div>
+						)}
+						{installer?.memberAddress && (
+							<div className="mobile-installer-detail-info-row">
+								<LocationOnIcon className="mobile-installer-detail-info-icon" />
+								<span>{installer.memberAddress}</span>
+							</div>
+						)}
+						{installer?.memberDesc && (
+							<div className="mobile-installer-detail-info-row">
+								<PersonIcon className="mobile-installer-detail-info-icon" />
+								<span>{installer.memberDesc}</span>
+							</div>
+						)}
+					</div>
+
+					{(installer?.memberExperience || installer?.memberEducation) && (
+						<div className="mobile-installer-detail-feature-grid">
+							{installer?.memberExperience && (
+								<div className="mobile-installer-detail-feature-card">
+									<span className="mobile-installer-detail-feature-label">{t('Experience')}</span>
+									<span className="mobile-installer-detail-feature-value">{installer.memberExperience}</span>
+								</div>
+							)}
+							{installer?.memberEducation && (
+								<div className="mobile-installer-detail-feature-card">
+									<span className="mobile-installer-detail-feature-label">{t('Education')}</span>
+									<span className="mobile-installer-detail-feature-value">{installer.memberEducation}</span>
+								</div>
+							)}
+						</div>
+					)}
+
+					<div className="mobile-installer-detail-actions">
+						<button
+							type="button"
+							className={`mobile-installer-detail-like-btn${isLiked ? ' liked' : ''}`}
+							onClick={likeInstallerHandler}
+							disabled={likeLoading}
+						>
+							{isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+							<span>{isLiked ? t('Liked') : t('Like')}</span>
+						</button>
+						<button
+							type="button"
+							className="mobile-installer-detail-profile-btn mobile-btn-accent"
+							onClick={() => redirectToMemberPageHandler(installer._id)}
+						>
+							{t('InstallerDetailViewFullProfile')}
+						</button>
+					</div>
+				</div>
+
+				<div className="mobile-section mobile-installer-detail-articles">
+					<div className="mobile-section-head">
+						<h2 className="mobile-title">{t('InstallerDetailMyArticles')}</h2>
+					</div>
+					<div className="mobile-installer-articles-grid">
+						{articlesLoading ? (
+							<div className="mobile-installer-empty">{t('InstallerDetailLoadingArticles')}</div>
+						) : articlesError ? (
+							<div className="mobile-installer-empty">
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>{t('InstallerDetailArticlesError', { message: articlesError.message })}</p>
+							</div>
+						) : installerArticles.length > 0 ? (
+							installerArticles.map((article: BoardArticle) => (
+								<div className="mobile-installer-article-card-wrap" key={article?._id}>
+									<CommunityCard boardArticle={article} size="small" />
+								</div>
+							))
+						) : (
+							<div className="mobile-installer-empty">
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>{t('InstallerDetailNoArticles')}</p>
+							</div>
+						)}
+					</div>
+				</div>
+
+				<div className="mobile-section mobile-installer-detail-reviews">
+					<div className="mobile-section-head">
+						<h2 className="mobile-title">{t('Reviews')}</h2>
+						<p className="mobile-subtitle">{t('InstallerDetailReviewsSubtitle')}</p>
+					</div>
+
+					{commentsLoading ? (
+						<div className="mobile-installer-empty">{t('InstallerDetailLoadingReviews')}</div>
+					) : commentTotal > 0 ? (
+						<div className="mobile-installer-reviews-list">
+							<div className="mobile-installer-reviews-count">
+								<StarIcon />
+								<span>{t('InstallerDetailReviewCount', { count: commentTotal })}</span>
+							</div>
+							{installerComments?.map((comment: Comment) => (
+								<ReviewCard comment={comment} key={comment?._id} />
+							))}
+							{Math.ceil(commentTotal / (commentInquiry.limit || 4)) > 1 && (
+								<div className="mobile-installer-pagination">
+									<Pagination
+										page={commentInquiry.page || 1}
+										count={Math.ceil(commentTotal / (commentInquiry.limit || 4))}
+										onChange={commentPaginationChangeHandler}
+										shape="circular"
+										color="primary"
+									/>
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="mobile-installer-empty">{t('InstallerDetailNoReviews')}</div>
+					)}
+
+					{user?._id && (
+						<div className="mobile-installer-review-form mobile-card">
+							<h4 className="mobile-installer-review-form-title">{t('Leave A Review')}</h4>
+							<textarea
+								onChange={({ target: { value } }: any) => {
+									setInsertCommentData({ ...insertCommentData, commentContent: value });
+								}}
+								value={insertCommentData.commentContent}
+								placeholder={t('InstallerDetailReviewPlaceholder') as string}
+								disabled={createCommentLoading}
+							></textarea>
+							<button
+								type="button"
+								className="mobile-installer-review-submit mobile-btn-accent"
+								disabled={insertCommentData.commentContent === '' || !user?._id || createCommentLoading}
+								onClick={submitCommentHandler}
+							>
+								{createCommentLoading ? t('InstallerDetailSubmitting') : t('Submit Review')}
+							</button>
+						</div>
+					)}
+				</div>
+			</div>
+		);
 	}
 
 	if (memberLoading) {

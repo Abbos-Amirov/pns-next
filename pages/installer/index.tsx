@@ -223,7 +223,156 @@ const InstallerList: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>INSTALLERS PAGE MOBILE</h1>;
+		return (
+			<div className="mobile-installer-list-page">
+				<div className="mobile-section-head mobile-installer-head">
+					<span className="mobile-eyebrow">{t('Experts') || 'EXPERTS'}</span>
+					<h1 className="mobile-title">{t('FindInstaller') || 'Find an Installer'}</h1>
+					<p className="mobile-subtitle">
+						{t('InstallerListSubtitle') || 'Trusted window & door installation crews'}
+					</p>
+				</div>
+
+				<div className="mobile-installer-toolbar">
+					<div className="mobile-installer-search">
+						<SearchIcon className="mobile-installer-search-icon" />
+						<input
+							type="text"
+							placeholder={(t('SearchInstaller') as string) || 'Search installer...'}
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									setSearchFilter({
+										...searchFilter,
+										search: { ...searchFilter.search, text: searchText },
+									});
+								}
+							}}
+						/>
+					</div>
+					<FormControl className="mobile-installer-sort-control">
+						<Select
+							value={
+								filterSortName === 'SortRecent' ? 'Recent' :
+								filterSortName === 'SortOldest' ? 'Oldest order' :
+								filterSortName === 'Likes' ? 'Likes' :
+								filterSortName === 'Views' ? 'Views' : 'Recent'
+							}
+							onChange={(e) => sortChangeHandler(e.target.value as string)}
+							IconComponent={KeyboardArrowDownRoundedIcon}
+							className="mobile-installer-sort-select"
+						>
+							<MenuItem value="Recent">{t('SortRecent')}</MenuItem>
+							<MenuItem value="Oldest order">{t('SortOldest')}</MenuItem>
+							<MenuItem value="Likes">{t('Likes')}</MenuItem>
+							<MenuItem value="Views">{t('Views')}</MenuItem>
+						</Select>
+					</FormControl>
+				</div>
+
+				<div className="mobile-installer-list">
+					{loading ? (
+						<div className="mobile-installer-state">{t('PropertyLoading') || 'Loading...'}</div>
+					) : error ? (
+						<div className="mobile-installer-state mobile-installer-state-error">
+							{t('PropertyError')}: {error?.message}
+						</div>
+					) : installers?.length === 0 ? (
+						<div className="mobile-installer-state">{t('PropertyNoProducts') || 'No installers found'}</div>
+					) : (
+						installers.map((installer) => {
+							const detailHref = `/installer/detail?installerId=${installer._id}`;
+							const liked = installer?.meLiked?.[0]?.myFavorite;
+							const thumbs = installerArticleImages[installer._id] || [];
+							return (
+								<div key={installer._id} className="mobile-installer-card mobile-card">
+									<Link href={detailHref} className="mobile-installer-card-media">
+										<img src={getInstallerImageUrl(installer)} alt={installer?.memberNick || 'Installer'} />
+										<button
+											type="button"
+											className="mobile-installer-like-btn"
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												likeMemberHandler(user, installer._id);
+											}}
+											aria-label={liked ? 'Unlike' : 'Like'}
+										>
+											{liked ? (
+												<FavoriteIcon className="mobile-installer-like-icon liked" />
+											) : (
+												<FavoriteBorderIcon className="mobile-installer-like-icon" />
+											)}
+										</button>
+									</Link>
+									<div className="mobile-installer-card-body">
+										<h3 className="mobile-installer-card-name">
+											{installer?.memberFullName || installer?.memberNick || 'Installer'}
+										</h3>
+										<span className="mobile-installer-card-role">{installer?.memberType || t('LabelRole')}</span>
+										<p className="mobile-installer-card-desc">
+											{installer?.memberDesc || t('InstallerDescDefault') || 'Professional installer'}
+										</p>
+
+										<div className="mobile-installer-card-meta-row">
+											<div className="mobile-installer-meta-chip">
+												<span className="mobile-installer-meta-label">{t('Experience')}</span>
+												<span className="mobile-installer-meta-value">{installer?.memberExperience || '—'}</span>
+											</div>
+											<div className="mobile-installer-meta-chip">
+												<span className="mobile-installer-meta-label">{t('Education')}</span>
+												<span className="mobile-installer-meta-value">{installer?.memberEducation || '—'}</span>
+											</div>
+										</div>
+
+										<div className="mobile-installer-card-stats-row">
+											<span className="mobile-installer-stat">
+												<VisibilityIcon className="mobile-installer-stat-icon" /> {installer?.memberViews ?? 0}
+											</span>
+											<span className="mobile-installer-stat">
+												<FavoriteIcon className="mobile-installer-stat-icon" /> {installer?.memberLikes ?? 0}
+											</span>
+											<span className="mobile-installer-stat">{installer?.memberComments ?? 0} {t('Comments')}</span>
+										</div>
+
+										{thumbs.length > 0 && (
+											<div className="mobile-installer-thumbs-row">
+												{thumbs.slice(0, 3).map((src, idx) => (
+													<Link key={idx} href={detailHref} className="mobile-installer-thumb">
+														<img src={src} alt={`Article ${idx + 1}`} />
+													</Link>
+												))}
+											</div>
+										)}
+
+										<Link href={detailHref} className="mobile-installer-view-btn mobile-btn-accent">
+											<RemoveRedEyeIcon sx={{ fontSize: 18 }} />
+											{t('ViewDetails')}
+										</Link>
+									</div>
+								</div>
+							);
+						})
+					)}
+				</div>
+
+				{installers.length > 0 && (
+					<div className="mobile-installer-pagination">
+						<Pagination
+							page={currentPage}
+							count={Math.ceil(total / (searchFilter.limit || 10))}
+							onChange={paginationChangeHandler}
+							shape="circular"
+							color="primary"
+						/>
+						<Typography className="mobile-installer-total">
+							{t('Total') || 'Total'} {total} {t('installer') || 'installer'}{total !== 1 ? 's' : ''}
+						</Typography>
+					</div>
+				)}
+			</div>
+		);
 	}
 
 	return (

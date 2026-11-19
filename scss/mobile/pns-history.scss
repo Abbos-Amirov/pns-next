@@ -1,0 +1,165 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — PNS History page (pages/pns-history/index.tsx)
+ * Renders `<PnsHistoryContent/>` inside `.pns-history-page-root
+ * .pns-history-page--mobile` when device === 'mobile'. The shared component
+ * markup (.pns-history-page, .pns-history-hero-title, .pns-history-rail,
+ * .pns-history-news-card, ...) is defined (unscoped) in
+ * scss/pc/pns-history/pns-history.scss for light mode, and dark mode is
+ * already fully handled in scss/app.scss (~line 1515) with !important.
+ * This file only supplies the LIGHT-mode mobile layout.
+ * ========================================================================== */
+
+#mobile-wrap {
+	.pns-history-page-root {
+		width: 100%;
+		min-height: 60vh;
+		background: #ffffff;
+	}
+
+	.pns-history-page {
+		max-width: 100%;
+		padding: 30px 16px 56px;
+	}
+
+	/* ---------- Hero ---------- */
+	.pns-history-hero {
+		text-align: center;
+		margin-bottom: 32px;
+	}
+
+	.pns-history-hero-title {
+		font-size: 22px;
+		font-weight: 800;
+		line-height: 1.28;
+		margin: 0 0 10px;
+		color: #111111;
+	}
+
+	.pns-history-hero-subtitle {
+		font-size: 13px;
+		line-height: 1.6;
+		color: #666666;
+		margin: 0;
+	}
+
+	/* ---------- Timeline ---------- */
+	.pns-history-timeline-wrap {
+		width: 100%;
+	}
+
+	.pns-history-timeline {
+		display: flex;
+		flex-direction: column;
+		gap: 26px;
+	}
+
+	.pns-history-year-block {
+		display: grid;
+		grid-template-columns: 52px 14px 1fr;
+		column-gap: 10px;
+		align-items: start;
+	}
+
+	.pns-history-year-label {
+		display: block;
+		font-size: 1.05rem;
+		font-weight: 800;
+		color: #111111;
+		line-height: 1.2;
+		text-align: right;
+		padding-top: 2px;
+	}
+
+	.pns-history-rail {
+		width: 2px;
+		min-height: 100%;
+		background: linear-gradient(180deg, #c5c9d4 0%, #dfe3ea 100%);
+		border-radius: 999px;
+		position: relative;
+		margin: 4px auto 0;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 6px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 9px;
+			height: 9px;
+			border-radius: 50%;
+			background: #120d53;
+			box-shadow: 0 0 0 3px rgba(18, 13, 83, 0.15);
+		}
+	}
+
+	.pns-history-events {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.pns-history-event-line {
+		font-size: 0.82rem;
+		line-height: 1.55;
+		color: #444444;
+		margin: 0;
+	}
+
+	/* ---------- News section ---------- */
+	.pns-history-news-section {
+		margin-top: 44px;
+		padding-top: 30px;
+		border-top: 1px solid rgba(18, 13, 83, 0.08);
+
+		&::before {
+			inset: 16px -12px -16px;
+			border-radius: 22px;
+		}
+	}
+
+	.pns-history-news-heading {
+		font-size: 1.15rem;
+		margin: 0 0 20px;
+	}
+
+	.pns-history-news-grid {
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.pns-history-news-card {
+		flex: 1 1 auto;
+		min-height: 0;
+		padding: 20px 20px 18px;
+		border-radius: 16px;
+		gap: 12px;
+	}
+
+	.pns-history-news-meta {
+		padding: 6px 10px;
+		font-size: 0.68rem;
+	}
+
+	.pns-history-news-title-link {
+		font-size: 1.08rem;
+		line-height: 1.32;
+	}
+
+	.pns-history-news-body {
+		font-size: 0.83rem;
+		line-height: 1.62;
+		padding: 12px 14px;
+		-webkit-line-clamp: 4;
+		line-clamp: 4;
+	}
+
+	.pns-history-news-more {
+		font-size: 0.78rem;
+		padding: 9px 14px;
+	}
+}

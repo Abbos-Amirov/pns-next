@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { REACT_APP_API_URL, REACT_APP_API_GRAPHQL_URL } from '../../config';
 import { getJwtToken, setJwtToken, updateUserInfo } from '../../auth';
@@ -239,7 +239,105 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	console.log('+user', user);
 
 	if (device === 'mobile') {
-		return <>MY PROFILE PAGE MOBILE</>;
+		return (
+			<Stack className={'mobile-myprofile-page'}>
+				<Stack className={'mobile-myprofile-photo-box'}>
+					<Box component={'div'} className={'mobile-myprofile-avatar'}>
+						<img
+							src={
+								updateData?.memberImage
+									? `${REACT_APP_API_URL}/${updateData?.memberImage}`
+									: `/img/profile/defaultUser.svg`
+							}
+							alt=""
+						/>
+					</Box>
+					<input
+						type="file"
+						hidden
+						id="mobile-hidden-input"
+						onChange={uploadImage}
+						accept="image/jpg, image/jpeg, image/png"
+					/>
+					<label htmlFor="mobile-hidden-input" className={'mobile-myprofile-upload-label'}>
+						{t('UploadProfileImage')}
+					</label>
+					<Typography className={'mobile-myprofile-upload-hint'}>{t('PhotoFormatHint')}</Typography>
+				</Stack>
+
+				<Stack className={'mobile-myprofile-form'}>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('Username')}</Typography>
+						<input
+							type="text"
+							placeholder={t('PlaceholderUsername')}
+							value={updateData.memberNick}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
+						/>
+					</Stack>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('Phone')}</Typography>
+						<input
+							type="text"
+							placeholder={t('PlaceholderPhone')}
+							value={updateData.memberPhone}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
+						/>
+					</Stack>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('Address')}</Typography>
+						<input
+							type="text"
+							placeholder={t('PlaceholderAddress')}
+							value={updateData.memberAddress}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
+						/>
+					</Stack>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('MemberDescription')}</Typography>
+						<textarea
+							className={'mobile-textarea'}
+							placeholder={t('PlaceholderMemberDescription')}
+							value={updateData.memberDesc || ''}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberDesc: value })}
+							rows={4}
+							maxLength={2000}
+						/>
+					</Stack>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('Experience')}</Typography>
+						<input
+							type="text"
+							placeholder={t('PlaceholderExperience')}
+							value={updateData.memberExperience || ''}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberExperience: value })}
+						/>
+					</Stack>
+					<Stack className={'mobile-field'}>
+						<Typography className={'mobile-field-label'}>{t('Education')}</Typography>
+						<input
+							type="text"
+							placeholder={t('PlaceholderEducation')}
+							value={updateData.memberEducation || ''}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberEducation: value })}
+						/>
+					</Stack>
+				</Stack>
+
+				<Stack className={'mobile-myprofile-actions'}>
+					<Button
+						className={'mobile-btn-primary mobile-myprofile-submit'}
+						disabled={doDisabledCheck()}
+						onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+							e.preventDefault();
+							updatePropertyHandler();
+						}}
+					>
+						{updating ? t('Updating') : t('UpdateProfile')}
+					</Button>
+				</Stack>
+			</Stack>
+		);
 	} else
 		return (
 			<div id="my-profile-page">

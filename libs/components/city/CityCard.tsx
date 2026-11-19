@@ -146,7 +146,36 @@ const CityCard = (props: CityCardType) => {
 
 
 	if (device === 'mobile') {
-		return <div>CITY CARD</div>;
+		return (
+			<Link href={detailHref} className="mobile-city-card">
+				<div className="mobile-city-card-img" style={{ backgroundImage: `url(${imagePath})` }}>
+					<span className="mobile-city-card-scrim" />
+					<button
+						type="button"
+						className={`mobile-city-card-like ${isLiked ? 'liked' : ''}`}
+						onClick={handleLikeClick}
+						disabled={likeLoading}
+						aria-label={t('ViewDetails')}
+					>
+						{isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+					</button>
+					<span className="mobile-city-card-name">{city.locationName}</span>
+				</div>
+				<div className="mobile-city-card-body">
+					<span className="mobile-city-card-address">{city?.address || 'Location'}</span>
+					<div className="mobile-city-card-stats">
+						<span className="mobile-city-card-stat">
+							<FavoriteIcon />
+							{likesCount}
+						</span>
+						<span className="mobile-city-card-stat">
+							<RemoveRedEyeIcon />
+							{city?.locationViews || 0}
+						</span>
+					</div>
+				</div>
+			</Link>
+		);
 	} else {
 		return (
 			<Stack

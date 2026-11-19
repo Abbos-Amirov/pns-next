@@ -1,0 +1,862 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — Agent (measurer) list + detail pages
+ * ========================================================================== */
+
+#mobile-wrap {
+	/* ---------------------------------------------------------------------
+	 * LIST PAGE
+	 * ------------------------------------------------------------------- */
+	.mobile-agent-list-page {
+		padding: 26px 16px 40px;
+		background: #f5f5f5;
+	}
+
+	.mobile-agent-toolbar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 18px;
+
+		.mobile-agent-search {
+			flex: 1;
+			min-width: 0;
+
+			input {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 12px 16px;
+				border-radius: 12px;
+				border: 1px solid rgba(18, 13, 83, 0.12);
+				background: #ffffff;
+				color: #181a20;
+				font-family: $font;
+				font-size: 13px;
+
+				&::placeholder {
+					color: #9599a8;
+				}
+
+				&:focus {
+					outline: none;
+					border-color: #16206e;
+				}
+			}
+		}
+
+		.mobile-agent-sort-btn {
+			flex-shrink: 0;
+			display: inline-flex;
+			align-items: center;
+			gap: 2px;
+			padding: 11px 12px;
+			border-radius: 12px;
+			border: 1px solid rgba(18, 13, 83, 0.12);
+			background: #ffffff;
+			color: #16206e;
+			font-family: $font;
+			font-size: 12px;
+			font-weight: 600;
+
+			svg {
+				font-size: 18px;
+			}
+
+			&:active {
+				transform: scale(0.96);
+			}
+		}
+	}
+
+	.mobile-agent-list {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.mobile-agent-state {
+		padding: 40px 16px;
+		text-align: center;
+		font-family: $font;
+		font-size: 13px;
+		color: #6b7280;
+
+		&.mobile-agent-state-error {
+			color: #e53935;
+		}
+	}
+
+	.mobile-agent-card {
+		overflow: hidden;
+
+		.mobile-agent-card-media {
+			position: relative;
+			display: block;
+			width: 100%;
+			height: 190px;
+			background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+			}
+
+			.mobile-agent-like-btn {
+				position: absolute;
+				top: 12px;
+				right: 12px;
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				border: none;
+				background: rgba(255, 255, 255, 0.92);
+				backdrop-filter: blur(6px);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				box-shadow: 0 4px 12px rgba(24, 26, 32, 0.16);
+
+				&:active {
+					transform: scale(0.92);
+				}
+
+				.mobile-agent-like-icon {
+					font-size: 19px;
+					color: #16206e;
+
+					&.liked {
+						color: #eb6753;
+					}
+				}
+			}
+		}
+
+		.mobile-agent-card-body {
+			padding: 16px;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.mobile-agent-card-name {
+			margin: 0;
+			font-family: $font;
+			font-size: 17px;
+			font-weight: 700;
+			color: #181a20;
+			text-transform: capitalize;
+		}
+
+		.mobile-agent-card-role {
+			display: inline-flex;
+			align-self: flex-start;
+			padding: 3px 10px;
+			border-radius: 20px;
+			background: rgba(18, 13, 83, 0.08);
+			color: #16206e;
+			font-family: $font;
+			font-size: 10px;
+			font-weight: 700;
+			letter-spacing: 0.4px;
+			text-transform: uppercase;
+		}
+
+		.mobile-agent-card-desc {
+			margin: 0;
+			font-family: $font;
+			font-size: 13px;
+			line-height: 1.55;
+			color: #6b7280;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		.mobile-agent-card-meta-row {
+			display: flex;
+			flex-direction: row;
+			gap: 8px;
+
+			.mobile-agent-meta-chip {
+				flex: 1;
+				min-width: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
+				padding: 8px 10px;
+				border-radius: 10px;
+				background: #f8f9fa;
+				border: 1px solid rgba(18, 13, 83, 0.06);
+
+				.mobile-agent-meta-label {
+					font-family: $font;
+					font-size: 9px;
+					font-weight: 700;
+					letter-spacing: 0.5px;
+					text-transform: uppercase;
+					color: #9599a8;
+				}
+
+				.mobile-agent-meta-value {
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 600;
+					color: #181a20;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+
+		.mobile-agent-card-stats-row {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 14px;
+			padding-top: 2px;
+
+			.mobile-agent-stat {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				font-family: $font;
+				font-size: 12px;
+				font-weight: 500;
+				color: #555555;
+
+				.mobile-agent-stat-icon {
+					font-size: 15px;
+					color: #8b4513;
+				}
+			}
+		}
+
+		.mobile-agent-thumbs-row {
+			display: flex;
+			flex-direction: row;
+			gap: 8px;
+
+			.mobile-agent-thumb {
+				width: 52px;
+				height: 52px;
+				border-radius: 10px;
+				overflow: hidden;
+				border: 1px solid rgba(18, 13, 83, 0.1);
+				flex-shrink: 0;
+
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+				}
+			}
+		}
+
+		.mobile-agent-view-btn {
+			margin-top: 6px;
+			width: 100%;
+		}
+	}
+
+	.mobile-agent-pagination {
+		margin-top: 22px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+
+		.MuiPagination-ul {
+			flex-wrap: nowrap;
+		}
+
+		.MuiPaginationItem-root {
+			color: #16206e;
+			font-family: $font;
+
+			&.Mui-selected {
+				background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+				color: #ffffff;
+			}
+		}
+
+		.mobile-agent-total {
+			font-family: $font;
+			font-size: 12px;
+			color: #6b7280;
+		}
+	}
+
+	/* ---------------------------------------------------------------------
+	 * DETAIL PAGE
+	 * ------------------------------------------------------------------- */
+	.mobile-agent-detail-page {
+		background: #f5f5f5;
+		padding-bottom: 16px;
+	}
+
+	.mobile-agent-detail-state {
+		padding: 60px 20px;
+		text-align: center;
+		font-family: $font;
+		font-size: 13px;
+		color: #6b7280;
+
+		&.mobile-agent-detail-state-error {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+			color: #e53935;
+
+			img {
+				width: 32px;
+				height: 32px;
+			}
+		}
+	}
+
+	.mobile-agent-detail-hero {
+		position: relative;
+		width: 100%;
+		height: 220px;
+		background: linear-gradient(135deg, #120d53 0%, #16206e 55%, #1a1780 100%);
+		overflow: hidden;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			opacity: 0.94;
+		}
+
+		.mobile-agent-detail-badge {
+			position: absolute;
+			left: 14px;
+			bottom: 14px;
+			padding: 6px 12px;
+			border-radius: 20px;
+			background: rgba(235, 103, 83, 0.95);
+			color: #ffffff;
+			font-family: $font;
+			font-size: 11px;
+			font-weight: 700;
+		}
+	}
+
+	.mobile-agent-detail-card {
+		position: relative;
+		margin: -28px 16px 0;
+		padding: 20px 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		z-index: 2;
+	}
+
+	.mobile-agent-detail-header {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		.mobile-agent-detail-name {
+			margin: 0;
+			font-family: $font;
+			font-size: 21px;
+			font-weight: 700;
+			color: #181a20;
+			text-transform: capitalize;
+		}
+
+		.mobile-agent-detail-type-chip {
+			display: inline-flex;
+			align-self: flex-start;
+			padding: 5px 12px;
+			border-radius: 20px;
+			background: #8b4513;
+			color: #ffffff;
+			font-family: $font;
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: 0.3px;
+		}
+	}
+
+	.mobile-agent-detail-stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 8px;
+		padding: 14px 6px;
+		border-radius: 14px;
+		background: #f8f9fa;
+		border: 1px solid rgba(18, 13, 83, 0.06);
+
+		.mobile-agent-detail-stat {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 3px;
+
+			.mobile-agent-detail-stat-icon {
+				font-size: 18px;
+				color: #8b4513;
+
+				&.liked {
+					color: #eb6753;
+				}
+			}
+
+			strong {
+				font-family: $font;
+				font-size: 14px;
+				font-weight: 700;
+				color: #181a20;
+			}
+
+			span {
+				font-family: $font;
+				font-size: 9.5px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.3px;
+				color: #9599a8;
+			}
+		}
+	}
+
+	.mobile-agent-detail-info-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+
+		.mobile-agent-detail-info-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-family: $font;
+			font-size: 13px;
+			color: #181a20;
+
+			.mobile-agent-detail-info-icon {
+				font-size: 17px;
+				color: #8b4513;
+				flex-shrink: 0;
+			}
+
+			&.mobile-agent-detail-info-row-muted {
+				justify-content: space-between;
+				color: #6b7280;
+				font-size: 12px;
+			}
+		}
+	}
+
+	.mobile-agent-detail-feature-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 10px;
+
+		.mobile-agent-detail-feature-card {
+			padding: 10px 12px;
+			border-radius: 12px;
+			background: rgba(139, 69, 19, 0.06);
+			border: 1px solid rgba(139, 69, 19, 0.14);
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+
+			.mobile-agent-detail-feature-label {
+				font-family: $font;
+				font-size: 9.5px;
+				font-weight: 700;
+				letter-spacing: 0.4px;
+				text-transform: uppercase;
+				color: #8b4513;
+			}
+
+			.mobile-agent-detail-feature-value {
+				font-family: $font;
+				font-size: 13px;
+				font-weight: 600;
+				color: #181a20;
+			}
+		}
+	}
+
+	.mobile-agent-detail-about {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		.mobile-agent-detail-about-title {
+			font-family: $font;
+			font-size: 13px;
+			font-weight: 700;
+			color: #181a20;
+		}
+
+		.mobile-agent-detail-about-text {
+			margin: 0;
+			font-family: $font;
+			font-size: 13px;
+			line-height: 1.6;
+			color: #555555;
+		}
+	}
+
+	.mobile-agent-detail-actions {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+
+		.mobile-agent-detail-like-btn {
+			flex: 0 0 auto;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 12px 16px;
+			border-radius: 12px;
+			border: 1.5px solid #8b4513;
+			background: transparent;
+			color: #8b4513;
+			font-family: $font;
+			font-size: 13px;
+			font-weight: 600;
+
+			svg {
+				font-size: 18px;
+			}
+
+			&.liked {
+				background: #eb6753;
+				border-color: #eb6753;
+				color: #ffffff;
+			}
+
+			&:active {
+				transform: scale(0.96);
+			}
+		}
+
+		.mobile-agent-detail-profile-btn {
+			flex: 1;
+		}
+	}
+
+	.mobile-agent-detail-locations,
+	.mobile-agent-detail-reviews {
+		padding: 28px 16px 0;
+	}
+
+	.mobile-agent-locations-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+
+		.mobile-agent-location-card-wrap {
+			width: 100%;
+		}
+	}
+
+	.mobile-agent-empty {
+		padding: 30px 16px;
+		text-align: center;
+		font-family: $font;
+		font-size: 12.5px;
+		color: #9599a8;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
+
+		img {
+			width: 26px;
+			height: 26px;
+			opacity: 0.6;
+		}
+	}
+
+	.mobile-agent-reviews-list {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+
+		.mobile-agent-reviews-count {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-family: $font;
+			font-size: 13px;
+			font-weight: 600;
+			color: #181a20;
+
+			svg {
+				color: #ffd700;
+				font-size: 20px;
+			}
+		}
+	}
+
+	.mobile-agent-review-form {
+		margin-top: 20px;
+		padding: 18px 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+
+		.mobile-agent-review-form-title {
+			margin: 0;
+			font-family: $font;
+			font-size: 14px;
+			font-weight: 700;
+			color: #181a20;
+		}
+
+		textarea {
+			width: 100%;
+			min-height: 90px;
+			box-sizing: border-box;
+			padding: 12px 14px;
+			border-radius: 12px;
+			border: 1px solid rgba(18, 13, 83, 0.12);
+			background: #f8f9fa;
+			color: #181a20;
+			font-family: $font;
+			font-size: 13px;
+			resize: vertical;
+
+			&::placeholder {
+				color: #9599a8;
+			}
+
+			&:focus {
+				outline: none;
+				border-color: #8b4513;
+			}
+		}
+
+		.mobile-agent-review-submit {
+			width: 100%;
+
+			&:disabled {
+				opacity: 0.5;
+			}
+		}
+	}
+}
+
+/** ---------- MUI Menu (portals to body) ---------- */
+@media (max-width: 768px) {
+	.mobile-agent-sort-menu {
+		.MuiPaper-root {
+			border-radius: 14px;
+			box-shadow: 0 12px 32px rgba(18, 13, 83, 0.18);
+		}
+
+		.MuiMenuItem-root {
+			font-family: $font;
+			font-size: 13px;
+			padding: 10px 18px;
+		}
+	}
+}
+
+/** ==========================================================================
+ * DARK MODE
+ * ========================================================================== */
+[data-theme='dark'] #mobile-wrap {
+	.mobile-agent-list-page,
+	.mobile-agent-detail-page {
+		background: #0d0d0d;
+	}
+
+	.mobile-agent-toolbar {
+		.mobile-agent-search input {
+			background: #1a1a1a;
+			border-color: rgba(212, 165, 116, 0.16);
+			color: #e0e0e0;
+
+			&::placeholder {
+				color: #7a7a7a;
+			}
+
+			&:focus {
+				border-color: #d4a574;
+			}
+		}
+
+		.mobile-agent-sort-btn {
+			background: #1a1a1a;
+			border-color: rgba(212, 165, 116, 0.16);
+			color: #d4a574;
+		}
+	}
+
+	.mobile-agent-state {
+		color: #9599a8;
+	}
+
+	.mobile-agent-card {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.1);
+
+		.mobile-agent-card-name {
+			color: #f2f2f2;
+		}
+
+		.mobile-agent-card-role {
+			background: rgba(212, 165, 116, 0.14);
+			color: #d4a574;
+		}
+
+		.mobile-agent-card-desc {
+			color: #9599a8;
+		}
+
+		.mobile-agent-card-meta-row .mobile-agent-meta-chip {
+			background: #232323;
+			border-color: rgba(212, 165, 116, 0.1);
+
+			.mobile-agent-meta-value {
+				color: #e0e0e0;
+			}
+		}
+
+		.mobile-agent-card-stats-row .mobile-agent-stat {
+			color: #b0b0b0;
+
+			.mobile-agent-stat-icon {
+				color: #d4a574;
+			}
+		}
+	}
+
+	.mobile-agent-pagination {
+		.MuiPaginationItem-root {
+			color: #d4a574;
+
+			&.Mui-selected {
+				background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%);
+				color: #1a1207;
+			}
+		}
+
+		.mobile-agent-total {
+			color: #9599a8;
+		}
+	}
+
+	.mobile-agent-detail-card {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.1);
+
+		.mobile-agent-detail-name {
+			color: #f2f2f2;
+		}
+	}
+
+	.mobile-agent-detail-stats {
+		background: #232323;
+		border-color: rgba(212, 165, 116, 0.1);
+
+		.mobile-agent-detail-stat {
+			.mobile-agent-detail-stat-icon {
+				color: #d4a574;
+			}
+
+			strong {
+				color: #f2f2f2;
+			}
+		}
+	}
+
+	.mobile-agent-detail-info-list .mobile-agent-detail-info-row {
+		color: #e0e0e0;
+
+		.mobile-agent-detail-info-icon {
+			color: #d4a574;
+		}
+	}
+
+	.mobile-agent-detail-feature-grid .mobile-agent-detail-feature-card {
+		background: rgba(212, 165, 116, 0.08);
+		border-color: rgba(212, 165, 116, 0.18);
+
+		.mobile-agent-detail-feature-label {
+			color: #d4a574;
+		}
+
+		.mobile-agent-detail-feature-value {
+			color: #f2f2f2;
+		}
+	}
+
+	.mobile-agent-detail-about {
+		.mobile-agent-detail-about-title {
+			color: #f2f2f2;
+		}
+
+		.mobile-agent-detail-about-text {
+			color: #b0b0b0;
+		}
+	}
+
+	.mobile-agent-detail-actions .mobile-agent-detail-like-btn {
+		border-color: #d4a574;
+		color: #d4a574;
+
+		&.liked {
+			background: #eb6753;
+			border-color: #eb6753;
+			color: #ffffff;
+		}
+	}
+
+	.mobile-agent-empty {
+		color: #7a7a7a;
+	}
+
+	.mobile-agent-reviews-list .mobile-agent-reviews-count {
+		color: #f2f2f2;
+	}
+
+	.mobile-agent-review-form {
+		background: #1a1a1a;
+		border-color: rgba(212, 165, 116, 0.1);
+
+		.mobile-agent-review-form-title {
+			color: #f2f2f2;
+		}
+
+		textarea {
+			background: #232323;
+			border-color: rgba(212, 165, 116, 0.16);
+			color: #e0e0e0;
+
+			&::placeholder {
+				color: #7a7a7a;
+			}
+
+			&:focus {
+				border-color: #d4a574;
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	[data-theme='dark'] .mobile-agent-sort-menu .MuiPaper-root {
+		background: #1a1a1a;
+
+		.MuiMenuItem-root {
+			color: #e0e0e0;
+		}
+	}
+}

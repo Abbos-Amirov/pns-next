@@ -24,7 +24,184 @@ const About: NextPage = () => {
 	const closeMapModal = useCallback(() => setMapModalOffice(null), []);
 
 	if (device === 'mobile') {
-		return <div>{t('AboutPageMobile')}</div>;
+		return (
+			<div className={'about-page about-page-mobile'}>
+				<section className={'about-m-hero'}>
+					<span className={'about-m-hero-kicker'}>{t('AboutStatsHeroKicker')}</span>
+					<h1 className={'about-m-hero-title'}>{t('AboutStatsHeroTitle')}</h1>
+					<p className={'about-m-hero-sub'}>{t('AboutStatsHeroSub')}</p>
+					<div className={'about-m-banner'}>
+						<img src="/img/banner/city%20pns.avif" alt="" />
+					</div>
+					<div className={'about-m-stats-row'}>
+						<div className={'about-stat-card'}>
+							<span className={'about-stat-value'}>{t('AboutStats1Value')}</span>
+							<p className={'about-stat-label'}>{t('AboutStats1Label')}</p>
+						</div>
+						<div className={'about-stat-card'}>
+							<span className={'about-stat-value'}>{t('AboutStats2Value')}</span>
+							<p className={'about-stat-label'}>{t('AboutStats2Label')}</p>
+						</div>
+						<div className={'about-stat-card'}>
+							<span className={'about-stat-value'}>{t('AboutStats3Value')}</span>
+							<p className={'about-stat-label'}>{t('AboutStats3Label')}</p>
+						</div>
+					</div>
+				</section>
+
+				<section className={'about-m-agents'}>
+					<span className={'about-m-agents-kicker'}>{t('AboutAgentsKicker')}</span>
+					<h2 className={'about-m-agents-title'}>{t('AboutAgentsSectionTitle')}</h2>
+					<p className={'about-m-agents-desc'}>{t('AboutAgentsSectionDesc')}</p>
+					<div className={'about-m-agents-cta-row'}>
+						<Link href={'/agent'} className={'about-m-agents-cta-btn'}>
+							{t('AboutAgentsCtaMeasurers')}
+							<img src="/img/icons/rightup.svg" alt="" />
+						</Link>
+						<Link href={'/installer'} className={'about-m-agents-cta-btn about-m-agents-cta-btn--outline'}>
+							{t('AboutAgentsCtaInstallers')}
+							<img src="/img/icons/rightup.svg" alt="" />
+						</Link>
+					</div>
+				</section>
+
+				<section className={'about-m-options'}>
+					<strong className={'about-m-options-title'}>{t('AboutBusanOptionsTitle')}</strong>
+					<div className={'about-m-options-cards'}>
+						<div className={'about-option-card'}>
+							<div className={'about-option-card-icon'}>
+								<img src="/img/icons/security.svg" alt="" />
+							</div>
+							<div className={'about-option-card-text'}>
+								<span className={'about-option-card-heading'}>{t('AboutBusanOption1Title')}</span>
+								<p>{t('AboutBusanOption1Body')}</p>
+							</div>
+						</div>
+						<div className={'about-option-card'}>
+							<div className={'about-option-card-icon'}>
+								<img src="/img/icons/keywording.svg" alt="" />
+							</div>
+							<div className={'about-option-card-text'}>
+								<span className={'about-option-card-heading'}>{t('AboutBusanOption2Title')}</span>
+								<p>{t('AboutBusanOption2Body')}</p>
+							</div>
+						</div>
+						<div className={'about-option-card'}>
+							<div className={'about-option-card-icon'}>
+								<img src="/img/icons/investment.svg" alt="" />
+							</div>
+							<div className={'about-option-card-text'}>
+								<span className={'about-option-card-heading'}>{t('AboutBusanOption3Title')}</span>
+								<p>{t('AboutBusanOption3Body')}</p>
+							</div>
+						</div>
+					</div>
+					<div className={'about-m-options-banner'}>
+						<img src="/img/about/busan-branch-hero.png" alt="" loading="lazy" />
+						<div className={'about-m-options-banner-scrim'} />
+						<p className={'about-m-options-banner-label'}>{t('AboutBusanBranchHero')}</p>
+					</div>
+					<Link href={'/contact-us'} className={'about-m-options-cta-link'}>
+						{t('AboutBusanOptionsCta')}
+						<img src="/img/icons/rightup.svg" alt="" />
+					</Link>
+				</section>
+
+				<section className={'about-m-intro'}>
+					<span className={'about-m-intro-kicker'}>{t('AboutIntroKicker')}</span>
+					<strong className={'about-m-intro-headline'}>{t('AboutIntroHeadline')}</strong>
+					<p className={'about-m-intro-headline-sub'}>{t('AboutIntroHeadlineSub')}</p>
+					<div className={'about-m-intro-copy'}>
+						<p>{t('AboutIntroPara1')}</p>
+						<p>{t('AboutIntroPara2')}</p>
+						<p>{t('AboutIntroPara3')}</p>
+					</div>
+					<div className={'about-m-intro-cards'}>
+						<div className={'about-intro-card'}>
+							<div className={'about-intro-card-icon'}>
+								<img src="/img/icons/garden.svg" alt="" />
+							</div>
+							<div className={'about-intro-card-body'}>
+								<span className={'about-intro-card-title'}>{t('AboutIntroCard1Title')}</span>
+								<p>{t('AboutIntroCard1Body')}</p>
+							</div>
+						</div>
+						<div className={'about-intro-card'}>
+							<div className={'about-intro-card-icon'}>
+								<img src="/img/icons/securePayment.svg" alt="" />
+							</div>
+							<div className={'about-intro-card-body'}>
+								<span className={'about-intro-card-title'}>{t('AboutIntroCard2Title')}</span>
+								<p>{t('AboutIntroCard2Body')}</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section className={'about-m-map'}>
+					<div className={'about-m-map-hero'}>
+						<h2 className={'about-m-map-hero-title'}>{t('AboutMapHeroTitle')}</h2>
+						<p className={'about-m-map-hero-sub'}>{t('AboutMapHeroSubtitle')}</p>
+					</div>
+					<h3 className={'about-m-map-grid-title'}>{t('AboutMapOfficesGridTitle')}</h3>
+					<div className={'about-m-offices-grid'}>
+						{ABOUT_OFFICES.map((office) => (
+							<article key={office.id} className={'about-office-card'}>
+								<div className={'about-office-card-head'}>
+									<h3 className={'about-office-card-title'}>{t(office.titleKey)}</h3>
+									<button type="button" className={'about-office-map-btn'} onClick={() => openMapModal(office)}>
+										{t('AboutMapViewMap')}
+									</button>
+								</div>
+								<ul className={'about-office-card-list'}>
+									<li>
+										<span className={'about-office-card-bullet'} aria-hidden />
+										<span className={'about-office-card-line'}>
+											<span className={'about-office-card-k'}>{t('AboutMapLabelAddress')}</span>
+											{t(office.addressKey)}
+										</span>
+									</li>
+									<li>
+										<span className={'about-office-card-bullet'} aria-hidden />
+										<span className={'about-office-card-line'}>
+											<span className={'about-office-card-k'}>{t('AboutMapLabelPhoneFax')}</span>
+											{t(office.telKey)}
+										</span>
+									</li>
+								</ul>
+							</article>
+						))}
+					</div>
+					<AboutOfficeMapModal open={!!mapModalOffice} onClose={closeMapModal} office={mapModalOffice} />
+				</section>
+
+				<section className={'about-m-partners'}>
+					<span>Trusted bu the world's best</span>
+					<div className={'about-m-partners-wrap'}>
+						<img src="/img/icons/brands/amazon.svg" alt="" />
+						<img src="/img/icons/brands/amd.svg" alt="" />
+						<img src="/img/icons/brands/cisco.svg" alt="" />
+						<img src="/img/icons/brands/dropcam.svg" alt="" />
+						<img src="/img/icons/brands/spotify.svg" alt="" />
+					</div>
+				</section>
+
+				<section className={'about-m-help'}>
+					<strong className={'about-m-help-title'}>{t('AboutHelpTitle')}</strong>
+					<p className={'about-m-help-subtitle'}>{t('AboutHelpSubtitle')}</p>
+					<div className={'about-m-help-actions'}>
+						<Link href={'/contact-us'} className={'about-m-help-btn about-m-help-btn--outline'}>
+							{t('ContactUs')}
+							<img src="/img/icons/rightup.svg" alt="" aria-hidden />
+						</Link>
+						<a href={'tel:15514201'} className={'about-m-help-btn about-m-help-btn--primary'}>
+							<img src="/img/icons/call.svg" alt="" aria-hidden />
+							{t('AboutHelpPhoneDisplay')}
+						</a>
+					</div>
+				</section>
+			</div>
+		);
 	} else {
 		return (
 			<Stack className={'about-page'}>

@@ -9,7 +9,17 @@ const WriteArticle: NextPage = () => {
 	const device = useDeviceDetect();
 
 	if (device === 'mobile') {
-		return <>ARTICLE PAGE MOBILE</>;
+		return (
+			<Stack className={'mobile-writearticle-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>Write an Article</Typography>
+					<Typography className={'mobile-mypage-tab-subtitle'}>Feel free to write your ideas!</Typography>
+				</Stack>
+				<Stack className={'mobile-writearticle-editor'}>
+					<TuiEditor />
+				</Stack>
+			</Stack>
+		);
 	} else
 		return (
 			<div id="write-article-page">

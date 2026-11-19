@@ -20,6 +20,7 @@ import dynamic from 'next/dynamic';
 import { CommentStatus, CommentGroup } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
@@ -349,7 +350,245 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>{t('CommunityDetailPageMobile')}</div>;
+		return (
+			<Stack className="mobile-community-detail">
+				<Stack className="mobile-community-detail-header" direction="row" alignItems="center">
+					<IconButton onClick={() => router.back()} className="mobile-community-detail-back">
+						<ArrowBackIcon />
+					</IconButton>
+					<Typography className="mobile-community-detail-header-title">
+						{t(communityBoardTitleKey(boardArticle?.articleCategory || articleCategory))}
+					</Typography>
+				</Stack>
+
+				{boardArticleLoading ? (
+					<Stack className="mobile-community-detail-empty">
+						<CircularProgress sx={{ color: '#120d53' }} />
+						<Typography>{t('CommunityLoadingArticle')}</Typography>
+					</Stack>
+				) : boardArticleError ? (
+					<Stack className="mobile-community-detail-empty">
+						<Typography>{t('CommunityErrorArticle', { message: boardArticleError.message })}</Typography>
+					</Stack>
+				) : !boardArticle ? (
+					<Stack className="mobile-community-detail-empty">
+						<Typography>{t('CommunityArticleNotFound')}</Typography>
+					</Stack>
+				) : (
+					<>
+						<Stack className="mobile-community-detail-article">
+							<Typography className="mobile-community-detail-title">{boardArticle?.articleTitle}</Typography>
+
+							<Stack className="mobile-community-detail-member" direction="row" alignItems="center">
+								<img
+									src={memberImage}
+									alt=""
+									className="mobile-community-detail-member-img"
+									onClick={() => goMemberPage(boardArticle?.memberData?._id)}
+								/>
+								<Stack className="mobile-community-detail-member-col">
+									<Typography
+										className="mobile-community-detail-member-nick"
+										onClick={() => goMemberPage(boardArticle?.memberData?._id)}
+									>
+										{boardArticle?.memberData?.memberNick}
+									</Typography>
+									<Moment className="mobile-community-detail-member-date" format={'DD.MM.YY HH:mm'}>
+										{boardArticle?.createdAt}
+									</Moment>
+								</Stack>
+							</Stack>
+
+							<Stack className="mobile-community-detail-stats" direction="row">
+								<span className="mobile-community-detail-stat">
+									{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
+										<ThumbUpAltIcon />
+									) : (
+										<ThumbUpOffAltIcon />
+									)}
+									{boardArticle?.articleLikes || 0}
+								</span>
+								<span className="mobile-community-detail-stat">
+									<VisibilityIcon />
+									{boardArticle?.articleViews || 0}
+								</span>
+								<span className="mobile-community-detail-stat">
+									{boardArticle?.articleComments && boardArticle?.articleComments > 0 ? (
+										<ChatIcon />
+									) : (
+										<ChatBubbleOutlineRoundedIcon />
+									)}
+									{boardArticle?.articleComments || 0}
+								</span>
+							</Stack>
+
+							<Stack className="mobile-community-detail-content">
+								<ToastViewerComponent markdown={boardArticle?.articleContent} className={'ytb_play'} />
+							</Stack>
+
+							<button
+								type="button"
+								className={`mobile-btn-primary mobile-community-detail-like-btn ${
+									boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? 'liked' : ''
+								}`}
+								onClick={likeButtonHandler}
+								disabled={!user?._id || likeLoading || likeBoardArticleLoading}
+							>
+								{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
+									<ThumbUpAltIcon />
+								) : (
+									<ThumbUpOffAltIcon />
+								)}
+								{boardArticle?.articleLikes || 0}
+							</button>
+						</Stack>
+
+						<Stack className="mobile-community-detail-comments">
+							<Typography className="mobile-community-detail-comments-title">
+								{t('CommunityCommentsHeading', { count: total })}
+							</Typography>
+
+							<Stack className="mobile-community-detail-comment-form">
+								<input
+									type="text"
+									placeholder={
+										user?._id ? t('CommunityLeaveComment') : t('CommunityLoginToCommentPlaceholder')
+									}
+									value={comment}
+									onChange={(e) => {
+										if (e.target.value.length > 100) return;
+										setWordsCnt(e.target.value.length);
+										setComment(e.target.value);
+									}}
+									disabled={!user?._id || createCommentLoading}
+								/>
+								<Stack className="mobile-community-detail-comment-form-actions" direction="row" alignItems="center">
+									<Typography className="mobile-community-detail-comment-counter">{wordsCnt}/100</Typography>
+									<button
+										type="button"
+										className="mobile-btn-accent mobile-community-detail-comment-submit"
+										onClick={creteCommentHandler}
+										disabled={!user?._id || !comment.trim() || createCommentLoading}
+									>
+										{createCommentLoading ? t('CommunityPosting') : t('CommunityCommentSubmit')}
+									</button>
+								</Stack>
+							</Stack>
+
+							{commentsLoading ? (
+								<Stack className="mobile-community-detail-empty">
+									<CircularProgress size={22} sx={{ color: '#120d53' }} />
+									<Typography>{t('CommunityLoadingComments')}</Typography>
+								</Stack>
+							) : commentsError ? (
+								<Stack className="mobile-community-detail-empty">
+									<Typography>{t('CommunityErrorComments', { message: commentsError.message })}</Typography>
+								</Stack>
+							) : comments.length === 0 ? (
+								<Stack className="mobile-community-detail-empty">
+									<Typography>{t('CommunityNoCommentsYet')}</Typography>
+								</Stack>
+							) : (
+								<Stack className="mobile-community-detail-comment-list">
+									{comments?.map((commentData) => (
+										<Stack className="mobile-community-detail-comment" key={commentData?._id}>
+											<Stack className="mobile-community-detail-comment-top" direction="row" alignItems="flex-start">
+												<Stack
+													className="mobile-community-detail-comment-member"
+													direction="row"
+													alignItems="center"
+													onClick={() => goMemberPage(commentData?.memberData?._id as string)}
+												>
+													<img src={getCommentMemberImage(commentData?.memberData?.memberImage)} alt="" />
+													<Stack className="mobile-community-detail-comment-member-col">
+														<Typography className="mobile-community-detail-comment-name">
+															{commentData?.memberData?.memberNick}
+														</Typography>
+														<Moment className="mobile-community-detail-comment-date" format={'DD.MM.YY HH:mm'}>
+															{commentData?.createdAt}
+														</Moment>
+													</Stack>
+												</Stack>
+												{commentData?.memberId === user?._id && (
+													<Stack className="mobile-community-detail-comment-actions" direction="row">
+														<IconButton
+															onClick={() => {
+																setUpdatedCommentId(commentData?._id);
+																updateButtonHandler(commentData?._id, CommentStatus.DELETE);
+															}}
+														>
+															<DeleteForeverIcon />
+														</IconButton>
+														<IconButton
+															onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+																e.stopPropagation();
+																setUpdatedComment(commentData?.commentContent);
+																setUpdatedCommentWordsCnt(commentData?.commentContent?.length);
+																setUpdatedCommentId(commentData?._id);
+																setOpenBackdrop(true);
+															}}
+														>
+															<EditIcon />
+														</IconButton>
+													</Stack>
+												)}
+											</Stack>
+											<Typography className="mobile-community-detail-comment-content">
+												{commentData?.commentContent}
+											</Typography>
+										</Stack>
+									))}
+								</Stack>
+							)}
+
+							{total > 0 && (
+								<Stack className="mobile-community-detail-pagination">
+									<Pagination
+										count={Math.ceil(total / commentInquiry.limit) || 1}
+										page={commentInquiry.page}
+										shape="circular"
+										color="primary"
+										onChange={paginationHandler}
+									/>
+								</Stack>
+							)}
+						</Stack>
+
+						<Backdrop className="mobile-community-edit-backdrop" open={openBackdrop}>
+							<Stack className="mobile-community-edit-modal">
+								<Typography className="mobile-community-edit-modal-title">
+									{t('CommunityUpdateCommentTitle')}
+								</Typography>
+								<input
+									autoFocus
+									value={updatedComment}
+									onChange={(e) => updateCommentInputHandler(e.target.value)}
+									type="text"
+									className="mobile-community-edit-modal-input"
+								/>
+								<Stack className="mobile-community-edit-modal-footer" direction="row" alignItems="center">
+									<Typography className="mobile-community-edit-modal-counter">
+										{updatedCommentWordsCnt}/100
+									</Typography>
+									<Stack className="mobile-community-edit-modal-actions" direction="row">
+										<button type="button" className="mobile-community-edit-cancel" onClick={cancelButtonHandler}>
+											{t('CommunityCancel')}
+										</button>
+										<button
+											type="button"
+											className="mobile-btn-primary mobile-community-edit-save"
+											onClick={() => updateButtonHandler(updatedCommentId, undefined)}
+										>
+											{t('CommunityUpdate')}
+										</button>
+									</Stack>
+								</Stack>
+							</Stack>
+						</Backdrop>
+					</>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<div id="community-detail-page">

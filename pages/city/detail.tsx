@@ -185,7 +185,141 @@ const LocationDetail: NextPage = ({ ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <h1>LOCATION DETAIL MOBILE</h1>;
+		return (
+			<Stack className="mobile-city-detail">
+				<Stack className="mobile-city-detail-header" direction="row" alignItems="center">
+					<IconButton onClick={goBackHandler} className="mobile-city-detail-back">
+						<ArrowBackIcon />
+					</IconButton>
+					<Typography className="mobile-city-detail-header-title">Location Details</Typography>
+				</Stack>
+
+				{locationLoading ? (
+					<Stack className="mobile-city-detail-empty">
+						<Typography>Loading location...</Typography>
+					</Stack>
+				) : locationError ? (
+					<Stack className="mobile-city-detail-empty">
+						<Typography>Error loading location: {locationError.message}</Typography>
+					</Stack>
+				) : !location ? (
+					<Stack className="mobile-city-detail-empty">
+						<Typography>Location not found</Typography>
+					</Stack>
+				) : (
+					<>
+						<div className="mobile-city-detail-gallery">
+							{location.images && location.images.length > 0 ? (
+								<Swiper
+									spaceBetween={0}
+									slidesPerView={1}
+									pagination={{ clickable: true }}
+									autoplay={{ delay: 3500, disableOnInteraction: false }}
+									className="mobile-city-detail-swiper"
+								>
+									{location.images.map((image, index) => (
+										<SwiperSlide key={index}>
+											<img src={getImagePath(image)} alt={`${location.locationName} - ${index + 1}`} />
+										</SwiperSlide>
+									))}
+								</Swiper>
+							) : (
+								<img
+									className="mobile-city-detail-single-img"
+									src="/img/property/window.jpg"
+									alt={location.locationName}
+								/>
+							)}
+						</div>
+
+						<Stack className="mobile-city-detail-showcase">
+							{CITY_DETAIL_SHOWCASE_IMAGES.map((image, index) => (
+								<div className="mobile-city-detail-showcase-card" key={image}>
+									<img src={image} alt={`${location.locationName} showcase ${index + 1}`} />
+								</div>
+							))}
+						</Stack>
+
+						<Stack className="mobile-city-detail-info mobile-card">
+							<Stack className="mobile-city-detail-title-row" direction="row" alignItems="flex-start">
+								<Stack className="mobile-city-detail-title-col">
+									<Typography className="mobile-city-detail-title">{location.locationName}</Typography>
+									<Stack className="mobile-city-detail-address" direction="row" alignItems="center">
+										<LocationOnIcon />
+										<Typography>{location.address}</Typography>
+									</Stack>
+								</Stack>
+							</Stack>
+
+							<Stack className="mobile-city-detail-actions" direction="row">
+								<button
+									type="button"
+									className={`mobile-city-detail-like ${isLiked ? 'liked' : ''}`}
+									onClick={likeLocationHandler}
+									disabled={likeLoading}
+								>
+									{isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+									<span>{likesCount}</span>
+								</button>
+								<button type="button" className="mobile-city-detail-share" onClick={shareLocationHandler}>
+									<ShareIcon />
+									<span>Share</span>
+								</button>
+							</Stack>
+
+							<Stack className="mobile-city-detail-stats" direction="row">
+								<Stack className="mobile-city-detail-stat" direction="row" alignItems="center">
+									<RemoveRedEyeIcon />
+									<Typography>{location.locationViews || 0} views</Typography>
+								</Stack>
+								<Stack className="mobile-city-detail-stat" direction="row" alignItems="center">
+									<FavoriteIcon />
+									<Typography>{likesCount} likes</Typography>
+								</Stack>
+								{location.locationType && (
+									<Chip label={location.locationType} className="mobile-city-detail-chip" />
+								)}
+							</Stack>
+
+							{location.description && (
+								<Stack className="mobile-city-detail-section">
+									<Typography className="mobile-city-detail-section-title">Description</Typography>
+									<Typography className="mobile-city-detail-section-text">{location.description}</Typography>
+								</Stack>
+							)}
+
+							<Stack className="mobile-city-detail-section">
+								<Typography className="mobile-city-detail-section-title">Location Details</Typography>
+								<Stack className="mobile-city-detail-list">
+									{location.latitude && location.longitude && (
+										<Stack className="mobile-city-detail-list-row" direction="row" justifyContent="space-between">
+											<Typography className="mobile-city-detail-list-label">Coordinates</Typography>
+											<Typography className="mobile-city-detail-list-value">
+												{location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+											</Typography>
+										</Stack>
+									)}
+									<Stack className="mobile-city-detail-list-row" direction="row" justifyContent="space-between">
+										<Typography className="mobile-city-detail-list-label">Created</Typography>
+										<Typography className="mobile-city-detail-list-value">
+											{moment(location.createdAt).format('MMMM DD, YYYY')}
+										</Typography>
+									</Stack>
+									{location.updatedAt && (
+										<Stack className="mobile-city-detail-list-row" direction="row" justifyContent="space-between">
+											<Typography className="mobile-city-detail-list-label">Last Updated</Typography>
+											<Typography className="mobile-city-detail-list-value">
+												{moment(location.updatedAt).format('MMMM DD, YYYY')}
+											</Typography>
+										</Stack>
+									)}
+								</Stack>
+							</Stack>
+						</Stack>
+					</>
+				)}
+			</Stack>
+		);
 	}
 
 	const renderContent = (): React.ReactNode => {

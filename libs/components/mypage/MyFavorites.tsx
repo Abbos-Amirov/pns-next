@@ -63,7 +63,60 @@ const MyFavorites: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>PNS DEV MY FAVORITES MOBILE</div>;
+		return (
+			<Stack className={'mobile-myfavorites-page'}>
+				<Stack className={'mobile-mypage-tab-header'}>
+					<Typography className={'mobile-mypage-tab-title'}>My Favorites</Typography>
+					{total > 0 && <Typography className={'mobile-mypage-tab-count'}>{total}</Typography>}
+				</Stack>
+				{loading ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Loading favorites...</Typography>
+					</Stack>
+				) : error ? (
+					<Stack className={'mobile-empty-state'}>
+						<Typography>Error loading favorites</Typography>
+					</Stack>
+				) : myFavorites?.length > 0 ? (
+					<>
+						<Stack className={'mobile-product-list'}>
+							{myFavorites.map((product: Product) => {
+								const imagePath = product.productImages?.[0]
+									? `${process.env.REACT_APP_API_URL}/${product.productImages[0]}`
+									: '/img/property/window.jpg';
+								return (
+									<div className={'mobile-product-card'} key={product._id}>
+										<div className={'mobile-product-card-img'} style={{ backgroundImage: `url(${imagePath})` }}>
+											<FavoriteIcon className={'mobile-product-card-fav'} />
+										</div>
+										<div className={'mobile-product-card-body'}>
+											<Typography className={'mobile-product-card-title'}>{product.productTitle}</Typography>
+											<Typography className={'mobile-product-card-address'}>{product.productAddress}</Typography>
+											<Typography className={'mobile-product-card-price'}>${product.productPrice?.toLocaleString()}</Typography>
+										</div>
+									</div>
+								);
+							})}
+						</Stack>
+						<Stack className={'mobile-pagination'}>
+							<Pagination
+								count={Math.ceil(total / searchFavorites.limit)}
+								page={searchFavorites.page}
+								shape="circular"
+								color="primary"
+								onChange={paginationHandler}
+							/>
+						</Stack>
+					</>
+				) : (
+					<Stack className={'mobile-empty-state'}>
+						<FavoriteIcon />
+						<Typography>No Favorites Found</Typography>
+						<Typography className={'mobile-empty-hint'}>You haven't added any products to your favorites yet.</Typography>
+					</Stack>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<Box component={'div'} className={'my-favorites-page'}>

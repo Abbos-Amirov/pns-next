@@ -66,7 +66,37 @@ const MyPage: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>MY PAGE</div>;
+		return (
+			<Stack className={'mobile-mypage-page'}>
+				<MyMenu />
+				<Stack className={'mobile-mypage-content'}>
+					{category === 'addProperty' && <AddProperty />}
+					{category === 'myProperties' && <MyProperties />}
+					{category === 'myFavorites' && <MyFavorites />}
+					{category === 'recentlyVisited' && <RecentlyVisited />}
+					{category === 'myArticles' && <MyArticles />}
+					{category === 'writeArticle' && <WriteArticle />}
+					{category === 'myProfile' && <MyProfile />}
+					{category === 'myLocations' && <MyLocations />}
+					{category === 'addLocation' && <AddLocation />}
+					{category === 'editLocation' && <EditLocation />}
+					{category === 'followers' && (
+						<MemberFollowers
+							subscribeHandler={subscribeHandler}
+							unsubscribeHandler={unsubscribeHandler}
+							redirectToMemberPageHandler={redirectToMemberPageHandler}
+						/>
+					)}
+					{category === 'followings' && (
+						<MemberFollowings
+							subscribeHandler={subscribeHandler}
+							unsubscribeHandler={unsubscribeHandler}
+							redirectToMemberPageHandler={redirectToMemberPageHandler}
+						/>
+					)}
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Box component={'div'} id="my-page" className={'mypage-container'}>

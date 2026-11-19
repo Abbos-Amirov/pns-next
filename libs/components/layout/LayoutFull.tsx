@@ -46,6 +46,9 @@ const withLayoutFull = (Component: any) => {
 							<Component {...props} />
 						</Stack>
 
+						<AIChat />
+						<SocialLinksFloating />
+
 						<Stack id={'footer'}>
 							<Footer />
 						</Stack>

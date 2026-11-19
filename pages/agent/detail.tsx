@@ -318,7 +318,244 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 	};
 
 	if (device === 'mobile') {
-		return <div>{t('AgentDetailPageMobile')}</div>;
+		if (memberLoading) {
+			return (
+				<div className="mobile-agent-detail-page">
+					<div className="mobile-agent-detail-state">{t('AgentDetailLoading')}</div>
+				</div>
+			);
+		}
+
+		if (memberError || !agent) {
+			return (
+				<div className="mobile-agent-detail-page">
+					<div className="mobile-agent-detail-state mobile-agent-detail-state-error">
+						<img src="/img/icons/icoAlert.svg" alt="" />
+						<span>
+							{memberError ? t('AgentDetailError', { message: memberError.message }) : t('AgentDetailNotFound')}
+						</span>
+					</div>
+				</div>
+			);
+		}
+
+		const imagePath = agent?.memberImage
+			? `${REACT_APP_API_URL}/${agent.memberImage}`
+			: '/img/profile/defaultUser.svg';
+
+		return (
+			<div className="mobile-agent-detail-page">
+				<div className="mobile-agent-detail-hero">
+					<img
+						src={imagePath}
+						alt={agent?.memberFullName || agent?.memberNick || 'Agent'}
+						className="mobile-agent-detail-avatar"
+						onError={(e) => {
+							(e.target as HTMLImageElement).src = '/img/profile/defaultUser.svg';
+						}}
+					/>
+					{agent?.memberProducts ? (
+						<span className="mobile-agent-detail-badge">
+							{t('AgentDetailProductsBadge', { count: agent.memberProducts })}
+						</span>
+					) : null}
+				</div>
+
+				<div className="mobile-agent-detail-card mobile-card">
+					<div className="mobile-agent-detail-header">
+						<h1 className="mobile-agent-detail-name">{agent?.memberFullName || agent?.memberNick}</h1>
+						<span className="mobile-agent-detail-type-chip">{agent?.memberType || 'MEASURER'}</span>
+					</div>
+
+					<div className="mobile-agent-detail-stats">
+						<div className="mobile-agent-detail-stat">
+							<RemoveRedEyeIcon className="mobile-agent-detail-stat-icon" />
+							<strong>{agent?.memberViews || 0}</strong>
+							<span>{t('Views')}</span>
+						</div>
+						<div className="mobile-agent-detail-stat">
+							{isLiked ? (
+								<FavoriteIcon className="mobile-agent-detail-stat-icon liked" />
+							) : (
+								<FavoriteBorderIcon className="mobile-agent-detail-stat-icon" />
+							)}
+							<strong>{agent?.memberLikes || 0}</strong>
+							<span>{t('Likes')}</span>
+						</div>
+						<div className="mobile-agent-detail-stat">
+							<PersonIcon className="mobile-agent-detail-stat-icon" />
+							<strong>{agent?.memberFollowers || 0}</strong>
+							<span>{t('Followers')}</span>
+						</div>
+						<div className="mobile-agent-detail-stat">
+							<PersonIcon className="mobile-agent-detail-stat-icon" />
+							<strong>{agent?.memberFollowings || 0}</strong>
+							<span>{t('Following')}</span>
+						</div>
+					</div>
+
+					<div className="mobile-agent-detail-info-list">
+						{agent?.memberPhone && (
+							<div className="mobile-agent-detail-info-row">
+								<PhoneIcon className="mobile-agent-detail-info-icon" />
+								<span>{agent.memberPhone}</span>
+							</div>
+						)}
+						{agent?.memberAddress && (
+							<div className="mobile-agent-detail-info-row">
+								<LocationOnIcon className="mobile-agent-detail-info-icon" />
+								<span>{agent.memberAddress}</span>
+							</div>
+						)}
+						{agent?.createdAt && (
+							<div className="mobile-agent-detail-info-row mobile-agent-detail-info-row-muted">
+								<span>{t('AgentDetailMemberSince')}</span>
+								<span>{moment(agent.createdAt).format('MMMM YYYY')}</span>
+							</div>
+						)}
+					</div>
+
+					{(agent?.memberExperience || agent?.memberEducation) && (
+						<div className="mobile-agent-detail-feature-grid">
+							{agent?.memberExperience && (
+								<div className="mobile-agent-detail-feature-card">
+									<span className="mobile-agent-detail-feature-label">{t('Experience')}</span>
+									<span className="mobile-agent-detail-feature-value">{agent.memberExperience}</span>
+								</div>
+							)}
+							{agent?.memberEducation && (
+								<div className="mobile-agent-detail-feature-card">
+									<span className="mobile-agent-detail-feature-label">{t('Education')}</span>
+									<span className="mobile-agent-detail-feature-value">{agent.memberEducation}</span>
+								</div>
+							)}
+						</div>
+					)}
+
+					{agent?.memberDesc && (
+						<div className="mobile-agent-detail-about">
+							<span className="mobile-agent-detail-about-title">{t('AgentDetailAbout')}</span>
+							<p className="mobile-agent-detail-about-text">{agent.memberDesc}</p>
+						</div>
+					)}
+
+					<div className="mobile-agent-detail-actions">
+						<button
+							type="button"
+							className={`mobile-agent-detail-like-btn${isLiked ? ' liked' : ''}`}
+							onClick={likeMemberHandler}
+							disabled={likeLoading}
+						>
+							{isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+							<span>{isLiked ? t('Liked') : t('Like')}</span>
+						</button>
+						<button
+							type="button"
+							className="mobile-agent-detail-profile-btn mobile-btn-primary"
+							onClick={() => redirectToMemberPageHandler(agent._id)}
+						>
+							{t('InstallerDetailViewFullProfile')}
+						</button>
+					</div>
+				</div>
+
+				<div className="mobile-section mobile-agent-detail-locations">
+					<div className="mobile-section-head">
+						<h2 className="mobile-title">{t('AgentDetailWorkingLocations')}</h2>
+					</div>
+					<div className="mobile-agent-locations-grid">
+						{locationsLoading ? (
+							<div className="mobile-agent-empty">{t('AgentDetailLoadingLocations')}</div>
+						) : locationsError ? (
+							<div className="mobile-agent-empty">
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>{t('AgentDetailLocationsError', { message: locationsError.message })}</p>
+							</div>
+						) : pagedAgentLocations.length > 0 ? (
+							pagedAgentLocations.map((city: Location) => (
+								<div className="mobile-agent-location-card-wrap" key={city?._id}>
+									<CityCard city={city} />
+								</div>
+							))
+						) : (
+							<div className="mobile-agent-empty">
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>{t('AgentDetailNoLocations')}</p>
+							</div>
+						)}
+					</div>
+					{agentLocationsAll.length > 0 && (
+						<div className="mobile-agent-pagination">
+							<Pagination
+								page={agentLocationsPage}
+								count={Math.ceil(agentLocationsAll.length / agentLocationsLimit) || 1}
+								onChange={(e: ChangeEvent<unknown>, value: number) => setAgentLocationsPage(value)}
+								shape="circular"
+								color="primary"
+							/>
+							<span className="mobile-agent-total">
+								{t('AgentDetailLocationsTotal', { count: agentLocationsAll.length })}
+							</span>
+						</div>
+					)}
+				</div>
+
+				<div className="mobile-section mobile-agent-detail-reviews">
+					<div className="mobile-section-head">
+						<h2 className="mobile-title">{t('Reviews')}</h2>
+						<p className="mobile-subtitle">{t('AgentDetailReviewsSubtitle')}</p>
+					</div>
+
+					{commentsLoading ? (
+						<div className="mobile-agent-empty">{t('AgentDetailLoadingReviews')}</div>
+					) : commentTotal > 0 ? (
+						<div className="mobile-agent-reviews-list">
+							<div className="mobile-agent-reviews-count">
+								<StarIcon />
+								<span>{t('AgentDetailReviewCount', { count: commentTotal })}</span>
+							</div>
+							{agentComments?.map((comment: Comment) => (
+								<ReviewCard comment={comment} key={comment?._id} />
+							))}
+							{Math.ceil(commentTotal / commentInquiry.limit) > 1 && (
+								<div className="mobile-agent-pagination">
+									<Pagination
+										page={commentInquiry.page}
+										count={Math.ceil(commentTotal / commentInquiry.limit)}
+										onChange={commentPaginationChangeHandler}
+										shape="circular"
+										color="primary"
+									/>
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="mobile-agent-empty">{t('AgentDetailNoReviews')}</div>
+					)}
+
+					{user?._id && (
+						<div className="mobile-agent-review-form mobile-card">
+							<h4 className="mobile-agent-review-form-title">{t('Leave A Review')}</h4>
+							<textarea
+								onChange={({ target: { value } }: any) => {
+									setInsertCommentData({ ...insertCommentData, commentContent: value });
+								}}
+								value={insertCommentData.commentContent}
+								placeholder={t('AgentDetailReviewPlaceholder') as string}
+							></textarea>
+							<button
+								type="button"
+								className="mobile-agent-review-submit mobile-btn-primary"
+								disabled={insertCommentData.commentContent === '' || !user?._id}
+								onClick={createCommentHandler}
+							>
+								{t('Submit Review')}
+							</button>
+						</div>
+					)}
+				</div>
+			</div>
+		);
 	} else {
 		// Show loading state
 		if (memberLoading) {

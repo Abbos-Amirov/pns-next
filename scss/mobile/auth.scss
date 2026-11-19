@@ -1,4 +1,6 @@
-#mobile-wrap {
+/** .auth-modal is a MUI Modal — it portals to <body>, so it is never inside
+ * #mobile-wrap. Scope it with a width media query instead of the wrapper id. */
+@media (max-width: 768px) {
 	.auth-modal {
 		display: flex;
 		align-items: center;
@@ -178,7 +180,9 @@
 			display: none; // Mobile da o'ng tomon ko'rsatilmaydi
 		}
 	}
+}
 
+#mobile-wrap {
 	.auth-page {
 		position: relative;
 		width: 100%;

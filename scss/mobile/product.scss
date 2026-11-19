@@ -1,0 +1,228 @@
+@import '/scss/variables.scss';
+
+/** ==========================================================================
+ * MOBILE — Product scroll-stack page (/product)
+ *
+ * This page is styled entirely with inline React `style={...}` objects (no
+ * SCSS classNames originally existed), so several rules below need
+ * `!important` to win over the inline `style` attribute for the SAME
+ * property on the SAME element — that is the only way CSS can ever beat an
+ * inline style short of removing the inline value in JSX. className hooks
+ * were added additively next to the existing style props (no JS/behavior
+ * changes) so this stylesheet has something stable to target.
+ *
+ * On mobile the two-column "sticky image stack + scrolling info" layout
+ * (which depends on viewport height/width to feel cinematic) is simplified:
+ * the fixed image-stack aside is hidden, and each info panel becomes a
+ * full-width card with its own inline product photo up top — still
+ * premium, just adapted to a single column. The activeIndex/IntersectionObserver
+ * JS is untouched; hiding the aside purely via CSS does not affect it.
+ * ========================================================================== */
+
+#mobile-wrap {
+	#product-index-page {
+		width: 100%;
+		min-height: 100vh;
+		background: #0b0c10 !important;
+	}
+
+	.product-mobile-loading {
+		min-height: 50vh !important;
+		font-family: $font;
+		font-size: 14px !important;
+		color: rgba(255, 255, 255, 0.75);
+	}
+
+	.product-mobile-wrapper {
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 0 0 20px !important;
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+	}
+
+	/* The cinematic sticky image-stack only makes sense with real viewport
+	   real-estate; on phones we drop it in favor of an inline photo per
+	   section (see .product-mobile-section-photo below). */
+	.product-mobile-aside {
+		display: none !important;
+	}
+
+	.product-mobile-main {
+		flex: 1 1 auto;
+		width: 100%;
+	}
+
+	.product-mobile-section {
+		min-height: auto !important;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 30px 18px 34px !important;
+		display: flex !important;
+		flex-direction: column !important;
+		justify-content: flex-start !important;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.product-mobile-section-photo {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		border-radius: 18px;
+		overflow: hidden;
+		margin-bottom: 18px;
+		box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+		position: relative;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%);
+			pointer-events: none;
+		}
+	}
+
+	.product-mobile-kicker {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 14px !important;
+		margin-bottom: 12px !important;
+		border-radius: 20px;
+		background: rgba(212, 165, 116, 0.16);
+		border: 1px solid rgba(212, 165, 116, 0.3);
+		color: #d4a574 !important;
+		font-family: $font;
+		font-size: 10px !important;
+		font-weight: 700;
+		letter-spacing: 1.2px !important;
+		text-transform: uppercase;
+		opacity: 1 !important;
+		width: fit-content;
+	}
+
+	.product-mobile-h2 {
+		margin: 0 0 8px !important;
+		font-family: $font;
+		font-size: 24px !important;
+		font-weight: 700;
+		line-height: 1.25 !important;
+		color: #ffffff;
+	}
+
+	.product-mobile-subtitle {
+		margin-top: 0 !important;
+		font-family: $font;
+		font-size: 13.5px !important;
+		font-weight: 500;
+		color: #d4a574 !important;
+		opacity: 1 !important;
+	}
+
+	.product-mobile-desc {
+		margin-top: 12px !important;
+		font-family: $font;
+		font-size: 13.5px !important;
+		line-height: 1.65 !important;
+		color: rgba(255, 255, 255, 0.78) !important;
+		max-width: 100% !important;
+	}
+
+	.product-mobile-price {
+		margin-top: 14px !important;
+		font-family: $font;
+		font-size: 20px !important;
+		font-weight: 800;
+		color: #d4a574 !important;
+	}
+
+	.product-mobile-feature-box {
+		margin-top: 18px !important;
+		padding: 16px !important;
+		border-radius: 16px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		max-width: 100% !important;
+		box-sizing: border-box;
+	}
+
+	.product-mobile-feature-title {
+		font-family: $font;
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		color: #d4a574;
+		margin-bottom: 10px;
+	}
+
+	.product-mobile-ul {
+		margin: 0 !important;
+		padding-left: 0 !important;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		opacity: 1 !important;
+	}
+
+	.product-mobile-li {
+		margin-bottom: 0 !important;
+		padding-left: 20px;
+		position: relative;
+		font-family: $font;
+		font-size: 12.5px;
+		line-height: 1.5;
+		color: rgba(255, 255, 255, 0.85);
+
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 7px;
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: #d4a574;
+		}
+	}
+
+	.product-mobile-cta-row {
+		margin-top: 20px !important;
+		gap: 12px !important;
+	}
+
+	.product-mobile-primary-btn {
+		width: 100%;
+		padding: 14px 22px !important;
+		border-radius: 12px !important;
+		border: none !important;
+		background: linear-gradient(135deg, #d4a574 0%, #b5824f 100%) !important;
+		color: #1a1207 !important;
+		font-family: $font;
+		font-size: 14px !important;
+		font-weight: 700 !important;
+		box-shadow: 0 8px 20px rgba(139, 69, 19, 0.32);
+		text-align: center;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+		&:active {
+			transform: scale(0.97);
+			box-shadow: 0 4px 12px rgba(139, 69, 19, 0.34);
+		}
+	}
+}
+
+/* This page is intentionally always dark-styled (background:#0b0c10 baked
+   into its own inline styles), so it already reads correctly regardless of
+   the site-wide light/dark toggle — no extra [data-theme='dark'] companion
+   block is needed here. */

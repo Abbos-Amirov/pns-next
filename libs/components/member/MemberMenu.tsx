@@ -77,7 +77,130 @@ const MemberMenu = (props: MemberMenuProps) => {
 	}, [locationsData, memberId]);
 
 	if (device === 'mobile') {
-		return <div>MEMBER MENU MOBILE</div>;
+		const activeCategory = category === 'properties' ? 'locations' : category;
+		const isMeasurerLike = member?.memberType === MemberType.MEASURER || member?.memberType === MemberType.INSTALLER;
+
+		return (
+			<Stack className={'mobile-member-menu'}>
+				<Stack className={'mobile-member-profile-card'}>
+					<Box component={'div'} className={'mobile-member-avatar'}>
+						<img
+							src={member?.memberImage ? `${REACT_APP_API_URL}/${member?.memberImage}` : '/img/profile/defaultUser.svg'}
+							alt={'member-photo'}
+						/>
+					</Box>
+					<Stack className={'mobile-member-info'}>
+						<Typography className={'mobile-member-name'}>{member?.memberNick}</Typography>
+						<Box component={'div'} className={'mobile-member-phone'}>
+							<img src={'/img/icons/call.svg'} alt={'icon'} />
+							<Typography>{member?.memberPhone}</Typography>
+						</Box>
+						<Typography className={'mobile-member-type-badge'}>{member?.memberType}</Typography>
+					</Stack>
+					{!isSelfProfile && (
+						<Button
+							disableRipple
+							className={`mobile-member-follow-btn ${isFollowing ? 'following' : ''}`}
+							onClick={async () => {
+								if (!member?._id) return;
+								if (isFollowing) {
+									setIsFollowing(false);
+									try {
+										await unsubscribeHandler(member._id, refetchMember, memberId);
+										if (refetchMember) await refetchMember();
+									} catch (err) {
+										setIsFollowing(true);
+									}
+								} else {
+									setIsFollowing(true);
+									try {
+										await subscribeHandler(member._id, refetchMember, memberId);
+										if (refetchMember) await refetchMember();
+									} catch (err) {
+										setIsFollowing(false);
+									}
+								}
+							}}
+						>
+							{isFollowing ? 'Unfollow' : 'Follow'}
+						</Button>
+					)}
+				</Stack>
+
+				<Stack className={'mobile-member-tabs'} direction={'row'}>
+					{isMeasurerLike && (
+						<Link
+							href={{ pathname: '/member', query: { ...router.query, category: 'locations' } }}
+							scroll={false}
+							className={`mobile-member-tab ${activeCategory === 'locations' ? 'active' : ''}`}
+						>
+							<img
+								className={'mobile-member-tab-icon'}
+								src={activeCategory === 'locations' ? '/img/icons/homeWhite.svg' : '/img/icons/home.svg'}
+								alt={'icon'}
+							/>
+							<Typography className={'mobile-member-tab-label'}>Locations</Typography>
+							<Typography className={'mobile-member-tab-count'}>{measurerLocationCount}</Typography>
+						</Link>
+					)}
+					<Link
+						href={{ pathname: '/member', query: { ...router.query, category: 'followers' } }}
+						scroll={false}
+						className={`mobile-member-tab ${activeCategory === 'followers' ? 'active' : ''}`}
+					>
+						<svg
+							className={'mobile-member-tab-icon'}
+							fill={activeCategory === 'followers' ? '#ffffff' : '#16206e'}
+							height="18px"
+							width="18px"
+							viewBox="0 0 328 328"
+						>
+							<g>
+								<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749 S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
+								<path d="M217.394,262.357c2.929,2.928,6.768,4.393,10.606,4.393c3.839,0,7.678-1.465,10.607-4.394 c5.857-5.858,5.857-15.356-0.001-21.214l-19.393-19.391l19.395-19.396c5.857-5.858,5.857-15.356-0.001-21.214 c-5.858-5.857-15.356-5.856-21.214,0.001l-30,30.002c-2.813,2.814-4.393,6.629-4.393,10.607c0,3.979,1.58,7.794,4.394,10.607 L217.394,262.357z" />
+								<path d="M15,286.75h125.596c19.246,24.348,49.031,40,82.404,40c57.896,0,105-47.103,105-105 c0-57.896-47.104-105-105-105c-34.488,0-65.145,16.716-84.297,42.47c-7.764-1.628-15.695-2.47-23.703-2.47 c-63.411,0-115,51.589-115,115C0,280.034,6.716,286.75,15,286.75z M223,146.75c41.355,0,75,33.645,75,75s-33.645,75-75,75 s-75-33.645-75-75S181.644,146.75,223,146.75z" />
+							</g>
+						</svg>
+						<Typography className={'mobile-member-tab-label'}>Followers</Typography>
+						<Typography className={'mobile-member-tab-count'}>{member?.memberFollowers}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/member', query: { ...router.query, category: 'followings' } }}
+						scroll={false}
+						className={`mobile-member-tab ${activeCategory === 'followings' ? 'active' : ''}`}
+					>
+						<svg
+							className={'mobile-member-tab-icon'}
+							fill={activeCategory === 'followings' ? '#ffffff' : '#16206e'}
+							height="18px"
+							width="18px"
+							viewBox="0 0 328 328"
+						>
+							<g>
+								<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751 S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />
+								<path d="M228.606,181.144c-5.858-5.857-15.355-5.858-21.214-0.001c-5.857,5.857-5.857,15.355,0,21.214 l19.393,19.396l-19.393,19.391c-5.857,5.857-5.857,15.355,0,21.214c2.93,2.929,6.768,4.394,10.607,4.394 c3.838,0,7.678-1.465,10.605-4.393l30-29.998c2.813-2.814,4.395-6.629,4.395-10.607c0-3.978-1.58-7.793-4.394-10.607 L228.606,181.144z" />
+								<path d="M223,116.75c-34.488,0-65.145,16.716-84.298,42.47c-7.763-1.628-15.694-2.47-23.702-2.47 c-63.412,0-115,51.589-115,115c0,8.284,6.715,15,15,15h125.596c19.246,24.348,49.03,40,82.404,40c57.896,0,105-47.103,105-105 C328,163.854,280.896,116.75,223,116.75z M223,296.75c-41.356,0-75-33.645-75-75s33.644-75,75-75c41.354,0,75,33.645,75,75 S264.354,296.75,223,296.75z" />
+							</g>
+						</svg>
+						<Typography className={'mobile-member-tab-label'}>Followings</Typography>
+						<Typography className={'mobile-member-tab-count'}>{member?.memberFollowings}</Typography>
+					</Link>
+					<Link
+						href={{ pathname: '/member', query: { ...router.query, category: 'articles' } }}
+						scroll={false}
+						className={`mobile-member-tab ${activeCategory === 'articles' ? 'active' : ''}`}
+					>
+						<img
+							className={'mobile-member-tab-icon'}
+							src={activeCategory === 'articles' ? '/img/icons/discoveryWhite.svg' : '/img/icons/discovery.svg'}
+							alt={'icon'}
+						/>
+						<Typography className={'mobile-member-tab-label'}>Articles</Typography>
+						<Typography className={'mobile-member-tab-count'}>{member?.memberArticles}</Typography>
+					</Link>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack width={'100%'} padding={'30px 24px'}>
